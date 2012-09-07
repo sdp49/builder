@@ -1,4 +1,5 @@
 <?php
+echo 'test';
 /**
 Plugin Name: Real Estate Website Builder
 Description: Quickly create a lead generating real estate website for your real property.
