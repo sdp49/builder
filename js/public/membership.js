@@ -47,19 +47,22 @@ jQuery(document).ready(function($) {
         return login_user(username, password);
     });
     
-    $(".pl_register_lead_link").fancybox({
-        'hideOnContentClick': false,
-        'scrolling' : true
-    });
+    if(typeof $.fancybox == 'function') {
+        $(".pl_register_lead_link").fancybox({
+            'hideOnContentClick': false,
+            'scrolling' : true
+        });
 
-    $(".pl_login_link").fancybox({
-        'hideOnContentClick': false,
-        'scrolling' : true
-    });
+        $(".pl_login_link").fancybox({
+            'hideOnContentClick': false,
+            'scrolling' : true
+        });
 
-    $(document).ajaxStop(function() { 
-            favorites_link_signup();
-    });
+        $(document).ajaxStop(function() { 
+                favorites_link_signup();
+        });    
+    }
+    
 
     favorites_link_signup();
 
