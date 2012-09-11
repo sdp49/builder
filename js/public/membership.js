@@ -46,7 +46,7 @@ jQuery(document).ready(function($) {
     
         return login_user(username, password);
     });
-    
+    alert('test');
     if(typeof $.fancybox == 'function') {
         $(".pl_register_lead_link").fancybox({
             'hideOnContentClick': false,
