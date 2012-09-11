@@ -22,13 +22,31 @@ Class PL_HTTP {
 	                $request_string .= (strlen($request_string) > 0 ? '&' : '') . urlencode($key) . '[]=';
 	            }
 	            foreach ($value as $k => $v) {
-	            	if (is_array($v)) {
-	            		foreach ($v as $i => $j) {
-	            			$request_string .= (strlen($request_string) > 0 ? '&' : '') . urlencode($key) . '[' . $k . ']['.$i.']=' . urlencode($j);
-	            		}
-	            	} else {
-		            	$request_string .= (strlen($request_string) > 0 ? '&' : '') . urlencode($key) . '[' . $k . ']=' . urlencode($v);	
-	            	}
+					if (is_int($k)) {
+						if (is_array($v)) {
+							foreach ($v as $i => $j) {
+								if(is_int(i)) {
+									$request_string .= (strlen($request_string) > 0 ? '&' : '') . urlencode($key) . '[][]=' . urlencode($j);
+								} else {
+									$request_string .= (strlen($request_string) > 0 ? '&' : '') . urlencode($key) . '[]['.$i.']=' . urlencode($j);
+								}
+							}
+						} else {
+							$request_string .= (strlen($request_string) > 0 ? '&' : '') . urlencode($key) . '[]=' . urlencode($v);	
+						}
+					} else {
+						if (is_array($v)) {
+							foreach ($v as $i => $j) {
+								if(is_int($i)) {
+									$request_string .= (strlen($request_string) > 0 ? '&' : '') . urlencode($key) . '[' . $k . '][]=' . urlencode($j);
+								} else {
+									$request_string .= (strlen($request_string) > 0 ? '&' : '') . urlencode($key) . '[' . $k . ']['.$i.']=' . urlencode($j);
+								}
+							}
+						} else {
+							$request_string .= (strlen($request_string) > 0 ? '&' : '') . urlencode($key) . '[' . $k . ']=' . urlencode($v);	
+						}
+					}					
 	            }
 	        } else {
 	        	$request_string .= (strlen($request_string) > 0 ? '&' : '') . 
