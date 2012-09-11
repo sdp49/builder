@@ -75,7 +75,15 @@ class PL_Listing {
 		}
 		return PL_Validate::attributes(PL_HTTP::send_request($config['request']['url'], $request), $config['returns']);
 	}
-
+	public function types() {
+		$args = array( 'keys' => array( 'property_type') );
+		$config = PL_Config::PL_API_LISTINGS('get.types');
+		$request = array_merge(array("api_key" => PL_Option_Helper::api_key()), PL_Validate::request($args, $config['args']));
+		if ( defined('HOSTED_PLUGIN_KEY') ) {
+			$request['hosted_key'] = HOSTED_PLUGIN_KEY;
+		}
+		return PL_Validate::attributes(PL_HTTP::send_request($config['request']['url'], $request), $config['returns']);
+	}
 
 // end of class
 }

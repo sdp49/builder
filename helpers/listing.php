@@ -233,6 +233,22 @@ class PL_Listing_Helper {
 		die();
 	}
 
+	// helper sets keys to values
+	public function types_for_options() {
+		$options = array();
+		$response = PL_Listing::types(array('keys' => array('property_type')));
+		if(!$response) {
+			return array();
+		}
+		// might be able to do this faster with array_fill_keys() -pk
+		foreach ($response['property_type'] as $key => $value) {
+			$options[$value] = $value;
+		}
+		ksort($options);
+		$options = array_merge(array('false' => 'Any'), $options);
+		return $options;	
+	}
+	
 	public function locations_for_options($return_only = false) {
 		$options = array();
 		$response = PL_Listing::locations();
