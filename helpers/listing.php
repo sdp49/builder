@@ -258,7 +258,7 @@ class PL_Listing_Helper {
 		}
 		if ($return_only && isset($response[$return_only])) {
 			foreach ($response[$return_only] as $key => $value) {
-				$options[$value] = (string) $value;
+				$options[$value] = $value;
 			}
 
 			ksort($options);
