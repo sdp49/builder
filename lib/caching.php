@@ -76,6 +76,10 @@ class PL_Cache {
 	    foreach ($placester_options as $option) {
 	        delete_option( $option->option_name );
 	    }
+	    $saved_searches = $wpdb->get_results('SELECT option_name FROM ' . $wpdb->prefix . 'options ' ."WHERE option_name LIKE 'pls_ss_%'");
+	    foreach ($saved_searches as $option) {
+	        delete_option( $option->option_name );
+	    }
 		echo json_encode(array('result' => true, 'message' => 'You\'ve successfully cleared your cache'));
 		die();
 	}
