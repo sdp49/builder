@@ -24,7 +24,7 @@ jQuery(document).ready(function($) {
 		$('#rets_form_message').html('Checking RETS information...');
 		
 		var form_values = {action: 'create_integration'};
-		$.each($('#pls_search_form').serializeArray(), function(i, field) {
+		$.each($('#pls_integration_form').serializeArray(), function(i, field) {
     		form_values[field.name] = field.value;
         });
 
@@ -32,7 +32,7 @@ jQuery(document).ready(function($) {
 
 		$.post(ajaxurl, form_values, function(data, textStatus, xhr) {
 		  	console.log(data);
-		  	 var form = $('#pls_search_form');
+		  	var form = $('#pls_integration_form');
 			if (data && data.result) {
 				$('#rets_form_message').html(data.message);
 				setTimeout(function () {
@@ -67,7 +67,7 @@ jQuery(document).ready(function($) {
 
 	function display_cancel_message () {
 		$('#rets_form_message').html('');
-		$('#pls_search_form').prepend('<div id="message" class="error"><h3>Sorry, this feature requires a premium subscription</h3><p>However, you can test the MLS integration feature for free by creating a website <a href="https://placester.com" target="_blank">placester.com</a></p></div>');
+		$('#pls_integration_form').prepend('<div id="message" class="error"><h3>Sorry, this feature requires a premium subscription</h3><p>However, you can test the MLS integration feature for free by creating a website <a href="https://placester.com" target="_blank">placester.com</a></p></div>');
 	}
 
 });

@@ -77,6 +77,7 @@ Class PL_HTTP {
 					PL_Debug::add_msg('------- NO CACHE FOUND --------');    	    		
 	        		PL_Debug::add_msg($url . '?' . $request_string);    	
 
+	        		// error_log(serialize($response));
 	        		// pls_dump($response);
 					if ( (is_array($response) && isset($response['headers']) && isset($response['headers']['status']) && $response['headers']['status'] == 200) || $force_return) {
 						if (!empty($response['body'])) {

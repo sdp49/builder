@@ -1,6 +1,9 @@
 <?php $mls_list = PL_Integration_Helper::mls_list(); ?>
 
-<form id="pls_integration_form">
+<div class="ajax_message" id="rets_form_message"></div>
+
+<div class="rets_form">
+  <form id="pls_integration_form">
 
   	<div class="row">
 	  <div class="info">
@@ -49,4 +52,5 @@
       <input type="submit" class="button-primary" />
     </div>
   
- </form>
+   </form>
+ </div>
