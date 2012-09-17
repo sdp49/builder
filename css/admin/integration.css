@@ -117,3 +117,44 @@ p.large_green_button {
 	margin: 5px inherit;
 	font-weight: normal;
 }
+
+/* Added for Integrations Re-vamp... */
+.row {
+	zoom: 1;
+	margin: 15px 0;
+	width: 620px;
+}
+
+.row .info {
+	float: left;
+	width: 170px;
+	padding: 20px 40px 0 16px;
+}
+
+.row .info h3 {
+	margin: 0 0 5px;
+	font-weight: bold;
+	font-size: 125%;
+	color: #303030;
+}
+
+.row .info p {
+	margin: 0 0 10px;
+	color: #575757;
+}
+
+.row .elements {
+	padding: 15px 0;
+	overflow: hidden;
+	zoom: 1;
+}
+
+.row::after {
+	content: "";
+	display: block;
+	clear: both;
+}
+
+.row input[type="submit"] {
+	float: right;
+}

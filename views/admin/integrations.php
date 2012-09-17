@@ -85,59 +85,12 @@
 				<h2>Link your Website to your local MLS</h2>
 			</div>
 			<div class="clear"></div>
-			<p>The Real Estate Website Builder plugin can pull listings from your local MLS using a widely supported format called RETS. Once activated, the plugin will automatically update your website with listings as they are added, edited, and removed. All regulatory and compliance concerns will be handled automatically so long as you are using a theme built for the real estate website builder plugin (see <a href="https://placester.com/wordpress-themes/">here</a> for a complete list). Please note that MLS integrations require a <a href="https://placester.com/pricing/">Premium Subscription</a> to Placester which is $45 there is a 60 day, no-credit card free trial avialable to make sure you are happy with the service.  Fill out the form below to get started.</p>
+			<p>The Real Estate Website Builder plugin can pull listings from your local MLS using a widely supported format called RETS. Once activated, the plugin will automatically update your website with listings as they are added, edited, and removed. All regulatory and compliance concerns will be handled automatically so long as you are using a theme built for the real estate website builder plugin (see <a href="https://placester.com/wordpress-themes/">here</a> for a complete list). Please note that MLS integrations require a <a href="https://placester.com/pricing/">Premium Subscription</a> to Placester which is $45 there is a 60 day, no-credit card free trial available to make sure you are happy with the service.  Fill out the form below to get started.</p>
 			<div class="clear"></div>
 			<h3 class="get_started">Fill out the form to get started</h3>
 			<div class="ajax_message" id="rets_form_message"></div>
 			<div class="rets_form">
-				<?php //PL_Form::generate_form(PL_Config::PL_API_INTEGRATION('create', 'args'), array('method' => "POST", 'title' => false, 'include_submit' => true, 'wrap_form' => true) );  
-					$mls_list = PL_Integration_Helper::mls_list();
-				?>
-              <form>
-
-              	<div class="row">
-				  <div class="info">
-					<h3>MLS Name</h3>
-					<p>Pick which MLS provides your RETS data.</p>
-				  </div>
-				  <div class="elements">
-				  	<p>
-					  <strong>Email us at <a href="mailto:support@placester.com">support@placester.com</a> if you don't see your MLS listed.</strong>
-					</p>
-
-					<select>
-					  <?php foreach ($mls_list as $mls_group => $mls_arr): ?>
-					    <optgroup label="<?php echo $mls_group; ?>">
-					      <?php foreach ($mls_arr as $mls_pair): ?>
-					      	<option value="<?php echo $mls_pair[1]; ?>"><?php echo $mls_pair[0]; ?></option>
-					      <?php endforeach; ?>
-					    </optgroup>
-					  <?php endforeach; ?>
-					</select>
-				  </div>	
-				</div>
-			  
-				<div class="row">
-				  <div class="info">
-				    <h3>Agent ID</h3>
-				    <p>Your Agent ID on the RETS server.</p>
-				  </div>
-				  <div class="elements">
-				    <input id="feed_agent_id" name="feed_agent_id" size="30" type="text" />
-				  </div>
-				</div>
-
-				<div class="row">
-				  <div class="info">
-				    <h3 class="invalid">Phone Number</h3>
-					<p>Your phone number will help us provide prompt support to get your integration setup.</p>
-				  </div>
-				  <div class="elements">
-					<input id="phone" name="phone" type="text" class="invalid">
-				  </div>
-			    </div>
-
-			  </form>
+				<?php PL_Router::load_builder_partial('integration-form.php'); ?>
 			</div>
 			<!-- 
 			<div class="help_prompt">

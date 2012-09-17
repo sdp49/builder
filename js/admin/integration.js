@@ -1,6 +1,6 @@
 jQuery(document).ready(function($) {
 
-	$('#pls_search_form').live('submit', function(event) {
+	$('#pls_integration_form').live('submit', function(event) {
 		event.preventDefault();
 		$('#rets_form_message').removeClass('red');
 		$('#message.error').remove();

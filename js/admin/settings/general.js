@@ -54,11 +54,11 @@
 
 	$('#existing_placester_modal_api_key').live('change', function () {
 		var val = $(this).val();
-		if (val.length != 40) {
-			$('#api_key_validation').html('Invalid Placester API Entered. Not 40 Characters long.').show();
-		} else {
-			$('#api_key_validation').hide();
-		};
+		// if (val.length != 40) {
+		// 	$('#api_key_validation').html('Invalid Placester API Entered. Not 40 Characters long.').show();
+		// } else {
+		// 	$('#api_key_validation').hide();
+		// };
 	});
 
 	
