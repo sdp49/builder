@@ -12,7 +12,7 @@ class PL_Integration {
 		} else {
 			$response = array( PL_Validate::attributes($response, PL_Config::PL_API_INTEGRATION('get', 'returns')) );
 		}
-		
+
 		return $response;
 	}
 
@@ -20,6 +20,25 @@ class PL_Integration {
 		$request = PL_Validate::request($args, PL_Config::PL_API_INTEGRATION('create', 'args') );
 		$request = array_merge($request, array("api_key" => PL_Option_Helper::api_key() ) );
 		$response = PL_HTTP::send_request(PL_Config::PL_API_INTEGRATION('create', 'request', 'url'), $request, PL_Config::PL_API_INTEGRATION('create', 'request', 'type'));
+		//error_log(serialize($response));
+		return $response;
+	}
+
+	public function mls_list($args = array()) {
+		$request = PL_Validate::request($args, PL_Config::PL_API_INTEGRATION('mls_list', 'args'));
+		$request = array_merge($request, array("api_key" => PL_Option_Helper::api_key()));
+
+		$response = PL_HTTP::send_request(PL_Config::PL_API_INTEGRATION('mls_list', 'request', 'url'), $request, PL_Config::PL_API_INTEGRATION('mls_list', 'request', 'type'));
+		
+		// TODO: Check on validation--if the response fields aren't labeled, this won't work...
+		// if (!empty($response)) {
+		// 	foreach ($response as $key => $value) {
+		// 		$response[$key] = PL_Validate::attributes($value, PL_Config::PL_API_INTEGRATION('get', 'returns'));
+		// 	}
+		// } else {
+		// 	$response = array( PL_Validate::attributes($response, PL_Config::PL_API_INTEGRATION('get', 'returns')) );
+		// }
+
 		return $response;
 	}
 }

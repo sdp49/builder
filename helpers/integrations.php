@@ -31,5 +31,10 @@ class PL_Integration_Helper {
 		return array('integration_status' => array('integration' => $integration, 'whoami' => $whoami, 'listings' => $listings, 'locations' => $locations));
 	}
 
+	public function mls_list () {
+		$mls_list = PL_Integration::mls_list();
+		return $mls_list;
+	}
+
 //end of class
 }

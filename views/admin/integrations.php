@@ -51,7 +51,7 @@
 					<div class="real_person">
 						<h3>Talk to a real person.</h3>
 						<h4>Call us at 1 (800) 728-8391</h4>
-						<h4>Email us at  <a mailto="support@placester.com"> support@pplacester.com</a></h4>
+						<h4>Email us at  <a mailto="support@placester.com"> support@placester.com</a></h4>
 					</div>
 				</div>
 		<?php endif ?>
@@ -90,8 +90,24 @@
 			<h3 class="get_started">Fill out the form to get started</h3>
 			<div class="ajax_message" id="rets_form_message"></div>
 			<div class="rets_form">
-				<?php PL_Form::generate_form(PL_Config::PL_API_INTEGRATION('create', 'args'), array('method' => "POST", 'title' => false, 'include_submit' => true, 'wrap_form' => true) );  ?>	
+				<?php //PL_Form::generate_form(PL_Config::PL_API_INTEGRATION('create', 'args'), array('method' => "POST", 'title' => false, 'include_submit' => true, 'wrap_form' => true) );  
+					$mls_list = PL_Integration_Helper::mls_list();
+				?>
+              <form>
+
+				<select>
+				  <?php foreach ($mls_list as $mls_group => $mls_arr): ?>
+				    <optgroup label="<?php echo $mls_group; ?>">
+				      <?php foreach ($mls_arr as $mls_pair): ?>
+				      	<option value="<?php echo $mls_pair[0]; ?>"><?php echo $mls_pair[0]; ?></option>
+				      <?php endforeach; ?>
+				    </optgroup>
+				  <?php endforeach; ?>
+				</select>
+			  
+			  </form>
 			</div>
+			<!-- 
 			<div class="help_prompt">
 				<h3>What to expect after submitting the form:</h3>
 				<ul>
@@ -112,6 +128,7 @@
 					<h4>Email us at  <a mailto="support@placester.com"> support@pplacester.com</a></h4>
 				</div>
 			</div>
+			 -->	
 			<div class="clear"></div>	
 		<?php endif ?>
 		<?php echo PL_Router::load_builder_partial('free-trial.php'); ?>		
