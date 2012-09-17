@@ -31,8 +31,8 @@ class PL_Cache {
 
 	function get () {
 
-		// Just ignore caching for admins
-		if(is_admin() || is_admin_bar_showing()) {
+		// Just ignore caching for admins and regular folk too!
+		if(is_admin() || is_admin_bar_showing() || is_user_logged_in()) {
 			return false;
 		}
 
