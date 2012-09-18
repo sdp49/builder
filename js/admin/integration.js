@@ -77,6 +77,8 @@ jQuery(document).ready(function($) {
 			text: "Skip Integration Set Up",
 			click: function() {
 				 $(this).dialog( "close" );
+				 console.log("About to open demo dialog...");
+				 $('#demo_data_wizard').dialog('open');
 			}
 		},
 		2 : {

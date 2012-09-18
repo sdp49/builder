@@ -5,7 +5,7 @@ $(document).ready(function($) {
   var map;
 
   function loadGoogleMapsAPI () {
-  	$.getScript(googleMapsURL, intializeMap());
+  	$.getScript(googleMapsURL, initializeMap());
   }
 
   function initializeMap () {
