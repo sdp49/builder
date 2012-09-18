@@ -81,8 +81,10 @@
 			<div class="clear"></div>
 			<h3 class="get_started">Fill out the form to get started</h3>
 			
+		<?php if ( PL_Option_Helper::api_key() ): ?>
 			<?php PL_Router::load_builder_partial('integration-form.php', array('submit' => true)); ?>
-			
+		<?php endif; ?>
+
 			<!-- 
 			<div class="help_prompt">
 				<h3>What to expect after submitting the form:</h3>
@@ -107,5 +109,5 @@
 			 -->	
 			<div class="clear"></div>	
 		<?php endif ?>
-		<?php echo PL_Router::load_builder_partial('free-trial.php'); ?>		
+		<?php // echo PL_Router::load_builder_partial('free-trial.php'); ?>		
 	</div>

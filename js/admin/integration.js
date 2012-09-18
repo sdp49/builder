@@ -5,13 +5,15 @@ jQuery(document).ready(function($) {
 		$('#rets_form_message').removeClass('red');
 		$('#message.error').remove();
 
+		console.log('In integration submit handler');
+
 		$('#rets_form_message').html('Checking Account Status...');
 
 		$.post(ajaxurl, {action: 'subscriptions'}, function(data, textStatus, xhr) {
 		  console.log(data);
 		  if (data && data.plan && data.plan == 'pro') {
 		  	check_mls_credentials();
-		  } else if (data && data.eligible_for_trial) {
+		  } else if (true || (data && data.eligible_for_trial)) {
 		  	console.log('prompt free trial');
 		  	prompt_free_trial('Start your 60 day free trial to complete the MLS integration', check_mls_credentials, display_cancel_message);
 		  } else {
@@ -74,14 +76,19 @@ jQuery(document).ready(function($) {
 		1 : {
 			text: "Skip Integration Set Up",
 			click: function() {
-				 $( this ).dialog( "close" );
+				 $(this).dialog( "close" );
 			}
 		},
 		2 : {
 			text: "Submit",
 			id: 'submit_integration_button',
 			click: function() {
-				 check_mls_credentials();
+				 $('#pls_integration_form').trigger('submit');
+				 
+				 // First check to see if integration submitted correctly...
+
+				 $(this).dialog( "close" );
+				 $('#demo_data_wizard').dialog('open');
 			}
 		}
 	}
@@ -91,7 +98,7 @@ jQuery(document).ready(function($) {
 		draggable: false,
 		modal: true,
 		title: '<h3>Set Up an MLS Integration for your Website</h3>',
-		width: 700,
+		width: 810,
 		buttons: integration_buttons
 	});
 });
@@ -100,7 +107,7 @@ function prompt_integration () {
 	jQuery(document).ready(function($) {
 		$.post(ajaxurl, {action:"new_integration_view"}, function (result) {
 			if (result) {
-				console.log(result);
+				// console.log(result);
 				$('#integration_wizard').html(result);
 				$('#integration_wizard').dialog( "open" );
 			};

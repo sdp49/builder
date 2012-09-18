@@ -6,9 +6,10 @@ class PL_Router {
 			// delete_option('placester_api_key');
 			self::load_builder_view('header.php');
 
-			// Ned to conditionally include these...
+			// Need to conditionally include these...
 	    	self::load_builder_partial('free-trial.php');
 	    	echo '<div id="integration_wizard"></div>';	
+	    	self::load_builder_partial('demo-data.php');
 
 			if (!PL_Option_Helper::api_key()) {
 				do_action('sign-up-action');
