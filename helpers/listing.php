@@ -23,12 +23,18 @@ class PL_Listing_Helper {
 		$global_filters = PL_Helper_User::get_global_filters();
 	    if (is_array($global_filters)) {
 	  		foreach ($global_filters as $attribute => $value) {
+	  			//special handling for property type, comes in as property_type-{type} since it differs on listing_type
 	  			if (strpos($attribute, 'property_type') !== false ) {
 	  				$args['property_type'] = is_array($value) ? implode('', $value) : $value;
+	  			} else if ( is_array($value) ) {
+	  				foreach ($value as $k => $v) {
+	  					$args[$attribute][$k] = $v;
+	  				}
+	  			} else {
+	  				$args[$attribute] = $value;
 	  			}
 	  		}
 	    }
-		$args = wp_parse_args($global_filters, $args);
 
 		//respect block address setting
 		if (PL_Option_Helper::get_block_address()) {
