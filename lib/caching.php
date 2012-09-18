@@ -26,6 +26,8 @@ class PL_Cache {
 
 		add_action('wp_ajax_user_empty_cache', array(__CLASS__, 'clear' ) );
 		add_action('switch_theme', array(__CLASS__, 'invalidate'));
+		// flush cache when posts are deleted -pek
+		add_action('deleted_post', array(__CLASS__, 'invalidate'));
 
 	}
 
