@@ -70,4 +70,40 @@ jQuery(document).ready(function($) {
 		$('#pls_integration_form').prepend('<div id="message" class="error"><h3>Sorry, this feature requires a premium subscription</h3><p>However, you can test the MLS integration feature for free by creating a website <a href="https://placester.com" target="_blank">placester.com</a></p></div>');
 	}
 
+	var integration_buttons = {
+		1 : {
+			text: "Skip Integration Set Up",
+			click: function() {
+				 $( this ).dialog( "close" );
+			}
+		},
+		2 : {
+			text: "Submit",
+			id: 'submit_integration_button',
+			click: function() {
+				 check_mls_credentials();
+			}
+		}
+	}
+
+	$( "#integration_wizard" ).dialog({
+		autoOpen: false,
+		draggable: false,
+		modal: true,
+		title: '<h3>Set Up an MLS Integration for your Website</h3>',
+		width: 700,
+		buttons: integration_buttons
+	});
 });
+
+function prompt_integration () {
+	jQuery(document).ready(function($) {
+		$.post(ajaxurl, {action:"new_integration_view"}, function (result) {
+			if (result) {
+				console.log(result);
+				$('#integration_wizard').html(result);
+				$('#integration_wizard').dialog( "open" );
+			};
+		});
+	});	
+}

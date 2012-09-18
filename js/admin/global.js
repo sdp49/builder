@@ -59,6 +59,9 @@ function new_sign_up() {
 	var email = $('input#email').val();
 	$('#api_key_success').html('Checking...').show();
 	$('#api_key_validation').html('');
+
+	var success = false;
+
 	$.post(ajaxurl, {action: 'create_account', email: email}, function(data, textStatus, xhr) {
 		if (data) {	
 			console.log(data);
@@ -74,13 +77,18 @@ function new_sign_up() {
 					if (response['result']) {
 						$('#api_key_success').html(response['message']).show();
 						mixpanel.track("SignUp: API key installed");			
-						setTimeout(function () {
-							window.location.href=window.location.href;
-						}, 1000);
+						// setTimeout(function () {
+						// 	window.location.href=window.location.href;
+						// }, 1000);
+
+						// API key was successfully created AND set, ok to set success to "true"
+						success = true;	
 					};
 				},'json');
 			};
 		};
 	},'json');
+
+	return success;
 }
 

@@ -1,4 +1,11 @@
-<?php $mls_list = PL_Integration_Helper::mls_list(); ?>
+<?php 
+	$mls_list = PL_Integration_Helper::mls_list(); 
+	$whoami = PL_Helper_User::whoami();
+	// error_log(serialize($whoami));
+
+	$org_phone_exists = ( isset($whoami['phone']) && !empty($whoami['phone']) );
+	$user_phone_exists = ( isset($whoami['user']) && isset($whoami['user']['phone']) && !empty($whoami['user']['phone']) );
+?>
 
 <div class="ajax_message" id="rets_form_message"></div>
 
@@ -38,19 +45,23 @@
 	  </div>
 	</div>
 
+  <?php if ( !($user_phone_exists || $org_phone_exists) ): ?>
 	<div class="row">
 	  <div class="info">
 	    <h3 class="invalid">Phone Number</h3>
 		<p>Your phone number will help us provide prompt support to get your integration setup.</p>
 	  </div>
 	  <div class="elements">
-		<input id="phone" name="phone" type="text" class="invalid">
+		<input id="phone" name="phone" type="text">
 	  </div>
     </div>
+  <?php endif; ?>
 
+  <?php if ( isset($submit) && $submit ): ?>
     <div class="row">
       <input type="submit" class="button-primary" />
     </div>
-  
+  <?php endif; ?>
+
    </form>
  </div>

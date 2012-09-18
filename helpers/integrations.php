@@ -5,20 +5,28 @@ class PL_Integration_Helper {
 	
 	public function init() {
 		add_action('wp_ajax_create_integration', array(__CLASS__, 'create' ) );
+		add_action('wp_ajax_new_integration_view', array(__CLASS__, 'new_integration_view') );
 	}
 
 	public function create () {
+		// TODO: Handle Phone Number if it exists!!!
+
 		$response = array('result' => false, 'message' => 'There was an error. Please try again.');
 		$api_response = PL_Integration::create(wp_kses_data($_POST));
 		// pls_dump($api_response);
 		if (isset($api_response['id'])) {
-			$response = array('result' => true, 'message' => 'You\'ve successfully submitted you integration request. This page will update momentarily');
+			$response = array('result' => true, 'message' => 'You\'ve successfully submitted your integration request. This page will update momentarily');
 		} elseif (isset($api_response['validations'])) {
 			$response = $api_response;
 		} elseif (isset($api_response['code']) && $api_response['code'] == '102') {
 			$response = array('result' => false, 'message' => 'You are already integrated with an MLS. To enable multiple integrations call sales at (800) 728-8391');
 		}
 		echo json_encode($response);
+		die();
+	}
+
+	public function new_integration_view() {
+		echo PL_Router::load_builder_partial('integration-form.php');
 		die();
 	}
 

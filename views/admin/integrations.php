@@ -23,16 +23,6 @@
 									<div>Url:</div>
 									<div><?php echo $integration['url'] ?></div>
 								</li>
-								<!-- 
-								<li>
-									<div>Username:</div>
-									<div><?php // echo $integration['username'] ?></div>
-								</li>
-								<li>
-									<div>User Agent Username:</div>
-									<div><?php // echo $integration['ua_username'] ?></div>
-								</li>
-								 -->
 								<li>
 									<div>Request Id: </div>
 									<div><?php echo $integration['id'] ?> <span class="small">(for support)</span></div>
@@ -91,7 +81,7 @@
 			<div class="clear"></div>
 			<h3 class="get_started">Fill out the form to get started</h3>
 			
-			<?php PL_Router::load_builder_partial('integration-form.php'); ?>
+			<?php PL_Router::load_builder_partial('integration-form.php', array('submit' => true)); ?>
 			
 			<!-- 
 			<div class="help_prompt">

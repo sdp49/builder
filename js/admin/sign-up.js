@@ -18,7 +18,12 @@ $(document).ready(function($) {
 			text: "Confirm",
 			id: 'confirm_email_button',
 			click: function() {
-				 new_sign_up();
+				var success = true; //new_sign_up();
+				
+				if (success) {
+					$('#signup_wizard').dialog("close");
+					prompt_integration();
+				}				 
 			}
 		}
 	}
