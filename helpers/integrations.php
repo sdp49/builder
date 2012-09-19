@@ -12,16 +12,16 @@ class PL_Integration_Helper {
 		// TODO: Handle Phone Number if it exists!!!
 		if (isset($_POST['phone']))
 		{
-			error_log('Phone was enter as: ' . $_POST['phone']);
-			unset($_POST['phone']);
-
 			// Send update to user options with new phone...
-			// PL_Helper_User::update_user(array('phone' => $_POST['phone']));
+			$usr_response = PL_Helper_User::update_user(array('phone' => $_POST['phone']));
+			//pls_dump($usr_response);
+
+			unset($_POST['phone']);
 		}
 
 		$response = array('result' => false, 'message' => 'There was an error. Please try again.');
 		$api_response = PL_Integration::create(wp_kses_data($_POST));
-		// pls_dump($api_response);
+		// pls_dump($api_response, $api_response['id']);
 		if (isset($api_response['id'])) {
 			$response = array('result' => true, 'message' => 'You\'ve successfully submitted your integration request. This page will update momentarily');
 		} elseif (isset($api_response['validations'])) {

@@ -12,7 +12,10 @@ jQuery(document).ready(function($) {
 
 	$('#pls_integration_form').live('submit', function(event) {
 		event.preventDefault();
-		
+		submit_handler();	
+	});
+
+	function submit_handler (success_callback) {
 		$('#rets_form_message').removeClass('red');
 		$('#message.error').remove();
 
@@ -34,18 +37,18 @@ jQuery(document).ready(function($) {
 
 		$.post(ajaxurl, {action: 'subscriptions'}, function(data, textStatus, xhr) {
 		  // console.log(data);
-		  if (true || (data && data.plan && data.plan == 'pro')) {
-		  	check_mls_credentials();
+		  if (data && data.plan && data.plan == 'pro') {
+		  	check_mls_credentials(success_callback);
 		  } else if (data && data.eligible_for_trial) {
 		  	console.log('prompt free trial');
 		  	prompt_free_trial('Start your 60 day free trial to complete the MLS integration', check_mls_credentials, display_cancel_message);
 		  } else {
 		  	console.log('not eligible');
 		  };
-		},'json');		
-	});
+		},'json');	
+	}
 
-	function check_mls_credentials () {
+	function check_mls_credentials (success_callback) {
 		$('#rets_form_message').html('Checking RETS information...');
 		
 		var form_values = {action: 'create_integration'};
@@ -53,16 +56,17 @@ jQuery(document).ready(function($) {
     		form_values[field.name] = field.value;
         });
 
-        console.log(form_values);
+        // console.log(form_values);
 
 		$.post(ajaxurl, form_values, function(data, textStatus, xhr) {
-		  	console.log(data);
+		  	// console.log(data);
 		  	var form = $('#pls_integration_form');
 			if (data && data.result) {
 				$('#rets_form_message').html(data.message);
-				setTimeout(function () {
-					window.location.href = window.location.href;
-				}, 700);
+				// setTimeout(function () {
+				// 	window.location.href = window.location.href;
+				// }, 700);
+				if (success_callback) { success_callback(); }
 			} else {
 				var item_messages = [];
 				for(var key in data['validations']) {
@@ -107,13 +111,7 @@ jQuery(document).ready(function($) {
 			text: "Submit",
 			id: 'submit_integration_button',
 			click: function() {
-				 $('#pls_integration_form').trigger('submit');
-				 
-				 // First check to see if the integration submitted correctly...
-				 if ($('.invalid').length == 0) {
-				 	$(this).dialog( "close" );
-					prompt_demo_data();
-				 }
+				 submit_handler(modal_state.demo_data_launch);
 			}
 		}
 	}

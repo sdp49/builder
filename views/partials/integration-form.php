@@ -17,7 +17,7 @@
 <div class="rets_form">
   <form id="pls_integration_form">
 
-  	<div class="row">
+  	<div class="row<?php if ( isset($wizard) && $wizard ) { echo ' wizard-mls'; } ?>">
 	  <div class="info">
 		<h3>MLS Name</h3>
 		<p>Pick which MLS provides your RETS data.</p>
