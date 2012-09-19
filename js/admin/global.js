@@ -4,7 +4,7 @@ var modal_state = {
 		prompt_integration();								
 	},
 	demo_data_launch: function () {
-		jQuery('#demo_data_wizard').dialog( "close" );
+		jQuery('#integration_wizard').dialog( "close" );
 		prompt_demo_data();
 	}	
 };
