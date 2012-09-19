@@ -19,9 +19,13 @@ class PL_Integration {
 	public function create($args = array()) {
 		$request = PL_Validate::request($args, PL_Config::PL_API_INTEGRATION('create', 'args') );
 		$request = array_merge($request, array("api_key" => PL_Option_Helper::api_key() ) );
-		$response = PL_HTTP::send_request(PL_Config::PL_API_INTEGRATION('create', 'request', 'url'), $request, PL_Config::PL_API_INTEGRATION('create', 'request', 'type'));
-		//error_log(serialize($response));
-		return $response;
+
+		// $response = PL_HTTP::send_request(PL_Config::PL_API_INTEGRATION('create', 'request', 'url'), $request, PL_Config::PL_API_INTEGRATION('create', 'request', 'type'));
+		ob_start();
+		pls_dump($request);
+		error_log(ob_get_clean());
+
+		return 'testing...';
 	}
 
 	public function mls_list($args = array()) {

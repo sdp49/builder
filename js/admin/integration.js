@@ -24,7 +24,6 @@ jQuery(document).ready(function($) {
 
 		// Check to see if phone number input exists--if it exists and has invalid input, act accordingly...
 		if ( $('#phone').length != 0 && !validate_phone($('#phone').val()) ) {
-			console.log("here?");
 			$('#phone').addClass('invalid');
 			$('#phone').closest('div .row').find('h3').first().addClass('invalid');
 
@@ -33,13 +32,11 @@ jQuery(document).ready(function($) {
 			return;
 		}
 
-		return;
-
 		$.post(ajaxurl, {action: 'subscriptions'}, function(data, textStatus, xhr) {
 		  // console.log(data);
-		  if (data && data.plan && data.plan == 'pro') {
+		  if (true || (data && data.plan && data.plan == 'pro')) {
 		  	check_mls_credentials();
-		  } else if (true || (data && data.eligible_for_trial)) {
+		  } else if (data && data.eligible_for_trial) {
 		  	console.log('prompt free trial');
 		  	prompt_free_trial('Start your 60 day free trial to complete the MLS integration', check_mls_credentials, display_cancel_message);
 		  } else {
@@ -133,11 +130,12 @@ jQuery(document).ready(function($) {
 
 function prompt_integration () {
   jQuery(document).ready(function($) {
+  	$('#integration_wizard').dialog( "open" );
+  	// TODO: Add spinner/loading prompt...
 	$.post(ajaxurl, {action:"new_integration_view"}, function (result) {
 	  if (result) {
 		// console.log(result);
 		$('#integration_wizard').html(result);
-		$('#integration_wizard').dialog( "open" );
 	  };
 	});
   });
