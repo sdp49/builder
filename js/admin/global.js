@@ -83,7 +83,7 @@ function new_sign_up() {
 
 						// API key was successfully created AND set, ok to set success to "true"
 						success = true;	
-					};
+					}
 				},'json');
 			};
 		};

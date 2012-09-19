@@ -18,9 +18,23 @@ $(document).ready(function($) {
 			text: "Confirm",
 			id: 'confirm_email_button',
 			click: function() {
-				var success = true; //new_sign_up();
+				// var success = new_sign_up();
 				
+			// FOR TESTING PURPOSES	(remove!!!)
+				var success = false;
+				$.post(ajaxurl, {action: 'set_placester_api_key', api_key: 'a15ffb49672aeacffdcb6c1f983e3663c1bea767'}, function(response, textStatus, xhr) {
+					console.log("here...");
+					console.log(response);
+					if (response['result']) {
+						console.log("here #2...");
+						success = true;
+						console.log(success);
+					}
+				},'json');
+			// =========================
+				console.log(success);
 				if (success) {
+					console.log("made it here?");
 					$('#signup_wizard').dialog("close");
 					prompt_integration();
 				}				 

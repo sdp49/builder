@@ -10,6 +10,14 @@ class PL_Integration_Helper {
 
 	public function create () {
 		// TODO: Handle Phone Number if it exists!!!
+		if (isset($_POST['phone']))
+		{
+			error_log('Phone was enter as: ' . $_POST['phone']);
+			unset($_POST['phone']);
+
+			// Send update to user options with new phone...
+			// PL_Helper_User::update_user(array('phone' => $_POST['phone']));
+		}
 
 		$response = array('result' => false, 'message' => 'There was an error. Please try again.');
 		$api_response = PL_Integration::create(wp_kses_data($_POST));
