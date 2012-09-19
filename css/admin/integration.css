@@ -158,3 +158,11 @@ p.large_green_button {
 .row input[type="submit"] {
 	float: right;
 }
+
+h3.invalid {
+	color: red !important;
+}
+
+input.invalid {
+	border: 1px solid red !important;
+}

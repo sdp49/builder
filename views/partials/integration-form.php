@@ -7,6 +7,11 @@
 	$user_phone_exists = ( isset($whoami['user']) && isset($whoami['user']['phone']) && !empty($whoami['user']['phone']) );
 ?>
 
+<?php if ( isset($wizard) && $wizard ): ?>
+  <p class="message">Pick your MLS, then enter your office name and agent id to get started. Typically integrations take around 3 to 5 business takes, but can vary. If you need help, or have questions, please contact support via <a href="mailto:support@placester.com">support@placester.com</a> or at (800) 728-8391.</p>	
+  <div class="clear"></div>
+<?php endif; ?>
+
 <div class="ajax_message" id="rets_form_message"></div>
 
 <div class="rets_form">
@@ -34,6 +39,16 @@
 		</select>
 	  </div>	
 	</div>
+
+	<div class="row">
+	  <div class="info">
+	    <h3>Office Name</h3>
+	    <p>Name of your office on the RETS server.</p>
+	  </div>
+	  <div class="elements">
+	    <input id="office_name" name="office_name" size="30" type="text" />
+	  </div>
+	</div>
   
 	<div class="row">
 	  <div class="info">
@@ -48,7 +63,7 @@
   <?php if ( !($user_phone_exists || $org_phone_exists) ): ?>
 	<div class="row">
 	  <div class="info">
-	    <h3 class="invalid">Phone Number</h3>
+	    <h3>Phone Number</h3>
 		<p>Your phone number will help us provide prompt support to get your integration setup.</p>
 	  </div>
 	  <div class="elements">

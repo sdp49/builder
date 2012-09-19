@@ -1,16 +1,42 @@
 jQuery(document).ready(function($) {
 
+	function validate_phone (number) {
+		// Check for blank input...
+		if (!number) { 
+			return false;
+		}
+
+		// All tests passed...
+		return true;
+	}
+
 	$('#pls_integration_form').live('submit', function(event) {
 		event.preventDefault();
+		
 		$('#rets_form_message').removeClass('red');
 		$('#message.error').remove();
 
-		console.log('In integration submit handler');
+		$.each($('#pls_integration_form .invalid'), function(i, elem) {
+			$(elem).removeClass('invalid');
+		});
 
 		$('#rets_form_message').html('Checking Account Status...');
 
+		// Check to see if phone number input exists--if it exists and has invalid input, act accordingly...
+		if ( $('#phone').length != 0 && !validate_phone($('#phone').val()) ) {
+			console.log("here?");
+			$('#phone').addClass('invalid');
+			$('#phone').closest('div .row').find('h3').first().addClass('invalid');
+
+			$('#rets_form_message').html('');
+			$('#pls_integration_form').prepend('<div id="message" class="error"><h3>Please enter a valid phone number</h3></div>');
+			return;
+		}
+
+		return;
+
 		$.post(ajaxurl, {action: 'subscriptions'}, function(data, textStatus, xhr) {
-		  console.log(data);
+		  // console.log(data);
 		  if (data && data.plan && data.plan == 'pro') {
 		  	check_mls_credentials();
 		  } else if (true || (data && data.eligible_for_trial)) {
@@ -77,8 +103,7 @@ jQuery(document).ready(function($) {
 			text: "Skip Integration Set Up",
 			click: function() {
 				 $(this).dialog( "close" );
-				 console.log("About to open demo dialog...");
-				 $('#demo_data_wizard').dialog('open');
+				 prompt_demo_data();
 			}
 		},
 		2 : {
@@ -87,10 +112,11 @@ jQuery(document).ready(function($) {
 			click: function() {
 				 $('#pls_integration_form').trigger('submit');
 				 
-				 // First check to see if integration submitted correctly...
-
-				 $(this).dialog( "close" );
-				 $('#demo_data_wizard').dialog('open');
+				 // First check to see if the integration submitted correctly...
+				 if ($('.invalid').length == 0) {
+				 	$(this).dialog( "close" );
+					prompt_demo_data();
+				 }
 			}
 		}
 	}
@@ -106,13 +132,13 @@ jQuery(document).ready(function($) {
 });
 
 function prompt_integration () {
-	jQuery(document).ready(function($) {
-		$.post(ajaxurl, {action:"new_integration_view"}, function (result) {
-			if (result) {
-				// console.log(result);
-				$('#integration_wizard').html(result);
-				$('#integration_wizard').dialog( "open" );
-			};
-		});
-	});	
+  jQuery(document).ready(function($) {
+	$.post(ajaxurl, {action:"new_integration_view"}, function (result) {
+	  if (result) {
+		// console.log(result);
+		$('#integration_wizard').html(result);
+		$('#integration_wizard').dialog( "open" );
+	  };
+	});
+  });
 }
