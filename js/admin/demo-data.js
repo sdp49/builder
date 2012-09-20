@@ -11,7 +11,10 @@ $(document).ready(function($) {
 			text: "Confirm",
 			id: 'confirm_demo_button',
 			click: function() {
-				 // Create demo listings...
+				 $.post(ajaxurl, {action: 'demo_data_on'}, function(response) {
+          // console.log(response);
+          $('#demo_data_wizard').dialog("close");
+        },'json');
 			}
 		}
 	}
