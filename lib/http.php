@@ -25,7 +25,7 @@ Class PL_HTTP {
 					if (is_int($k)) {
 						if (is_array($v)) {
 							foreach ($v as $i => $j) {
-								if(is_int(i)) {
+								if(is_int($i)) {
 									$request_string .= (strlen($request_string) > 0 ? '&' : '') . urlencode($key) . '[][]=' . urlencode($j);
 								} else {
 									$request_string .= (strlen($request_string) > 0 ? '&' : '') . urlencode($key) . '[]['.$i.']=' . urlencode($j);
