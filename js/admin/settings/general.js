@@ -106,7 +106,6 @@
 
 		$.post(ajaxurl, request, function(data, textStatus, xhr) {
 		  if (data && data.message) {
-		  	console.log(method + ' called, msg: ' + data.message);
 			$('#listing_settings_message').html(data.message);
 			$('#listing_settings_message').removeClass();
 			$('#listing_settings_message').addClass('green');
