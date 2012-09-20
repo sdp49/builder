@@ -21,14 +21,23 @@ class PL_Listing_Helper {
 		}
 		//respect global filters
 		$global_filters = PL_Helper_User::get_global_filters();
+
 	    if (is_array($global_filters)) {
 	  		foreach ($global_filters as $attribute => $value) {
 	  			//special handling for property type, comes in as property_type-{type} since it differs on listing_type
 	  			if (strpos($attribute, 'property_type') !== false ) {
 	  				$args['property_type'] = is_array($value) ? implode('', $value) : $value;
 	  			} else if ( is_array($value) ) {
+	  				//this whole thing basically tranverses down the arrays for global filters
 	  				foreach ($value as $k => $v) {
-	  					$args[$attribute][$k] = $v;
+	  					if ( is_array($v) ) {
+	  						//forgive me.
+	  						foreach ($v as $y => $z) {
+	  							$args[$attribute][$k][$y] = $z;	
+	  						}
+	  					} else {
+	  						$args[$attribute][$k] = $v;	
+	  					}
 	  				}
 	  			} else {
 	  				$args[$attribute] = $value;
