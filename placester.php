@@ -174,3 +174,10 @@ function placester_activate () {
     $metrics->track('Activation');
     PL_WordPress_Helper::report_url();
 }
+
+add_action( 'wp_head', 'placester_info_bar' );
+function placester_info_bar() {
+    if ( PL_Option_Helper::get_demo_data_flag() ) {
+        PL_Router::load_builder_partial('infobar.php');
+    }
+}

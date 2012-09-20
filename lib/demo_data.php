@@ -18,6 +18,9 @@ class PL_Demo_Data {
 	public function toggle_off() {
 		PL_Option_Helper::set_demo_data_flag(false);
 
+		// Clear cache to get rid of all remnants of demo listings...
+		PL_Cache::clear();
+
 		return json_encode(array());
 		die();
 	}

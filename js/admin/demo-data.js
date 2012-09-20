@@ -11,7 +11,7 @@ $(document).ready(function($) {
 			text: "Confirm",
 			id: 'confirm_demo_button',
 			click: function() {
-				 $.post(ajaxurl, {action: 'demo_data_on'}, function(response) {
+				$.post(ajaxurl, {action: 'demo_data_on'}, function(response) {
           // console.log(response);
           $('#demo_data_wizard').dialog("close");
         },'json');
@@ -65,7 +65,7 @@ function prompt_demo_data () {
     $('#demo_data_wizard').dialog('open');  
 
     // Load Google Maps API
-    var googleMapsURL = 'https://maps.googleapis.com/maps/api/js?sensor=false&callback=initializeMap';
-    $.getScript(googleMapsURL);
+    // var googleMapsURL = 'https://maps.googleapis.com/maps/api/js?sensor=false&callback=initializeMap';
+    // $.getScript(googleMapsURL);
   });
 }
