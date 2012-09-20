@@ -40,8 +40,9 @@ jQuery(document).ready(function($) {
 		  if (data && data.plan && data.plan == 'pro') {
 		  	check_mls_credentials(success_callback);
 		  } else if (data && data.eligible_for_trial) {
-		  	console.log('prompt free trial');
-		  	prompt_free_trial('Start your 60 day free trial to complete the MLS integration', check_mls_credentials, display_cancel_message);
+		  	// console.log('prompt free trial');
+		  	var success_handler = function () { check_mls_credentials(success_callback); }
+		  	prompt_free_trial('Start your 15 day free trial to complete the MLS integration', success_handler, display_cancel_message);
 		  } else {
 		  	console.log('not eligible');
 		  };
@@ -122,6 +123,7 @@ jQuery(document).ready(function($) {
 		modal: true,
 		title: '<h3>Set Up an MLS Integration for your Website</h3>',
 		width: 810,
+		minHeight: 500,
 		buttons: integration_buttons
 	});
 });

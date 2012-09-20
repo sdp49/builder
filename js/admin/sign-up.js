@@ -21,7 +21,7 @@ $(document).ready(function($) {
 				new_sign_up(modal_state.integration_launch);
 				
 			// FOR TESTING PURPOSES	(remove!!!)
-				// $.post(ajaxurl, {action: 'set_placester_api_key', api_key: 'a15ffb49672aeacffdcb6c1f983e3663c1bea767'}, function(response, textStatus, xhr) {
+				// $.post(ajaxurl, {action: 'set_placester_api_key', api_key: ''}, function(response, textStatus, xhr) {
 				// 	// console.log(response);
 				// 	if (response['result']) {
 				// 		modal_state.integration_launch();

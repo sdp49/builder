@@ -2,27 +2,13 @@
 	float: left;
 }
 .rets_form form {
-	width: 400px
+	width: 650px
 }
-.rets_form form .pls_search_form {
-	float: left;
-	height: 30px;
-	width: 100%;
+
+.rets_form form.wizard-mls {
+	width: 750px !important;
 }
-.rets_form form .pls_search_form input {
-	float: right;
-	margin-right: 78px;
-}
-.rets_form form .pls_search_form label {
-	float: left;
-	width: 130px;
-	text-align: right;
-}
-.rets_form form #pls_search_form_submit_button {
-	float: right;
-	padding: 10px 15px;
-	margin: 10px 76px 0 0;
-}
+
 .rets_form form #message.error {
 	margin-right: 20px;
 }
@@ -122,11 +108,6 @@ p.large_green_button {
 .row {
 	zoom: 1;
 	margin: 15px 0;
-	width: 650px;
-}
-
-.wizard-mls {
-	width: 750px !important;
 }
 
 .row .info {

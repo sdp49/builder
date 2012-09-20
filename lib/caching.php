@@ -24,7 +24,7 @@ class PL_Cache {
 			self::invalidate();
 		}
 
-		add_action('wp_ajax_user_empty_cache', array(__CLASS__, 'clear' ) );
+		add_action('wp_ajax_user_empty_cache', array(__CLASS__, 'ajax_clear' ) );
 		add_action('switch_theme', array(__CLASS__, 'invalidate'));
 
 	}
@@ -76,8 +76,13 @@ class PL_Cache {
 	    foreach ($placester_options as $option) {
 	        delete_option( $option->option_name );
 	    }
+	}
+
+	public static function ajax_clear() {
+		self::clear();
+
 		echo json_encode(array('result' => true, 'message' => 'You\'ve successfully cleared your cache'));
-		die();
+		die();		
 	}
 
 	public static function delete($option_name) {

@@ -22,9 +22,9 @@
 	padding: 12px 0 12px 0;
   }
 
-  #infobar .msg span {
-  	margin-left: 10px;
-  	font-style: italic;
+  #infobar .msg button {
+  	margin-left: 9px;
+  	font-weight: bold;
   }
 
   #infobar .close {
@@ -42,7 +42,7 @@
 <div class="alert" id="infobar">
   <div class="msg">
     You are test-driving your site with demo data
-    <span>(<a href="" id="toggle_demo">turn off</a>)</span>
+    <button id="toggle_demo">turn off</button>
     <div class="close"></div>
   </div>
 </div>

@@ -15,9 +15,9 @@
 <div class="ajax_message" id="rets_form_message"></div>
 
 <div class="rets_form">
-  <form id="pls_integration_form">
+  <form id="pls_integration_form" <?php if ( isset($wizard) && $wizard ) { echo 'class="wizard-mls"'; } ?>>
 
-  	<div class="row<?php if ( isset($wizard) && $wizard ) { echo ' wizard-mls'; } ?>">
+  	<div class="row">
 	  <div class="info">
 		<h3>MLS Name</h3>
 		<p>Pick which MLS provides your RETS data.</p>

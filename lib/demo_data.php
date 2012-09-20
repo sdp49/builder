@@ -9,20 +9,22 @@ class PL_Demo_Data {
 	}
 
 	public function toggle_on() {
-		PL_Option_Helper::set_demo_data_flag(true);
-		
-		return json_encode(array());
+		self::toggle(true);
+		echo json_encode(array('message' => 'You\'re site is now set to use demo data'));
 		die();
 	}
 
 	public function toggle_off() {
-		PL_Option_Helper::set_demo_data_flag(false);
-
-		// Clear cache to get rid of all remnants of demo listings...
-		PL_Cache::clear();
-
-		return json_encode(array());
+		self::toggle(false);
+		echo json_encode(array('message' => 'Demo data successfully turned off'));
 		die();
+	}
+
+	private function toggle($state = false) {
+		PL_Option_Helper::set_demo_data_flag($state);
+
+		// Clear cache to get rid of all remnants of existing listings...
+		PL_Cache::clear();
 	}
 }
 
