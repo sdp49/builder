@@ -5,9 +5,17 @@ class PL_Router {
 		ob_start();
 			// delete_option('placester_api_key');
 			self::load_builder_view('header.php');
+
+			// Need to conditionally include these...
+	    	self::load_builder_partial('free-trial.php');
+
 			if (!PL_Option_Helper::api_key()) {
 				do_action('sign-up-action');
-				self::load_builder_partial('sign-up.php');	
+				self::load_builder_partial('sign-up.php');
+
+				// Other components that are only needed when plug-in has no associated API key...
+				echo '<div id="integration_wizard"></div>';	
+		    	self::load_builder_partial('demo-data.php');
 			}
 			self::load_builder_view($template, $directory, $params);	
 			self::load_builder_view('footer.php');
