@@ -21,6 +21,8 @@ jQuery(document).ready(function($) {
 		});
 	};
 
+	console.log();
+
 	function set_property_type() {
 		$('#property_type-sublet').hide().find('select').prop('disabled', true);
 		$('#property_type-res_sale').hide().find('select').prop('disabled', true);
