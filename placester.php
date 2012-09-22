@@ -97,6 +97,7 @@ include_once('lib/pages.php');
 include_once('lib/membership.php');
 include_once('lib/caching.php');
 include_once('lib/shortcodes.php');
+include_once('lib/demo_data.php');
 
 //models
 include_once('models/listing.php');
@@ -200,4 +201,3 @@ function placester_activate () {
     $metrics->track('Activation');
     PL_WordPress_Helper::report_url();
 }
-

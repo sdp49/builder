@@ -38,13 +38,13 @@
 						) ) ) ) ?>
 					<?php PL_Router::load_builder_partial('admin-box.php',
 						 array('title' => 'Residential Sales Details',
-						 	'id' => 'res_sale_details_admin_ui',
+						 	'id' => 'res_sale_details_admin_ui_basic',
 						 	'style' => '',
 						 	'content' => PL_Form::generate_form(
 						 	 	 PL_Config::bundler('PL_API_LISTINGS',
 						 	 	 	 $keys = array('create', 'args'), 
 						 	 	 	 $bundle = array( 
-						 	 	 	 	array('metadata' => array('beds', 'baths', 'half_baths','price', 'avail_on', 'sqft', 'lt_sz', 'lt_sz_unit', 'pk_spce','hoa_mand','hoa_fee','landr_own','style', 'ngb_trans', 'ngb_shop','ngb_swim','ngb_court','ngb_park','ngb_trails','ngb_stbles','ngb_golf', 'ngb_med', 'ngb_bike','ngb_cons','ngb_hgwy','ngb_mar','ngb_pvtsch','ngb_pubsch','ngb_uni','grnt_tops','air_cond','cent_ac','frnshed','cent_ht','frplce','hv_ceil','wlk_clst','hdwdflr','tle_flr','fm_lv_rm','lft_lyout','off_den','dng_rm','brkfst_nk','dshwsher','refrig','stve_ovn','stnstl_app','attic','basemnt','washer','dryer','lndry_in','lndry_gar','blc_deck_pt','yard','swm_pool','jacuzzi','sauna','cble_rdy','hghspd_net') 
+						 	 	 	 	array('metadata' => array('beds', 'baths', 'half_baths','price', 'avail_on', 'sqft') 
 						 	 	 	 ) 
 						 	 	 )
 						 	),
@@ -55,6 +55,27 @@
 							 	'title' => true
 						 	) 
 						 ) ) ) ?>
+
+					<?php PL_Router::load_builder_partial('admin-box.php',
+						 array('title' => 'Residential Sales Details',
+						 	'id' => 'res_sale_details_admin_ui_advanced',
+						 	'style' => '',
+						 	'content' => PL_Form::generate_form(
+						 	 	 PL_Config::bundler('PL_API_LISTINGS',
+						 	 	 	 $keys = array('create', 'args'), 
+						 	 	 	 $bundle = array( 
+						 	 	 	 	array('metadata' => array('lt_sz', 'lt_sz_unit', 'pk_spce','hoa_mand','hoa_fee','landr_own','style', 'ngb_trans', 'ngb_shop','ngb_swim','ngb_court','ngb_park','ngb_trails','ngb_stbles','ngb_golf', 'ngb_med', 'ngb_bike','ngb_cons','ngb_hgwy','ngb_mar','ngb_pvtsch','ngb_pubsch','ngb_uni','grnt_tops','air_cond','cent_ac','frnshed','cent_ht','frplce','hv_ceil','wlk_clst','hdwdflr','tle_flr','fm_lv_rm','lft_lyout','off_den','dng_rm','brkfst_nk','dshwsher','refrig','stve_ovn','stnstl_app','attic','basemnt','washer','dryer','lndry_in','lndry_gar','blc_deck_pt','yard','swm_pool','jacuzzi','sauna','cble_rdy','hghspd_net') 
+						 	 	 	 ) 
+						 	 	 )
+						 	),
+						 	array('method'=>'POST', 
+							 	'include_submit' => false, 
+							 	'wrap_form' => false, 
+							 	'echo_form' => false,
+							 	'title' => true
+						 	) 
+						 ) ) ) ?>
+
 					<?php PL_Router::load_builder_partial('admin-box.php',
 						 array('title' => 'Residential Rental Details',
 						 	'id' => 'res_rental_details_admin_ui',

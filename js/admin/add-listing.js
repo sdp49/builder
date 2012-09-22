@@ -30,14 +30,15 @@ jQuery(document).ready(function($) {
 		$('#property_type-comm_sale').hide().find('select').prop('disabled', true);
 		$('#property_type-' + $('select#compound_type').val() ).show().find('select').prop('disabled', false);
 
-		$('div#res_sale_details_admin_ui').hide().find('input, select').prop('disabled', true);
+		$('div#res_sale_details_admin_ui_basic').hide().find('input, select').prop('disabled', true);
+		$('div#res_sale_details_admin_ui_advanced').hide().find('input, select').prop('disabled', true);
 		$('div#res_rental_details_admin_ui').hide().find('input, select').prop('disabled', true);
 		$('div#vac_rental_details_admin_ui').hide().find('input, select').prop('disabled', true);
 		$('div#sublet_details_admin_ui').hide().find('input, select').prop('disabled', true);
 		$('div#comm_rental_details_admin_ui').hide().find('input, select').prop('disabled', true);
 		$('div#comm_sale_details_admin_ui').hide().find('input, select').prop('disabled', true);
 		$('div#park_rental_details_admin_ui').hide().find('input, select').prop('disabled', true);
-		$('#' + $('select#compound_type').val() + '_details_admin_ui' ).show().find('input, select').prop('disabled', false);
+		$('#' + $('select#compound_type').val() + '_details_admin_ui_basic' ).show().find('input, select').prop('disabled', false);
 	}
 
 	// Initialize the jQuery File Upload widget:

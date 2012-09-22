@@ -11,7 +11,6 @@ class PL_Listing_Helper {
 		add_action('wp_ajax_add_temp_image', array(__CLASS__, 'add_temp_image' ) );
 		add_action('wp_ajax_filter_options', array(__CLASS__, 'filter_options' ) );
 		add_action('wp_ajax_delete_listing', array(__CLASS__, 'delete_listing_ajax' ) );
-		add_action('the_content', array(__CLASS__, 'refresh_listing'), 1);
 	}
 	
 	public function results($args = array()) {
@@ -22,14 +21,29 @@ class PL_Listing_Helper {
 		}
 		//respect global filters
 		$global_filters = PL_Helper_User::get_global_filters();
+
 	    if (is_array($global_filters)) {
 	  		foreach ($global_filters as $attribute => $value) {
+	  			//special handling for property type, comes in as property_type-{type} since it differs on listing_type
 	  			if (strpos($attribute, 'property_type') !== false ) {
 	  				$args['property_type'] = is_array($value) ? implode('', $value) : $value;
+	  			} else if ( is_array($value) ) {
+	  				//this whole thing basically tranverses down the arrays for global filters
+	  				foreach ($value as $k => $v) {
+	  					if ( is_array($v) ) {
+	  						//forgive me.
+	  						foreach ($v as $y => $z) {
+	  							$args[$attribute][$k][$y] = $z;	
+	  						}
+	  					} else {
+	  						$args[$attribute][$k] = $v;	
+	  					}
+	  				}
+	  			} else {
+	  				$args[$attribute] = $value;
 	  			}
 	  		}
 	    }
-		$args = wp_parse_args($global_filters, $args);
 
 		//respect block address setting
 		if (PL_Option_Helper::get_block_address()) {
@@ -234,9 +248,26 @@ class PL_Listing_Helper {
 		die();
 	}
 
+	// helper sets keys to values
+	public function types_for_options() {
+		$options = array();
+		$response = PL_Listing::types(array('keys' => array('property_type')));
+		if(!$response) {
+			return array();
+		}
+		// might be able to do this faster with array_fill_keys() -pk
+		foreach ($response['property_type'] as $key => $value) {
+			$options[$value] = $value;
+		}
+		ksort($options);
+		$options = array_merge(array('false' => 'Any'), $options);
+		return $options;	
+	}
+	
 	public function locations_for_options($return_only = false) {
 		$options = array();
 		$response = PL_Listing::locations();
+		
 		if (!$return_only) {
 			return $response;
 		}
@@ -244,8 +275,10 @@ class PL_Listing_Helper {
 			foreach ($response[$return_only] as $key => $value) {
 				$options[$value] = $value;
 			}
+
 			ksort($options);
-			$options = array_merge(array('false' => 'Any'), $options);
+			$options = array('false' => 'Any') + $options;
+			
 			return $options;	
 		} else {
 			return array();	
@@ -599,19 +632,26 @@ class PL_Listing_Helper {
 			"ZW" => "Zimbabwe (ZW)");
 	}
 
-	public static function refresh_listing($the_content) {
+	public static function get_listing_in_loop () {
+		global $post;
+		$cache = new PL_Cache('dets');
+        if ($transient = $cache->get($post)) {
+            return $transient;
+        }
+		$serialized_listing_data = get_post_meta($post->ID, 'listing_data', true);
+		$listing_data = unserialize($serialized_listing_data);
 
-		$listing_details = unserialize($the_content);
-
-		// Update listing data from the API
-		$args = array('listing_ids' => array($listing_details['id']), 'address_mode' => 'exact');
-		$response = PL_Listing::get($args);
-		// Should only be one listing returned, but loop just in case...
-		foreach($response['listings'] as $key => $listing) {
-			PL_Pages::manage_listing($listing);
+		if (!$listing_data) {
+		  	// Update listing data from the API
+			$args = array('listing_ids' => array($post->post_name), 'address_mode' => 'exact');
+			$response = PL_Listing::get($args);
+			if ( !empty($response['listings']) ) {
+				$listing_data = $response['listings'][0];
+			}
 		}
 
-		return $the_content;
+		$cache->save($listing_data);
+		return $listing_data;		
 	}
 
 //end of class
