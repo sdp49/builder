@@ -53,7 +53,7 @@
 		<div class="submitbox" id="submitpost">
 			<div id="minor-publishing">
 				<div class="misc-pub-section">
-					<p>Report a problem</p>
+					<p>Having </p>
 				</div>
 			</div>
 		</div>
