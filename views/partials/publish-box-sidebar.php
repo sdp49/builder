@@ -47,13 +47,13 @@
 	<div class="handlediv" title="Click to toggle">
 		<br></div>
 	<h3 class="hndle">
-		<span>Report a Problem</span>
+		<span>Having problem?</span>
 	</h3>
 	<div class="inside">
 		<div class="submitbox" id="submitpost">
 			<div id="minor-publishing">
 				<div class="misc-pub-section">
-					<p>Having </p>
+					<p>Having a problem? Drop us a note at <a href="mailto:support@placester.com">support@placester.com</a> and we'll help you out as soon as possible.</p>
 				</div>
 			</div>
 		</div>
