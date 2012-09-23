@@ -43,3 +43,19 @@
 		</div>
 	</div>
 </div>
+<div id="submitdiv" class="postbox ">
+	<div class="handlediv" title="Click to toggle">
+		<br></div>
+	<h3 class="hndle">
+		<span>Report a Problem</span>
+	</h3>
+	<div class="inside">
+		<div class="submitbox" id="submitpost">
+			<div id="minor-publishing">
+				<div class="misc-pub-section">
+					<p>Having </p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
