@@ -99,6 +99,10 @@ jQuery(document).ready(function($) {
             	$(id).parentsUntil('#image_container_remove').remove();
                 $('#fileupload-holder-message').append('<li class="image_container"><div><img width="100px" height="100px" src="'+file.url+'" ><a id="remove_image">Remove</a><input id="hidden_images" type="hidden" name="images['+count+'][filename]" value="'+file.name+'"></div></li>');
             });
+        },
+        failed: function (e, data) {
+        	alert('error');
+        	console.log(data);
         }
     });
 
@@ -149,7 +153,6 @@ jQuery(document).ready(function($) {
         //get each of the form values, set key/values in array based off name attribute
         $.each($('#add_listing_form :input[value]').serializeArray(), function(i, field) {
     		form_values[field.name] = field.value;
-    			
         });
         //set context of the form.
        var form = $('#add_listing_form');
