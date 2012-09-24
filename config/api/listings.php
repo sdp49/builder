@@ -464,7 +464,7 @@ $PL_API_LISTINGS = array(
 	),
 	'details' => array(
 		'request' => array(
-			'url' => 'https://placester.com/api/v2/listings/',
+			'url' => 'https://placester.com/api/v2.1/listings/',
 			'type' => 'GET'
 		),
 		'args' => array(),
@@ -526,7 +526,10 @@ $PL_API_LISTINGS = array(
 			'rets' => array(
 			  'aname' => false,
 			  'oname' => false,
-			  'mls_id' => false
+			  'mls_id' => false,
+			  'alicense' => false,
+			  'aconame' => false,
+			  'oconame' => false
 			)
 		)
 	),
