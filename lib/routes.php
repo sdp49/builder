@@ -3,7 +3,7 @@ class PL_Router {
 
 	private static function router($template, $params, $wrap = false, $directory = PL_VIEWS_ADMIN_DIR) {
 		ob_start();
-			// delete_option('placester_api_key');
+			//delete_option('placester_api_key');
 			self::load_builder_view('header.php');
 
 			// Need to conditionally include these...
@@ -91,6 +91,25 @@ class PL_Router {
 			}
 		}
 		self:: router('add-listing.php', array(), false);
+	}
+
+	public static function load_snippet($shortcode, $snippet, $type) {
+		ob_start();
+			// Add parameter validation code...
+		  switch ($type) 
+		  {
+		  	case 'custom' :
+		  	  $snippet_DB_key = ('pls_' . $shortcode . '_' . $snippet);
+		  	  $snippet_body = get_option($snippet_DB_key, 'Cannot find custom snippet...');
+		  	  echo html_entity_decode($snippet_body, ENT_QUOTES);
+		  	  break;                                                                                                     
+		  	case 'default' :
+		  	default :
+		  	  $filename = (trailingslashit(PL_VIEWS_SHORT_DIR) . trailingslashit($shortcode) . $snippet . '.php');
+		  	  //echo $filename;
+		  	  include $filename;
+		  }
+		return ob_get_clean();
 	}
 
 	public function theme_gallery() {

@@ -6,6 +6,7 @@ class PL_Demo_Data {
 	public function init() {
 		add_action('wp_ajax_demo_data_on', array(__CLASS__, 'toggle_on' ) );
 		add_action('wp_ajax_demo_data_off', array(__CLASS__, 'toggle_off' ) );
+		add_action( 'wp_head', array(__CLASS__, 'placester_info_bar' ) );
 	}
 
 	public function toggle_on() {
@@ -25,6 +26,12 @@ class PL_Demo_Data {
 
 		// Clear cache to get rid of all remnants of existing listings...
 		PL_Cache::clear();
+	}
+
+	public function placester_info_bar() {
+	    if ( PL_Option_Helper::get_demo_data_flag() ) {
+	        PL_Router::load_builder_partial('infobar.php');
+	    }
 	}
 }
 

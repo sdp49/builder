@@ -38,7 +38,8 @@ function parse_validation (response) {
 function check_api_key (api_key) {
 	$ = jQuery; //we're in no conflict land. 
 	$('#api_key_message').hide();
-	if (api_key.length == 40) {
+	console.log(api_key.length);
+	if (api_key.length == 40 || api_key.length == 96 ) {
 		var data = {action : "set_placester_api_key",api_key: api_key};
 		$('#api_key_message').removeClass('red');
 		$('#api_key_message').html('Checking....').show().addClass('green');
