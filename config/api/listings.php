@@ -50,7 +50,7 @@ $PL_API_LISTINGS = array(
 			        'Cooperative' => 'Cooperative',
 			        'Tenants In Common' => 'Tenants In Common',
 			        'Manufactured Home' =>  'Manufactured Home',
-			        'vaVacantcant' =>  'Vacant'
+			        'Vacant' =>  'Vacant'
 				)
 			),
 			'property_type.vac_rental' => array(

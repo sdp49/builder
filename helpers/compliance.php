@@ -88,7 +88,7 @@ class PL_Compliance {
 					$response['office_phone'] = $office_phone;
 				}
 
-			} elseif ( $context == 'inline_search') {
+			} elseif ( $context == 'inline_search' || $context == 'listings_widget' ) {
 				if (isset($provider['disclaimer_on']['inline_search']) && !empty($provider['disclaimer_on']['inline_search'])) {
 					$response['disclaimer'] = $provider['disclaimer'];	
 				}
@@ -105,8 +105,8 @@ class PL_Compliance {
 				if (isset($provider['office_on']['inline_search']) && !empty($provider['office_on']['inline_search']) && $office_name) {
 					$response['office_name'] = $office_name;
 				}
-				if (isset($provider['office_phone_on']['inline_search']) && !empty($provider['office_phone_on']['inline_search']) && $office_name) {
-					$response['office_phone'] = $office_phone_on;
+				if (isset($provider['office_phone_on']['inline_search']) && !empty($provider['office_phone_on']['inline_search']) && $office_phone) {
+					$response['office_phone'] = $office_phone;
 				}
 			}
 			return $response;
