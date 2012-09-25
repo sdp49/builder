@@ -87,8 +87,8 @@ class PL_Compliance {
 				if (isset($provider['office_phone_on']['search']) && !empty($provider['office_phone_on']['search']) && $office_name) {
 					$response['office_phone'] = $office_phone;
 				}
-
-			} elseif ( $context == 'inline_search' || $context == 'listings_widget' ) {
+				// listings_widget is for the proper placester listings widget; property_details for hard-coded listing details page sidebar -pek
+			} elseif ( $context == 'inline_search' || $context == 'listings_widget' || $context == 'property_details' ) {
 				if (isset($provider['disclaimer_on']['inline_search']) && !empty($provider['disclaimer_on']['inline_search'])) {
 					$response['disclaimer'] = $provider['disclaimer'];	
 				}
