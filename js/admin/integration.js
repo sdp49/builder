@@ -12,11 +12,24 @@ jQuery(document).ready(function($) {
 
 	$('#pls_integration_form').live('submit', function(event) {
 		event.preventDefault();
-		submit_handler();	
+
+		var refresh_page = function () {
+			setTimeout(function () {
+				window.location.href = window.location.href;
+			}, 500);
+		}
+
+		submit_handler(refresh_page);	
 	});
 
 	$('#customize_integration_submit').live('click', function() {
-		submit_handler();
+		var clear_form = function () { 
+			$.each($('#pls_integration_form').find('input, select'), function (i, elem) {
+				$(elem).val('');
+			});	
+		}
+
+		submit_handler(clear_form);
 	});
 
 	function submit_handler (success_callback) {
@@ -77,9 +90,6 @@ jQuery(document).ready(function($) {
 		  	var form = $('#pls_integration_form');
 			if (data && data.result) {
 				$('#rets_form_message').html(data.message);
-				// setTimeout(function () {
-				// 	window.location.href = window.location.href;
-				// }, 700);
 				if (success_callback) { success_callback(); }
 			} else {
 				var item_messages = [];

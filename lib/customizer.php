@@ -103,6 +103,18 @@ function define_custom_controls()
    		}
    }
 
+   class PL_Customize_Load_Opt_Defaults_Control {
+   		public $type = 'load_opt_defaults';
+
+   		public function render() {
+
+   		}
+
+   		public function render_content() {
+   			// Do Nothing...
+   		}
+   }
+
 }
 
 class PL_Customizer 
