@@ -15,7 +15,8 @@ add_action( 'customize_register', 'placester_customize_register' );
 function placester_customize_register( $wp_customize ) 
 {
 	define_custom_controls();
-	PL_Customizer::register_components( $wp_customize );
+	PL_Customizer::register_option_components( $wp_customize );
+	PL_Customizer::register_pl_components( $wp_customize );
 }
 
 // Can't nest class definitions in PHP, so these have to be placed in a global function...
@@ -45,51 +46,50 @@ function define_custom_controls()
 			<select class="of-typography of-typography-size"  >
 			
 			  <?php for ($i = 9; $i < 71; $i++): 
-				$size = $i . 'px';
-			  ?>	
-				// Check if null
-				if(!isset($typography_stored['size'])) {
-					$typography_stored['size'] = '';
-				}
-				
+				$size = $i . 'px'; ?>
 				<option value="<?php echo esc_attr( $size ); ?>" <?php selected( $typography_stored['size'], $size, false ); ?>><?php echo esc_html( $size ); ?></option>
 			  <?php endfor; ?>
 			</select>
 		
 			<!-- Font Face -->
 			<select class="of-typography of-typography-face"  >
-			
-			$faces = of_recognized_font_faces();
 
-			// Check if null
-			if(!isset($typography_stored['face'])) {
-				$typography_stored['face'] = '';
-			}
+			<?php $faces = of_recognized_font_faces(); ?>
 
-			foreach ( $faces as $key => $face ) {
-				$output .= '<option value="' . esc_attr( $key ) . '" ' . selected( $typography_stored['face'], $key, false ) . '>' . esc_html( $face ) . '</option>';
-			}			
-			
-			$output .= '</select>';	
+			  <?php foreach ( $faces as $key => $face ): ?>
+			 	<option value="' . esc_attr( $key ) . '" ' . selected( $typography_stored['face'], $key, false ) . '>' . esc_html( $face ) . '</option>
+			  <?php endforeach; ?>		
+			</select>
 
 			<!-- Font Style -->
 			<select class="of-typography of-typography-style"  >
 
-			// Check if null
-			if(!isset($typography_stored['style'])) {
-				$typography_stored['style'] = '';
-			}
+			<?php $styles = of_recognized_font_styles(); ?>
 
-			$styles = of_recognized_font_styles();
-			foreach ( $styles as $key => $style ) {
-				$output .= '<option value="' . esc_attr( $key ) . '" ' . selected( $typography_stored['style'], $key, false ) . '>'. $style .'</option>';
-			}
-			$output .= '</select>';
+			  <?php foreach ( $styles as $key => $style ): ?>
+				<option value="' . esc_attr( $key ) . '" ' . selected( $typography_stored['style'], $key, false ) . '>'. $style .'</option>
+			  <?php endforeach; ?>
+			</select>
 
 			<!-- Font Color -->
-			$output .= '<div id="' . esc_attr( $value['id'] ) . '_color_picker" class="colorSelector"><div style="' . esc_attr( 'background-color:' . $typography_stored['color'] ) . '"></div></div>';
-			$output .= '<input class="of-color of-typography of-typography-color" name="' . esc_attr( $option_name . '[' . $value['id'] . '][color]' ) . '" id="' . esc_attr( $value['id'] . '_color' ) . '" type="text" value="' . esc_attr( $typography_stored['color'] ) . '" />';
+			<div id="' . esc_attr( $value['id'] ) . '_color_picker" class="colorSelector">
+			  <div style="' . esc_attr( 'background-color:' . $typography_stored['color'] ) . '"></div>
+			</div>
+			<input type="text" class="of-color of-typography of-typography-color" id="<?php echo esc_attr( $value['id'] . '_color' ); ?>" value="<?php echo esc_attr( $typography_stored['color'] ); ?>" />
 		  <?php
+   		}
+   }
+
+   class PL_Customize_Integration_Control extends WP_Customize_Control
+   {
+   		public $type = 'integration';
+
+   		public function render() {
+   			PL_Router::load_builder_partial('integration-form.php', array('submit' => true));
+   		}
+
+   		public function render_content() {
+   			// Do nothing...
    		}
    }
 
@@ -124,7 +124,7 @@ class PL_Customizer
 		return $args;
 	}
 
-	public function register_components( $wp_customize ) 
+	public function register_option_components( $wp_customize ) 
 	{
 		// A simple check to ensure function was called properly...
 		if ( !isset($wp_customize) ) { return; }
@@ -181,11 +181,37 @@ class PL_Customizer
 
 	            // case 'typography':
 
+
 	            default:
 	                break;
 	        } 
 	    }
 
+	}
+
+	public function register_pl_components( $wp_customize ) 
+	{
+		if ( PL_Option_Helper::api_key() ) {
+			
+			/* Integration form... */
+			$int_section_id = 'integration_pl';
+			$int_ctrl_id = 'integration_ctrl';
+
+			// Section
+			$args_section = array(
+	                                'title'    => __('MLS Integration', ''),
+	                                'description' => 'MLS Integration',
+	                                'priority' => 1,
+	                             ); 
+	        
+	        $wp_customize->add_section( $int_section_id, $args_section );
+
+	        // Need to add a dummy section so that 
+	        $wp_customize->add_setting( 'dummy_setting', array() );
+
+	        // Control
+	        $wp_customize->add_control( new PL_Customize_Integration_Control($wp_customize, $int_ctrl_id, array('settings' => 'dummy_setting', 'section' => $int_section_id, 'type' => 'none')) );
+		}
 	}
 
 }
