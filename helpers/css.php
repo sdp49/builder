@@ -7,6 +7,7 @@ class PL_Css_Helper {
 	function init () {		
 		// add_action( 'admin_init', array( __CLASS__, 'admin' ));
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin' ));
+		add_action('customize_controls_enqueue_scripts', array(__CLASS__, 'customizer'));
 	}
 
 	function admin ($hook) {
@@ -72,6 +73,10 @@ class PL_Css_Helper {
 			self::register_enqueue_if_not('settings-all', trailingslashit(PL_CSS_ADMIN_URL) .  '/settings/all.css');					
 			self::register_enqueue_if_not('settings-filtering', trailingslashit(PL_CSS_ADMIN_URL) .  'settings/filtering.css');					
 		}
+	}
+
+	function customizer() {
+		
 	}
 
 	private function register_enqueue_if_not($name, $path, $dependencies = array()) {
