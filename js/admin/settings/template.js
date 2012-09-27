@@ -214,7 +214,7 @@ $(document).ready(function($) {
     $.post(ajaxurl, data, function(response) {
       //console.log(response);
       if ( response && response.old_val ) {
-        alert('was: ' + response.old_val + ', now: ' + response.new_val);
+        // alert('was: ' + response.old_val + ', now: ' + response.new_val);
       }
     },'json');
   });

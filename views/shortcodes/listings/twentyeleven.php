@@ -143,7 +143,7 @@
         <p class="mls">MLS #: [mls_id]</p>
       </div><!--lu-details-->
     	
-      <p class="price">Price: <span>$500</span></p>
+      <p class="price">Price: <span>[price]</span></p>
 
   		<p class="desc">[desc]</p>
 
