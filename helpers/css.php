@@ -76,7 +76,8 @@ class PL_Css_Helper {
 	}
 
 	function customizer() {
-		
+		self::register_enqueue_if_not('customizer-css', trailingslashit(PL_CSS_URL) . 'customizer.css');
+		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');
 	}
 
 	private function register_enqueue_if_not($name, $path, $dependencies = array()) {

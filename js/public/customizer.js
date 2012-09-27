@@ -7,3 +7,6 @@ jQuery(document).ready(function($) {
 
 	 
 });
+
+// NEED to do this more elegantly...
+var ajaxurl = 'http://onboard.placester.local/wp-admin/admin-ajax.php';

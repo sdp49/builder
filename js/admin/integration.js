@@ -15,6 +15,10 @@ jQuery(document).ready(function($) {
 		submit_handler();	
 	});
 
+	$('#customize_integration_submit').live('click', function() {
+		submit_handler();
+	});
+
 	function submit_handler (success_callback) {
 		$('#rets_form_message').removeClass('red');
 		$('#message.error').remove();
@@ -53,9 +57,18 @@ jQuery(document).ready(function($) {
 		$('#rets_form_message').html('Checking RETS information...');
 		
 		var form_values = {action: 'create_integration'};
-		$.each($('#pls_integration_form').serializeArray(), function(i, field) {
-    		form_values[field.name] = field.value;
-        });
+		var form_serialized = $('#pls_integration_form').serializeArray();
+		
+		if (form_serialized.length > 0) {
+			$.each(form_serialized, function (i, field) {
+	    		form_values[field.name] = field.value;
+	        });
+		}
+		else { // Submitted from customizer...
+			$.each($('#pls_integration_form').find('input, select'), function (i, elem) {
+				form_values[$(elem).attr('name')] = $(elem).val();
+			});		
+		}
 
         // console.log(form_values);
 

@@ -14,8 +14,11 @@
 
 <div class="ajax_message" id="rets_form_message"></div>
 
-<div class="rets_form">
+<div class="rets_form" <?php if ( isset($no_form) && $no_form ) { echo 'id="pls_integration_form"'; } ?>>
+
+<?php if (!isset($no_form)): ?>
   <form id="pls_integration_form" <?php if ( isset($wizard) && $wizard ) { echo 'class="wizard-mls"'; } ?>>
+<?php endif; ?>
 
   	<div class="row">
 	  <div class="info">
@@ -78,5 +81,8 @@
     </div>
   <?php endif; ?>
 
+<?php if (!isset($no_form)): ?>
    </form>
+<?php endif; ?>
+
  </div>

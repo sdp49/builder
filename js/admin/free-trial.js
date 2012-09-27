@@ -4,10 +4,12 @@ jQuery(document).ready(function($) {
 		draggable: false,
 		modal: true,
 		width: 700,
+		zIndex: 600000
 	});
 });
 
 function prompt_free_trial (title, success_callback, cancel_callback) {
+	$ = jQuery;
 	$( "#premium_wizard" ).dialog({title : '<h3>' + title + '</h3>'} );
 	$( "#premium_wizard" ).dialog({close : cancel_callback} );
 	$( "#premium_wizard" ).dialog( "open" );
@@ -48,6 +50,7 @@ function prompt_free_trial (title, success_callback, cancel_callback) {
 }
 
 function check_info_for_prem_trial(that, success_callback, cancel_callback) {
+	$ = jQuery;
 	var form_values = {};
 	$.each($('#premium_name_phone').serializeArray(), function(i, field) {
 		form_values[field.name] = field.value;

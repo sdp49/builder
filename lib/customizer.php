@@ -85,7 +85,17 @@ function define_custom_controls()
    		public $type = 'integration';
 
    		public function render() {
-   			PL_Router::load_builder_partial('integration-form.php', array('submit' => true));
+   			PL_Router::load_builder_partial('integration-form.php', array('no_form' => true));
+   			?>
+   			  <!-- <div id="customize_integration_submit" style="width: 50px; height: 30px; background: grey;">Submit</div> -->
+
+   			  <div class="row">
+		        <input type="button" id="customize_integration_submit" class="button-primary" value="Submit" />
+		      </div>
+   			<?php
+
+   			// Needed to subscribe a user...
+   			PL_Router::load_builder_partial('free-trial.php');
    		}
 
    		public function render_content() {
@@ -192,7 +202,7 @@ class PL_Customizer
 	public function register_pl_components( $wp_customize ) 
 	{
 		if ( PL_Option_Helper::api_key() ) {
-			
+
 			/* Integration form... */
 			$int_section_id = 'integration_pl';
 			$int_ctrl_id = 'integration_ctrl';
