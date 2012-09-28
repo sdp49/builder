@@ -42,40 +42,46 @@ function define_custom_controls()
 
    		public function render_content() {
    		  ?>
+   		  	<span class="customize-control-title"><?php echo esc_html( $this->label ); ?></span>
+
    			<!-- Font Size -->
-			<select class="of-typography of-typography-size"  >
+			<select class="of-typography of-typography-size" <?php $this->link('size'); ?> >
 			
 			  <?php for ($i = 9; $i < 71; $i++): 
 				$size = $i . 'px'; ?>
-				<option value="<?php echo esc_attr( $size ); ?>" <?php selected( $typography_stored['size'], $size, false ); ?>><?php echo esc_html( $size ); ?></option>
+				<option value="<?php echo esc_attr( $size ); ?>" <?php selected( $this->value('size'), $size ); ?>><?php echo $size; ?></option>
 			  <?php endfor; ?>
 			</select>
 		
 			<!-- Font Face -->
-			<select class="of-typography of-typography-face"  >
+			<select class="of-typography of-typography-face" <?php $this->link('face'); ?> >
 
-			<?php $faces = of_recognized_font_faces(); ?>
+			<?php $faces = of_recognized_font_faces(); // Global function defined in Blueprint ?>
 
 			  <?php foreach ( $faces as $key => $face ): ?>
-			 	<option value="' . esc_attr( $key ) . '" ' . selected( $typography_stored['face'], $key, false ) . '>' . esc_html( $face ) . '</option>
+			 	<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $this->value('face'), $key ); ?>><?php echo $face; ?></option>
 			  <?php endforeach; ?>		
 			</select>
 
 			<!-- Font Style -->
-			<select class="of-typography of-typography-style"  >
+			<select class="of-typography of-typography-style" <?php $this->link('style'); ?> >
 
-			<?php $styles = of_recognized_font_styles(); ?>
+			<?php $styles = of_recognized_font_styles(); // Global function defined in Blueprint ?>
 
 			  <?php foreach ( $styles as $key => $style ): ?>
-				<option value="' . esc_attr( $key ) . '" ' . selected( $typography_stored['style'], $key, false ) . '>'. $style .'</option>
+				<option value="<?php echo esc_attr( $key ); ?>" <?php selected( $this->value('style'), $keys ); ?>><?php echo $style; ?></option>
 			  <?php endforeach; ?>
 			</select>
 
 			<!-- Font Color -->
-			<div id="' . esc_attr( $value['id'] ) . '_color_picker" class="colorSelector">
-			  <div style="' . esc_attr( 'background-color:' . $typography_stored['color'] ) . '"></div>
-			</div>
-			<input type="text" class="of-color of-typography of-typography-color" id="<?php echo esc_attr( $value['id'] . '_color' ); ?>" value="<?php echo esc_attr( $typography_stored['color'] ); ?>" />
+			<!-- 
+			<div id="colorpicker">
+			  <div id="<?php //echo esc_attr( $this->id ); ?>_color_picker" class="another_colorpicker">
+			    <div style="<?php //echo esc_attr( 'background-color:' . $this->value('color') ); ?>"></div>
+			  </div>
+			</div>  
+ 			-->
+			<input type="text" class="of-color of-typography of-typography-color" value="<?php echo esc_attr( $this->value('color') ); ?>" id="<?php echo esc_attr( $this->id ); ?>_color" <?php $this->link('color'); ?> />
 		  <?php
    		}
    }
@@ -112,7 +118,7 @@ function define_custom_controls()
    			<h3 id="optionsframework-submit-top" >
 				<!-- Build default dropdown... -->
 				<div id="default_opts">
-				  <span>Use default settings: </span>
+				  <span class="customize-title-span">Use Default Theme Options: </span>
 				  <select id="def_theme_opts">
 				  <?php foreach (PLS_Options_Manager::$def_theme_opts_list as $name) : ?>
 				  	<option value="<?php echo $name?>"><?php echo $name; ?></option>
@@ -215,8 +221,27 @@ class PL_Customizer
 	                $wp_customize->add_control( new PL_Customize_TextArea_Control($wp_customize, $control_id, $args_control) );
 	                break;
 
-	            // case 'typography':
+	            case 'typography':
+	            	$typo_setting_keys = array('size', 'face', 'style', 'color');
+	            	$typo_setting_ids = array();
+	            	
+	            	foreach ($typo_setting_keys as $key) {
+	            		$wp_customize->add_setting( "{$setting_id}[{$key}]", self::get_setting_opts() );
+	            		$typo_setting_ids[$key] = "{$setting_id}[{$key}]";
+	            	}
+	            	// 
+	            	$args_control = self::get_control_opts( $typo_setting_ids, $style, $last_section_id, true );
+	                $wp_customize->add_control( new PL_Customize_Typography_Control($wp_customize, $control_id, $args_control) );
 
+	            	// if ($style['id'] == 'h1_title') {
+	            	// 	$ctrl = new PL_Customize_Typography_Control($wp_customize, $control_id, $args_control);
+
+	            	// 	foreach ( $ctrl->settings as $key => $setting) {
+	            	// 		$temp_id = $setting->id;
+	            	// 		error_log("{$key} => {$temp_id} \n");
+	            	// 	}
+	            	// }
+	            	break;
 
 	            default:
 	                break;

@@ -1,5 +1,57 @@
 /* global modal styling */
 
+/* Styles for main customizer sidebar */
+#customize-controls {
+	min-width: 315px;
+	width: 20%;
+}
+
+/* Miscellaneous */
+.customize-title-span {
+	font-size: 12px;
+	font-weight: bold;
+}
+#pls_integration_form select {
+	width: 275px;
+}
+/*
+#pls_integration_form .row {
+
+}
+*/
+#customize_integration_submit {
+	margin-top: 25px;
+	float: right;
+}
+
+/* ? */
+.customize-section-content select,
+.customize-section-content input[type="text"] {
+	min-width: 0px !important;
+}
+.customize-section-content .of-typography-size {
+    width: 65px;
+    margin-left: 5px;
+    float: left; 
+}
+.customize-section-content .of-typography-face {
+    width: 85px;
+    margin-left: 5px;
+    float: left; 
+}
+.customize-section-content .of-typography-style {
+    width: 75px;
+    margin-left: 5px;
+    margin-right: 5px;
+    float: left; 
+}
+.customize-section-content .of-color {
+    float: left;
+    width: 80px;
+    margin-left: 5px;
+    margin-right: 5px; 
+}
+
 /* Cleaning up jqueryUI's styles */
 .ui-widget-header {
 	border: none !important;
