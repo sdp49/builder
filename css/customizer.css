@@ -25,8 +25,7 @@
 }
 
 /* ? */
-.customize-section-content select,
-.customize-section-content input[type="text"] {
+.customize-section-content select {
 	min-width: 0px !important;
 }
 .customize-section-content .of-typography-size {
@@ -46,10 +45,9 @@
     float: left; 
 }
 .customize-section-content .of-color {
-    float: left;
-    width: 80px;
-    margin-left: 5px;
-    margin-right: 5px; 
+    clear: both;
+    width: 65px !important;
+    margin: 2px 0px 0px 3px !important	; 
 }
 
 /* Cleaning up jqueryUI's styles */
