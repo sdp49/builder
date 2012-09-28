@@ -17,6 +17,7 @@ class PL_Compliance {
 								);
 
 		$whoami = PL_Helper_User::whoami();
+		
 		// pls_dump($whoami);
 		
 		if (!empty($whoami['provider']['disclaimer_on']) || !empty($whoami['provider']['office_on']) || !empty($whoami['provider']['agent_on'])) {
@@ -92,9 +93,14 @@ class PL_Compliance {
 				if (isset($provider['disclaimer_on']['inline_search']) && !empty($provider['disclaimer_on']['inline_search'])) {
 					$response['disclaimer'] = $provider['disclaimer'];	
 				}
+				if (isset($provider['small_logo']) && !empty($provider['small_logo'])) {
+				  $response['img'] = $provider['small_logo'];
+				}
+				/*
 				if (isset($provider['second_logo']['inline_search']) && !empty($provider['second_logo']['inline_search'])) {
 				  $response['img'] = $provider['second_logo'];
 				}
+				*/
 				if (isset($provider['agent_on']['inline_search']) && !empty($provider['agent_on']['inline_search']) && $agent_name) {
 					$response['agent_name'] = $agent_name;
 					$response['agent_license'] = $agent_license;
@@ -109,6 +115,7 @@ class PL_Compliance {
 					$response['office_phone'] = $office_phone;
 				}
 			}
+			
 			return $response;
 		} 
 		return false;
