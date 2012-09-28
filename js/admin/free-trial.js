@@ -37,7 +37,7 @@ function prompt_free_trial (title, success_callback, cancel_callback) {
 					$(content_div).html(collect_info_form);	
 					$()
 				} else {
-					$(content_div).html('<div class="ajax_message">Name and Phone confirmed. Starting 60 day free trial...</div>');
+					$(content_div).html('<div class="ajax_message">Name and Phone confirmed. Starting 15 day free trial...</div>');
 					start_free_trial(success_callback);	
 				};
 			} else {

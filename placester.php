@@ -3,8 +3,8 @@
 Plugin Name: Real Estate Website Builder
 Description: Quickly create a lead generating real estate website for your real property.
 Plugin URI: https://placester.com/
-Author: Placester.com, Matt Barba
-Version: 1.0.6
+Author: Placester.com
+Version: 1.0.9
 Author URI: https://www.placester.com/
 */
 
@@ -71,6 +71,9 @@ define( 'PL_CSS_ADMIN_URL', trailingslashit(PL_CSS_URL) . 'admin/' );
 
 define( 'PL_CSS_CLIENT_DIR', trailingslashit(PL_CSS_DIR) . 'client/' );
 define( 'PL_CSS_CLIENT_URL', trailingslashit(PL_CSS_URL) . 'client/' );
+
+define( 'PL_THIRD_PARTY_DIR', trailingslashit(PL_PARENT_DIR) . 'third-party/' );
+define( 'PL_THIRD_PARTY_URL', trailingslashit(PL_PARENT_URL) . 'third-party/' );
 
 define('ADMIN_URL', trailingslashit( admin_url() ) );
 define('ADMIN_MENU_URL', trailingslashit( ADMIN_URL ) . 'admin.php' );
