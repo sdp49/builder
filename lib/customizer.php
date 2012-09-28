@@ -103,11 +103,25 @@ function define_custom_controls()
    		}
    }
 
-   class PL_Customize_Load_Opt_Defaults_Control {
+   class PL_Customize_Load_Theme_Opts_Control extends WP_Customize_Control 
+   {
    		public $type = 'load_opt_defaults';
 
    		public function render() {
-
+   		  ?>
+   			<h3 id="optionsframework-submit-top" >
+				<!-- Build default dropdown... -->
+				<div id="default_opts">
+				  <span>Use default settings: </span>
+				  <select id="def_theme_opts">
+				  <?php foreach (PLS_Options_Manager::$def_theme_opts_list as $name) : ?>
+				  	<option value="<?php echo $name?>"><?php echo $name; ?></option>
+				  <?php endforeach; ?>
+				  </select>
+				  <input type="button" id="btn_def_opts" class="top-button button-primary" value="Load" style="margin: 0px" />
+				</div>
+			</h3>
+		  <?php
    		}
 
    		public function render_content() {
@@ -131,16 +145,16 @@ class PL_Customizer
 		return $merged_opts;
 	}
 
-	private function get_control_opts( $id, $style, $sect_id, $is_custom = false )
+	private function get_control_opts( $id, $attrs, $sect_id, $is_custom = false )
 	{
 		$args = array(
                         'settings' => $id,
-                        'label'    => $style['name'],
+                        'label'    => $attrs['name'],
                         'section'  => $sect_id
                      );
 
 		if ( !$is_custom ) {
-			$args['type'] = $style['type'];
+			$args['type'] = $attrs['type'];
 		}
 
 		return $args;
@@ -213,28 +227,55 @@ class PL_Customizer
 
 	public function register_pl_components( $wp_customize ) 
 	{
+		// Dummy setting must be associated with non-options sections in order for them to appear...
+	    $dummy_setting_id = 'dummy_setting';
+	    $wp_customize->add_setting( 'dummy_setting', array() );
+
+		/* 
+		 * MLS Integration Section
+		 */
 		if ( PL_Option_Helper::api_key() ) {
-
-			/* Integration form... */
 			$int_section_id = 'integration_pl';
-			$int_ctrl_id = 'integration_ctrl';
-
-			// Section
-			$args_section = array(
+			$int_args_section = array(
 	                                'title'    => __('MLS Integration', ''),
 	                                'description' => 'MLS Integration',
 	                                'priority' => 1,
 	                             ); 
 	        
-	        $wp_customize->add_section( $int_section_id, $args_section );
-
-	        // Need to add a dummy section so that 
-	        $wp_customize->add_setting( 'dummy_setting', array() );
+	        $wp_customize->add_section( $int_section_id, $int_args_section );
 
 	        // Control
-	        $wp_customize->add_control( new PL_Customize_Integration_Control($wp_customize, $int_ctrl_id, array('settings' => 'dummy_setting', 'section' => $int_section_id, 'type' => 'none')) );
+	        $int_ctrl_id = 'integration_ctrl';
+	        $int_args_ctrl = array('settings' => $dummy_setting_id, 'section' => $int_section_id, 'type' => 'none');
+	        $wp_customize->add_control( new PL_Customize_Integration_Control($wp_customize, $int_ctrl_id, $int_args_ctrl) );
 		}
-	}
 
+		/* 
+		 * Plug-in Settings Section 
+		 */
+		$set_section_id = 'settings_pl';
+		$set_args_section = array(
+	                            'title'    => __('Settings', ''),
+	                            'description' => 'Settings',
+	                            'priority' => 2,
+	                         ); 
+	    
+	    $wp_customize->add_section( $set_section_id, $set_args_section );
+
+	    // Demo Data Control
+	    $demo_setting_id = 'pls_demo_data_flag';
+	    $wp_customize->add_setting( $demo_setting_id, self::get_setting_opts() );
+		
+		$demo_ctrl_id = 'demo_data_ctrl';                
+	    $demo_args_control = self::get_control_opts( $demo_setting_id, array('name'=>'Use Demo Data for listings', 'type'=>'checkbox'), $set_section_id );
+	    $wp_customize->add_control( $demo_ctrl_id, $demo_args_control);
+
+	    // Load Theme Options Control
+	    $load_opts_ctrl_id = 'load_opts_ctrl';
+	    $load_opts_args_ctrl = array('settings' => $dummy_setting_id, 'section' => $set_section_id, 'type' => 'none');
+	    $wp_customize->add_control( new PL_Customize_Load_Theme_Opts_Control($wp_customize, $load_opts_ctrl_id, $load_opts_args_ctrl) );
+
+	}
+	    
 }
 ?>
