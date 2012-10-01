@@ -117,19 +117,43 @@ function define_custom_controls()
 
    		public function render() {
    		  ?>
-   			<h3 id="optionsframework-submit-top" >
-				<!-- Build default dropdown... -->
-				<div id="default_opts">
-				  <span class="customize-title-span">Use Default Theme Options: </span>
-				  <select id="def_theme_opts">
-				  <?php foreach (PLS_Options_Manager::$def_theme_opts_list as $name) : ?>
-				  	<option value="<?php echo $name?>"><?php echo $name; ?></option>
-				  <?php endforeach; ?>
-				  </select>
-				  <input type="button" id="btn_def_opts" class="top-button button-primary" value="Load" style="margin: 0px" />
-				</div>
-			</h3>
+			<!-- Build default dropdown... -->
+			<div id="default_opts" class="custom-control">
+			  <span class="customize-title-span">Use Default Theme Options </span>
+			  <select id="def_theme_opts">
+			    <?php foreach (PLS_Options_Manager::$def_theme_opts_list as $name) : ?>
+			  	  <option value="<?php echo $name?>"><?php echo $name; ?></option>
+			    <?php endforeach; ?>
+			  </select>
+			  <input type="button" id="btn_def_opts" class="top-button button-primary" value="Load" style="margin: 0px" />
+			</div>
 		  <?php
+   		}
+
+   		public function render_content() {
+   			// Do Nothing...
+   		}
+   }
+
+   class PL_Customize_Switch_Theme_Control extends WP_Customize_Control
+   {
+   		public $type = 'switch_theme';
+
+   		public function render() {
+   		  ?>
+   		  	<?php $theme_array = array('columbus', 'highland', 'slate', 'tampa'); ?>
+   		  	
+			<!-- Build themes dropdown... -->
+			<div id="switch_theme_main" class="custom-control">
+			  <span class="customize-title-span">Preview Other Themes </span>
+			  <select id="theme_choices">
+			    <?php foreach ($theme_array as $theme) : ?>
+			  	  <option value="<?php echo wp_customize_url($theme); ?>" <?php selected( $this->manager->get_stylesheet(), $theme ); ?>><?php echo $theme; ?></option>
+			    <?php endforeach; ?>
+			  </select>
+			  <!-- <input type="button" id="btn_switch_theme" class="top-button button-primary" value="View" style="margin: 0px" /> -->
+			</div>
+   		  <?php
    		}
 
    		public function render_content() {
@@ -308,6 +332,11 @@ class PL_Customizer
 	    $load_opts_ctrl_id = 'load_opts_ctrl';
 	    $load_opts_args_ctrl = array('settings' => $dummy_setting_id, 'section' => $set_section_id, 'type' => 'none');
 	    $wp_customize->add_control( new PL_Customize_Load_Theme_Opts_Control($wp_customize, $load_opts_ctrl_id, $load_opts_args_ctrl) );
+
+	    // Load Theme Switcher
+	    $switch_theme_ctrl_id = 'switch_theme_ctrl';
+	    $switch_theme_args_ctrl = array('settings' => $dummy_setting_id, 'section' => $set_section_id, 'type' => 'none');
+	    $wp_customize->add_control( new PL_Customize_Switch_Theme_Control($wp_customize, $switch_theme_ctrl_id, $switch_theme_args_ctrl) );
 
 	}
 	    

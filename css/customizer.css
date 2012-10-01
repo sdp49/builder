@@ -34,6 +34,16 @@
     margin: 2px 0px 0px 3px !important	; 
 }
 
+.custom-control {
+	margin-bottom: 21px;
+}
+.custom-control span {
+	display: block;
+}
+.custom-control select {
+	margin: 9px 0px 0px 9px;
+}
+
 /* Integration sidebar control */
 #pls_integration_form select {
 	width: 275px;

@@ -12,7 +12,10 @@ jQuery(document).ready(function($) {
 	 * (Configured to execute on any load of customize.php)
 	 */
 
-	 $('#btn_def_opts').live('click', function(event) {
+	 /*
+	  * Applies to loading default theme options "pallets"
+	  */
+	 $('#btn_def_opts').live('click', function (event) {
 		event.preventDefault();
 
 		if (!confirm('Are you sure you want to overwrite your existing Theme Options?'))
@@ -31,9 +34,18 @@ jQuery(document).ready(function($) {
 	      window.location.reload(true);  
 		});
 	});
-	
 
-	$('#customize-controls').live('change', function (event) {
-		console.log(this);
-	}); 
-});
+	/*
+	 * Handles switching themes in the preview iframe...
+	 */
+	$('#switch_theme_main #theme_choices').live('change', function (event) {
+		console.log($(this).val());
+		window.location.href = $(this).val();
+	});
+
+	if (wp.customize)
+	{ console.log("api.Loader exists..."); }
+
+});	
+
+
