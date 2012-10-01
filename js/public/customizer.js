@@ -31,5 +31,9 @@ jQuery(document).ready(function($) {
 	      window.location.reload(true);  
 		});
 	});
-	 
+	
+
+	$('#customize-controls').live('change', function (event) {
+		console.log(this);
+	}); 
 });

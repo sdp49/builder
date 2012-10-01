@@ -14,8 +14,11 @@ function themedemo_admin()
 add_action( 'customize_register', 'placester_customize_register' );
 function placester_customize_register( $wp_customize ) 
 {
+	$onboard = ( isset($_GET['onboard']) && strtolower($_GET['onboard']) == 'true' ) ? true : false;
+	
 	define_custom_controls();
-	PL_Customizer::register_option_components( $wp_customize );
+
+	PL_Customizer::register_option_components( $wp_customize, $onboard );
 	PL_Customizer::register_pl_components( $wp_customize );
 }
 
@@ -139,6 +142,8 @@ function define_custom_controls()
 
 class PL_Customizer 
 {
+	static $onboard_sections = array('General', 'User Info');
+
 	static $def_setting_opts = array(
 			                          'default'   => '',
 			                          'type'      => 'option',
@@ -166,7 +171,7 @@ class PL_Customizer
 		return $args;
 	}
 
-	public function register_option_components( $wp_customize ) 
+	public function register_option_components( $wp_customize, $onboard = false ) 
 	{
 		// A simple check to ensure function was called properly...
 		if ( !isset($wp_customize) ) { return; }
@@ -176,9 +181,14 @@ class PL_Customizer
 
 	    $section_priority = 3;
 	    $last_section_id = '';
+	    $include_section = true;
 
 	    foreach (PLS_Style::$styles as $style) 
 	    {
+	    	if ($onboard && !$include_section) {
+	    		continue;
+	    	}
+
 	    	// Take care of defining some common vars used by almost every case...
 	    	if ( isset($style['id']) ) {
 	    		$setting_id = "{$theme_opts_id}[{$style['id']}]";
@@ -188,6 +198,11 @@ class PL_Customizer
 	        switch ( $style['type'] ) 
 	        {
 	            case 'heading':
+	                if ($onboard) {
+	                	$include_section = array_search($style['name'], self::$onboard_sections);
+	                	if (!$include_section) { continue; }
+	            	}
+
 	                $args_section = array(
 			                                'title'    => __($style['name'],''),
 			                                'description' => $style['name'],
@@ -197,12 +212,12 @@ class PL_Customizer
 	                $section_id = strtolower(str_replace(' ', '_', $style['name'])) . '_pls_options';
 	                $wp_customize->add_section( $section_id, $args_section );
 
-	                $last_section_id = $section_id;
-	                ++$section_priority;
-
 	                // Add dummy control so that section will appear...
 	                $wp_customize->add_setting( 'dummy_setting', array() );
 	                $wp_customize->add_control( "dummy_ctrl_{$section_id}", array('settings' => 'dummy_setting', 'section' => $section_id, 'type' => 'none') );
+
+	                $last_section_id = $section_id;
+	                ++$section_priority;
 	                break;
 
 	            // Handle the standard (i.e., 'built-in') controls...
