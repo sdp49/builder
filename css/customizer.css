@@ -5,26 +5,10 @@
 	min-width: 315px;
 	width: 20%;
 }
-
-/* Miscellaneous */
 .customize-title-span {
 	font-size: 12px;
 	font-weight: bold;
 }
-#pls_integration_form select {
-	width: 275px;
-}
-/*
-#pls_integration_form .row {
-
-}
-*/
-#customize_integration_submit {
-	margin-top: 25px;
-	float: right;
-}
-
-/* ? */
 .customize-section-content select {
 	min-width: 0px !important;
 }
@@ -48,6 +32,21 @@
     clear: both;
     width: 65px !important;
     margin: 2px 0px 0px 3px !important	; 
+}
+
+/* Integration sidebar control */
+#pls_integration_form select {
+	width: 275px;
+}
+#customize_integration_submit {
+	margin-top: 25px;
+	float: right;
+}
+#pls_integration_form h3.invalid {
+	color: red !important;
+}
+#pls_integration_form input.invalid {
+	border: 1px solid red !important;
 }
 
 /* Cleaning up jqueryUI's styles */

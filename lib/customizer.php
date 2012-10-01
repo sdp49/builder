@@ -15,11 +15,10 @@ add_action( 'customize_register', 'placester_customize_register' );
 function placester_customize_register( $wp_customize ) 
 {
 	$onboard = ( isset($_GET['onboard']) && strtolower($_GET['onboard']) == 'true' ) ? true : false;
-	
 	define_custom_controls();
 
-	PL_Customizer::register_option_components( $wp_customize, $onboard );
 	PL_Customizer::register_pl_components( $wp_customize );
+	PL_Customizer::register_option_components( $wp_customize, $onboard );
 }
 
 // Can't nest class definitions in PHP, so these have to be placed in a global function...
@@ -150,6 +149,13 @@ class PL_Customizer
 			                          'transport' => 'refresh' 
 			                        );
 
+	private static $priority = 0;
+
+	private function get_priority() {
+		// Return the newly incremented value (note the PREFIX operator...)
+		return ++self::$priority;
+	}
+
 	private function get_setting_opts( $args = array() )
 	{
 		$merged_opts = wp_parse_args($args, self::$def_setting_opts);
@@ -177,9 +183,6 @@ class PL_Customizer
 		if ( !isset($wp_customize) ) { return; }
 
 		$theme_opts_id = $wp_customize->get_stylesheet();
-	    // error_log('Theme options ID: ' . $theme_opts_id);
-
-	    $section_priority = 3;
 	    $last_section_id = '';
 	    $include_section = true;
 
@@ -199,15 +202,13 @@ class PL_Customizer
 	        {
 	            case 'heading':
 	                if ($onboard) {
-	                	$include_section = array_search($style['name'], self::$onboard_sections);
+	                	$include_section = ( array_search($style['name'], self::$onboard_sections) === false ) ? false : true;
 	                	if (!$include_section) { continue; }
 	            	}
 
-	                $args_section = array(
-			                                'title'    => __($style['name'],''),
-			                                'description' => $style['name'],
-			                                'priority' => $section_priority,
-			                             ); 
+
+	                $args_section = array( 'title' => __($style['name'],''), 'description' => $style['name'] ); 
+	                $args_section['priority'] = self::get_priority();
 
 	                $section_id = strtolower(str_replace(' ', '_', $style['name'])) . '_pls_options';
 	                $wp_customize->add_section( $section_id, $args_section );
@@ -215,9 +216,6 @@ class PL_Customizer
 	                // Add dummy control so that section will appear...
 	                $wp_customize->add_setting( 'dummy_setting', array() );
 	                $wp_customize->add_control( "dummy_ctrl_{$section_id}", array('settings' => 'dummy_setting', 'section' => $section_id, 'type' => 'none') );
-
-	                $last_section_id = $section_id;
-	                ++$section_priority;
 	                break;
 
 	            // Handle the standard (i.e., 'built-in') controls...
@@ -276,11 +274,8 @@ class PL_Customizer
 		 */
 		if ( PL_Option_Helper::api_key() ) {
 			$int_section_id = 'integration_pl';
-			$int_args_section = array(
-	                                'title'    => __('MLS Integration', ''),
-	                                'description' => 'MLS Integration',
-	                                'priority' => 1,
-	                             ); 
+			$int_args_section = array( 'title' => __('MLS Integration',''), 'description' => 'MLS Integration' ); 
+	        $int_args_section['priority'] = self::get_priority();
 	        
 	        $wp_customize->add_section( $int_section_id, $int_args_section );
 
@@ -294,11 +289,8 @@ class PL_Customizer
 		 * Plug-in Settings Section 
 		 */
 		$set_section_id = 'settings_pl';
-		$set_args_section = array(
-	                            'title'    => __('Settings', ''),
-	                            'description' => 'Settings',
-	                            'priority' => 2,
-	                         ); 
+		$set_args_section = array( 'title' => __('Settings', ''), 'description' => 'Settings' );
+		$set_args_section['priority'] = self::get_priority();
 	    
 	    $wp_customize->add_section( $set_section_id, $set_args_section );
 
