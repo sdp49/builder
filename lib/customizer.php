@@ -188,7 +188,7 @@ class PL_Customizer
 
 	    foreach (PLS_Style::$styles as $style) 
 	    {
-	    	if ($onboard && !$include_section) {
+	    	if ($onboard && $style['type'] != 'heading' && !$include_section) {
 	    		continue;
 	    	}
 
@@ -216,6 +216,8 @@ class PL_Customizer
 	                // Add dummy control so that section will appear...
 	                $wp_customize->add_setting( 'dummy_setting', array() );
 	                $wp_customize->add_control( "dummy_ctrl_{$section_id}", array('settings' => 'dummy_setting', 'section' => $section_id, 'type' => 'none') );
+
+	                $last_section_id = $section_id;
 	                break;
 
 	            // Handle the standard (i.e., 'built-in') controls...
