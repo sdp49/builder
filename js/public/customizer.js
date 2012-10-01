@@ -44,7 +44,7 @@ jQuery(document).ready(function($) {
 	});
 
 	if (wp.customize)
-	{ console.log("api.Loader exists..."); }
+	{ console.log("wp.customize exists..."); }
 
 });	
 

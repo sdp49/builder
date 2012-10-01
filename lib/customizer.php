@@ -320,6 +320,16 @@ class PL_Customizer
 	    
 	    $wp_customize->add_section( $set_section_id, $set_args_section );
 
+	    // Load Theme Switcher
+	    $switch_theme_ctrl_id = 'switch_theme_ctrl';
+	    $switch_theme_args_ctrl = array('settings' => $dummy_setting_id, 'section' => $set_section_id, 'type' => 'none');
+	    $wp_customize->add_control( new PL_Customize_Switch_Theme_Control($wp_customize, $switch_theme_ctrl_id, $switch_theme_args_ctrl) );
+	    
+	    // Load Theme Options Control
+	    $load_opts_ctrl_id = 'load_opts_ctrl';
+	    $load_opts_args_ctrl = array('settings' => $dummy_setting_id, 'section' => $set_section_id, 'type' => 'none');
+	    $wp_customize->add_control( new PL_Customize_Load_Theme_Opts_Control($wp_customize, $load_opts_ctrl_id, $load_opts_args_ctrl) );
+
 	    // Demo Data Control
 	    $demo_setting_id = 'pls_demo_data_flag';
 	    $wp_customize->add_setting( $demo_setting_id, self::get_setting_opts() );
@@ -327,17 +337,6 @@ class PL_Customizer
 		$demo_ctrl_id = 'demo_data_ctrl';                
 	    $demo_args_control = self::get_control_opts( $demo_setting_id, array('name'=>'Use Demo Data for listings', 'type'=>'checkbox'), $set_section_id );
 	    $wp_customize->add_control( $demo_ctrl_id, $demo_args_control);
-
-	    // Load Theme Options Control
-	    $load_opts_ctrl_id = 'load_opts_ctrl';
-	    $load_opts_args_ctrl = array('settings' => $dummy_setting_id, 'section' => $set_section_id, 'type' => 'none');
-	    $wp_customize->add_control( new PL_Customize_Load_Theme_Opts_Control($wp_customize, $load_opts_ctrl_id, $load_opts_args_ctrl) );
-
-	    // Load Theme Switcher
-	    $switch_theme_ctrl_id = 'switch_theme_ctrl';
-	    $switch_theme_args_ctrl = array('settings' => $dummy_setting_id, 'section' => $set_section_id, 'type' => 'none');
-	    $wp_customize->add_control( new PL_Customize_Switch_Theme_Control($wp_customize, $switch_theme_ctrl_id, $switch_theme_args_ctrl) );
-
 	}
 	    
 }
