@@ -9,7 +9,10 @@ var ajaxurl = 'http://onboard.placester.local/wp-admin/admin-ajax.php';
 // automatically "busted" when in the hosted environment... (see hosted-modifications plugin)
 var customizer_global = {
 	previewLoaded: function () {
-		alert('Preview finished loading...');
+		// alert('Preview finished loading...');
+		// jQuery('#customize-preview').removeClass('preview-load-indicator');
+		jQuery('#customize-preview').fadeTo(1000, 1);
+		jQuery('#preview_load_spinner').fadeTo(700, 0);
 	}
 };
 
@@ -24,7 +27,7 @@ jQuery(document).ready(function($) {
 	 /*
 	  * Applies to loading default theme options "pallets"
 	  */
-	 $('#btn_def_opts').live('click', function (event) {
+	$('#btn_def_opts').live('click', function (event) {
 		event.preventDefault();
 
 		if (!confirm('Are you sure you want to overwrite your existing Theme Options?'))
@@ -61,8 +64,9 @@ jQuery(document).ready(function($) {
 	/*
 	 * Catch-all for input changes...
 	 */
-	$('input').on('keyup', function (event) { 
-		// alert('input changed');
+	$('input[type=text]').on('keyup', function (event) { 
+		$('#customize-preview').fadeTo(1000, 0.2);
+		$('#preview_load_spinner').fadeTo(700, 1);
 	});
 
 });	

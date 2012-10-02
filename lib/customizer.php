@@ -11,7 +11,7 @@ function themedemo_admin()
     add_theme_page( 'Customize', 'Customize', 'edit_theme_options', 'customize.php' );
 }
 
-add_action( 'customize_register', 'placester_customize_register' );
+add_action( 'customize_register', 'placester_customize_register', 1 );
 function placester_customize_register( $wp_customize ) 
 {
 	$onboard = ( isset($_GET['onboard']) && strtolower($_GET['onboard']) == 'true' ) ? true : false;
@@ -19,6 +19,19 @@ function placester_customize_register( $wp_customize )
 
 	PL_Customizer::register_pl_components( $wp_customize );
 	PL_Customizer::register_option_components( $wp_customize, $onboard );
+
+	// Prevent default control from being created
+	remove_action( 'customize_register', array(  $wp_customize, 'register_controls' ) );
+
+	// No infobar in theme previews...
+	remove_action( 'wp_head', 'placester_info_bar' );
+}
+
+add_action( 'customize_controls_print_footer_scripts', 'load_preview_spinner' );
+function load_preview_spinner() {
+  ?>
+    <img id="preview_load_spinner" src="<?php echo plugins_url('/placester/images/preview_load_spin.gif'); ?>" alt="Theme Preview is Loading..." />
+  <?php
 }
 
 // Can't nest class definitions in PHP, so these have to be placed in a global function...
@@ -48,7 +61,6 @@ function define_custom_controls()
 
    			<!-- Font Size -->
 			<select class="of-typography of-typography-size" <?php $this->link('size'); ?> >
-			
 			  <?php for ($i = 9; $i < 71; $i++): 
 				$size = $i . 'px'; ?>
 				<option value="<?php echo esc_attr( $size ); ?>" <?php selected( $this->value('size'), $size ); ?>><?php echo $size; ?></option>
@@ -302,6 +314,20 @@ class PL_Customizer
 	    $dummy_setting_id = 'dummy_setting';
 	    $wp_customize->add_setting( 'dummy_setting', array() );
 
+	    /*
+	     * Theme Selection
+	     */
+	    $theme_section_id = 'theme_selection_pl';
+		$theme_args_section = array( 'title' => __('Theme Selection',''), 'description' => 'Theme Selection' ); 
+        $theme_args_section['priority'] = self::get_priority();
+        
+        $wp_customize->add_section( $theme_section_id, $theme_args_section );
+
+	    // Load Theme Switcher control
+	    $switch_theme_ctrl_id = 'switch_theme_ctrl';
+	    $switch_theme_args_ctrl = array('settings' => $dummy_setting_id, 'section' => $theme_section_id, 'type' => 'none');
+	    $wp_customize->add_control( new PL_Customize_Switch_Theme_Control($wp_customize, $switch_theme_ctrl_id, $switch_theme_args_ctrl) );
+
 		/* 
 		 * MLS Integration Section
 		 */
@@ -312,7 +338,7 @@ class PL_Customizer
 	        
 	        $wp_customize->add_section( $int_section_id, $int_args_section );
 
-	        // Control
+	        // Load Integration control
 	        $int_ctrl_id = 'integration_ctrl';
 	        $int_args_ctrl = array('settings' => $dummy_setting_id, 'section' => $int_section_id, 'type' => 'none');
 	        $wp_customize->add_control( new PL_Customize_Integration_Control($wp_customize, $int_ctrl_id, $int_args_ctrl) );
@@ -326,11 +352,6 @@ class PL_Customizer
 		$set_args_section['priority'] = self::get_priority();
 	    
 	    $wp_customize->add_section( $set_section_id, $set_args_section );
-
-	    // Load Theme Switcher
-	    $switch_theme_ctrl_id = 'switch_theme_ctrl';
-	    $switch_theme_args_ctrl = array('settings' => $dummy_setting_id, 'section' => $set_section_id, 'type' => 'none');
-	    $wp_customize->add_control( new PL_Customize_Switch_Theme_Control($wp_customize, $switch_theme_ctrl_id, $switch_theme_args_ctrl) );
 	    
 	    // Load Theme Options Control
 	    $load_opts_ctrl_id = 'load_opts_ctrl';

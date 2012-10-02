@@ -1,5 +1,3 @@
-/* global modal styling */
-
 /* Styles for main customizer sidebar */
 #customize-controls {
 	min-width: 315px;
@@ -75,9 +73,26 @@
 	-moz-opacity: 0.1 !important;
 	filter:alpha(opacity=0.1);
 }
-/*    end     */
 
-/* Plugin specific styles */
+/* Preview load indicator */
+/*.preview-load-indicator {*/
+#customize-preview { 
+   /* IE filter */
+   filter: progid:DXImageTransform.Microsoft.Alpha(opacity=50);
+   -moz-opacity:0.2;    /* Mozilla extension */
+   -khtml-opacity:0.2;  /* Safari/Conqueror extension */
+   opacity:0.2; /* CSS3 */
+   background-color: lightgrey;
+}
+#preview_load_spinner {
+   /*display: none;*/
+   top: 42%;
+   left: 55%;
+   position: fixed;
+   z-index: 550000;
+}
+
+/* Global modal styling */
 .ui-dialog .ui-dialog-titlebar h3 {
 	font-size: 22px;
 	font-family: Georgia,"Times New Roman","Bitstream Charter",Times,serif;
