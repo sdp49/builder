@@ -7,7 +7,11 @@ var ajaxurl = 'http://onboard.placester.local/wp-admin/admin-ajax.php';
 
 // This global variable must be defined in order to conditionally prevent iframes from being
 // automatically "busted" when in the hosted environment... (see hosted-modifications plugin)
-var customizer_global = true;
+var customizer_global = {
+	previewLoaded: function () {
+		alert('Preview finished loading...');
+	}
+};
 
 
 jQuery(document).ready(function($) {
@@ -47,9 +51,6 @@ jQuery(document).ready(function($) {
 		console.log($(this).val());
 		window.location.href = $(this).val();
 	});
-
-	if (wp.customize)
-	{ console.log("wp.customize exists..."); }
 
 });	
 

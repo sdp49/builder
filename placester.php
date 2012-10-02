@@ -182,3 +182,18 @@ function placester_info_bar() {
         PL_Router::load_builder_partial('infobar.php');
     }
 }
+
+add_action('wp_enqueue_scripts', 'iframe_load_notify');
+function iframe_load_notify () {
+  ob_start();
+    ?>
+    <script type="text/javascript">
+        window.onload = function () {  
+            if ( (top.location != self.location) && top.customizer_global ) {
+                top.customizer_global.previewLoaded();
+            }
+        }
+    </script>
+    <?php
+  echo ob_get_clean();
+}
