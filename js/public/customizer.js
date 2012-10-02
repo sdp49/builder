@@ -52,6 +52,12 @@ jQuery(document).ready(function($) {
 		window.location.href = $(this).val();
 	});
 
+	// Ensures that saving a new theme in the customizer does NOT cause a redirect...
+	if (_wpCustomizeSettings) {
+		var boolSuccess = delete _wpCustomizeSettings.url.activated;
+		// console.log('redirect deleted: ' + boolSuccess);
+	}
+
 	/*
 	 * Catch-all for input changes...
 	 */
