@@ -52,6 +52,13 @@ jQuery(document).ready(function($) {
 		window.location.href = $(this).val();
 	});
 
+	/*
+	 * Catch-all for input changes...
+	 */
+	$('input').on('keyup', function (event) { 
+		// alert('input changed');
+	});
+
 });	
 
 
