@@ -5,6 +5,11 @@
 // Usually defined by WordPress, but not in the customizer...
 var ajaxurl = 'http://onboard.placester.local/wp-admin/admin-ajax.php';
 
+// This global variable must be defined in order to conditionally prevent iframes from being
+// automatically "busted" when in the hosted environment... (see hosted-modifications plugin)
+var customizer_global = true;
+
+
 jQuery(document).ready(function($) {
 
 	/*
