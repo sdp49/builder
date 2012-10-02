@@ -268,7 +268,7 @@ class PL_Customizer
 	            		$wp_customize->add_setting( "{$setting_id}[{$key}]", self::get_setting_opts() );
 	            		$typo_setting_ids[$key] = "{$setting_id}[{$key}]";
 	            	}
-	            	// 
+	            	
 	            	$args_control = self::get_control_opts( $typo_setting_ids, $style, $last_section_id, true );
 	                $wp_customize->add_control( new PL_Customize_Typography_Control($wp_customize, $control_id, $args_control) );
 
@@ -280,6 +280,13 @@ class PL_Customizer
 	            	// 		error_log("{$key} => {$temp_id} \n");
 	            	// 	}
 	            	// }
+	            	break;
+
+	            case 'upload':
+	            	$wp_customize->add_setting( $setting_id, self::get_setting_opts() );
+
+	            	$args_control = self::get_control_opts( $setting_id, $style, $last_section_id, true );
+	                $wp_customize->add_control( new WP_Customize_Upload_Control($wp_customize, $control_id, $args_control) );
 	            	break;
 
 	            default:

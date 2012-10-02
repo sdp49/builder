@@ -48,7 +48,7 @@ jQuery(document).ready(function($) {
 	 * Handles switching themes in the preview iframe...
 	 */
 	$('#switch_theme_main #theme_choices').live('change', function (event) {
-		console.log($(this).val());
+		// console.log($(this).val());
 		window.location.href = $(this).val();
 	});
 
