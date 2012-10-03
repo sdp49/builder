@@ -9,7 +9,7 @@
 }
 .customize-section-title {
 	font-family: "Century Gothic", "Helvetica Light" !important;
-	font-size: 18pt;
+	font-size: 16px !important;
 	font-weight: 200 !important;
 }
 .customize-section-content select {
@@ -79,8 +79,22 @@
 	filter:alpha(opacity=0.1);
 }
 
+/* Imported Fonts */
+@font-face {
+  font-family: "Century Gothic Bold";
+  src: url("ttf/gothicb.ttf") format("truetype");
+  font-weight: lighter;
+  font-style: normal; 
+}
+
+@font-face {
+  font-family: "Century Gothic";
+  src: url("ttf/gothic.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal; 
+}
+
 /* Preview load indicator */
-/*.preview-load-indicator {*/
 #customize-preview { 
    /* IE filter */
    filter: progid:DXImageTransform.Microsoft.Alpha(opacity=50);
