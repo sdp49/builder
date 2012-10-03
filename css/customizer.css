@@ -7,6 +7,11 @@
 	font-size: 12px;
 	font-weight: bold;
 }
+.customize-section-title {
+	font-family: "Century Gothic", "Helvetica Light" !important;
+	font-size: 18pt;
+	font-weight: 200 !important;
+}
 .customize-section-content select {
 	min-width: 0px !important;
 }
