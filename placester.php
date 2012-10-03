@@ -82,7 +82,7 @@ include_once('config/api/people.php');
 include_once('config/api/integration.php');
 include_once('config/third-party/google-places.php');
 include_once('config/api/wordpress.php');
-include_once('config/customizer/onboard_theme_opts.php');
+include_once('config/customizer/onboard_settings.php');
 include_once('config/customizer/theme_choices.php');
 
 //lib

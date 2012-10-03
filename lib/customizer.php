@@ -15,10 +15,9 @@ add_action( 'customize_register', 'placester_customize_register', 1 );
 function placester_customize_register( $wp_customize ) 
 {
 	define_custom_controls();
-
-	PL_Customizer::register_pl_components( $wp_customize );
-	
 	$onboard = ( isset($_GET['onboard']) && strtolower($_GET['onboard']) == 'true' ) ? true : false;
+
+	PL_Customizer::register_pl_components( $wp_customize, $onboard );
 	PL_Customizer::register_option_components( $wp_customize, $onboard );
 
 	// Prevent default control from being created
@@ -188,9 +187,20 @@ class PL_Customizer
 
 	private static $priority = 0;
 
-	private function get_priority() {
-		// Return the newly incremented value (note the PREFIX operator...)
-		return ++self::$priority;
+	private function get_priority( $onboard = false, $section = '' ) {
+	  	$new_priority;
+
+	  	if ( $onboard ) {
+	  		global $PL_CUSTOMIZER_ONBOARD_SECTIONS;
+	  		$new_priority = ( is_array($PL_CUSTOMIZER_ONBOARD_SECTIONS) && !empty($section) )
+	  					  	? $PL_CUSTOMIZER_ONBOARD_SECTIONS[$section] : 10;
+	  	}
+	  	else {
+			// Return the newly incremented value (note the PREFIX operator...)
+			$new_priority = ++self::$priority;
+	  	}
+
+	  	return $new_priority;
 	}
 
 	private function get_setting_opts( $args = array() )
@@ -237,7 +247,7 @@ class PL_Customizer
 	        {
 	            case 'heading':
 	                $args_section = array( 'title' => __($style['name'],''), 'description' => $style['name'] ); 
-	                $args_section['priority'] = self::get_priority();
+	                $args_section['priority'] = self::get_priority($onboard, $style['name']);
 
 	                $section_id = strtolower(str_replace(' ', '_', $style['name'])) . '_pls_options';
 	                $wp_customize->add_section( $section_id, $args_section );
@@ -301,7 +311,7 @@ class PL_Customizer
 
 	}
 
-	public function register_pl_components( $wp_customize ) 
+	public function register_pl_components( $wp_customize, $onboard = false ) 
 	{
 		// Dummy setting must be associated with non-options sections in order for them to appear...
 	    $dummy_setting_id = 'dummy_setting';
@@ -312,7 +322,7 @@ class PL_Customizer
 	     */
 	    $theme_section_id = 'theme_selection_pl';
 		$theme_args_section = array( 'title' => __('Theme Selection',''), 'description' => 'Theme Selection' ); 
-        $theme_args_section['priority'] = self::get_priority();
+        $theme_args_section['priority'] = self::get_priority($onboard, 'Theme Selection');
         
         $wp_customize->add_section( $theme_section_id, $theme_args_section );
 
@@ -327,7 +337,7 @@ class PL_Customizer
 		if ( PL_Option_Helper::api_key() ) {
 			$int_section_id = 'integration_pl';
 			$int_args_section = array( 'title' => __('MLS Integration',''), 'description' => 'MLS Integration' ); 
-	        $int_args_section['priority'] = self::get_priority();
+	        $int_args_section['priority'] = self::get_priority($onboard, 'MLS Integration');
 	        
 	        $wp_customize->add_section( $int_section_id, $int_args_section );
 
@@ -341,8 +351,8 @@ class PL_Customizer
 		 * Plug-in Settings Section 
 		 */
 		$set_section_id = 'settings_pl';
-		$set_args_section = array( 'title' => __('Settings', ''), 'description' => 'Settings' );
-		$set_args_section['priority'] = self::get_priority();
+		$set_args_section = array( 'title' => __('General Settings', ''), 'description' => 'General Settings' );
+		$set_args_section['priority'] = self::get_priority($onboard, 'General Settings');
 	    
 	    $wp_customize->add_section( $set_section_id, $set_args_section );
 	    
@@ -356,7 +366,7 @@ class PL_Customizer
 	    $wp_customize->add_setting( $demo_setting_id, self::get_setting_opts() );
 		
 		$demo_ctrl_id = 'demo_data_ctrl';                
-	    $demo_args_control = self::get_control_opts( $demo_setting_id, array('name'=>'Use Demo Data for listings', 'type'=>'checkbox'), $set_section_id );
+	    $demo_args_control = self::get_control_opts( $demo_setting_id, array('name'=>'Use Demo Listing Data', 'type'=>'checkbox'), $set_section_id );
 	    $wp_customize->add_control( $demo_ctrl_id, $demo_args_control);
 	}
 	    

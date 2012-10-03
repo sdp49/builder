@@ -95,7 +95,7 @@ jQuery(document).ready(function($) {
 		setPreviewLoading();
 	});
 
-	$('select.of-typography').on('change', function (event) {
+	$('select.of-typography, #theme_choices').on('change', function (event) {
 		setPreviewLoading();
 	});
 });	
