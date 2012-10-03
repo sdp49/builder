@@ -11,16 +11,27 @@
 PL_Shortcodes::init();
 class PL_Shortcodes
 {
-	public static $codes = array('searchform', 'listings', 'prop_details');
+	public static $codes = array('search_form', 'listings', 'prop_details', 'map', 'slideshow', 'featured_listings', 'static_listings');
 
-	public static $p_codes = array('searchform' => 'Search Form Shortcode', 'listings' => 'Listings Shortcode', 'prop_details' => 'Property Details Template');
+	public static $p_codes = array(	'search_form' => 'Search Form Shortcode',
+									'search_listings' => 'Listings Shortcode',
+									'prop_details' => 'Property Details Template',
+									'map' => 'Map Template',
+									'slideshow' => 'Slideshow Template',
+									'featured_listings' => 'Slideshow Template',
+									'static_listings' => 'Slideshow Template',
+								);
 	
 	// TODO: Construct these lists dynamically by examining the doc hierarchy...
-	public static $defaults = array('searchform' 	=> array('twentyten', 'twentyeleven'),
-	  				                'prop_details' 	=> array('twentyten', 'twentyeleven'),
-			               			'listings' 		=> array('twentyten', 'twentyeleven') );
+	public static $defaults = array('search_form' 		=> array('twentyten', 'twentyeleven'),
+	  				                'prop_details' 		=> array('twentyten', 'twentyeleven'),
+	  				                'map' 				=> array('twentyten', 'twentyeleven'),
+	  				                'slideshow' 		=> array('twentyten', 'twentyeleven'),
+	  				                'featured_listings' => array('twentyten', 'twentyeleven'),
+	  				                'static_listings' 	=> array('twentyten', 'twentyeleven'),
+			               			'listings' 			=> array('twentyten', 'twentyeleven') );
 
-	public static $subcodes = array('searchform'  =>  array('bedrooms',
+	public static $subcodes = array('search_form'  =>  array('bedrooms',
 												            'min_beds',
 												            'max_beds',
 												            'bathrooms',
@@ -78,8 +89,9 @@ class PL_Shortcodes
 
 	public function init() 
 	{
-		add_shortcode('searchform', array(__CLASS__, 'searchform_shortcode_handler'));
+		add_shortcode('search_form', array(__CLASS__, 'searchform_shortcode_handler'));
 		add_shortcode('listings', array(__CLASS__, 'listings_shortcode_handler'));
+		add_shortcode('map', array(__CLASS__, 'map_shortcode_handler'));
 
 		// For any shortcodes that use subcodes, register them to a single handler that bears the shortcode's name
 		foreach (self::$subcodes as $code => $subs) {
@@ -102,6 +114,9 @@ class PL_Shortcodes
 
 		// Handle the special case of turning property details functionality on/off...
 		add_option( self::$prop_details_enabled_key, 'false' ); 
+
+
+		add_action('wp_footer', array(__CLASS__, 'init_bootloader'));
 	}
 
 
@@ -115,7 +130,25 @@ class PL_Shortcodes
 		// Default form enclosure
 		$header = '<form method="post" action="' . esc_url( home_url( '/' ) ) . 'listings" class="pls_search_form_listings">';
 		$footer = '</form>';
+		?>
 
+		<script type="text/javascript">
+			if (typeof bootloader !== 'object') {
+				var bootloader;
+			}
+
+		  jQuery(document).ready(function( $ ) {
+		  	if (typeof bootloader !== 'object') {
+		  		bootloader = new SearchLoader();
+		  		bootloader.add_param({filter: {context: "shortcode"}});
+		  	} else {
+		  		bootloader.add_param({filter: {context: "shortcode"}});
+		  	}
+		  });
+		</script>
+
+
+		<?php
 		return ( $header . PLS_Partials_Listing_Search_Form::init(array('context' => 'shortcode', 'ajax' => true)) . $footer );
 	}
 
@@ -125,16 +158,73 @@ class PL_Shortcodes
 		// These attributes will hand the look and feel of the listing form container, as 
 		// the context func applies to each individual listing.
 	  ob_start();
+	  	?>
+	  	<script type="text/javascript">
+		  	if (typeof bootloader !== 'object') {
+				var bootloader;
+			}
+		  jQuery(document).ready(function( $ ) {
+
+		  	if (typeof bootloader !== 'object') {
+		  		bootloader = new SearchLoader();
+		  		bootloader.add_param({list: {context: "shortcode"}});
+		  	} else {
+		  		bootloader.add_param({list: {context: "shortcode"}});
+		  	}
+		  });
+		</script>
+
+
+	  	<?php
 	    PLS_Partials_Get_Listings_Ajax::load(array('context' => 'shortcode'));
 	  return ob_get_clean();  
 	}
 
+	public static function map_shortcode_handler($atts)
+	{
+		// Handle attributes using shortcode_atts...
+		// These attributes will hand the look and feel of the listing form container, as 
+		// the context func applies to each individual listing.
+	  ob_start();
+	  	?>
+	 <script type="text/javascript">
+    	jQuery(document).ready(function( $ ) {
+    		
+    		var map = new Map (); 
+    		// var filter = new Filters ();
+    		var listings = new Listings ({
+    			map: map
+    			// filter: filter,
+    		});
+            
+            var status = new Status_Window ({map: map, listings:listings});
+            
+            map.init({
+                // type: 'lifestyle',
+                // type: 'lifestyle_polygon',
+                // type: 'neighborhood',
+                type: 'listings',
+                // lifestyle: lifestyle,
+                listings: listings,
+                // lifestyle_polygon: lifestyle_polygon,
+                status_window: status
+            });
+
+    		listings.init();
+    		
+    	});
+    </script>
+
+	  	<?php
+	    // echo PLS_Map::listings( null, array('width' => 950, 'height' => 400) );
+	  return ob_get_clean();  
+	}
 
 /*** Context Filter Handlers ***/	
 
 	public static function searchform_shortcode_context($form, $form_html, $form_options, $section_title, $form_data)
 	{
-		$shortcode = 'searchform';
+		$shortcode = 'search_form';
 		self::$form_html = $form_html;
 
 		$snippet_body = self::get_active_snippet_body($shortcode);
@@ -178,7 +268,7 @@ class PL_Shortcodes
 
 /*** Sub-Shortcode Handlers ***/
 
-	public static function searchform_sub_shortcode_handler ($atts, $content, $tag) 
+	public static function search_form_sub_shortcode_handler ($atts, $content, $tag) 
 	{
 		//pls_dump($tag);
 		return self::$form_html[$tag];
@@ -256,10 +346,12 @@ class PL_Shortcodes
 				?>
 					<div class="amenities-section grid_8 alpha">
 	                    <ul>
-	                    <?php PLS_Format::translate_amenities(&$amenities[$amen_type]); ?>
-	                      <?php foreach ($amenities[$amen_type] as $amenity => $value): ?>
-	                        <li><span><?php echo $amenity; ?></span> <?php echo $value ?></li>
-	                      <?php endforeach ?>
+	                    	<?php if (is_array($amenities[$amen_type])): ?>
+	                    	<?php PLS_Format::translate_amenities(&$amenities[$amen_type]); ?>
+			                    <?php foreach ($amenities[$amen_type] as $amenity => $value): ?>
+			                        <li><span><?php echo $amenity; ?></span> <?php echo $value ?></li>
+			                    <?php endforeach ?>		
+	                      	<?php endif ?>
 	                    </ul>
 	                </div>
 				<?php 
@@ -294,6 +386,28 @@ class PL_Shortcodes
 
 		$snippet_body = PL_Router::load_snippet($shortcode, $snippet_name, $type);
 		return $snippet_body;
+	}
+
+
+	public static function init_bootloader () {
+		ob_start();
+		?>
+
+			<script type="text/javascript">
+			jQuery(document).ready(function( $ ) {
+
+				console.log(typeof bootloader);
+
+				if (typeof bootloader === 'object') {
+		  			bootloader.init();
+			  	}	
+			});
+			
+
+			</script>
+
+		<?php
+		echo ob_get_clean();
 	}
 }
 
