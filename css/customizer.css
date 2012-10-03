@@ -79,9 +79,9 @@
 #customize-preview { 
    /* IE filter */
    filter: progid:DXImageTransform.Microsoft.Alpha(opacity=50);
-   -moz-opacity:0.2;    /* Mozilla extension */
-   -khtml-opacity:0.2;  /* Safari/Conqueror extension */
-   opacity:0.2; /* CSS3 */
+   -moz-opacity:0.3;    /* Mozilla extension */
+   -khtml-opacity:0.3;  /* Safari/Conqueror extension */
+   opacity:0.3; /* CSS3 */
    background-color: lightgrey;
 }
 #preview_load_spinner {

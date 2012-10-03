@@ -24,9 +24,12 @@ jQuery(document).ready(function($) {
 	 * (Configured to execute on any load of customize.php)
 	 */
 
-	 /*
-	  * Applies to loading default theme options "pallets"
-	  */
+	// Hide the "You are Previewing" div--no hook to prevent this, so this is the only way to hide w/out altering core...
+	$('#customize-info').hide();
+
+	/*
+	 * Applies to loading default theme options "pallets"
+	 */
 	$('#btn_def_opts').live('click', function (event) {
 		event.preventDefault();
 
@@ -62,11 +65,19 @@ jQuery(document).ready(function($) {
 	}
 
 	/*
-	 * Catch-all for input changes...
+	 * Display loading for input changes...
 	 */
-	$('input[type=text]').on('keyup', function (event) { 
-		$('#customize-preview').fadeTo(1000, 0.2);
+	function setPreviewLoading() {
+		$('#customize-preview').fadeTo(800, 0.3);
 		$('#preview_load_spinner').fadeTo(700, 1);
+	}
+
+	$('.customize-control-text input[type=text]').on('keyup', function (event) { 
+		setPreviewLoading();
+	});
+
+	$('.customize-control-checkbox input[type=checkbox]').on('change', function (event) {
+		setPreviewLoading();
 	});
 
 });	
