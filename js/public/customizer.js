@@ -8,14 +8,17 @@ var ajaxurl = 'http://onboard.placester.local/wp-admin/admin-ajax.php';
 // This global variable must be defined in order to conditionally prevent iframes from being
 // automatically "busted" when in the hosted environment... (see hosted-modifications plugin)
 var customizer_global = {
+	refreshing: false,
 	previewLoaded: function () {
 		// alert('Preview finished loading...');
 		// jQuery('#customize-preview').removeClass('preview-load-indicator');
 		jQuery('#customize-preview').fadeTo(1000, 1);
 		jQuery('#preview_load_spinner').fadeTo(700, 0);
+
+		// Set to let other components know that refresh has been completed...
+		this.refreshing = false;
 	}
 };
-
 
 jQuery(document).ready(function($) {
 
@@ -55,7 +58,15 @@ jQuery(document).ready(function($) {
 	 */
 	$('#switch_theme_main #theme_choices').live('change', function (event) {
 		// console.log($(this).val());
-		window.location.href = $(this).val();
+		var curr_href = window.location.href;
+		var new_href = $(this).val()
+
+		// Check to see if the current URL contains a flag for onboarding--if so, replicate it in the new href...
+		if ( curr_href.indexOf('onboard=true') != -1 ) {
+			new_href += '&onboard=true';
+		}  
+
+		window.location.href = new_href;
 	});
 
 	// Ensures that saving a new theme in the customizer does NOT cause a redirect...
@@ -68,8 +79,12 @@ jQuery(document).ready(function($) {
 	 * Display loading for input changes...
 	 */
 	function setPreviewLoading() {
-		$('#customize-preview').fadeTo(800, 0.3);
-		$('#preview_load_spinner').fadeTo(700, 1);
+		if ( !customizer_global.refreshing ) {
+		  	$('#customize-preview').fadeTo(800, 0.3);
+			$('#preview_load_spinner').fadeTo(700, 1);
+
+			customizer_global.refreshing = true;
+		}  
 	}
 
 	$('.customize-control-text input[type=text]').on('keyup', function (event) { 

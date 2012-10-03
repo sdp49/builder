@@ -135,7 +135,7 @@ function define_custom_controls()
 			  <span class="customize-title-span">Use Default Theme Options </span>
 			  <select id="def_theme_opts">
 			    <?php foreach (PLS_Options_Manager::$def_theme_opts_list as $name) : ?>
-			  	  <option value="<?php echo $name?>"><?php echo $name; ?></option>
+			  	  <option value="<?php echo $name; ?>"><?php echo $name; ?></option>
 			    <?php endforeach; ?>
 			  </select>
 			  <input type="button" id="btn_def_opts" class="top-button button-primary" value="Load" style="margin: 0px" />
@@ -160,8 +160,8 @@ function define_custom_controls()
 			<div id="switch_theme_main" class="custom-control">
 			  <span class="customize-title-span">Preview Other Themes </span>
 			  <select id="theme_choices">
-			    <?php foreach ($PL_CUSTOMIZER_THEMES as $theme) : ?>
-			  	  <option value="<?php echo wp_customize_url($theme); ?>" <?php selected( $this->manager->get_stylesheet(), $theme ); ?>><?php echo $theme; ?></option>
+			    <?php foreach ($PL_CUSTOMIZER_THEMES as $name => $stylesheet) : ?>
+			  	  <option value="<?php echo wp_customize_url($stylesheet); ?>" <?php selected( $this->manager->get_stylesheet(), $stylesheet ); ?>><?php echo $name; ?></option>
 			    <?php endforeach; ?>
 			  </select>
 			  <!-- <input type="button" id="btn_switch_theme" class="top-button button-primary" value="View" style="margin: 0px" /> -->
