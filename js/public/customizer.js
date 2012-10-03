@@ -80,6 +80,9 @@ jQuery(document).ready(function($) {
 		setPreviewLoading();
 	});
 
+	$('select.of-typography').on('change', function (event) {
+		setPreviewLoading();
+	});
 });	
 
 
