@@ -14,10 +14,11 @@ function themedemo_admin()
 add_action( 'customize_register', 'placester_customize_register', 1 );
 function placester_customize_register( $wp_customize ) 
 {
-	$onboard = ( isset($_GET['onboard']) && strtolower($_GET['onboard']) == 'true' ) ? true : false;
 	define_custom_controls();
 
 	PL_Customizer::register_pl_components( $wp_customize );
+	
+	$onboard = ( isset($_GET['onboard']) && strtolower($_GET['onboard']) == 'true' ) ? true : false;
 	PL_Customizer::register_option_components( $wp_customize, $onboard );
 
 	// Prevent default control from being created
@@ -153,13 +154,13 @@ function define_custom_controls()
 
    		public function render() {
    		  ?>
-   		  	<?php $theme_array = array('columbus', 'highland', 'slate', 'tampa'); ?>
+   		  	<?php global $PL_CUSTOMIZER_THEMES; ?>
    		  	
 			<!-- Build themes dropdown... -->
 			<div id="switch_theme_main" class="custom-control">
 			  <span class="customize-title-span">Preview Other Themes </span>
 			  <select id="theme_choices">
-			    <?php foreach ($theme_array as $theme) : ?>
+			    <?php foreach ($PL_CUSTOMIZER_THEMES as $theme) : ?>
 			  	  <option value="<?php echo wp_customize_url($theme); ?>" <?php selected( $this->manager->get_stylesheet(), $theme ); ?>><?php echo $theme; ?></option>
 			    <?php endforeach; ?>
 			  </select>
@@ -198,16 +199,16 @@ class PL_Customizer
 		return $merged_opts;
 	}
 
-	private function get_control_opts( $id, $attrs, $sect_id, $is_custom = false )
+	private function get_control_opts( $id, $opts, $sect_id, $is_custom = false )
 	{
 		$args = array(
                         'settings' => $id,
-                        'label'    => $attrs['name'],
+                        'label'    => $opts['name'],
                         'section'  => $sect_id
                      );
 
 		if ( !$is_custom ) {
-			$args['type'] = $attrs['type'];
+			$args['type'] = $opts['type'];
 		}
 
 		return $args;
@@ -220,14 +221,12 @@ class PL_Customizer
 
 		$theme_opts_id = $wp_customize->get_stylesheet();
 	    $last_section_id = '';
-	    $include_section = true;
 
-	    foreach (PLS_Style::$styles as $style) 
+	    global $PL_CUSTOMIZER_ONBOARD_OPTS;
+	    $style_opts = ( $onboard ? $PL_CUSTOMIZER_ONBOARD_OPTS : PLS_Style::$styles );
+
+	    foreach ($style_opts as $style) 
 	    {
-	    	if ($onboard && $style['type'] != 'heading' && !$include_section) {
-	    		continue;
-	    	}
-
 	    	// Take care of defining some common vars used by almost every case...
 	    	if ( isset($style['id']) ) {
 	    		$setting_id = "{$theme_opts_id}[{$style['id']}]";
@@ -237,12 +236,6 @@ class PL_Customizer
 	        switch ( $style['type'] ) 
 	        {
 	            case 'heading':
-	                if ($onboard) {
-	                	$include_section = ( array_search($style['name'], self::$onboard_sections) === false ) ? false : true;
-	                	if (!$include_section) { continue; }
-	            	}
-
-
 	                $args_section = array( 'title' => __($style['name'],''), 'description' => $style['name'] ); 
 	                $args_section['priority'] = self::get_priority();
 
