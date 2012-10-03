@@ -88,6 +88,8 @@ include_once('config/api/people.php');
 include_once('config/api/integration.php');
 include_once('config/third-party/google-places.php');
 include_once('config/api/wordpress.php');
+include_once('config/customizer/onboard_settings.php');
+include_once('config/customizer/theme_choices.php');
 
 //lib
 include_once('lib/config.php');
@@ -101,6 +103,7 @@ include_once('lib/membership.php');
 include_once('lib/caching.php');
 include_once('lib/shortcodes.php');
 include_once('lib/demo_data.php');
+include_once('lib/customizer.php');
 
 //models
 include_once('models/listing.php');
@@ -203,4 +206,26 @@ function placester_activate () {
     $metrics = new MetricsTracker("9186cdb540264089399036dd672afb10");
     $metrics->track('Activation');
     PL_WordPress_Helper::report_url();
+}
+
+add_action( 'wp_head', 'placester_info_bar' );
+function placester_info_bar() {
+    if ( PL_Option_Helper::get_demo_data_flag() ) {
+        PL_Router::load_builder_partial('infobar.php');
+    }
+}
+
+add_action('wp_enqueue_scripts', 'iframe_load_notify');
+function iframe_load_notify () {
+  ob_start();
+    ?>
+    <script type="text/javascript">
+        window.onload = function () {  
+            if ( (top.location != self.location) && top.customizer_global ) {
+                top.customizer_global.previewLoaded();
+            }
+        }
+    </script>
+    <?php
+  echo ob_get_clean();
 }

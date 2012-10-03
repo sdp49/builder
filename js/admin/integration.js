@@ -12,7 +12,24 @@ jQuery(document).ready(function($) {
 
 	$('#pls_integration_form').live('submit', function(event) {
 		event.preventDefault();
-		submit_handler();	
+
+		var refresh_page = function () {
+			setTimeout(function () {
+				window.location.href = window.location.href;
+			}, 500);
+		}
+
+		submit_handler(refresh_page);	
+	});
+
+	$('#customize_integration_submit').live('click', function() {
+		var clear_form = function () { 
+			$.each($('#pls_integration_form').find('input, select'), function (i, elem) {
+				$(elem).val('');
+			});	
+		}
+
+		submit_handler(clear_form);
 	});
 
 	function submit_handler (success_callback) {
@@ -53,9 +70,18 @@ jQuery(document).ready(function($) {
 		$('#rets_form_message').html('Checking RETS information...');
 		
 		var form_values = {action: 'create_integration'};
-		$.each($('#pls_integration_form').serializeArray(), function(i, field) {
-    		form_values[field.name] = field.value;
-        });
+		var form_serialized = $('#pls_integration_form').serializeArray();
+		
+		if (form_serialized.length > 0) {
+			$.each(form_serialized, function (i, field) {
+	    		form_values[field.name] = field.value;
+	        });
+		}
+		else { // Submitted from customizer...
+			$.each($('#pls_integration_form').find('input, select'), function (i, elem) {
+				form_values[$(elem).attr('name')] = $(elem).val();
+			});		
+		}
 
         // console.log(form_values);
 
@@ -64,9 +90,6 @@ jQuery(document).ready(function($) {
 		  	var form = $('#pls_integration_form');
 			if (data && data.result) {
 				$('#rets_form_message').html(data.message);
-				// setTimeout(function () {
-				// 	window.location.href = window.location.href;
-				// }, 700);
 				if (success_callback) { success_callback(); }
 			} else {
 				var item_messages = [];

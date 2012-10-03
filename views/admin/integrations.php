@@ -81,32 +81,10 @@
 			<div class="clear"></div>
 			<h3 class="get_started">Fill out the form to get started</h3>
 			
-		<?php if ( PL_Option_Helper::api_key() ): ?>
+		  <?php if ( PL_Option_Helper::api_key() ): ?>
 			<?php PL_Router::load_builder_partial('integration-form.php', array('submit' => true)); ?>
-		<?php endif; ?>
-
-			<!-- 
-			<div class="help_prompt">
-				<h3>What to expect after submitting the form:</h3>
-				<ul>
-					<li>A call from your personal support rep introducing themselves</li>
-					<li>If Placester has already integrated with your MLS, you can expect listings in 1-2 days</li>
-					<li>If Placester hasn't yet integrated with your MLS, you can expect listings in 5-7 business days</li>
-					<li>Your personal support rep will guide you through the entire process.</li>
-				</ul>
-				<h3>Need Help?</h3>
-				<ul>
-					<li>Not sure where to get this information?</li>
-					<li>Having trouble submitting the form?</li>
-					<li>Have questions about how MLS integrations work?</li>
-				</ul>
-				<div class="real_person">
-					<h3>Talk to a real person.</h3>
-					<h4>Call us at 1 (800) 728-8391</h4>
-					<h4>Email us at  <a mailto="support@placester.com"> support@pplacester.com</a></h4>
-				</div>
-			</div>
-			 -->	
+		  <?php endif; ?>
+	
 			<div class="clear"></div>	
 		<?php endif ?>
 		<?php // echo PL_Router::load_builder_partial('free-trial.php'); ?>		
