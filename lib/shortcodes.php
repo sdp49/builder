@@ -11,24 +11,29 @@
 PL_Shortcodes::init();
 class PL_Shortcodes
 {
-	public static $codes = array('search_form', 'listings', 'prop_details', 'map', 'slideshow', 'featured_listings', 'static_listings');
+	public static $codes = array('search_form', 'search_listings', 'prop_details', 'search_map', 'listing_slideshow', 'advanced_slideshow','featured_listings', 'static_listings', 'post_listing');
 
 	public static $p_codes = array(	'search_form' => 'Search Form Shortcode',
-									'search_listings' => 'Listings Shortcode',
+									'search_listings' => 'Search Listings Shortcode',
 									'prop_details' => 'Property Details Template',
-									'map' => 'Map Template',
-									'slideshow' => 'Slideshow Template',
+									'search_map' => 'Listings Map Template',
+									'listing_slideshow' => 'Listing Slideshow Template',
+									'advanced_slideshow' => 'Advanced Slideshow Template',
 									'featured_listings' => 'Slideshow Template',
 									'static_listings' => 'Slideshow Template',
+									'post_listing' => 'Post Listing Template',
 								);
 	
 	// TODO: Construct these lists dynamically by examining the doc hierarchy...
 	public static $defaults = array('search_form' 		=> array('twentyten', 'twentyeleven'),
+	  				                'search_listings' 		=> array('twentyten', 'twentyeleven'),
 	  				                'prop_details' 		=> array('twentyten', 'twentyeleven'),
-	  				                'map' 				=> array('twentyten', 'twentyeleven'),
-	  				                'slideshow' 		=> array('twentyten', 'twentyeleven'),
+	  				                'search_map'		=> array('twentyten', 'twentyeleven'),
+	  				                'listing_slideshow'	=> array('twentyten', 'twentyeleven'),
+	  				                'advanced_slideshow'=> array('twentyten', 'twentyeleven'),
 	  				                'featured_listings' => array('twentyten', 'twentyeleven'),
 	  				                'static_listings' 	=> array('twentyten', 'twentyeleven'),
+	  				                'post_listing' 			=> array('twentyten', 'twentyeleven'),
 			               			'listings' 			=> array('twentyten', 'twentyeleven') );
 
 	public static $subcodes = array('search_form'  =>  array('bedrooms',
@@ -89,9 +94,11 @@ class PL_Shortcodes
 
 	public function init() 
 	{
-		add_shortcode('search_form', array(__CLASS__, 'searchform_shortcode_handler'));
-		add_shortcode('listings', array(__CLASS__, 'listings_shortcode_handler'));
-		add_shortcode('map', array(__CLASS__, 'map_shortcode_handler'));
+
+		//pulls in all the macro shortcodes, static list defined above
+		foreach (self::$codes as $shortcode) {
+			add_shortcode($shortcode, array(__CLASS__, $shortcode . '_shortcode_handler'));			
+		}
 
 		// For any shortcodes that use subcodes, register them to a single handler that bears the shortcode's name
 		foreach (self::$subcodes as $code => $subs) {
@@ -100,12 +107,11 @@ class PL_Shortcodes
 		  }	
 		}
 
-		// Register hooks to generate the forms...
+		// Register hooks to customize the html for the wrapper functions
 		add_filter('pls_listings_search_form_outer_shortcode', array(__CLASS__, 'searchform_shortcode_context'), 10, 6);
 		add_filter('pls_listings_list_ajax_item_html_shortcode', array(__CLASS__, 'listings_shortcode_context'), 10, 3);
 		add_filter('property_details_filter', array(__CLASS__, 'prop_details_shortcode_context'), 10, 2);
 
-		// TODO: Construct defaults array properly...
 
 		// Ensure all of shortcodes are set to some snippet...
 		foreach (self::$codes as $code) {
@@ -115,14 +121,16 @@ class PL_Shortcodes
 		// Handle the special case of turning property details functionality on/off...
 		add_option( self::$prop_details_enabled_key, 'false' ); 
 
-
+		//basically initializes the bootloader object if it's been defined because a
+		//shortcode has been called
 		add_action('wp_footer', array(__CLASS__, 'init_bootloader'));
+		add_action('after_switch_theme', array(__CLASS__, 'update_shortcode_js'));
 	}
 
 
-/*** Shortcode Handlers ***/	
+	/*** Shortcode Handlers ***/	
 	
-	public static function searchform_shortcode_handler($atts)
+	public static function search_form_shortcode_handler($atts)
 	{
 		// Handle attributes using shortcode_atts...
 		// Ajax setting as an attr?
@@ -152,7 +160,100 @@ class PL_Shortcodes
 		return ( $header . PLS_Partials_Listing_Search_Form::init(array('context' => 'shortcode', 'ajax' => true)) . $footer );
 	}
 
-	public static function listings_shortcode_handler($atts)
+
+	public static function listing_slideshow_shortcode_handler ($atts) {
+
+		$atts = wp_parse_args($atts, array( 
+				'animation' => 'fade', 									// fade, horizontal-slide, vertical-slide, horizontal-push
+				'animationSpeed' => 800, 								// how fast animtions are
+				'timer' => true,											// true or false to have the timer
+				'pauseOnHover' => true,									// if you hover pauses the slider
+				'advanceSpeed' => 5000,									// if timer is enabled, time between transitions 
+				'startClockOnMouseOut' => true,					// if clock should start on MouseOut
+				'startClockOnMouseOutAfter' => 1000,		// how long after MouseOut should the timer start again
+				'directionalNav' => true, 							// manual advancing directional navs
+				'captions' => true, 										// do you want captions?
+				'captionAnimation' => 'fade', 					// fade, slideOpen, none
+				'captionAnimationSpeed' => 800, 				// if so how quickly should they animate in
+				'afterSlideChange' => 'function(){}',		// empty function
+				'width' => 610, 
+				'height' => 320, 
+				'bullets' => 'false',
+				'context' => 'home',
+				'featured_option_id' => 'slideshow-featured-listings',
+				'listings' => 'limit=5&is_featured=true&sort_by=price'
+			));
+		ob_start();
+			?>
+			<style type="text/css">
+			.orbit-wrapper .orbit-caption { 
+				z-index: 999999 !important;
+				margin-top: -113px;
+				position: absolute;
+				right: 0;
+				bottom: 0;
+				width: 100%;
+			}
+			.orbit-caption {
+				display: none;
+			}
+			</style>
+
+			<?php
+			echo PLS_Slideshow::slideshow($atts); 
+		return ob_get_clean();
+	}
+	public static function advanced_slideshow_shortcode_handler ($atts) {
+		$atts = wp_parse_args($atts, array( 
+				'animation' => 'fade', 									// fade, horizontal-slide, vertical-slide, horizontal-push
+				'animationSpeed' => 800, 								// how fast animtions are
+				'timer' => true,											// true or false to have the timer
+				'pauseOnHover' => true,									// if you hover pauses the slider
+				'advanceSpeed' => 5000,									// if timer is enabled, time between transitions 
+				'startClockOnMouseOut' => true,					// if clock should start on MouseOut
+				'startClockOnMouseOutAfter' => 1000,		// how long after MouseOut should the timer start again
+				'directionalNav' => true, 							// manual advancing directional navs
+				'captions' => true, 										// do you want captions?
+				'captionAnimation' => 'fade', 					// fade, slideOpen, none
+				'captionAnimationSpeed' => 800, 				// if so how quickly should they animate in
+				'afterSlideChange' => 'function(){}',		// empty function
+				'width' => 610, 
+				'height' => 320, 
+				'bullets' => 'false',
+				'context' => 'home',
+				'featured_option_id' => 'slideshow-featured-listings',
+				'listings' => 'limit=5&is_featured=true&sort_by=price'
+			));
+		ob_start();
+			echo PLS_Slideshow::slideshow($atts); 
+		return ob_get_clean();
+	}
+	public static function featured_listings_shortcode_handler ($atts) {
+		$atts = wp_parse_args($atts, array('limit' => 5, 'featured_id' => 'custom'));
+		ob_start();
+			echo pls_get_listings( $atts );
+		return ob_get_clean();
+	}
+	public static function static_listings_shortcode_handler ($atts) {
+		$atts = wp_parse_args($atts, array('limit' => 5));
+		ob_start();
+			echo pls_get_listings( $atts );
+		return ob_get_clean();
+	}
+	public static function post_listing_shortcode_handler ($atts) {
+		// $shortcode = 'listings';
+		// self::$listing = $listing;
+
+		// // ob_start();
+		// //   echo pls_dump($listing);
+		// // return ob_get_clean();
+
+	 //  	$snippet_body = self::get_active_snippet_body($shortcode);
+	 //  	return do_shortcode($snippet_body);
+	}
+
+
+	public static function search_listings_shortcode_handler($atts)
 	{
 		// Handle attributes using shortcode_atts...
 		// These attributes will hand the look and feel of the listing form container, as 
@@ -180,11 +281,10 @@ class PL_Shortcodes
 	  return ob_get_clean();  
 	}
 
-	public static function map_shortcode_handler($atts)
+	public static function search_map_shortcode_handler($atts)
 	{
-		// Handle attributes using shortcode_atts...
-		// These attributes will hand the look and feel of the listing form container, as 
-		// the context func applies to each individual listing.
+
+		
 	  ob_start();
 	  	?>
 	 <script type="text/javascript">
@@ -216,7 +316,7 @@ class PL_Shortcodes
     </script>
 
 	  	<?php
-	    // echo PLS_Map::listings( null, array('width' => 950, 'height' => 400) );
+	    echo PLS_Map::listings( null, array('width' => 600, 'height' => 400) );
 	  return ob_get_clean();  
 	}
 
@@ -372,7 +472,7 @@ class PL_Shortcodes
 	}
 
 
-/*** Helper Functions ***/
+	/*** Helper Functions ***/
 
 	private static function get_active_snippet_body($shortcode)
 	{
@@ -392,22 +492,34 @@ class PL_Shortcodes
 	public static function init_bootloader () {
 		ob_start();
 		?>
-
 			<script type="text/javascript">
 			jQuery(document).ready(function( $ ) {
-
-				console.log(typeof bootloader);
-
 				if (typeof bootloader === 'object') {
 		  			bootloader.init();
 			  	}	
 			});
-			
-
 			</script>
-
 		<?php
 		echo ob_get_clean();
+	}
+
+	function update_shortcode_templates($new_theme) {
+			global $did_i_just_change_theme;
+	
+	}
+
+	function update_shortcode_js ($new_theme) {
+
+		$current_themes = get_themes();
+	    $new_theme_info = $current_themes[$new_theme];
+
+		ob_start();
+	    ?>
+	    	<script type="text/javascript">
+	    		console.log(<?php echo json_encode($new_theme_info) ?>);
+	    	</script>
+	    <?php
+	    echo ob_get_clean();		    
 	}
 }
 
