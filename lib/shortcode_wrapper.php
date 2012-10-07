@@ -17,4 +17,6 @@ class PL_Shortcode_Wrapper {
 		do_action( $shortcode . '_post_footer' );
 		return ob_get_clean();
 	}
+	
+	
 }
