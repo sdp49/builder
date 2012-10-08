@@ -80,7 +80,7 @@
 }
 
 /* Imported Fonts */
-@font-face {
+/*@font-face {
   font-family: "Century Gothic Bold";
   src: url("ttf/gothicb.ttf") format("truetype");
   font-weight: lighter;
@@ -92,7 +92,7 @@
   src: url("ttf/gothic.ttf") format("truetype");
   font-weight: normal;
   font-style: normal; 
-}
+}*/
 
 /* Preview load indicator */
 #customize-preview { 
