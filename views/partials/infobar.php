@@ -38,8 +38,13 @@
 	position: relative;
 	top: -1px;
   }
-</style>
 
+  #infobar-buffer {
+  	width: 100%;
+  	height: 50px;
+  }
+</style>
+<div id="infobar-buffer"></div>
 <div class="alert" id="infobar">
   <div class="msg">
     You are test-driving your site with demo data

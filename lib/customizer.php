@@ -357,9 +357,11 @@ class PL_Customizer
 	    $wp_customize->add_section( $set_section_id, $set_args_section );
 	    
 	    // Load Theme Options Control
-	    $load_opts_ctrl_id = 'load_opts_ctrl';
-	    $load_opts_args_ctrl = array('settings' => $dummy_setting_id, 'section' => $set_section_id, 'type' => 'none');
-	    $wp_customize->add_control( new PL_Customize_Load_Theme_Opts_Control($wp_customize, $load_opts_ctrl_id, $load_opts_args_ctrl) );
+	    if ( class_exists('PLS_Options_Manager') ) {
+		    $load_opts_ctrl_id = 'load_opts_ctrl';
+		    $load_opts_args_ctrl = array('settings' => $dummy_setting_id, 'section' => $set_section_id, 'type' => 'none');
+		    $wp_customize->add_control( new PL_Customize_Load_Theme_Opts_Control($wp_customize, $load_opts_ctrl_id, $load_opts_args_ctrl) );
+		}
 
 	    // Demo Data Control
 	    $demo_setting_id = 'pls_demo_data_flag';
