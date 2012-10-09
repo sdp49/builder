@@ -124,7 +124,7 @@ class PL_Shortcodes
 		//basically initializes the bootloader object if it's been defined because a
 		//shortcode has been called
 		add_action('wp_footer', array(__CLASS__, 'init_bootloader'));
-		add_action('after_switch_theme', array(__CLASS__, 'update_shortcode_js'));
+		// add_action('after_switch_theme', array(__CLASS__, 'update_shortcode_js'));
 	}
 
 
