@@ -8,8 +8,13 @@
 class PL_Component_Entity {
 
 	public static function featured_listings_entity( $atts ) {
-		$atts = wp_parse_args($atts, array('limit' => 5, 'featured_id' => 'custom'));
+		wp_register_script( 'modernizr', trailingslashit( PLS_JS_URL ) . 'libs/modernizr/modernizr.min.js' , array(), '2.6.1');
+		wp_enqueue_script( 'modernizr' );
+		$atts = wp_parse_args($atts, array('limit' => 5, 'featured_id' => 'custom', 'context' => 'shortcode'));
 		ob_start();
+		if( isset( $atts['featured_listing_id'] ) ) {
+			add_filter( $atts['context'] . '_partial_get_listings', array( __CLASS__, 'partial_one' ), 10, 2 );
+		}
 		echo pls_get_listings( $atts );
 		return ob_get_clean();
 	}
@@ -246,8 +251,10 @@ class PL_Component_Entity {
 			// Default form enclosure
 			$header = '<form method="post" action="' . esc_url( home_url( '/' ) ) . 'listings" class="pls_search_form_listings">';
 			$footer = '</form>';
+			wp_register_script( 'modernizr', trailingslashit( PLS_JS_URL ) . 'libs/modernizr/modernizr.min.js' , array(), '2.6.1');
+			wp_enqueue_script( 'modernizr' );
 			?>
-
+			<script type="text/javascript" src="<?php echo trailingslashit(PLS_JS_URL); ?>scripts/filters.js"></script>
 			<script type="text/javascript">
 				if (typeof bootloader !== 'object') {
 					var bootloader;
@@ -267,6 +274,30 @@ class PL_Component_Entity {
 			return ( $header . PLS_Partials_Listing_Search_Form::init(array('context' => 'shortcode', 'ajax' => true)) . $footer );
 		} 
 		
+		/**
+		 * Helpers
+		 */
 		
+		private static function get_property_ids( $featured_listing_id ) {
+			// if( ! is_int( $featured_listing_id ) ) { }
+			$values = get_post_custom( $featured_listing_id );
+			$property_ids = isset( $values['keatingbrokerage_meta'] ) ? unserialize($values['keatingbrokerage_meta'][0]) : '';
+			$pl_featured_listing_meta = isset( $values['pl_featured_listing_meta'] ) ? unserialize($values['pl_featured_listing_meta'][0]) : '';
+			$pl_featured_meta_value = empty( $pl_featured_listing_meta ) ? array('listings' => array()) : $pl_featured_listing_meta['featured-listings-type'];
+		
+			return $pl_featured_meta_value;
+		}
+
+		public static function partial_one( $listing, $featured_listing_id ) {
+			$property_ids = PL_Component_Entity::get_property_ids( $featured_listing_id );
+			$property_ids = array_flip( $property_ids );
+			
+			$api_response = PLS_Plugin_API::get_listings_details_list(array('property_ids' => $property_ids));
+			var_dump( $api_response );
+			
+			$listing['listings'] = $api_response;
+			
+			return $listing;
+		}
 		
 }

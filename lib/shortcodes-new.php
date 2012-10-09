@@ -133,7 +133,7 @@ class PL_Shortcodes
 	public static function search_form_shortcode_handler($atts) {
 		$content = PL_Component_Entity::search_form_entity( $atts );
 		
-		return PL_Shortcode_Wrapper::create( 'search_form', $atts );
+		return PL_Shortcode_Wrapper::create( 'search_form', $content );
 	}
 
 
