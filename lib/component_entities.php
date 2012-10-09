@@ -12,6 +12,7 @@ class PL_Component_Entity {
 		wp_enqueue_script( 'modernizr' );
 		$atts = wp_parse_args($atts, array('limit' => 5, 'featured_id' => 'custom', 'context' => 'shortcode'));
 		ob_start();
+
 		if( isset( $atts['featured_listing_id'] ) ) {
 			add_filter( $atts['context'] . '_partial_get_listings', array( __CLASS__, 'partial_one' ), 10, 2 );
 		}
@@ -289,15 +290,14 @@ class PL_Component_Entity {
 		}
 
 		public static function partial_one( $listing, $featured_listing_id ) {
+
 			$property_ids = PL_Component_Entity::get_property_ids( $featured_listing_id );
 			$property_ids = array_flip( $property_ids );
 			
 			$api_response = PLS_Plugin_API::get_listings_details_list(array('property_ids' => $property_ids));
-			var_dump( $api_response );
-			
-			$listing['listings'] = $api_response;
-			
-			return $listing;
+			//response is expected to be of fortmat api response
+			//no addiitonal formatting needed.
+			return $api_response;
 		}
 		
 }
