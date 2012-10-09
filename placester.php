@@ -101,7 +101,11 @@ include_once('lib/validation.php');
 include_once('lib/pages.php');
 include_once('lib/membership.php');
 include_once('lib/caching.php');
-include_once('lib/shortcodes.php');
+// include_once('lib/shortcodes.php');
+include_once('lib/shortcode_wrapper.php');
+include_once('lib/component_entities.php');
+include_once('lib/shortcodes-new.php');
+include_once('lib/featured_listings_post_type.php');
 include_once('lib/demo_data.php');
 include_once('lib/customizer.php');
 
