@@ -22,13 +22,28 @@ var customizer_global = {
 
 jQuery(document).ready(function($) {
 
-	/*
-	 * Add custom javascript here that applies/affects the customizer as a whole. 
-	 * (Configured to execute on any load of customize.php)
-	 */
+ /*
+  * Add custom javascript here that applies/affects the customizer as a whole. 
+  * (Configured to execute on any load of customize.php)
+  */
 
-	// Hide the "You are Previewing" div--no hook to prevent this, so this is the only way to hide w/out altering core...
-	$('#customize-info').hide();
+	// Hide the "You are Previewing" div + header & footer--no hook to prevent these from
+	// rendering, so this is the only way to hide w/out altering core...
+	$('#customize-info').remove();
+	$('#customize-header-actions').remove();
+	$('#customize-footer-actions').remove();
+
+	$('div.wp-full-overlay-sidebar-content').removeClass('wp-full-overlay-sidebar-content');
+	$('#customize-theme-controls').first().attr('id', 'menu-nav');
+	$('#menu-nav > ul').first().attr('id', 'navlist');
+
+	// $('<section id="pane"></section>').appendTo('#menu-nav');
+	$('#menu-nav').after('<section id="pane"></section>');
+
+	var controlDivs = $('.control-container').detach();
+	controlDivs.appendTo('#pane');
+
+	$('#confirm').append('<input type="submit" name="save" id="save" style="display:none">');
 
 	/*
 	 * Applies to loading default theme options "pallets"
@@ -53,9 +68,11 @@ jQuery(document).ready(function($) {
 		});
 	});
 
-	/*
-	 * Handles switching themes in the preview iframe...
-	 */
+
+ /*
+  * Handles switching themes in the preview iframe...
+  */
+
 	$('#switch_theme_main #theme_choices').live('change', function (event) {
 		// console.log($(this).val());
 		var curr_href = window.location.href;
@@ -75,9 +92,11 @@ jQuery(document).ready(function($) {
 		// console.log('redirect deleted: ' + boolSuccess);
 	}
 
-	/*
-	 * Display loading for input changes...
-	 */
+
+ /*
+  * Display loading for input changes...
+  */
+
 	function setPreviewLoading() {
 		if ( !customizer_global.refreshing ) {
 		  	$('#customize-preview').fadeTo(800, 0.3);
@@ -98,6 +117,39 @@ jQuery(document).ready(function($) {
 	$('select.of-typography, #theme_choices').on('change', function (event) {
 		setPreviewLoading();
 	});
+
+
+ /*
+  * Bind onboarding menu actions...
+  */
+  
+  	$('#save').on('click', function (event) {
+		event.preventDefault;
+		$('#save').trigger('click');
+	});
+
+	$('#navlist li').on('click', function (event) {
+		// If activated menu section is clicked, do nothing...
+		if ( $(this).hasClass('active') ) { return; }
+
+		// Remove active class from any existing elements...
+		var activeLi = $('#navlist li.active');
+		if ( activeLi.length > 0 ) {
+			activeLi.each( function() { $(this).toggleClass('active'); } );
+		}
+
+		// Set the current menu item to 'active'
+		$(this).toggleClass('active');
+
+		// Make sure pane is visible, then hide any visible control-container(s)...
+		$('#pane').css('display', 'block');
+		$('.control-container').css('display', 'none');
+		
+		// Construct the associated control-container's id and show it...
+		var containerId = '#' + $(this).attr('id') + '_content';
+		$(containerId).css('display', 'block');
+	});
+
 });	
 
 

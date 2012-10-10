@@ -1,7 +1,7 @@
 /* Styles for main customizer sidebar */
 #customize-controls {
-	min-width: 315px;
-	width: 20%;
+	min-width: 405px;
+	/*width: 20%;*/
 }
 .customize-title-span {
 	font-size: 12px;

@@ -11,14 +11,16 @@ function themedemo_admin()
     add_theme_page( 'Customize', 'Customize', 'edit_theme_options', 'customize.php' );
 }
 
-add_action( 'customize_register', 'placester_customize_register', 1 );
-function placester_customize_register( $wp_customize ) 
+add_action( 'customize_register', 'PL_customize_register', 1 );
+function PL_customize_register( $wp_customize ) 
 {
-	define_custom_controls();
-	$onboard = ( isset($_GET['onboard']) && strtolower($_GET['onboard']) == 'true' ) ? true : false;
+	// A simple check to ensure function was called properly...
+	if ( !isset($wp_customize) ) { return; }
 
-	PL_Customizer::register_pl_components( $wp_customize, $onboard );
-	PL_Customizer::register_option_components( $wp_customize, $onboard );
+	define_custom_controls();
+
+	$onboard = ( isset($_GET['onboard']) && strtolower($_GET['onboard']) == 'true' ) ? true : false;
+	PL_Customizer::register_components( $wp_customize, $onboard );
 
 	// Prevent default control from being created
 	remove_action( 'customize_register', array(  $wp_customize, 'register_controls' ) );
@@ -45,7 +47,7 @@ function define_custom_controls()
           ?>
             <label>
               <span class="customize-control-title"><?php echo esc_html( $this->label ); ?></span>
-              <textarea rows="5" style="width:100%;" <?php $this->link(); ?>><?php echo esc_textarea( $this->value() ); ?></textarea>
+              <textarea rows="5" <?php $this->link(); ?>><?php echo esc_textarea( $this->value() ); ?></textarea>
             </label>
           <?php
         }
@@ -173,6 +175,34 @@ function define_custom_controls()
    		}
    }
 
+   /*
+    * Custom Section -- Allows for complete customization of section look-and-feel...
+    */
+   class PL_Customize_Section extends WP_Customize_Section
+   {
+   		public function render() {
+   		  ?>
+   		  	<li id="<?php echo esc_attr( $this->id ); ?>" class="">
+			  <a href="#"></a>
+			  <div id="<?php echo esc_attr( $this->id ); ?>_content" class="control-container">
+			  	<?php $this->render_controls(); ?>
+			  </div>
+		    </li>
+   		  <?php
+   		}
+
+   		public function render_controls() {
+   		  ?>
+   		    <h3 title="<?php echo esc_attr( $this->description ); ?>"><?php echo esc_html( $this->title ); ?></h3>
+		    <ul class="control-list">
+		 	  <?php
+			    foreach ( $this->controls as $control )
+				$control->maybe_render();
+			  ?>
+		    </ul>
+   		  <?php
+   		}
+   }
 }
 
 class PL_Customizer 
@@ -224,33 +254,32 @@ class PL_Customizer
 		return $args;
 	}
 
-	public function register_option_components( $wp_customize, $onboard = false ) 
+	public function register_components( $wp_customize, $onboard = false ) 
 	{
-		// A simple check to ensure function was called properly...
-		if ( !isset($wp_customize) ) { return; }
-
 		$theme_opts_id = $wp_customize->get_stylesheet();
 	    $last_section_id = '';
 
 	    global $PL_CUSTOMIZER_ONBOARD_OPTS;
-	    $style_opts = ( $onboard ? $PL_CUSTOMIZER_ONBOARD_OPTS : PLS_Style::$styles );
+	    $options = ( $onboard ? $PL_CUSTOMIZER_ONBOARD_OPTS : PLS_Style::$styles );
 
-	    foreach ($style_opts as $style) 
+	    foreach ($options as $opt) 
 	    {
-	    	// Take care of defining some common vars used by almost every case...
-	    	if ( isset($style['id']) ) {
-	    		$setting_id = "{$theme_opts_id}[{$style['id']}]";
-	    		$control_id = "{$style['id']}_ctrl";
+	    	// Take care of defining some common vars used many of the cases below...
+	    	if ( isset($opt['id']) ) {
+	    		$setting_id = "{$theme_opts_id}[{$opt['id']}]";
+	    		$control_id = "{$opt['id']}_ctrl";
 	    	}
 
-	        switch ( $style['type'] ) 
+	        switch ( $opt['type'] ) 
 	        {
 	            case 'heading':
-	                $args_section = array( 'title' => __($style['name'],''), 'description' => $style['name'] ); 
-	                $args_section['priority'] = self::get_priority($onboard, $style['name']);
+	                $args_section = array( 'title' => __($opt['name'],''), 'description' => $opt['name'] ); 
+	                $args_section['priority'] = self::get_priority($onboard, $opt['name']);
 
-	                $section_id = strtolower(str_replace(' ', '_', $style['name'])) . '_pls_options';
-	                $wp_customize->add_section( $section_id, $args_section );
+	                $id_base = isset($opt['id']) ? $opt['id'] : $opt['name'];
+	                $section_id = strtolower( str_replace( ' ', '_', $id_base ) );
+	                // $wp_customize->add_section( $section_id, $args_section );
+	                $wp_customize->add_section( new PL_Customize_Section( $wp_customize, $section_id, $args_section ) );
 
 	                // Add dummy control so that section will appear...
 	                $wp_customize->add_setting( 'dummy_setting', array() );
@@ -264,14 +293,14 @@ class PL_Customizer
 	            case 'checkbox':
 	            	$wp_customize->add_setting( $setting_id, self::get_setting_opts() );
 	                
-	                $args_control = self::get_control_opts( $setting_id, $style, $last_section_id );
+	                $args_control = self::get_control_opts( $setting_id, $opt, $last_section_id );
 	                $wp_customize->add_control( $control_id, $args_control);
 	                break;
 
 	            case 'textarea':
 		            $wp_customize->add_setting( $setting_id, self::get_setting_opts() );
 
-	                $args_control = self::get_control_opts( $setting_id, $style, $last_section_id, true );
+	                $args_control = self::get_control_opts( $setting_id, $opt, $last_section_id, true );
 	                $wp_customize->add_control( new PL_Customize_TextArea_Control($wp_customize, $control_id, $args_control) );
 	                break;
 
@@ -284,24 +313,20 @@ class PL_Customizer
 	            		$typo_setting_ids[$key] = "{$setting_id}[{$key}]";
 	            	}
 	            	
-	            	$args_control = self::get_control_opts( $typo_setting_ids, $style, $last_section_id, true );
+	            	$args_control = self::get_control_opts( $typo_setting_ids, $opt, $last_section_id, true );
 	                $wp_customize->add_control( new PL_Customize_Typography_Control($wp_customize, $control_id, $args_control) );
-
-	            	// if ($style['id'] == 'h1_title') {
-	            	// 	$ctrl = new PL_Customize_Typography_Control($wp_customize, $control_id, $args_control);
-
-	            	// 	foreach ( $ctrl->settings as $key => $setting) {
-	            	// 		$temp_id = $setting->id;
-	            	// 		error_log("{$key} => {$temp_id} \n");
-	            	// 	}
-	            	// }
 	            	break;
 
 	            case 'upload':
 	            	$wp_customize->add_setting( $setting_id, self::get_setting_opts() );
 
-	            	$args_control = self::get_control_opts( $setting_id, $style, $last_section_id, true );
+	            	$args_control = self::get_control_opts( $setting_id, $opt, $last_section_id, true );
 	                $wp_customize->add_control( new WP_Customize_Upload_Control($wp_customize, $control_id, $args_control) );
+	            	break;
+
+	            case 'custom':
+	            	// Register PL component...
+	            	self::register_pl_control( $wp_customize, $opt['name'], $last_section_id, $onboard );
 	            	break;
 
 	            default:
@@ -311,65 +336,58 @@ class PL_Customizer
 
 	}
 
-	public function register_pl_components( $wp_customize, $onboard = false ) 
+	public function register_pl_control( $wp_customize, $name, $section_id, $onboard = false ) 
 	{
-		// Dummy setting must be associated with non-options sections in order for them to appear...
+		// Dummy setting must be associated with non-option sections in order for them to appear/function properly...
 	    $dummy_setting_id = 'dummy_setting';
 	    $wp_customize->add_setting( 'dummy_setting', array() );
 
-	    /*
-	     * Theme Selection
-	     */
-	    $theme_section_id = 'theme_selection_pl';
-		$theme_args_section = array( 'title' => __('Theme Selection',''), 'description' => 'Theme Selection' ); 
-        $theme_args_section['priority'] = self::get_priority($onboard, 'Theme Selection');
-        
-        $wp_customize->add_section( $theme_section_id, $theme_args_section );
+		switch ( $name ) 
+		{
+			case 'theme-select':
+				$switch_theme_ctrl_id = 'switch_theme_ctrl';
+	    		$switch_theme_args_ctrl = array('settings' => $dummy_setting_id, 'section' => $section_id, 'type' => 'none');
+	    		$wp_customize->add_control( new PL_Customize_Switch_Theme_Control($wp_customize, $switch_theme_ctrl_id, $switch_theme_args_ctrl) );
+				break;
+			
+			case 'integration':
+				if ( PL_Option_Helper::api_key() ) {
+			        $int_ctrl_id = 'integration_ctrl';
+			        $int_args_ctrl = array('settings' => $dummy_setting_id, 'section' => $section_id, 'type' => 'none');
+			        $wp_customize->add_control( new PL_Customize_Integration_Control($wp_customize, $int_ctrl_id, $int_args_ctrl) );
+				}
+				break;
+			
+			case 'demo-data':
+				$demo_setting_id = 'pls_demo_data_flag';
+			    $wp_customize->add_setting( $demo_setting_id, self::get_setting_opts() );
+				
+				$demo_ctrl_id = 'demo_data_ctrl';                
+			    $demo_args_control = self::get_control_opts( $demo_setting_id, array('name'=>'Use Demo Listing Data', 'type'=>'checkbox'), $section_id );
+			    $wp_customize->add_control( $demo_ctrl_id, $demo_args_control);
+				break;
+			
+			case 'theme-opt-defaults':
+				if ( class_exists('PLS_Options_Manager') ) {
+				    $load_opts_ctrl_id = 'load_opts_ctrl';
+				    $load_opts_args_ctrl = array('settings' => $dummy_setting_id, 'section' => $set_section_id, 'type' => 'none');
+				    $wp_customize->add_control( new PL_Customize_Load_Theme_Opts_Control($wp_customize, $load_opts_ctrl_id, $load_opts_args_ctrl) );
+				}
+				break;
 
-	    // Load Theme Switcher control
-	    $switch_theme_ctrl_id = 'switch_theme_ctrl';
-	    $switch_theme_args_ctrl = array('settings' => $dummy_setting_id, 'section' => $theme_section_id, 'type' => 'none');
-	    $wp_customize->add_control( new PL_Customize_Switch_Theme_Control($wp_customize, $switch_theme_ctrl_id, $switch_theme_args_ctrl) );
+			case 'post-listing':
+				# code...
+				break;
 
-		/* 
-		 * MLS Integration Section
-		 */
-		if ( PL_Option_Helper::api_key() ) {
-			$int_section_id = 'integration_pl';
-			$int_args_section = array( 'title' => __('MLS Integration',''), 'description' => 'MLS Integration' ); 
-	        $int_args_section['priority'] = self::get_priority($onboard, 'MLS Integration');
-	        
-	        $wp_customize->add_section( $int_section_id, $int_args_section );
-
-	        // Load Integration control
-	        $int_ctrl_id = 'integration_ctrl';
-	        $int_args_ctrl = array('settings' => $dummy_setting_id, 'section' => $int_section_id, 'type' => 'none');
-	        $wp_customize->add_control( new PL_Customize_Integration_Control($wp_customize, $int_ctrl_id, $int_args_ctrl) );
+			case 'blog-post':
+				# code...
+				break;
+				
+			default:
+				# code...
+				break;
 		}
-
-		/* 
-		 * Plug-in Settings Section 
-		 */
-		$set_section_id = 'settings_pl';
-		$set_args_section = array( 'title' => __('General Settings', ''), 'description' => 'General Settings' );
-		$set_args_section['priority'] = self::get_priority($onboard, 'General Settings');
 	    
-	    $wp_customize->add_section( $set_section_id, $set_args_section );
-	    
-	    // Load Theme Options Control
-	    if ( class_exists('PLS_Options_Manager') ) {
-		    $load_opts_ctrl_id = 'load_opts_ctrl';
-		    $load_opts_args_ctrl = array('settings' => $dummy_setting_id, 'section' => $set_section_id, 'type' => 'none');
-		    $wp_customize->add_control( new PL_Customize_Load_Theme_Opts_Control($wp_customize, $load_opts_ctrl_id, $load_opts_args_ctrl) );
-		}
-
-	    // Demo Data Control
-	    $demo_setting_id = 'pls_demo_data_flag';
-	    $wp_customize->add_setting( $demo_setting_id, self::get_setting_opts() );
-		
-		$demo_ctrl_id = 'demo_data_ctrl';                
-	    $demo_args_control = self::get_control_opts( $demo_setting_id, array('name'=>'Use Demo Listing Data', 'type'=>'checkbox'), $set_section_id );
-	    $wp_customize->add_control( $demo_ctrl_id, $demo_args_control);
 	}
 	    
 }

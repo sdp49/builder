@@ -2,20 +2,42 @@
 
 global $PL_CUSTOMIZER_ONBOARD_SECTIONS;
 $PL_CUSTOMIZER_ONBOARD_SECTIONS = array(
-								  'Title & Logo' => 10,
-								  'Theme Selection' => 20,
-								  'General Settings' => 30,
+                                  'Placester Logo' => 1,
+								  'Theme Selection' => 10,
+								  'Title & Slogan' => 20,
+								  'Colors & Style' => 30,
 								  'MLS Integration' => 40,
-								  'Contact Info' => 50,
-								  'Company Info' => 60,
-								  'Analytics' => 70
+                                  'Upload Logo' => 50,
+								  'Post a Listing' => 60,
+								  'Write a Blog Post' => 70,
+                                  // 'Invite Your Friends' => 80,
+								  'Analytics & Webmasters' => 90,
+                                  'Save & Continue' => 1000
 							   );
 
 global $PL_CUSTOMIZER_ONBOARD_OPTS;
 $PL_CUSTOMIZER_ONBOARD_OPTS = array( 
 
         array(
-            'name' => 'Title & Logo',
+            'name' => 'Placester Logo',
+            'id' => 'logo',
+            'type' => 'heading'
+        ),    
+
+        array(
+            'name' => 'Theme Selection',
+            'id' => 'theme',
+            'type' => 'heading'
+        ),
+
+        array(
+            'name' => 'theme-select',
+            'type' => 'custom'
+        ),
+
+        array(
+            'name' => 'Title & Slogan',
+            'id' => 'title',
             'type' => 'heading'
         ),
 
@@ -27,26 +49,19 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
         ),
 
         array(
-            'name' => 'Site Subtitle',
+            'name' => 'Tagline',
             'desc' => 'Site subtitle in header.',
             'id' => 'pls-site-subtitle',
             'type' => 'text'
         ),
 
         array(
-            'name' => 'Site Logo',
-            'desc' => 'Upload your logo here. It will appear in the header and will override the title you\'ve provided above.',
-            'id' => 'pls-site-logo',
-            'type' => 'upload'
-        ),
-
-        array(
             'name' => 'Contact Info',
-            'type' => 'heading'
+            'type' => 'info'
         ),
 
         array(
-            'name' => 'Your First and Last Name',
+            'name' => 'First and Last Name',
             'desc' => 'Add the name you want to display on the site.',
             'id' => 'pls-user-name',
             'type' => 'text'
@@ -81,70 +96,10 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
         ),
 
         array(
-            'name' => 'Company Info',
+            'name' => 'Colors & Style',
+            'id' => 'colors',
             'type' => 'heading'
         ),
-
-        array(
-            'name' => 'Company Name',
-            'desc' => 'Add your company\'s name you want to display on the site.',
-            'id' => 'pls-company-name',
-            'type' => 'text'
-        ),
-
-        array(
-            'name' => 'Company Phone',
-            'desc' => 'Add your company\'s phone number you want to display on the site.',
-            'id' => 'pls-company-phone',
-            'type' => 'text'
-        ),
-
-        array(
-            'name' => 'Company Email',
-            'desc' => 'Add your company\'s email address you want to display on the site.',
-            'id' => 'pls-company-email',
-            'type' => 'text'
-        ),
-
-        array(
-            'name' => 'Company Street Address',
-            'desc' => 'Add your company\'s street address you want to display on the site.',
-            'id' => 'pls-company-street',
-            'type' => 'text'
-        ),
-
-        array(
-            'name' => 'Company City / Locality',
-            'desc' => 'Add your company\'s city/locality location you want to display on the site.',
-            'id' => 'pls-company-locality',
-            'type' => 'text'
-        ),
-
-        array(
-            'name' => 'Company State / Region',
-            'desc' => 'Add your company\'s state/region location you want to display on the site.',
-            'id' => 'pls-company-region',
-            'type' => 'text'
-        ),
-
-        array(
-            'name' => 'Company Postal Code',
-            'desc' => 'Add your company\'s postal code you want to display on the site.',
-            'id' => 'pls-company-postal',
-            'type' => 'text'
-        ),
-
-        array(
-            'name' => 'Company Description',
-            'desc' => 'Add your company\'s description you want to display on the site.',
-            'id' => 'pls-company-description',
-            'type' => 'textarea'
-        ),
-
-        // array(
-        //     'name' => 'Styles & Coloring',
-        //     'type' => 'heading'
-        // ),
 
         // array(
         //     'name' => 'Site Background',
@@ -176,10 +131,57 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
         //     'id' => 'h2_subtitle',
         //     'selector' => 'header h2',
         //     'type' => 'typography'
-        // ),
+        // ),       
 
         array(
-            'name' => 'Analytics',
+            'name' => 'Upload Logo',
+            'id' => 'brand',
+            'type' => 'heading'
+        ),
+
+        array(
+            'name' => 'Site Logo',
+            'desc' => 'Upload your logo here. It will appear in the header and will override the title you\'ve provided above.',
+            'id' => 'pls-site-logo',
+            'type' => 'upload'
+        ),
+
+        array(
+            'name' => 'MLS Integration',
+            'id' => 'mls',
+            'type' => 'heading'
+        ),
+
+        array(
+            'name' => 'integration',
+            'type' => 'custom'
+        ), 
+
+        array(
+            'name' => 'Post a Listing',
+            'id' => 'listing',
+            'type' => 'heading'
+        ),
+
+        array(
+            'name' => 'post-listing',
+            'type' => 'custom'
+        ),   
+
+        array(
+            'name' => 'Write a Blog Post',
+            'id' => 'post',
+            'type' => 'heading'
+        ),
+
+        array(
+            'name' => 'blog-post',
+            'type' => 'custom'
+        ),   
+
+        array(
+            'name' => 'Analytics & Webmasters',
+            'id' => 'analytics',
             'type' => 'heading'
         ),
 
@@ -188,8 +190,14 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
             'desc' => 'Add your google analytics tracking ID code here. It looks something like this: UA-XXXXXXX-X',
             'id' => 'pls-google-analytics',
             'type' => 'text'
+        ),
+
+        array(
+            'name' => 'Save & Continue',
+            'id' => 'confirm',
+            'type' => 'heading'
         )
 
-        );
+    );
 
 ?>
