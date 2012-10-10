@@ -23,7 +23,7 @@ class PL_Widget extends WP_Widget {
 			'dropdown'
 		);
 	
-	public function __construct( $args, $fields ) {
+	public function __construct( $args = array(), $fields = array() ) {
 		$this->fields = $this->validate_fields( $fields );
 		$args = wp_parse_args( $args, array( 'base_id' => 'pl_widget', 'name' => 'PL Widget' ) ); 
 		
