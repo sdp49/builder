@@ -18,9 +18,8 @@ class PL_Component_Entity {
 			echo pls_get_listings( $atts );
 		} else if( isset( $atts['static_listing_id'] ) ) {
 			PL_Component_Entity::print_filters( $atts['static_listing_id'] );
-			echo PLS_Partials::get_listings_list_ajax('context=listings_search&table_id=placester_listings_list'); 
+			echo PLS_Partials::get_listings_list_ajax('table_id=placester_listings_list'); 
 		}
-		
 		
 		return ob_get_clean();
 	}
@@ -298,7 +297,9 @@ class PL_Component_Entity {
 			$static_listings = get_post_meta($static_listing_id, false);
 			
 			if( ! empty( $static_listings ) && isset( $static_listings['pl_static_listings_option'] ) ) {
-				$statc_listing_filters = $static_listings['pl_static_listings_option'];
+				$static_listing_filters = unserialize( $static_listings['pl_static_listings_option'][0] );
+
+				wp_enqueue_script('filters-featured.js', trailingslashit(PLS_JS_URL) . 'scripts/filters.js', array('jquery'));l
 				?>
 					<script type="text/javascript">
 
@@ -325,7 +326,18 @@ class PL_Component_Entity {
 					      listings: listings,
 					      context: 'listings_search',
 					    });
-					    
+
+					    <?php 
+					    	foreach( $static_listing_filters as $top_key => $top_value ) {
+								if( is_array( $top_value ) ) {
+									foreach( $top_value as $key => $value ) {
+										echo 'listings.active_filters.push( { "name": "' . $top_key . '[' .  $key . ']", "value" : "'. $value . '" } );';	
+									}
+								} else {
+									echo 'listings.active_filters.push( { "name": "'. $top_key . '", "value" : "'. $top_value . '" } );';
+								}
+							} 
+						?>
 					    listings.init();
 					
 					  });

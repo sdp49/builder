@@ -41,15 +41,41 @@ function pl_featured_listings_meta_box_cb( $post ) {
 		}
 	}
 	
-	
+	$pl_listing_type = isset( $values['pl_listing_type'] ) ? $values['pl_listing_type'][0] : 'featured';
 	$single_listing = isset( $values['pl_fl_meta_box_single_listing'] ) ? esc_attr( $values['pl_fl_meta_box_single_listing'][0] ) : '';
 	wp_nonce_field( 'pl_fl_meta_box_nonce', 'meta_box_nonce' );
 	?>
+	<script type="text/javascript">
+		jQuery(document).ready(function($) {
+
+			<?php if($pl_listing_type == 'static'): ?>
+				$('#pl_featured_radio').attr('checked', '');
+				$('#pl_static_radio').attr('checked', 'checked');
+				$('#pl_featured_listing_block').css('display', 'none');
+				$('#pl_static_listing_block').css('display', 'block');
+			<?php endif; ?>
+			
+			$('#pl_featured_radio').change(function() {
+				if($(this).attr('checked', 'checked')) {
+					$('#pl_featured_listing_block').css('display', 'block');
+					$('#pl_static_listing_block').css('display', 'none');
+				}
+			});
+
+			$('#pl_static_radio').change(function() {
+				if($(this).attr('checked', 'checked')) {
+					$('#pl_featured_listing_block').css('display', 'none');
+					$('#pl_static_listing_block').css('display', 'block');
+				}
+			});
+		});
+	</script>
+	
 	<div id="pl-fl-meta">
 		<div style="width: 400px; min-height: 200px">
 			<p><?php _e('Listing Type:', 'pls'); ?></p>
-			<p><?php _e('Featured Listing', 'pls'); ?> <input type="radio" name="pl_listing_type" value="featured" checked="checked" /></p>
-			<p><?php _e('Static Listing', 'pls'); ?> <input type="radio" name="pl_listing_type" value="static" /></p>
+			<p><?php _e('Featured Listing', 'pls'); ?> <input id="pl_featured_radio" type="radio" name="pl_listing_type" value="featured" checked="checked" /></p>
+			<p><?php _e('Static Listing', 'pls'); ?> <input id="pl_static_radio" type="radio" name="pl_listing_type" value="static" /></p>
 			<div id="pl_featured_listing_block">
 			<?php 
 				include PLS_OPTRM_DIR . '/views/featured-listings.php';
@@ -83,7 +109,7 @@ function pl_featured_listings_meta_box_cb( $post ) {
 
 			?>
 			</div><!-- end of #pl_featured_listing_block -->
-			<div id="pl_static_listing_block" >
+			<div id="pl_static_listing_block" style="display: none;">
 				<?php echo PL_Form::generate_form(
 							PL_Config::PL_API_LISTINGS('get', 'args'),
 							array('method' => "POST", 
@@ -130,7 +156,7 @@ function pl_featured_listings_meta_box_save( $post_id ) {
 	}
 	
 	update_post_meta( $post_id, 'pl_static_listings_option', $static_listings_option );
-	
+	update_post_meta( $post_id, 'pl_listing_type', $_POST['pl_listing_type']);
 	
 	// if our current user can't edit this post, bail
 	if( !current_user_can( 'edit_post' ) ) return;
