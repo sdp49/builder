@@ -331,10 +331,10 @@ class PL_Component_Entity {
 					    	foreach( $static_listing_filters as $top_key => $top_value ) {
 								if( is_array( $top_value ) ) {
 									foreach( $top_value as $key => $value ) {
-										echo 'listings.active_filters.push( { "name": "' . $top_key . '[' .  $key . ']", "value" : "'. $value . '" } );';	
+										echo 'listings.default_filters.push( { "name": "' . $top_key . '[' .  $key . ']", "value" : "'. $value . '" } );';	
 									}
 								} else {
-									echo 'listings.active_filters.push( { "name": "'. $top_key . '", "value" : "'. $top_value . '" } );';
+									echo 'listings.default_filters.push( { "name": "'. $top_key . '", "value" : "'. $top_value . '" } );';
 								}
 							} 
 						?>

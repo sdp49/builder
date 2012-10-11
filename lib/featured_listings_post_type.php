@@ -31,6 +31,7 @@ function pl_featured_listings_meta_box() {
 // add meta box for featured listings- adding custom fields
 function pl_featured_listings_meta_box_cb( $post ) {
 	$values = get_post_custom( $post->ID );
+	// get meta values from custom fields
 	$pl_featured_listing_meta = isset( $values['pl_featured_listing_meta'] ) ? unserialize($values['pl_featured_listing_meta'][0]) : '';
 	$pl_featured_meta_value = empty( $pl_featured_listing_meta ) ? '' : $pl_featured_listing_meta['featured-listings-type'];
 
@@ -44,17 +45,33 @@ function pl_featured_listings_meta_box_cb( $post ) {
 	$pl_listing_type = isset( $values['pl_listing_type'] ) ? $values['pl_listing_type'][0] : 'featured';
 	$single_listing = isset( $values['pl_fl_meta_box_single_listing'] ) ? esc_attr( $values['pl_fl_meta_box_single_listing'][0] ) : '';
 	wp_nonce_field( 'pl_fl_meta_box_nonce', 'meta_box_nonce' );
+	
+	if( isset( $_GET['post'] ) ) {
+		$featured_post_id = $_GET['post'];
+		$shortcode_pattern = "[featured_listings {$pl_listing_type}_listing_id='{$featured_post_id}']"; 
+	}
+	
 	?>
+	
+	<?php if( isset( $shortcode_pattern ) ): ?>
+		<div id="featured_shortcode">
+			<h2>Listing Shortcode</h2>
+			<p>Use this shortcode inside of a page: <strong><?php echo $shortcode_pattern; ?></strong></p>
+		</div>
+	<?php endif; ?>
+	
 	<script type="text/javascript">
 		jQuery(document).ready(function($) {
 
+			// If static listings have been stored
 			<?php if($pl_listing_type == 'static'): ?>
 				$('#pl_featured_radio').attr('checked', '');
 				$('#pl_static_radio').attr('checked', 'checked');
 				$('#pl_featured_listing_block').css('display', 'none');
 				$('#pl_static_listing_block').css('display', 'block');
 			<?php endif; ?>
-			
+
+			// control radio box toggles
 			$('#pl_featured_radio').change(function() {
 				if($(this).attr('checked', 'checked')) {
 					$('#pl_featured_listing_block').css('display', 'block');
@@ -68,11 +85,35 @@ function pl_featured_listings_meta_box_cb( $post ) {
 					$('#pl_static_listing_block').css('display', 'block');
 				}
 			});
+
+			// Hide advanced and add 'Advanced' switch
+			$('#pl_static_listing_block #advanced').css('display', 'none');
+			$('#pl_static_listing_block #amenities').css('display', 'none');
+			$('#pl_static_listing_block #custom').css('display', 'none');
+			$('<a href="#" id="pl_show_advanced" style="line-height: 50px;">Show Advanced filters</a>').insertBefore('#pl_static_listing_block #advanced');
+
+			$('#pl_show_advanced').click(function() {
+				$(this).css('display', 'none');
+				$('#pl_static_listing_block #advanced').css('display', 'block');
+				$('#pl_static_listing_block #amenities').css('display', 'block');
+				$('#pl_static_listing_block #custom').css('display', 'block');
+			});
 		});
 	</script>
-	
+	<h2>Pick a Listing</h2>
 	<div id="pl-fl-meta">
+		<style type="text/css">
+			#pl_static_listing_block input,
+			#pl_static_listing_block select {
+				float: right;
+			}
+			#pl_static_listing_block section {
+				margin-bottom: 12px;
+			} 
+			 
+		</style>
 		<div style="width: 400px; min-height: 200px">
+		
 			<p><?php _e('Listing Type:', 'pls'); ?></p>
 			<p><?php _e('Featured Listing', 'pls'); ?> <input id="pl_featured_radio" type="radio" name="pl_listing_type" value="featured" checked="checked" /></p>
 			<p><?php _e('Static Listing', 'pls'); ?> <input id="pl_static_radio" type="radio" name="pl_listing_type" value="static" /></p>
