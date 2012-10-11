@@ -54,9 +54,15 @@ function pl_featured_listings_meta_box_cb( $post ) {
 	$single_listing = isset( $values['pl_fl_meta_box_single_listing'] ) ? esc_attr( $values['pl_fl_meta_box_single_listing'][0] ) : '';
 	wp_nonce_field( 'pl_fl_meta_box_nonce', 'meta_box_nonce' );
 	
+	$shortcode_pattern = '';
 	if( isset( $_GET['post'] ) ) {
 		$featured_post_id = $_GET['post'];
-		$shortcode_pattern = "[featured_listings {$pl_listing_type}_listing_id='{$featured_post_id}']"; 
+		if( $pl_listing_type == 'featured' ) {
+			$shortcode_pattern = "[featured_listings id='{$featured_post_id}']";
+		}
+		else if( $pl_listing_type == 'static' ) {
+			$shortcode_pattern = "[static_listings id='{$featured_post_id}']";
+		} 
 	}
 	
 	?>
@@ -65,6 +71,7 @@ function pl_featured_listings_meta_box_cb( $post ) {
 		<div id="featured_shortcode">
 			<h2>Listing Shortcode</h2>
 			<p>Use this shortcode inside of a page: <strong><?php echo $shortcode_pattern; ?></strong></p>
+			<em>By copying this code and pasting it into a page you display your custom list of listings.</em>
 		</div>
 	<?php endif; ?>
 	

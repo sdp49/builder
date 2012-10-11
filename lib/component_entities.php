@@ -8,19 +8,34 @@
 class PL_Component_Entity {
 
 	public static function featured_listings_entity( $atts ) {
+		if( ! isset( $atts['id'] ) ) {
+			return false;
+		}
 		wp_register_script( 'modernizr', trailingslashit( PLS_JS_URL ) . 'libs/modernizr/modernizr.min.js' , array(), '2.6.1');
 		wp_enqueue_script( 'modernizr' );
 		$atts = wp_parse_args($atts, array('limit' => 5, 'featured_id' => 'custom', 'context' => 'shortcode'));
 		ob_start();
 
-		if( isset( $atts['featured_listing_id'] ) ) {
-			add_filter( $atts['context'] . '_partial_get_listings', array( __CLASS__, 'partial_one' ), 10, 2 );
-			echo pls_get_listings( $atts );
-		} else if( isset( $atts['static_listing_id'] ) ) {
-			PL_Component_Entity::print_filters( $atts['static_listing_id'] );
-			echo PLS_Partials::get_listings_list_ajax('table_id=placester_listings_list'); 
+		$atts['featured_listing_id'] = $atts['id'];
+		add_filter( $atts['context'] . '_partial_get_listings', array( __CLASS__, 'partial_one' ), 10, 2 );
+		echo pls_get_listings( $atts );
+		
+		return ob_get_clean();
+	}
+	
+	public static function static_listings_entity( $atts ) {
+		if( ! isset( $atts['id'] ) ) {
+			return false;
 		}
 		
+		wp_register_script( 'modernizr', trailingslashit( PLS_JS_URL ) . 'libs/modernizr/modernizr.min.js' , array(), '2.6.1');
+		wp_enqueue_script( 'modernizr' );
+		$atts = wp_parse_args($atts, array('limit' => 5, 'featured_id' => 'custom', 'context' => 'shortcode'));
+		ob_start();
+		
+		PL_Component_Entity::print_filters( $atts['id'] );
+		echo PLS_Partials::get_listings_list_ajax('table_id=placester_listings_list');
+	
 		return ob_get_clean();
 	}
 	

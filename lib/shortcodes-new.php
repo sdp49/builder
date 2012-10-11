@@ -156,10 +156,13 @@ class PL_Shortcodes
 	}
 	
 	public static function static_listings_shortcode_handler ( $atts ) {
-		$atts = wp_parse_args($atts, array('limit' => 5));
+		/* $atts = wp_parse_args($atts, array('limit' => 5));
 		ob_start();
 			echo pls_get_listings( $atts );
-		return ob_get_clean();
+		return ob_get_clean(); */
+		$content = PL_Component_Entity::static_listings_entity( $atts );
+		
+		return PL_Shortcode_Wrapper::create( 'static_listings', $content );
 	}
 	public static function post_listing_shortcode_handler ( $atts ) {
 		// $shortcode = 'listings';
