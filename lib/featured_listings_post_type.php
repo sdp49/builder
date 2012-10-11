@@ -34,11 +34,23 @@ function pl_featured_listings_meta_box_cb( $post ) {
 	$pl_featured_listing_meta = isset( $values['pl_featured_listing_meta'] ) ? unserialize($values['pl_featured_listing_meta'][0]) : '';
 	$pl_featured_meta_value = empty( $pl_featured_listing_meta ) ? '' : $pl_featured_listing_meta['featured-listings-type'];
 
+	$pl_static_listings_option = isset( $values['pl_static_listings_option'] ) ? unserialize($values['pl_static_listings_option'][0]) : '';
+	if( is_array( $pl_static_listings_option ) ) {
+		foreach( $pl_static_listings_option as $key => $value ) {
+			$_POST[$key] = $value;
+		}
+	}
+	
+	
 	$single_listing = isset( $values['pl_fl_meta_box_single_listing'] ) ? esc_attr( $values['pl_fl_meta_box_single_listing'][0] ) : '';
 	wp_nonce_field( 'pl_fl_meta_box_nonce', 'meta_box_nonce' );
 	?>
 	<div id="pl-fl-meta">
 		<div style="width: 400px; min-height: 200px">
+			<p><?php _e('Listing Type:', 'pls'); ?></p>
+			<p><?php _e('Featured Listing', 'pls'); ?> <input type="radio" name="pl_listing_type" value="featured" checked="checked" /></p>
+			<p><?php _e('Static Listing', 'pls'); ?> <input type="radio" name="pl_listing_type" value="static" /></p>
+			<div id="pl_featured_listing_block">
 			<?php 
 				include PLS_OPTRM_DIR . '/views/featured-listings.php';
 				// Enqueue all required stylings and scripts
@@ -70,6 +82,17 @@ function pl_featured_listings_meta_box_cb( $post ) {
 // 									, 'pl_featured_listing_meta');
 
 			?>
+			</div><!-- end of #pl_featured_listing_block -->
+			<div id="pl_static_listing_block" >
+				<?php echo PL_Form::generate_form(
+							PL_Config::PL_API_LISTINGS('get', 'args'),
+							array('method' => "POST", 
+									'title' => true,
+									'wrap_form' => false, 
+							 		'echo_form' => false, 
+									'include_submit' => false, 
+									'id' => 'pls_admin_my_listings')); ?>
+			</div><!-- end of #pl_static_listing_block -->
 		</div>
 	</div>
 <?php
@@ -82,6 +105,32 @@ function pl_featured_listings_meta_box_save( $post_id ) {
 	
 	// Verify nonces for ineffective calls
 	if( !isset( $_POST['meta_box_nonce'] ) || !wp_verify_nonce( $_POST['meta_box_nonce'], 'pl_fl_meta_box_nonce' ) ) return;
+	
+	$static_listings_option = array();
+	
+	// Save search form fields if not empty
+	if( ! empty( $_POST['listing_types'] ) && 'false' !== $_POST['listing_types'] ) { $static_listings_option['listing_types'] = $_POST['listing_types']; }
+	if( ! empty( $_POST['zoning_types'] ) &&  'false' !== $_POST['zoning_types'] ) { $static_listings_option['zoning_types'] = $_POST['zoning_types']; }
+	if( ! empty( $_POST['purchase_types'] ) && 'false' !== $_POST['purchase_types'] ) { $static_listings_option['purchase_types'] = $_POST['purchase_types']; }
+	
+	if( isset( $_POST['location'] ) && is_array( $_POST['location'] ) ) {
+		foreach( $_POST['location'] as $key => $value ) {
+			if( ! empty( $value ) ) {
+				$static_listings_option['location'][$key] = $value;
+			}
+		}
+	}
+	
+	if( isset( $_POST['metadata'] ) && is_array( $_POST['metadata'] ) ) {
+		foreach( $_POST['metadata'] as $key => $value ) {
+			if( ! empty( $value ) ) {
+				$static_listings_option['metadata'][$key] = $value;
+			}
+		}
+	}
+	
+	update_post_meta( $post_id, 'pl_static_listings_option', $static_listings_option );
+	
 	
 	// if our current user can't edit this post, bail
 	if( !current_user_can( 'edit_post' ) ) return;

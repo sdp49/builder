@@ -15,8 +15,13 @@ class PL_Component_Entity {
 
 		if( isset( $atts['featured_listing_id'] ) ) {
 			add_filter( $atts['context'] . '_partial_get_listings', array( __CLASS__, 'partial_one' ), 10, 2 );
+			echo pls_get_listings( $atts );
+		} else if( isset( $atts['static_listing_id'] ) ) {
+			PL_Component_Entity::print_filters( $atts['static_listing_id'] );
+			echo PLS_Partials::get_listings_list_ajax('context=listings_search&table_id=placester_listings_list'); 
 		}
-		echo pls_get_listings( $atts );
+		
+		
 		return ob_get_clean();
 	}
 	
@@ -288,6 +293,48 @@ class PL_Component_Entity {
 		
 			return $pl_featured_meta_value;
 		}
+		
+		private static function print_filters( $static_listing_id ) {
+			$static_listings = get_post_meta($static_listing_id, false);
+			
+			if( ! empty( $static_listings ) && isset( $static_listings['pl_static_listings_option'] ) ) {
+				$statc_listing_filters = $static_listings['pl_static_listings_option'];
+				?>
+					<script type="text/javascript">
+
+					  jQuery(document).ready(function( $ ) {
+					
+					    var list = new List ();
+					    var filter = new Filters ();
+					    var listings = new Listings ({
+					      filter: filter,
+					      list: list,
+					    });
+					
+					    filter.init({
+					      dom_id : "#pls_search_form_listings",
+					      class : ".pls_search_form_listings",
+					      list : list,
+					      listings : listings
+					    });
+					
+					    list.init({
+					      dom_id: '#placester_listings_list',
+					      filter : filter,
+					      class: '.placester_listings_list',
+					      listings: listings,
+					      context: 'listings_search',
+					    });
+					    
+					    listings.init();
+					
+					  });
+					
+					</script>
+				
+				<?php 
+			}
+		} 
 
 		public static function partial_one( $listing, $featured_listing_id ) {
 
