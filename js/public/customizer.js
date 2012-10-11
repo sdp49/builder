@@ -43,7 +43,7 @@ jQuery(document).ready(function($) {
 	var controlDivs = $('.control-container').detach();
 	controlDivs.appendTo('#pane');
 
-	$('#confirm').append('<input type="submit" name="save" id="save" style="display:none">');
+	$('#customize-controls').append('<input type="submit" name="save" id="save" style="display:none">');
 
 	/*
 	 * Applies to loading default theme options "pallets"
@@ -123,9 +123,10 @@ jQuery(document).ready(function($) {
   * Bind onboarding menu actions...
   */
   
-  	$('#save').on('click', function (event) {
+  	$('#confirm').on('click', function (event) {
 		event.preventDefault;
 		$('#save').trigger('click');
+		console.log('Finished saving...');
 	});
 
 	$('#navlist li').on('click', function (event) {
