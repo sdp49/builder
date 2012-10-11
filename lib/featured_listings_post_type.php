@@ -6,8 +6,16 @@ add_action( 'init', 'pl_register_featured_listing_post_type' );
 function pl_register_featured_listing_post_type() {
 	$args = array(
 				'labels' => array(
-					'name' => __( 'Featured Listings' ),
-					'singular_name' => __( 'featured_listing' )),
+					'name' => __( 'Featured Listings', 'pls' ),
+					'singular_name' => __( 'featured_listing', 'pls' ),
+					'add_new_item' => __('Add New Featured Listing', 'pls'),
+					'edit_item' => __('Edit Featured Listing', 'pls'),
+					'new_item' => __('New Featured Listing', 'pls'),
+					'all_items' => __('All Featured Listings', 'pls'),
+					'view_item' => __('View Featured Listings', 'pls'),
+					'search_items' => __('Search Featured Listings', 'pls'),
+					'not_found' =>  __('No featured listings found', 'pls'),
+					'not_found_in_trash' => __('No featured listings found in Trash', 'pls')),
 					'public' => true,
 					'publicly_queryable' => false,
 					'show_ui' => true,
@@ -90,7 +98,7 @@ function pl_featured_listings_meta_box_cb( $post ) {
 			$('#pl_static_listing_block #advanced').css('display', 'none');
 			$('#pl_static_listing_block #amenities').css('display', 'none');
 			$('#pl_static_listing_block #custom').css('display', 'none');
-			$('<a href="#" id="pl_show_advanced" style="line-height: 50px;">Show Advanced filters</a>').insertBefore('#pl_static_listing_block #advanced');
+			$('<a href="#basic" id="pl_show_advanced" style="line-height: 50px;">Show Advanced filters</a>').insertBefore('#pl_static_listing_block #advanced');
 
 			$('#pl_show_advanced').click(function() {
 				$(this).css('display', 'none');
@@ -102,16 +110,6 @@ function pl_featured_listings_meta_box_cb( $post ) {
 	</script>
 	<h2>Pick a Listing</h2>
 	<div id="pl-fl-meta">
-		<style type="text/css">
-			#pl_static_listing_block input,
-			#pl_static_listing_block select {
-				float: right;
-			}
-			#pl_static_listing_block section {
-				margin-bottom: 12px;
-			} 
-			 
-		</style>
 		<div style="width: 400px; min-height: 200px">
 		
 			<p><?php _e('Listing Type:', 'pls'); ?></p>
