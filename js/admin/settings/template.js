@@ -1,4 +1,4 @@
-$(document).ready(function($) {
+jQuery(document).ready(function($) {
 	$('.edit_snippet').live('click', function() {
 	  var container = $(this).parents('.shortcode_container');
 

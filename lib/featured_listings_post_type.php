@@ -16,6 +16,7 @@ function pl_register_featured_listing_post_type() {
 					'search_items' => __('Search Featured Listings', 'pls'),
 					'not_found' =>  __('No featured listings found', 'pls'),
 					'not_found_in_trash' => __('No featured listings found in Trash', 'pls')),
+					'menu_icon' => trailingslashit(PL_IMG_URL) . 'featured.png', 
 					'public' => true,
 					'publicly_queryable' => false,
 					'show_ui' => true,
@@ -165,6 +166,18 @@ function pl_featured_listings_meta_box_cb( $post ) {
 									'include_submit' => false, 
 									'id' => 'pls_admin_my_listings')); ?>
 			</div><!-- end of #pl_static_listing_block -->
+		</div>
+		<div>
+			<?php 
+				PL_Snippet_Template::prepare_template( 
+							array(
+								'codes' => array( 'featured_listings', 'static_listings' ), 
+								'p_codes' => array( 
+									'featured_listings' => 'Slideshow Template',
+									'static_listings' => 'Slideshow Template' 
+									)) 
+								); 
+			?>
 		</div>
 	</div>
 <?php

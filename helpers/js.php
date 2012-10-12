@@ -128,7 +128,7 @@ class PL_Js_Helper {
 
 	}
 
-	private function register_enqueue_if_not($name, $path, $dependencies = array(), $version = null, $in_footer = false) {
+	public static function register_enqueue_if_not($name, $path, $dependencies = array(), $version = null, $in_footer = false) {
 		if (!wp_script_is($name, 'registered')) {
 			wp_register_script($name, $path, $dependencies, $version, $in_footer);		
 		}
