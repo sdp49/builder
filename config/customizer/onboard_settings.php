@@ -21,11 +21,13 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
         array(
             'name' => 'Placester Logo',
             'id' => 'logo',
-            'type' => 'heading'
+            'type' => 'heading',
+            'class' => 'no-pane'
         ),    
 
         array(
             'name' => 'Theme Selection',
+            'desc' => 'Select the Right Look-and-Feel',
             'id' => 'theme',
             'type' => 'heading'
         ),
@@ -37,6 +39,7 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
 
         array(
             'name' => 'Title & Slogan',
+            'desc' => 'Let Your Customers Know Who You Are',
             'id' => 'title',
             'type' => 'heading'
         ),
@@ -55,10 +58,10 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
             'type' => 'text'
         ),
 
-        array(
-            'name' => 'Contact Info',
-            'type' => 'info'
-        ),
+        // array(
+        //     'name' => 'Contact Info',
+        //     'type' => 'info'
+        // ),
 
         array(
             'name' => 'First and Last Name',
@@ -88,15 +91,16 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
             'type' => 'textarea'
         ),
 
-        array(
-            'name' => 'Your Headshot',
-            'desc' => 'Add your headshot that you want to display on the site.',
-            'id' => 'pls-user-image',
-            'type' => 'upload'
-        ),
+        // array(
+        //     'name' => 'Your Headshot',
+        //     'desc' => 'Add your headshot that you want to display on the site.',
+        //     'id' => 'pls-user-image',
+        //     'type' => 'upload'
+        // ),
 
         array(
             'name' => 'Colors & Style',
+            'desc' => 'Customize Your Site Even More',
             'id' => 'colors',
             'type' => 'heading'
         ),
@@ -135,6 +139,7 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
 
         array(
             'name' => 'Upload Logo',
+            'desc' => 'Display Your Brand',
             'id' => 'brand',
             'type' => 'heading'
         ),
@@ -148,6 +153,7 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
 
         array(
             'name' => 'MLS Integration',
+            'desc' => 'Integrate Your Listing Data',
             'id' => 'mls',
             'type' => 'heading'
         ),
@@ -159,6 +165,7 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
 
         array(
             'name' => 'Post a Listing',
+            'desc' => 'Create Your Own Custom Listings to Display',
             'id' => 'listing',
             'type' => 'heading'
         ),
@@ -170,6 +177,7 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
 
         array(
             'name' => 'Write a Blog Post',
+            'desc' => 'Start Creating Content for Visitors',
             'id' => 'post',
             'type' => 'heading'
         ),
@@ -181,6 +189,7 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
 
         array(
             'name' => 'Analytics & Webmasters',
+            'desc' => 'Authorize Placester with Google',
             'id' => 'analytics',
             'type' => 'heading'
         ),
@@ -195,7 +204,8 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
         array(
             'name' => 'Save & Continue',
             'id' => 'confirm',
-            'type' => 'heading'
+            'type' => 'heading',
+            'class' => 'no-pane'
         )
 
     );

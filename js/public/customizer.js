@@ -20,6 +20,12 @@ var customizer_global = {
 	}
 };
 
+// The main form/sidebar is initially hidden so that the mangled-mess that exists before
+// the DOM manipulation is completed is NOT shown to the user...
+window.onload = function () {
+	jQuery('#customize-controls').css('display', 'block');
+}
+
 jQuery(document).ready(function($) {
 
  /*
@@ -33,7 +39,8 @@ jQuery(document).ready(function($) {
 	$('#customize-header-actions').remove();
 	$('#customize-footer-actions').remove();
 
-	$('div.wp-full-overlay-sidebar-content').removeClass('wp-full-overlay-sidebar-content');
+	$('div.wp-full-overlay').attr('id', 'full-overlay');
+	$('div.wp-full-overlay-sidebar-content').removeClass('wp-full-overlay-sidebar-content').attr('id', 'sidebar');
 	$('#customize-theme-controls').first().attr('id', 'menu-nav');
 	$('#menu-nav > ul').first().attr('id', 'navlist');
 
@@ -73,7 +80,7 @@ jQuery(document).ready(function($) {
   * Handles switching themes in the preview iframe...
   */
 
-	$('#switch_theme_main #theme_choices').live('change', function (event) {
+	$('#theme_choices').live('change', function (event) {
 		// console.log($(this).val());
 		var curr_href = window.location.href;
 		var new_href = $(this).val()
@@ -129,7 +136,11 @@ jQuery(document).ready(function($) {
 		console.log('Finished saving...');
 	});
 
-	$('#navlist li').on('click', function (event) {
+	$('#navlist .no-pane').on('click', function (event) {
+		
+	});
+
+	$('#navlist li:not(.no-pane)').on('click', function (event) {
 		// If activated menu section is clicked, do nothing...
 		if ( $(this).hasClass('active') ) { return; }
 

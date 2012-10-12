@@ -112,7 +112,7 @@ function define_custom_controls()
    			  <!-- <div id="customize_integration_submit" style="width: 50px; height: 30px; background: grey;">Submit</div> -->
 
    			  <div class="row">
-		        <input type="button" id="customize_integration_submit" class="button-primary" value="Submit" />
+		        <input type="button" id="customize_integration_submit" class="bt-norm" value="Submit Request" />
 		      </div>
    			<?php
 
@@ -155,18 +155,45 @@ function define_custom_controls()
 
    		public function render() {
    		  ?>
-   		  	<?php global $PL_CUSTOMIZER_THEMES; ?>
-   		  	
-			<!-- Build themes dropdown... -->
-			<div id="switch_theme_main" class="custom-control">
-			  <span class="customize-title-span">Preview Other Themes </span>
-			  <select id="theme_choices">
+	        <?php global $PL_CUSTOMIZER_THEMES; ?>
+
+	        <div id="switcher">
+	          <h2>Select Theme</h2>
+	          <select id="theme_choices">
 			    <?php foreach ($PL_CUSTOMIZER_THEMES as $name => $stylesheet) : ?>
 			  	  <option value="<?php echo wp_customize_url($stylesheet); ?>" <?php selected( $this->manager->get_stylesheet(), $stylesheet ); ?>><?php echo $name; ?></option>
 			    <?php endforeach; ?>
 			  </select>
-			  <!-- <input type="button" id="btn_switch_theme" class="top-button button-primary" value="View" style="margin: 0px" /> -->
-			</div>
+	        </div><!--theme-switcher-->
+	        
+	        <?php $screenshot = $this->manager->theme()->get_screenshot(); ?>
+	        <img class="theme-screenshot" src="<?php echo esc_url( $screenshot ); ?>" />
+	      
+	        <h2>Theme Description</h2>
+	        <p><?php echo $this->manager->theme()->display('Description'); ?></p>
+	        <!-- 
+	        <h2>Features</h2>
+	        <ul id="featureslist">
+	          <li>
+	          	<div class="featureicon"><a class="ico-responsive" href="#"></a></div>
+	          	Responsive Web Design
+	          </li>                
+	        </ul>
+	         -->
+	        <div id="pagination">
+	          <a class="first" href="#">Previous</a>
+	          <!-- <div id="center">
+	            <a class="active" href="#">1</a>
+	            <a href="#">2</a>
+	            <a href="#">3</a>
+	            <span>...</span>
+	            <a href="#">9</a>
+	            <a href="#">10</a>            
+	            <a href="#">11</a>            
+	          </div>      -->                                          
+	          <a class="last" href="#">Next</a>
+	          <div class="clearfix"></div>
+	        </div><!--pagination-->
    		  <?php
    		}
 
@@ -175,14 +202,137 @@ function define_custom_controls()
    		}
    }
 
+   class PL_Customize_Listing_Control extends WP_Customize_Control
+   {
+   		public $type = 'listing';
+
+   		public function render() {
+   			?>
+   			  <div id='create_listing'>
+	            <label>Address Line 01</label><br>
+	            <input class="fw" type="text" value="Boston Realtors">
+	            
+	            <label>Address Line 02</label>
+	            <input class="fw" type="text" value="John Doe">
+	            
+	            <label>City</label><br>
+	            <select class="mw">
+	              <option>Select City</option>
+	            </select><br>        
+	            
+	            <label>State</label><br>
+	            <select class="sw">
+	              <option>Select State</option>
+	            </select><br>                  
+	          
+	            <label>Zip Code</label><br>
+	            <input class="sw" type="text" value="Zip"><br>          
+	          
+	            <label>Brief Description</label><br>
+	            <textarea class="fw"></textarea>
+	    
+	    		<?php $amenities = array('Pets Allowed', 'Hot Water', 'Air Conditioning', 'Furnished', 'Balcony', 'Pets Allowed'); ?>
+	            <label>Amenities</label>
+	            <?php foreach ($amenities as $amenity) : ?>
+	              <ul id="checkboxlist">
+	                <li>
+	                  <input class="cb" type="checkbox">
+	                  <?php echo $amenity; ?>          
+	                </li>               
+	              </ul>
+	            <?php endforeach; ?>
+
+	            <br>
+
+	            <label>Upload Images</label>
+
+
+	            <!-- Upload Plugin Goes Here -->
+	            <br><br><br><br><br>
+	          
+	          
+	            <input class="bt-norm" type="button" value="Post Listing">
+	            <div class="clearfix"><br/><br/><br/>adfadsfdfsd</div>
+		      </div>
+   			<?php
+   		}
+
+   		public function render_content() {
+   			// Do nothing...
+   		}
+   }
+
+   class PL_Customize_Blog_Post_Control extends WP_Customize_Control
+   {
+   		public $type = 'blog_post';
+
+   		public function render() {
+   			?>
+   			  <div id="create_post">
+	            <label>Title</label><br>
+	            <input class="fw" type="text" value="My First Real Estate Post">
+	            
+	            <label>Content</label><br>
+	            <textarea class="fw"></textarea>
+	          
+	            <label>Post Excerpt</label><br>
+	            <textarea class="fw"></textarea>            
+	          
+	          	<?php $categories = array('Real Estate 101', 'Tax Advice', 'Mortgages', 'Market Update', 'Realtor Advice', ''); ?>
+	            <label>Category</label>
+	            <ul id="checkboxlist">
+	              <?php foreach ($categories as $category) : ?>
+	                <li>
+	                  <input class="cb" type="radio">
+	                  <?php echo $category; ?>
+	                </li>
+	              <?php endforeach; ?>
+	                <li id="addlink"><a href="#">Add a Category</a></li>
+	            </ul>
+	    
+	            <br>
+	            <label>Upload Images</label>
+	          
+	            <!-- Upload Plugin Goes Here -->
+	            <br><br><br><br><br>
+	          
+	            <input class="bt-norm" type="button" value="Post">
+	          </div>
+   			<?php
+   		}
+
+   		public function render_content() {
+   			// Do nothing...
+   		}
+   }
+
    /*
     * Custom Section -- Allows for complete customization of section look-and-feel...
     */
    class PL_Customize_Section extends WP_Customize_Section
    {
+   		public $subtitle = '';
+   		public $class = '';
+
+   		function __construct( $manager, $id, $args = array() ) {
+   			// First, call parent constructor...
+   			parent::__construct( $manager, $id, $args );
+
+   			// Now additional functionality...
+   			if ( isset($args['subtitle']) ) {
+   				$this->subtitle = $args['subtitle'];
+   			}
+
+   			if ( isset($args['class']) ) {
+   				$this->class = $args['class'];
+   			}
+
+   			return $this;
+   		}
+
    		public function render() {
    		  ?>
-   		  	<li id="<?php echo esc_attr( $this->id ); ?>" class="">
+   		  	<li id="<?php echo esc_attr( $this->id ); ?>" class="<?php echo esc_attr( $this->class ); ?>">
 			  <a href="#"></a>
 			  <div id="<?php echo esc_attr( $this->id ); ?>_content" class="control-container">
 			  	<?php $this->render_controls(); ?>
@@ -193,7 +343,8 @@ function define_custom_controls()
 
    		public function render_controls() {
    		  ?>
-   		    <h3 title="<?php echo esc_attr( $this->description ); ?>"><?php echo esc_html( $this->title ); ?></h3>
+   		    <h1 title="<?php echo esc_attr( $this->description ); ?>"><?php echo esc_html( $this->title ); ?></h1>
+   		  	<h3><?php echo esc_html( $this->subtitle ); ?></h3>
 		    <ul class="control-list">
 		 	  <?php
 			    foreach ( $this->controls as $control )
@@ -275,6 +426,10 @@ class PL_Customizer
 	            case 'heading':
 	                $args_section = array( 'title' => __($opt['name'],''), 'description' => $opt['name'] ); 
 	                $args_section['priority'] = self::get_priority($onboard, $opt['name']);
+	                if ( $onboard ) {
+	                	$args_section['subtitle'] = $opt['desc'];
+	                	$args_section['class'] = $opt['class'];
+	                }
 
 	                $id_base = isset($opt['id']) ? $opt['id'] : $opt['name'];
 	                $section_id = strtolower( str_replace( ' ', '_', $id_base ) );
@@ -376,11 +531,15 @@ class PL_Customizer
 				break;
 
 			case 'post-listing':
-				# code...
+				$listing_ctrl_id = 'listing_ctrl';
+				$listing_args_ctrl = array('settings' => $dummy_setting_id, 'section' => $section_id, 'type' => 'none');
+				$wp_customize->add_control( new PL_Customize_Listing_Control($wp_customize, $listing_ctrl_id, $listing_args_ctrl) );
 				break;
 
 			case 'blog-post':
-				# code...
+				$blog_post_ctrl_id = 'blog_post_ctrl';
+				$blog_post_args_ctrl = array('settings' => $dummy_setting_id, 'section' => $section_id, 'type' => 'none');
+				$wp_customize->add_control( new PL_Customize_Blog_Post_Control($wp_customize, $blog_post_ctrl_id, $blog_post_args_ctrl) );
 				break;
 				
 			default:

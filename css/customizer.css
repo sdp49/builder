@@ -1,7 +1,12 @@
 /* Styles for main customizer sidebar */
 #customize-controls {
-	min-width: 405px;
-	/*width: 20%;*/
+	display: none;
+	width: 580px;
+	background-color: transparent;
+	border-right: none;
+}
+#customize-controls::after {
+	box-shadow: none;
 }
 .customize-title-span {
 	font-size: 12px;
