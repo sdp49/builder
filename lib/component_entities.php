@@ -19,12 +19,11 @@ class PL_Component_Entity {
 		// Print property_ids as argument to the listings
 		global $property_ids;
 		$property_ids = self::get_property_ids( $atts['id'] );
-		$property_ids = array_flip( $property_ids );
 		add_action('featured_filters_featured_ids', array( __CLASS__, 'print_property_listing_args') );
 		unset( $property_ids );
 		
 // 		// print the rest of the filters
-// 		PL_Component_Entity::print_filters( $filters ); 
+ 		PL_Component_Entity::print_filters( $filters ); 
 		
 // 		// compose the final listing with AJAX
 		echo PLS_Partials::get_listings_list_ajax('table_id=placester_listings_list');
@@ -46,9 +45,6 @@ class PL_Component_Entity {
 		ob_start();
 		
 		// print shortcode argument filters
-		if( !empty( $filters ) ) {
-			PL_Component_Entity::print_filters( $filters );
-		}
 		
 		// print filters from the static listing menu
 		$filters = PL_Component_Entity::get_filters_by_listing( $atts['id'] );
