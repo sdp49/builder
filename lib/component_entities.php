@@ -7,7 +7,7 @@
 
 class PL_Component_Entity {
 
-	public static function featured_listings_entity( $atts ) {
+	public static function featured_listings_entity( $atts, $filters = '' ) {
 		if( ! isset( $atts['id'] ) ) {
 			return false;
 		}
@@ -44,11 +44,12 @@ class PL_Component_Entity {
 		$atts = wp_parse_args($atts, array('limit' => 5, 'featured_id' => 'custom', 'context' => 'shortcode'));
 		ob_start();
 		
-		// print shortcode argument filters
-		
 		// print filters from the static listing menu
-		$filters = PL_Component_Entity::get_filters_by_listing( $atts['id'] );
-		PL_Component_Entity::print_filters( $filters );
+		$listing_filters = PL_Component_Entity::get_filters_by_listing( $atts['id'] );
+		$filters_string = PL_Component_Entity::convert_filters( $listing_filters );
+
+		// accepts string only due to shortcode evaluation algorithm
+		PL_Component_Entity::print_filters( $filters . $filters_string );
 		echo PLS_Partials::get_listings_list_ajax('table_id=placester_listings_list');
 	
 		return ob_get_clean();
@@ -365,20 +366,11 @@ class PL_Component_Entity {
 					      context: 'listings_search',
 					    });
 
-					    <?php  // handle static listings with PHP arrays
-					    	if( is_array( $static_listing_filters) ) { 
-						    	foreach( $static_listing_filters as $top_key => $top_value ) {
-									if( is_array( $top_value ) ) {
-										foreach( $top_value as $key => $value ) {
-											echo 'listings.default_filters.push( { "name": "' . $top_key . '[' .  $key . ']", "value" : "'. $value . '" } );';	
-										}
-									} else {
-										echo 'listings.default_filters.push( { "name": "'. $top_key . '", "value" : "'. $top_value . '" } );';
-									}
-								} // handle shortcodes as they are returned as strings
-							} else if( !empty( $static_listing_filters ) ) {
+					    
+					    <?php 
+					    	 if( !empty( $static_listing_filters ) ) {
 							 		echo $static_listing_filters;
-							}
+							 }
 						?>
 					    listings.init();
 					
@@ -403,6 +395,22 @@ class PL_Component_Entity {
 		public static function print_property_listing_args() {
 			global $property_ids;
 			echo "property_ids: ['" . implode("','", $property_ids) . "'],";
+		}
+		
+		private static function convert_filters( $filters ) {
+			ob_start();
+			if( is_array( $filters) ) {
+				foreach( $filters as $top_key => $top_value ) {
+					if( is_array( $top_value ) ) {
+						foreach( $top_value as $key => $value ) {
+							echo 'listings.default_filters.push( { "name": "' . $top_key . '[' .  $key . ']", "value" : "'. $value . '" } );';
+						}
+					} else {
+						echo 'listings.default_filters.push( { "name": "'. $top_key . '", "value" : "'. $top_value . '" } );';
+					}
+				} 
+			}
+			return ob_get_clean();
 		}
 		
 }

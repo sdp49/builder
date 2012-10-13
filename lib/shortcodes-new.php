@@ -162,7 +162,7 @@ class PL_Shortcodes
 	
 	public static function static_listings_shortcode_handler ( $atts, $content = '' ) {
 		add_filter('pl_filter_wrap_filter', array( __CLASS__, 'pl_filter_wrap_default_filters' ));
-		$filters = array();
+		$filters = '';
 		
 		// call do_shortcode for all pl_filter shortcodes
 		// Note: don't leave whitespace or other non-valuable symbols
