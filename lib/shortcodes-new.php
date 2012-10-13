@@ -154,7 +154,13 @@ class PL_Shortcodes
 	
 	// Handle featured listings and filters
 	public static function featured_listings_shortcode_handler ($atts, $content = '') {
+				
+		$content = PL_Component_Entity::featured_listings_entity( $atts );
 		
+		return PL_Shortcode_Wrapper::create( 'featured_listings', $content );	
+	}
+	
+	public static function static_listings_shortcode_handler ( $atts, $content = '' ) {
 		add_filter('pl_filter_wrap_filter', array( __CLASS__, 'pl_filter_wrap_default_filters' ));
 		$filters = array();
 		
@@ -163,24 +169,13 @@ class PL_Shortcodes
 		if( ! empty( $content ) ) {
 			$filters = do_shortcode( strip_tags( $content ) );
 		}
-		
 		$filters = str_replace('&nbsp;', '', $filters);
-		
-		$content = PL_Component_Entity::featured_listings_entity( $atts, $filters );
-		
-		return PL_Shortcode_Wrapper::create( 'featured_listings', $content );	
-	}
-	
-	public static function static_listings_shortcode_handler ( $atts, $content = '' ) {
-		$filters = '';
-		if( ! empty( $content ) ) {
-			$filters = PL_Component_Entity::pull_listing_filters( $content );
-		}
-		
-		$content = PL_Component_Entity::static_listings_entity( $atts );
+				
+		$content = PL_Component_Entity::static_listings_entity( $atts, $filters );
 		
 		return PL_Shortcode_Wrapper::create( 'static_listings', $content );
 	}
+	
 	public static function post_listing_shortcode_handler ( $atts ) {
 		// $shortcode = 'listings';
 		// self::$listing = $listing;

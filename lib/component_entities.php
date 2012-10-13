@@ -7,7 +7,7 @@
 
 class PL_Component_Entity {
 
-	public static function featured_listings_entity( $atts, $filters = '' ) {
+	public static function featured_listings_entity( $atts ) {
 		if( ! isset( $atts['id'] ) ) {
 			return false;
 		}
@@ -23,10 +23,10 @@ class PL_Component_Entity {
 		add_action('featured_filters_featured_ids', array( __CLASS__, 'print_property_listing_args') );
 		unset( $property_ids );
 		
-		// print the rest of the filters
-		PL_Component_Entity::print_filters( $filters ); 
+// 		// print the rest of the filters
+// 		PL_Component_Entity::print_filters( $filters ); 
 		
-		// compose the final listing with AJAX
+// 		// compose the final listing with AJAX
 		echo PLS_Partials::get_listings_list_ajax('table_id=placester_listings_list');
 		
 // 		$atts['featured_listing_id'] = $atts['id'];
@@ -36,7 +36,7 @@ class PL_Component_Entity {
 		return ob_get_clean();
 	}
 	
-	public static function static_listings_entity( $atts ) {
+	public static function static_listings_entity( $atts, $filters = '' ) {
 		if( ! isset( $atts['id'] ) ) {
 			return false;
 		}
@@ -46,6 +46,12 @@ class PL_Component_Entity {
 		$atts = wp_parse_args($atts, array('limit' => 5, 'featured_id' => 'custom', 'context' => 'shortcode'));
 		ob_start();
 		
+		// print shortcode argument filters
+		if( !empty( $filters ) ) {
+			PL_Component_Entity::print_filters( $filters );
+		}
+		
+		// print filters from the static listing menu
 		$filters = PL_Component_Entity::get_filters_by_listing( $atts['id'] );
 		PL_Component_Entity::print_filters( $filters );
 		echo PLS_Partials::get_listings_list_ajax('table_id=placester_listings_list');
