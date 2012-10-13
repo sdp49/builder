@@ -7,7 +7,7 @@
 
 class PL_Component_Entity {
 
-	public static function featured_listings_entity( $atts ) {
+	public static function featured_listings_entity( $atts, $filters = '' ) {
 		if( ! isset( $atts['id'] ) ) {
 			return false;
 		}
@@ -15,10 +15,23 @@ class PL_Component_Entity {
 		wp_enqueue_script( 'modernizr' );
 		$atts = wp_parse_args($atts, array('limit' => 5, 'featured_id' => 'custom', 'context' => 'shortcode'));
 		ob_start();
-
-		$atts['featured_listing_id'] = $atts['id'];
-		add_filter( $atts['context'] . '_partial_get_listings', array( __CLASS__, 'partial_one' ), 10, 2 );
-		echo pls_get_listings( $atts );
+		
+		// Print property_ids as argument to the listings
+		global $property_ids;
+		$property_ids = self::get_property_ids( $atts['id'] );
+		$property_ids = array_flip( $property_ids );
+		add_action('featured_filters_featured_ids', array( __CLASS__, 'print_property_listing_args') );
+		unset( $property_ids );
+		
+		// print the rest of the filters
+		PL_Component_Entity::print_filters( $filters ); 
+		
+		// compose the final listing with AJAX
+		echo PLS_Partials::get_listings_list_ajax('table_id=placester_listings_list');
+		
+// 		$atts['featured_listing_id'] = $atts['id'];
+// 		add_filter( $atts['context'] . '_partial_get_listings', array( __CLASS__, 'partial_one' ), 10, 2 );
+// 		echo pls_get_listings( $atts );
 		
 		return ob_get_clean();
 	}
@@ -33,7 +46,8 @@ class PL_Component_Entity {
 		$atts = wp_parse_args($atts, array('limit' => 5, 'featured_id' => 'custom', 'context' => 'shortcode'));
 		ob_start();
 		
-		PL_Component_Entity::print_filters( $atts['id'] );
+		$filters = PL_Component_Entity::get_filters_by_listing( $atts['id'] );
+		PL_Component_Entity::print_filters( $filters );
 		echo PLS_Partials::get_listings_list_ajax('table_id=placester_listings_list');
 	
 		return ob_get_clean();
@@ -308,12 +322,19 @@ class PL_Component_Entity {
 			return $pl_featured_meta_value;
 		}
 		
-		private static function print_filters( $static_listing_id ) {
+		private static function get_filters_by_listing( $static_listing_id ) {
 			$static_listings = get_post_meta($static_listing_id, false);
-			
+				
 			if( ! empty( $static_listings ) && isset( $static_listings['pl_static_listings_option'] ) ) {
 				$static_listing_filters = unserialize( $static_listings['pl_static_listings_option'][0] );
-
+				return $static_listing_filters;
+			}
+			
+			return array();
+		}
+		
+		private static function print_filters( $static_listing_filters ) {
+			
 				wp_enqueue_script('filters-featured.js', trailingslashit(PLS_JS_URL) . 'scripts/filters.js', array('jquery'));l
 				?>
 					<script type="text/javascript">
@@ -324,7 +345,8 @@ class PL_Component_Entity {
 					    var filter = new Filters ();
 					    var listings = new Listings ({
 					      filter: filter,
-					      list: list,
+					      <?php echo do_action('featured_filters_featured_ids'); ?>
+					      list: list
 					    });
 					
 					    filter.init({
@@ -342,16 +364,20 @@ class PL_Component_Entity {
 					      context: 'listings_search',
 					    });
 
-					    <?php 
-					    	foreach( $static_listing_filters as $top_key => $top_value ) {
-								if( is_array( $top_value ) ) {
-									foreach( $top_value as $key => $value ) {
-										echo 'listings.default_filters.push( { "name": "' . $top_key . '[' .  $key . ']", "value" : "'. $value . '" } );';	
+					    <?php  // handle static listings with PHP arrays
+					    	if( is_array( $static_listing_filters) ) { 
+						    	foreach( $static_listing_filters as $top_key => $top_value ) {
+									if( is_array( $top_value ) ) {
+										foreach( $top_value as $key => $value ) {
+											echo 'listings.default_filters.push( { "name": "' . $top_key . '[' .  $key . ']", "value" : "'. $value . '" } );';	
+										}
+									} else {
+										echo 'listings.default_filters.push( { "name": "'. $top_key . '", "value" : "'. $top_value . '" } );';
 									}
-								} else {
-									echo 'listings.default_filters.push( { "name": "'. $top_key . '", "value" : "'. $top_value . '" } );';
-								}
-							} 
+								} // handle shortcodes as they are returned as strings
+							} else if( !empty( $static_listing_filters ) ) {
+							 		echo $static_listing_filters;
+							}
 						?>
 					    listings.init();
 					
@@ -360,7 +386,6 @@ class PL_Component_Entity {
 					</script>
 				
 				<?php 
-			}
 		} 
 
 		public static function partial_one( $listing, $featured_listing_id ) {
@@ -372,6 +397,11 @@ class PL_Component_Entity {
 			//response is expected to be of fortmat api response
 			//no addiitonal formatting needed.
 			return $api_response;
+		}
+		
+		public static function print_property_listing_args() {
+			global $property_ids;
+			echo "property_ids: ['" . implode("','", $property_ids) . "'],";
 		}
 		
 }
