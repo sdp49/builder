@@ -40,7 +40,6 @@ class PL_Component_Entity {
 		if( ! isset( $atts['id'] ) ) {
 			return false;
 		}
-		
 		wp_register_script( 'modernizr', trailingslashit( PLS_JS_URL ) . 'libs/modernizr/modernizr.min.js' , array(), '2.6.1');
 		wp_enqueue_script( 'modernizr' );
 		$atts = wp_parse_args($atts, array('limit' => 5, 'featured_id' => 'custom', 'context' => 'shortcode'));
