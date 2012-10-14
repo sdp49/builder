@@ -137,7 +137,8 @@ jQuery(document).ready(function($) {
 	});
 
 	$('#navlist .no-pane').on('click', function (event) {
-		
+		$('#pane').css('display', 'none');
+		$('.control-container').css('display', 'none');
 	});
 
 	$('#navlist li:not(.no-pane)').on('click', function (event) {
