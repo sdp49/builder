@@ -7,12 +7,16 @@
 
 class PL_Component_Entity {
 
+	/**
+	 * Featured listings logic
+	 * @param array $atts id or future arguments
+	 * @param string $filters filters for default_filters
+	 * @return boolean|string
+	 */
 	public static function featured_listings_entity( $atts, $filters = '' ) {
 		if( ! isset( $atts['id'] ) ) {
 			return false;
 		}
-		wp_register_script( 'modernizr', trailingslashit( PLS_JS_URL ) . 'libs/modernizr/modernizr.min.js' , array(), '2.6.1');
-		wp_enqueue_script( 'modernizr' );
 		$atts = wp_parse_args($atts, array('limit' => 5, 'featured_id' => 'custom', 'context' => 'shortcode'));
 		ob_start();
 		
@@ -30,19 +34,20 @@ class PL_Component_Entity {
 // 		// compose the final listing with AJAX
 		echo PLS_Partials::get_listings_list_ajax('table_id=placester_listings_list');
 		
-// 		$atts['featured_listing_id'] = $atts['id'];
-// 		add_filter( $atts['context'] . '_partial_get_listings', array( __CLASS__, 'partial_one' ), 10, 2 );
-// 		echo pls_get_listings( $atts );
-		
 		return ob_get_clean();
 	}
 	
+	/**
+	 * Static listings
+	 * 
+	 * @param array $atts arguments - id
+	 * @param string $filters default filters to be passed
+	 * @return boolean|string
+	 */
 	public static function static_listings_entity( $atts, $filters = '' ) {
 		if( ! isset( $atts['id'] ) ) {
 			return false;
 		}
-		wp_register_script( 'modernizr', trailingslashit( PLS_JS_URL ) . 'libs/modernizr/modernizr.min.js' , array(), '2.6.1');
-		wp_enqueue_script( 'modernizr' );
 		$atts = wp_parse_args($atts, array('limit' => 5, 'featured_id' => 'custom', 'context' => 'shortcode'));
 		ob_start();
 		

@@ -145,15 +145,6 @@ function pl_featured_listings_meta_box_cb( $post ) {
 									'type' => 'featured_listing'
 									) ,$pl_featured_meta_value
 									, 'pl_featured_listing_meta');
-			
-// 				echo PLS_Featured_Listing_Option::init(array(
-// 									'name' => 'Featured Meta',
-// 									'desc' => '',
-// 									'id' => 'featured-listings-type',
-// 									'type' => 'featured_listing'
-// 									) ,$pl_featured_meta_value
-// 									, 'pl_featured_listing_meta');
-
 			?>
 			</div><!-- end of #pl_featured_listing_block -->
 			<div id="pl_static_listing_block" style="display: none;">

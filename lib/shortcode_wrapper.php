@@ -18,5 +18,4 @@ class PL_Shortcode_Wrapper {
 		return ob_get_clean();
 	}
 	
-	
 }
