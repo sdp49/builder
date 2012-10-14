@@ -139,6 +139,12 @@ jQuery(document).ready(function($) {
 	$('#navlist .no-pane').on('click', function (event) {
 		$('#pane').css('display', 'none');
 		$('.control-container').css('display', 'none');
+
+		// Remove active class from any existing elements...
+		var activeLi = $('#navlist li.active');
+		if ( activeLi.length > 0 ) {
+			activeLi.each( function() { $(this).toggleClass('active'); } );
+		}
 	});
 
 	$('#navlist li:not(.no-pane)').on('click', function (event) {
