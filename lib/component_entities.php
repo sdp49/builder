@@ -20,6 +20,13 @@ class PL_Component_Entity {
 		$atts = wp_parse_args($atts, array('limit' => 5, 'featured_id' => 'custom', 'context' => 'shortcode'));
 		ob_start();
 		
+		// pass a template as a context if any
+		$template_context = '';
+		if( isset( $atts['template'] ) ) {
+			$template_context = $atts['template'];
+			add_filter('pls_listings_list_ajax_item_html_' . $template_context, array(__CLASS__, 'featured_listings_ajax_templates'), 10, 3);
+		}
+		
 		// Print property_ids as argument to the listings
 		global $property_ids;
 		$property_ids = self::get_property_ids( $atts['id'] );
@@ -29,10 +36,10 @@ class PL_Component_Entity {
 		unset( $property_ids );
 		
 // 		// print the rest of the filters
- 		PL_Component_Entity::print_filters( $filters ); 
+ 		PL_Component_Entity::print_filters( $filters, $template_context ); 
 		
 // 		// compose the final listing with AJAX
-		echo PLS_Partials::get_listings_list_ajax('table_id=placester_listings_list');
+		echo PLS_Partials::get_listings_list_ajax( ( empty( $template_context ) ? '' : 'context=' . $template_context . '&' ). 'table_id=placester_listings_list');
 		
 		return ob_get_clean();
 	}
@@ -151,14 +158,14 @@ class PL_Component_Entity {
 	public static function listing_sub_entity( $atts, $content, $tag ) {
 		$val = '';
 		
-		if (array_key_exists($tag, self::$listing['cur_data'])) {
-			$val = self::$listing['cur_data'][$tag];
-		}else if (array_key_exists($tag, self::$listing['location'])) {
-			$val = self::$listing['location'][$tag];
-		}else if (array_key_exists($tag, self::$listing['contact'])) {
-			$val = self::$listing['contact'][$tag];
-		}else if (array_key_exists($tag, self::$listing['rets'])) {
-			$val = self::$listing['rets'][$tag];
+		if (array_key_exists($tag, PL_Shortcodes::$listing['cur_data'])) {
+			$val = PL_Shortcodes::$listing['cur_data'][$tag];
+		}else if (array_key_exists($tag, PL_Shortcodes::$listing['location'])) {
+			$val = PL_Shortcodes::$listing['location'][$tag];
+		}else if (array_key_exists($tag, PL_Shortcodes::$listing['contact'])) {
+			$val = PL_Shortcodes::$listing['contact'][$tag];
+		}else if (array_key_exists($tag, PL_Shortcodes::$listing['rets'])) {
+			$val = PL_Shortcodes::$listing['rets'][$tag];
 		}
 		else {
 		}
@@ -174,11 +181,11 @@ class PL_Component_Entity {
 			case 'image':
 				$width = @array_key_exists('width', $atts) ? (int)$atts['width'] : 180;
 				$height = @array_key_exists('height', $atts) ? (int)$atts['height'] : 120;
-				$val = PLS_Image::load(self::$listing['images'][0]['url'],
+				$val = PLS_Image::load(PL_Shortcodes::$listing['images'][0]['url'],
 						array('resize' => array('w' => $width, 'h' => $height),
 								'fancybox' => true,
 								'as_html' => true,
-								'html' => array('alt' => self::$listing['location']['full_address'],
+								'html' => array('alt' => PL_Shortcodes::$listing['location']['full_address'],
 										'itemprop' => 'image')));
 				break;
 			case 'gallery':
@@ -187,7 +194,7 @@ class PL_Component_Entity {
 					<div id="slideshow" class="clearfix theme-default left bottomborder">
 						<div class="grid_8 alpha">
 							<ul class="property-image-gallery grid_8 alpha">
-								<?php foreach (self::$listing['images'] as $image): ?>
+								<?php foreach (PL_Shortcodes::$listing['images'] as $image): ?>
 									<li><?php echo PLS_Image::load($image['url'], 
 										                           array('resize' => array('w' => 100, 'h' => 75), 
 																   		 'fancybox' => true, 
@@ -202,18 +209,18 @@ class PL_Component_Entity {
 				$val = ob_get_clean();
 				break;
 			case 'map':
-				$val = PLS_Map::lifestyle(self::$listing, array('width' => 590, 'height' => 250, 'zoom' => 16, 'life_style_search' => true,
+				$val = PLS_Map::lifestyle(PL_Shortcodes::$listing, array('width' => 590, 'height' => 250, 'zoom' => 16, 'life_style_search' => true,
 																'show_lifestyle_controls' => true, 'show_lifestyle_checkboxes' => true, 
-																'lat' => self::$listing['location']['coords'][0], 'lng' => self::$listing['location']['coords'][1]));
+																'lat' => PL_Shortcodes::$listing['location']['coords'][0], 'lng' => PL_Shortcodes::$listing['location']['coords'][1]));
 				break;
 			case 'price':
-				$val = PLS_Format::number(self::$listing['cur_data']['price'], array('abbreviate' => false, 'add_currency_sign' => true));
+				$val = PLS_Format::number(PL_Shortcodes::$listing['cur_data']['price'], array('abbreviate' => false, 'add_currency_sign' => true));
 				break;
 			case 'listing_type':
-				$val = PLS_Format::translate_property_type(self::$listing);
+				$val = PLS_Format::translate_property_type(PL_Shortcodes::$listing);
 				break;
 			case 'amenities':
-				$amenities = PLS_Format::amenities_but(&self::$listing, array('half_baths', 'beds', 'baths', 'url', 'sqft', 'avail_on', 'price', 'desc'));
+				$amenities = PLS_Format::amenities_but(&PL_Shortcodes::$listing, array('half_baths', 'beds', 'baths', 'url', 'sqft', 'avail_on', 'price', 'desc'));
 				$amen_type = array_key_exists('type', $atts) ? (string)$atts['type'] : 'list';
 				ob_start();
 				?>
@@ -233,9 +240,9 @@ class PL_Component_Entity {
 			  case 'compliance':
 			  	ob_start();
 			  	PLS_Listing_Helper::get_compliance(array('context' => 'listings', 
-	  												     'agent_name' => self::$listing['rets']['aname'] , 
-	  												     'office_name' => self::$listing['rets']['oname'], 
-	  												     'office_phone' => PLS_Format::phone(self::$listing['contact']['phone'])));
+	  												     'agent_name' => PL_Shortcodes::$listing['rets']['aname'] , 
+	  												     'office_name' => PL_Shortcodes::$listing['rets']['oname'], 
+	  												     'office_phone' => PLS_Format::phone(PL_Shortcodes::$listing['contact']['phone'])));
 			  	$val = ob_get_clean();
 			  	break;
 			default:
@@ -342,7 +349,7 @@ class PL_Component_Entity {
 			return array();
 		}
 		
-		private static function print_filters( $static_listing_filters ) {
+		private static function print_filters( $static_listing_filters, $context = 'listings_search' ) {
 			
 				wp_enqueue_script('filters-featured.js', trailingslashit(PLS_JS_URL) . 'scripts/filters.js', array('jquery'));l
 				?>
@@ -370,7 +377,7 @@ class PL_Component_Entity {
 					      filter : filter,
 					      class: '.placester_listings_list',
 					      listings: listings,
-					      context: 'listings_search',
+					      context: '<?php echo $context; ?>',
 					    });
 
 					    
@@ -418,6 +425,11 @@ class PL_Component_Entity {
 				} 
 			}
 			return ob_get_clean();
+		}
+		
+		// Provide template layout for featured listings
+		public static function featured_listings_ajax_templates( $item_html, $listing, $context_var = '' ) {
+			return "<p>The item of the universe.</p>";
 		}
 		
 }
