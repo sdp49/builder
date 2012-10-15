@@ -329,6 +329,11 @@ input[type=text] {
 	box-shadow: inset 0px 1px 1px rgba(0,0,0,0.1);	
 }
 
+input[type="checkbox"], 
+input[type="radio"] {
+	vertical-align: baseline !important;
+}	
+
 label {font-size:16px; color:#4c4c4c; clear:both;}
 label span {font-size:14px;}
 

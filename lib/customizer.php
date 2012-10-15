@@ -233,15 +233,14 @@ function define_custom_controls()
 	    
 	    		<?php $amenities = array('Pets Allowed', 'Hot Water', 'Air Conditioning', 'Furnished', 'Balcony', 'Pets Allowed'); ?>
 	            <label>Amenities</label>
-	            <?php foreach ($amenities as $amenity) : ?>
-	              <ul id="checkboxlist">
+	            <ul id="checkboxlist">
+	              <?php foreach ($amenities as $amenity) : ?>
 	                <li>
 	                  <input class="cb" type="checkbox">
 	                  <?php echo $amenity; ?>          
 	                </li>               
-	              </ul>
-	            <?php endforeach; ?>
-
+	              <?php endforeach; ?>
+	            </ul>
 	            <br>
 
 	            <label>Upload Images</label>
@@ -252,7 +251,6 @@ function define_custom_controls()
 	          
 	          
 	            <input class="bt-norm" type="button" value="Post Listing">
-	            <div class="clearfix"><br/><br/><br/>adfadsfdfsd</div>
 		      </div>
    			<?php
    		}
