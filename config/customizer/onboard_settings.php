@@ -121,13 +121,13 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
         //     'type' => 'background'
         // ),
 
-        // array(
-        //     'name' => 'H1 Title',
-        //     'desc' => 'Change main site title\'s size, font-family, styling, and color.',
-        //     'id' => 'h1_title',
-        //     'selector' => 'header h1 a',
-        //     'type' => 'typography'
-        // ),
+        array(
+            'name' => 'H1 Title',
+            'desc' => 'Change main site title\'s size, font-family, styling, and color.',
+            'id' => 'h1_title',
+            'selector' => 'header h1 a',
+            'type' => 'typography'
+        ),
 
         // array(
         //     'name' => 'H2 Subtitle',

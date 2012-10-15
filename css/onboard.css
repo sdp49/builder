@@ -285,6 +285,7 @@ section#pane {
 	-webkit-box-shadow: 3px -3px 3px rgba(0,0,0,0.3);
 	box-shadow: 3px -3px 3px rgba(0,0,0,0.3s);
 	margin-left: 56px;
+	overflow: auto;
 }
 
 section#pane .control-container {
