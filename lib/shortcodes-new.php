@@ -107,6 +107,9 @@ class PL_Shortcodes
 		  }	
 		}
 
+		// register several helpful shortcodes for filters, for metadata, locaiton and common
+		add_shortcode('pl_filter', array(__CLASS__, 'pl_filter_shortcode_handler'));
+		
 		// Register hooks to customize the html for the wrapper functions
 		add_filter('pls_listings_search_form_outer_shortcode', array(__CLASS__, 'searchform_shortcode_context'), 10, 6);
 		add_filter('pls_listings_list_ajax_item_html_shortcode', array(__CLASS__, 'listings_shortcode_context'), 10, 3);
@@ -149,18 +152,30 @@ class PL_Shortcodes
 		return PL_Shortcode_Wrapper::create( 'advanced_slideshow', $content );
 	}
 	
-	public static function featured_listings_shortcode_handler ($atts) {
+	// Handle featured listings and filters
+	public static function featured_listings_shortcode_handler ($atts, $content = '') {
+				
 		$content = PL_Component_Entity::featured_listings_entity( $atts );
 		
 		return PL_Shortcode_Wrapper::create( 'featured_listings', $content );	
 	}
 	
-	public static function static_listings_shortcode_handler ( $atts ) {
-		$atts = wp_parse_args($atts, array('limit' => 5));
-		ob_start();
-			echo pls_get_listings( $atts );
-		return ob_get_clean();
+	public static function static_listings_shortcode_handler ( $atts, $content = '' ) {
+		add_filter('pl_filter_wrap_filter', array( __CLASS__, 'pl_filter_wrap_default_filters' ));
+		$filters = '';
+		
+		// call do_shortcode for all pl_filter shortcodes
+		// Note: don't leave whitespace or other non-valuable symbols
+		if( ! empty( $content ) ) {
+			$filters = do_shortcode( strip_tags( $content ) );
+		}
+		$filters = str_replace('&nbsp;', '', $filters);
+				
+		$content = PL_Component_Entity::static_listings_entity( $atts, $filters );
+		
+		return PL_Shortcode_Wrapper::create( 'static_listings', $content );
 	}
+	
 	public static function post_listing_shortcode_handler ( $atts ) {
 		// $shortcode = 'listings';
 		// self::$listing = $listing;
@@ -244,7 +259,40 @@ class PL_Shortcodes
 		
 		return PL_Shortcode_Wrapper::create( 'listing_sub', $content );
 	}
+	
+	/** Helpcode shortcode handler **/
 
+	/**
+	 * Handle filters for listing
+	 * 
+	 * Expected attributes:
+	 * 
+	 * group - group="metadata" or group="location", for wrapping filter calls by group
+	 * filter - filter="listing_types", filter="zoning_types" and used together with a group call
+	 * value - the value of the filter
+	 * 
+	 * @param unknown_type $atts
+	 * @param unknown_type $content
+	 */
+	public static function pl_filter_shortcode_handler( $atts, $content = '' ) {
+		$out = '';
+		
+		if( !isset( $atts['filter'] ) || ! isset( $atts['value'] ) ) {
+			return "";
+		}
+		
+		extract($atts);
+		
+		if( isset( $group ) ) {
+			$filter = $group . '[' . $filter . ']';
+		}
+		
+		return apply_filters('pl_filter_wrap_filter', '{ "name": "' . $filter . '", "value" : "' . $value . '"} ');
+	}	
+	
+	public static function pl_filter_wrap_default_filters( $filter ) {
+		return "listings.default_filters.push(" . trim( strip_tags( $filter ) ) . "); ";
+	}
 
 	/*** Helper Functions ***/
 

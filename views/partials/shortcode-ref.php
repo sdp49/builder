@@ -46,6 +46,18 @@
 	  <?php foreach (PL_Shortcodes::$subcodes['listing'] as $subcode): ?>
   	    [<?php echo $subcode ?>], &nbsp;
       <?php endforeach ?>
+      <?php elseif ($shortcode == 'featured_listings'): ?>
+      <p>
+		You can insert your Featured Listings snippet by using the [featured_listings id="<em>listingid</em>"] shortcode in a page or a post.
+		The shortcode require an ID parameter of the featured listing ID number published in your
+		Featured Listings post type control on the left side of the admin panel.
+	  </p>
+      <?php elseif ($shortcode == 'static_listings'): ?>
+      <p>
+		You can insert your Static Listings snippet by using the [static_listings id="<em>listingid</em>"] shortcode in a page or a post.
+		The shortcode require an ID parameter of the static listing ID number published in your
+		Featured Listings post type control on the left side of the admin panel.
+	  </p>
 	<?php else: ?>
 	    Doc not found...
 	<?php endif ?>

@@ -146,6 +146,8 @@ include_once('helpers/education-com.php');
 include_once('helpers/caching.php');
 include_once('helpers/membership.php');
 include_once('helpers/snippet.php');
+include_once('helpers/template.php');
+
 
 //third-party scripts
 include_once('third-party/tax-meta-class/tax-meta-class.php');
