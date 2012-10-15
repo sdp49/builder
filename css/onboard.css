@@ -1,10 +1,10 @@
-/*html {
-	height:100%;
-	font-family:Arial, Helvetica, sans-serif;
+html {
+	height: 100%;
+	font-family: Arial, Helvetica, sans-serif;
 }
-*/
+
 body {
-	height:100%;
+	height: 100%;
 	/*padding:0px;
 	margin:0px;*/
 	line-height: normal !important;
@@ -18,12 +18,14 @@ h1 {
 	color: #000;
 }
 
-h2 {
+h2, 
+#sidebar h2 {
 	margin: 20px 0px 8px 0px;
 	padding: 0px;
 	color: #4c4c4c;
 	font-size: 20px;
-	font-weight: lighter;	
+	font-weight: lighter;
+	font-family: Arial, Helvetica, sans-serif;
 }
 
 h3 {
@@ -299,21 +301,26 @@ section#pane .control-container {
 }
 
 div#switcher {
-	clear:both;	
-	margin-bottom:20px; 
-	padding:10px 0px 15px 0px;
-	height:25px;
+	clear: both;	
+	margin-bottom: 20px; 
+	padding: 10px 0px 15px 0px;
+	height: 25px;
 }
 
 div#switcher h2 {
-	float:left; 
-	margin:8px 0px 0px 0px; 
-	padding:0px;
+	float: left; 
+	margin: 5px 0px 0px 0px; 
+	padding: 0px;
+	font-size: 20px;
 }
 
 div#switcher select {
-	float:right; 
-	width:65%;
+	float: right;
+	height: 39px; 
+	width: 65%;
+	font-size: 16px;
+	/*font-weight: lighter;*/
+	color: gray;
 }
 
 input[type=text] {
@@ -334,15 +341,21 @@ input[type="radio"] {
 	vertical-align: baseline !important;
 }	
 
-label {font-size:16px; color:#4c4c4c; clear:both;}
-label span {font-size:14px;}
+label 
+{
+	font-size: 16px; 
+	color: #4c4c4c; 
+	clear: both;
+}
 
-input.fw {width:438px;}
-input.mw {width:240px;}
-input.sw {width:107px;}
-input.fr {width:40px; float:right;}
-input.cb {margin:10px 5px 0px 0px;}
-input.fl-m {margin-right:7px;}
+label span {font-size: 14px;}
+
+input.fw {width: 438px;}
+input.mw {width: 240px;}
+input.sw {width: 107px;}
+input.fr {width: 40px; float: right;}
+input.cb {margin: 10px 5px 0px 1px;}
+input.fl-m {margin-right: 7px;}
 
 textarea {
 	padding:12px; 
@@ -433,6 +446,9 @@ p.inp-cmt {
 	font-size:12px;	
 }
 
+img.theme-screenshot {
+	max-width: 460px;
+}
 
 /* Pagination */
 

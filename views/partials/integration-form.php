@@ -22,8 +22,8 @@
 
   	<div class="row">
 	  <div class="info">
-		<h3>MLS Name</h3>
-		<p>Pick which MLS provides your RETS data.</p>
+		<h3>MLS Provider</h3>
+		<p>Pick which MLS provides your listing data.</p>
 	  </div>
 	  <div class="elements">
 	  	<p>
@@ -67,7 +67,7 @@
 	<div class="row">
 	  <div class="info">
 	    <h3>Phone Number</h3>
-		<p>Your phone number will help us provide prompt support to get your integration setup.</p>
+		<p>This will help us provide prompt support to get your integration setup.</p>
 	  </div>
 	  <div class="elements">
 		<input id="phone" name="phone" type="text">

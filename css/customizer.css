@@ -1,41 +1,50 @@
 /* Styles for main customizer sidebar */
 #customize-controls {
 	display: none;
-	width: 580px;
+	width: 56px;
+	overflow: visible;
 	background-color: transparent;
 	border-right: none;
 }
+
 #customize-controls::after {
 	box-shadow: none;
 }
+
 .customize-title-span {
 	font-size: 12px;
 	font-weight: bold;
 }
+
 .customize-section-title {
 	font-family: "Century Gothic", "Helvetica Light" !important;
 	font-size: 16px !important;
 	font-weight: 200 !important;
 }
+
 .customize-section-content select {
 	min-width: 0px !important;
 }
+
 .customize-section-content .of-typography-size {
     width: 65px;
     margin-left: 5px;
     float: left; 
 }
+
 .customize-section-content .of-typography-face {
     width: 85px;
     margin-left: 5px;
     float: left; 
 }
+
 .customize-section-content .of-typography-style {
     width: 75px;
     margin-left: 5px;
     margin-right: 5px;
     float: left; 
 }
+
 .customize-section-content .of-color {
     clear: both;
     width: 65px !important;
@@ -45,27 +54,61 @@
 .custom-control {
 	margin-bottom: 21px;
 }
+
 .custom-control span {
 	display: block;
 }
+
 .custom-control select {
 	margin: 9px 0px 0px 9px;
 }
 
+
 /* Integration sidebar control */
 #pls_integration_form select {
-	width: 275px;
+	margin-bottom: 18px;
+	width: 438px;
 }
+
+#pls_integration_form input[type=text] {
+	width: 438px;
+}
+
 #customize_integration_submit {
 	margin-top: 25px;
 	float: right;
 }
+
+#pls_integration_form h3 {
+	font-size: 16px; 
+	color: #4c4c4c; 
+	clear: both;
+	margin: 9px 0px 3px 0px;
+}
+
 #pls_integration_form h3.invalid {
 	color: red !important;
 }
+
+#pls_integration_form p {
+	font-size: 13px;
+	line-height: 18px;
+	font-style: italic;
+	color: gray;
+}
+
+#pls_integration_form .elements p {
+	margin: 12px 0px 3px 0px;
+}
+
+#pls_integration_form p strong {
+	font-style: normal;
+}
+
 #pls_integration_form input.invalid {
 	border: 1px solid red !important;
 }
+
 
 /* Cleaning up jqueryUI's styles */
 .ui-widget-header {

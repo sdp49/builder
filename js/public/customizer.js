@@ -24,6 +24,12 @@ var customizer_global = {
 // the DOM manipulation is completed is NOT shown to the user...
 window.onload = function () {
 	jQuery('#customize-controls').css('display', 'block');
+
+	// If there's a theme arg in the query string, user just switched themes so make
+	// sure to have the theme selection pane appear upon page load...
+	if ( window.location.href.indexOf('theme=') != -1 ) {
+		jQuery('li#theme').trigger('click');
+	}  
 }
 
 jQuery(document).ready(function($) {

@@ -6,7 +6,8 @@ $PL_CUSTOMIZER_THEMES = array(
 								'Highland' => 'highland',
 								'Manchester' => 'manchester',
 								'Slate' => 'slate',
-								'Tampa' => 'tampa'
+								'Tampa' => 'tampa',
+								'Ventura' => 'ventura'
 							 );
 
 ?>

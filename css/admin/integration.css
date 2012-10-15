@@ -134,6 +134,10 @@ p.large_green_button {
 	zoom: 1;
 }
 
+.row .elements p {
+	margin-top: 0px;
+}
+
 .row::after {
 	content: "";
 	display: block;

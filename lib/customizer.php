@@ -434,9 +434,11 @@ class PL_Customizer
 	                // $wp_customize->add_section( $section_id, $args_section );
 	                $wp_customize->add_section( new PL_Customize_Section( $wp_customize, $section_id, $args_section ) );
 
-	                // Add dummy control so that section will appear...
-	                $wp_customize->add_setting( 'dummy_setting', array() );
-	                $wp_customize->add_control( "dummy_ctrl_{$section_id}", array('settings' => 'dummy_setting', 'section' => $section_id, 'type' => 'none') );
+	                // Add dummy control to certain sections so that they will appear...
+	                if ( $onboard && isset($opt['class']) && $opt['class'] == 'no-pane' ) {
+	                	$wp_customize->add_setting( 'dummy_setting', array() );
+	                	$wp_customize->add_control( "dummy_ctrl_{$section_id}", array('settings' => 'dummy_setting', 'section' => $section_id, 'type' => 'none') );
+	            	}
 
 	                $last_section_id = $section_id;
 	                break;
