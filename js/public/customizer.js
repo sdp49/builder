@@ -99,6 +99,8 @@ jQuery(document).ready(function($) {
 		window.location.href = new_href;
 	});
 
+	$('#pagination.prev')
+
 	// Ensures that saving a new theme in the customizer does NOT cause a redirect...
 	if (_wpCustomizeSettings) {
 		var boolSuccess = delete _wpCustomizeSettings.url.activated;

@@ -46,7 +46,7 @@
 	<div class="row">
 	  <div class="info">
 	    <h3>Office Name</h3>
-	    <p>Name of your office on the RETS server.</p>
+	    <p>The name of your office or brokerage.</p>
 	  </div>
 	  <div class="elements">
 	    <input id="office_name" name="office_name" size="30" type="text" />
@@ -56,7 +56,7 @@
 	<div class="row">
 	  <div class="info">
 	    <h3>Agent ID</h3>
-	    <p>Your Agent ID on the RETS server.</p>
+	    <p>Unique ID used to login to your MLS.</p>
 	  </div>
 	  <div class="elements">
 	    <input id="feed_agent_id" name="feed_agent_id" size="30" type="text" />

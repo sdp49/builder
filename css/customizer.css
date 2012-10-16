@@ -51,6 +51,11 @@
     margin: 2px 0px 0px 3px !important	; 
 }
 
+.customize-control input[type=text] {
+	margin: 3px 0px 15px 0px;
+	width: 100% !important;
+}
+
 .custom-control {
 	margin-bottom: 21px;
 }
@@ -63,8 +68,11 @@
 	margin: 9px 0px 0px 9px;
 }
 
-
 /* Integration sidebar control */
+#pls_integration_form {
+	padding-top: 3px;
+}
+
 #pls_integration_form select {
 	margin-bottom: 18px;
 	width: 438px;
@@ -107,6 +115,18 @@
 
 #pls_integration_form input.invalid {
 	border: 1px solid red !important;
+}
+
+#pls_integration_form div.error h3 {
+	margin: 9px 0px;
+	font-weight: bold;
+}
+
+#rets_form_message {
+	margin: 10px inherit;
+	font-size: 14px;
+	color: green;
+	font-weight: bold;
 }
 
 

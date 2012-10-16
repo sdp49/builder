@@ -61,7 +61,11 @@ jQuery(document).ready(function($) {
 		  	var success_handler = function () { check_mls_credentials(success_callback); }
 		  	prompt_free_trial('Start your 15 day free trial to complete the MLS integration', success_handler, display_cancel_message);
 		  } else {
-		  	console.log('not eligible');
+		  	// console.log('not eligible');
+		  	var msg = '<h3>Sorry, your account isn\'t eligible to link with an MLS.</h3>';
+		  	msg += '<h3>Please <a href="https://placester.com/subscription">Upgrade Your Account</a> or call us with any questions at (800) 728-8391.</h3>';
+		  	$('#rets_form_message').html('');
+			$('#pls_integration_form').prepend('<div id="message" class="error">' + msg + '</div>');
 		  };
 		},'json');	
 	}

@@ -351,7 +351,7 @@ label
 
 label span {font-size: 14px;}
 
-input.fw {width: 438px;}
+input.fw {width: 100%;}
 input.mw {width: 240px;}
 input.sw {width: 107px;}
 input.fr {width: 40px; float: right;}
@@ -359,14 +359,14 @@ input.cb {margin: 10px 5px 0px 1px;}
 input.fl-m {margin-right: 7px;}
 
 textarea {
-	padding:12px; 
+	padding: 12px; 
 	margin: 5px 0px 15px 0px;
-	border-radius:4px;
-	-moz-border-radius:4px;
-	border:1px solid #b0b0b0;
-	font-size:14px;
-	width:432px; 
-	min-height:100px; 
+	border-radius: 4px;
+	-moz-border-radius: 4px;
+	border: 1px solid #b0b0b0;
+	font-size: 14px;
+	width: 100%; 
+	min-height: 100px; 
 
 	-moz-box-shadow: inset 0px 1px 1px rgba(0,0,0,0.1);
 	-webkit-box-shadow: inset 0px 1px 1px rgba(0,0,0,0.1);
@@ -493,8 +493,8 @@ div#pagination #center a.active:hover {
 	color:white;
 }
 
-div#pagination a.first {float:left;}
-div#pagination a.last {float:right;}
+div#pagination a.prev {float:left;}
+div#pagination a.next {float:right;}
 div#pagination span {font-weight:bold;}
 
 

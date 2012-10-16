@@ -181,7 +181,7 @@ function define_custom_controls()
 	        </ul>
 	         -->
 	        <div id="pagination">
-	          <a class="first" href="#">Previous</a>
+	          <a class="prev" href="#">Previous</a>
 	          <!-- <div id="center">
 	            <a class="active" href="#">1</a>
 	            <a href="#">2</a>
@@ -191,7 +191,7 @@ function define_custom_controls()
 	            <a href="#">10</a>            
 	            <a href="#">11</a>            
 	          </div>      -->                                          
-	          <a class="last" href="#">Next</a>
+	          <a class="next" href="#">Next</a>
 	          <div class="clearfix"></div>
 	        </div><!--pagination-->
    		  <?php
