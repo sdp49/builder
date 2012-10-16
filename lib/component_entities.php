@@ -19,6 +19,12 @@ class PL_Component_Entity {
 	
 	public static function init() {
 		// add_action('init', array( __CLASS__, 'filter_featured_context' ) );
+
+		$templates = array('twentyeleven', 'twentyten');
+		foreach ($templates as $template) {
+			add_filter( 'pls_listings_list_ajax_item_html_' . $template, array(__CLASS__,'featured_listings_ajax_templates'), 10, 3 );	
+		}
+
 	}
 	
 	public static function featured_listings_entity( $atts, $filters = '' ) {
@@ -30,12 +36,13 @@ class PL_Component_Entity {
 		
 		// pass a template as a context if any
 		$template_context = '';
-		if( isset( $atts['template'] ) ) {
-			$template_context = $atts['template'];
-			self::$featured_context = $template_context;
+		// pls_dump($atts);
+		// if( isset( $atts['template'] ) ) {
+		// 	$template_context = $atts['template'];
+		// 	self::$featured_context = $template_context;
 			
-			add_action('init', array( __CLASS__, 'filter_featured_context' ) );
-		}
+		// 	add_action('init', array( __CLASS__, 'filter_featured_context' ) );
+		// }
 		
 		// Print property_ids as argument to the listings
 		global $property_ids;
@@ -445,6 +452,7 @@ class PL_Component_Entity {
 		}
 		
 		public static function filter_featured_context() {
+
 			//add_filter('pls_listings_list_ajax_item_html_' . 'listings_search', array(__CLASS__, 'featured_listings_ajax_templates'), 10, 3);
 			add_filter('pls_listings_list_ajax_item_html_' . self::$featured_context, array(__CLASS__, 'featured_listings_ajax_templates'), 10, 3);
 		}
