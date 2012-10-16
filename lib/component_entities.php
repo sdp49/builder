@@ -9,7 +9,11 @@ PL_Component_Entity::init();
 
 class PL_Component_Entity {
 
+	public static $defaults = array( 'twentyten', 'twentyeleven' );
+	
 	public static $featured_context;
+	
+	public static $listing;
 	/**
 	 * Featured listings logic
 	 * @param array $atts id or future arguments
@@ -20,8 +24,8 @@ class PL_Component_Entity {
 	public static function init() {
 		// add_action('init', array( __CLASS__, 'filter_featured_context' ) );
 
-		$templates = array('twentyeleven', 'twentyten');
-		foreach ($templates as $template) {
+		$templates = self::get_shortcode_snippet_list( 'featured_listings', self::$defaults );
+		foreach ($templates as $template => $type) {
 			add_filter( 'pls_listings_list_ajax_item_html_' . $template, array(__CLASS__,'featured_listings_ajax_templates'), 10, 3 );	
 		}
 
@@ -37,12 +41,12 @@ class PL_Component_Entity {
 		// pass a template as a context if any
 		$template_context = '';
 		// pls_dump($atts);
-		// if( isset( $atts['template'] ) ) {
-		// 	$template_context = $atts['template'];
-		// 	self::$featured_context = $template_context;
+		if( isset( $atts['template'] ) ) {
+		 	$template_context = $atts['template'];
+		 	self::$featured_context = $template_context;
 			
 		// 	add_action('init', array( __CLASS__, 'filter_featured_context' ) );
-		// }
+		}
 		
 		// Print property_ids as argument to the listings
 		global $property_ids;
@@ -174,19 +178,19 @@ class PL_Component_Entity {
 	
 	public static function listing_sub_entity( $atts, $content, $tag ) {
 		$val = '';
-		
-		if (array_key_exists($tag, PL_Shortcodes::$listing['cur_data'])) {
-			$val = PL_Shortcodes::$listing['cur_data'][$tag];
-		}else if (array_key_exists($tag, PL_Shortcodes::$listing['location'])) {
-			$val = PL_Shortcodes::$listing['location'][$tag];
-		}else if (array_key_exists($tag, PL_Shortcodes::$listing['contact'])) {
-			$val = PL_Shortcodes::$listing['contact'][$tag];
-		}else if (array_key_exists($tag, PL_Shortcodes::$listing['rets'])) {
-			$val = PL_Shortcodes::$listing['rets'][$tag];
+	
+		if (array_key_exists($tag, self::$listing['cur_data'])) {
+			$val = self::$listing['cur_data'][$tag];
+		}else if (array_key_exists($tag, self::$listing['location'])) {
+			$val = self::$listing['location'][$tag];
+		}else if (array_key_exists($tag, self::$listing['contact'])) {
+			$val = self::$listing['contact'][$tag];
+		}else if (array_key_exists($tag, self::$listing['rets'])) {
+			$val = self::$listing['rets'][$tag];
 		}
 		else {
 		}
-		
+	
 		// This is an example of handling a specific tag in a different way
 		// TODO: make this more elegant...
 		switch ($tag)
@@ -198,74 +202,74 @@ class PL_Component_Entity {
 			case 'image':
 				$width = @array_key_exists('width', $atts) ? (int)$atts['width'] : 180;
 				$height = @array_key_exists('height', $atts) ? (int)$atts['height'] : 120;
-				$val = PLS_Image::load(PL_Shortcodes::$listing['images'][0]['url'],
+				$val = PLS_Image::load(self::$listing['images'][0]['url'],
 						array('resize' => array('w' => $width, 'h' => $height),
 								'fancybox' => true,
 								'as_html' => true,
-								'html' => array('alt' => PL_Shortcodes::$listing['location']['full_address'],
+								'html' => array('alt' => self::$listing['location']['full_address'],
 										'itemprop' => 'image')));
 				break;
 			case 'gallery':
 				ob_start();
 				?>
-					<div id="slideshow" class="clearfix theme-default left bottomborder">
-						<div class="grid_8 alpha">
-							<ul class="property-image-gallery grid_8 alpha">
-								<?php foreach (PL_Shortcodes::$listing['images'] as $image): ?>
-									<li><?php echo PLS_Image::load($image['url'], 
-										                           array('resize' => array('w' => 100, 'h' => 75), 
-																   		 'fancybox' => true, 
-																   		 'as_html' => false, 
-																   		 'html' => array('itemprop' => 'image'))); ?>
-									</li>
-								<?php endforeach ?>
-							</ul>
+						<div id="slideshow" class="clearfix theme-default left bottomborder">
+							<div class="grid_8 alpha">
+								<ul class="property-image-gallery grid_8 alpha">
+									<?php foreach (self::$listing['images'] as $image): ?>
+										<li><?php echo PLS_Image::load($image['url'], 
+											                           array('resize' => array('w' => 100, 'h' => 75), 
+																	   		 'fancybox' => true, 
+																	   		 'as_html' => false, 
+																	   		 'html' => array('itemprop' => 'image'))); ?>
+										</li>
+									<?php endforeach ?>
+								</ul>
+							</div>
 						</div>
-					</div>
-				<?php
-				$val = ob_get_clean();
-				break;
-			case 'map':
-				$val = PLS_Map::lifestyle(PL_Shortcodes::$listing, array('width' => 590, 'height' => 250, 'zoom' => 16, 'life_style_search' => true,
-																'show_lifestyle_controls' => true, 'show_lifestyle_checkboxes' => true, 
-																'lat' => PL_Shortcodes::$listing['location']['coords'][0], 'lng' => PL_Shortcodes::$listing['location']['coords'][1]));
-				break;
-			case 'price':
-				$val = PLS_Format::number(PL_Shortcodes::$listing['cur_data']['price'], array('abbreviate' => false, 'add_currency_sign' => true));
-				break;
-			case 'listing_type':
-				$val = PLS_Format::translate_property_type(PL_Shortcodes::$listing);
-				break;
-			case 'amenities':
-				$amenities = PLS_Format::amenities_but(&PL_Shortcodes::$listing, array('half_baths', 'beds', 'baths', 'url', 'sqft', 'avail_on', 'price', 'desc'));
-				$amen_type = array_key_exists('type', $atts) ? (string)$atts['type'] : 'list';
-				ob_start();
-				?>
-					<div class="amenities-section grid_8 alpha">
-	                    <ul>
-	                    	<?php if (is_array($amenities[$amen_type])): ?>
-	                    	<?php PLS_Format::translate_amenities(&$amenities[$amen_type]); ?>
-			                    <?php foreach ($amenities[$amen_type] as $amenity => $value): ?>
-			                        <li><span><?php echo $amenity; ?></span> <?php echo $value ?></li>
-			                    <?php endforeach ?>		
-	                      	<?php endif ?>
-	                    </ul>
-	                </div>
-				<?php 
-				$val = ob_get_clean();
-				break;
-			  case 'compliance':
-			  	ob_start();
-			  	PLS_Listing_Helper::get_compliance(array('context' => 'listings', 
-	  												     'agent_name' => PL_Shortcodes::$listing['rets']['aname'] , 
-	  												     'office_name' => PL_Shortcodes::$listing['rets']['oname'], 
-	  												     'office_phone' => PLS_Format::phone(PL_Shortcodes::$listing['contact']['phone'])));
-			  	$val = ob_get_clean();
-			  	break;
-			default:
-		}
-		
-		return $val;
+					<?php
+					$val = ob_get_clean();
+					break;
+				case 'map':
+					$val = PLS_Map::lifestyle(self::$listing, array('width' => 590, 'height' => 250, 'zoom' => 16, 'life_style_search' => true,
+																	'show_lifestyle_controls' => true, 'show_lifestyle_checkboxes' => true, 
+																	'lat' => self::$listing['location']['coords'][0], 'lng' => self::$listing['location']['coords'][1]));
+					break;
+				case 'price':
+					$val = PLS_Format::number(self::$listing['cur_data']['price'], array('abbreviate' => false, 'add_currency_sign' => true));
+					break;
+				case 'listing_type':
+					$val = PLS_Format::translate_property_type(self::$listing);
+					break;
+				case 'amenities':
+					$amenities = PLS_Format::amenities_but(&self::$listing, array('half_baths', 'beds', 'baths', 'url', 'sqft', 'avail_on', 'price', 'desc'));
+					$amen_type = array_key_exists('type', $atts) ? (string)$atts['type'] : 'list';
+					ob_start();
+					?>
+						<div class="amenities-section grid_8 alpha">
+		                    <ul>
+		                    	<?php if (is_array($amenities[$amen_type])): ?>
+		                    	<?php PLS_Format::translate_amenities(&$amenities[$amen_type]); ?>
+				                    <?php foreach ($amenities[$amen_type] as $amenity => $value): ?>
+				                        <li><span><?php echo $amenity; ?></span> <?php echo $value ?></li>
+				                    <?php endforeach ?>		
+		                      	<?php endif ?>
+		                    </ul>
+		                </div>
+					<?php 
+					$val = ob_get_clean();
+					break;
+				  case 'compliance':
+				  	ob_start();
+				  	PLS_Listing_Helper::get_compliance(array('context' => 'listings', 
+		  												     'agent_name' => self::$listing['rets']['aname'] , 
+		  												     'office_name' => self::$listing['rets']['oname'], 
+		  												     'office_phone' => PLS_Format::phone(self::$listing['contact']['phone'])));
+				  	$val = ob_get_clean();
+				  	break;
+				default:
+			}
+			
+			return $val;
 		}
 		
 		public static function listing_slideshow( $atts ) {
@@ -394,7 +398,7 @@ class PL_Component_Entity {
 					      filter : filter,
 					      class: '.placester_listings_list',
 					      listings: listings,
-					      context: '<?php echo $context; ?>',
+					      context: '<?php echo $context; ?>'
 					    });
 
 					    
@@ -447,13 +451,53 @@ class PL_Component_Entity {
 		// Provide template layout for featured listings
 		public static function featured_listings_ajax_templates( $item_html, $listing, $context_var ) {
 			//PL_Shortcodes::get_active_snippet_body('listings', self::$featured_context);			
+			self::$listing = $listing;
 
-			return "<p>The item of the universe.</p>";
+			// get the template attached as a context arg, 33 is the length of the filter prefix
+			$template = substr(current_filter(), 33);
+			
+			$template_body = self::get_active_snippet_body( 'featured_listings', $template );
+			
+			return do_shortcode( $template_body );
 		}
 		
-		public static function filter_featured_context() {
-
-			//add_filter('pls_listings_list_ajax_item_html_' . 'listings_search', array(__CLASS__, 'featured_listings_ajax_templates'), 10, 3);
-			add_filter('pls_listings_list_ajax_item_html_' . self::$featured_context, array(__CLASS__, 'featured_listings_ajax_templates'), 10, 3);
+		public static function get_shortcode_snippet_list($shortcode, $default_snippets)
+		{
+			// Get list of custom snippet ids for this shortcode...
+			$snippet_list_DB_key = ('pls_' . $shortcode . '_list');
+			$snip_arr = get_option($snippet_list_DB_key, self::$defaults );
+		
+			$snippet_type_map = array();
+		
+			foreach ($default_snippets as $snippet) {
+				$snippet_type_map[$snippet] = 'default';
+			}
+		
+			// Add Custom snippets..
+			foreach ($snip_arr as $snippet) {
+				$snippet_type_map[$snippet] = 'custom';
+			}
+		
+			return $snippet_type_map;
 		}
+		
+		public static function get_active_snippet_body($shortcode, $template_name = '')
+		{
+			// Get snippet ID currently associated with this shortcode...
+			$option_key = ('pls_' . $shortcode);
+			$snippet_name = get_option($option_key, self::$defaults[$shortcode][0]);
+		
+			// Determine if snippet is custom (in DB) or default (stored in flat-file)
+			$snippet_DB_key = ('pls_' . $shortcode . '_' . $snippet_name);
+			$type = ( get_option($snippet_DB_key) ? 'custom' : 'default' );
+		
+			// assign a template as a shortcode arg
+			if( ! empty( $template_name ) ) {
+				$snippet_name = $template_name;
+				$type = 'default';
+			}
+			$snippet_body = PL_Router::load_snippet($shortcode, $snippet_name, $type);
+			return $snippet_body;
+		}
+		
 }
