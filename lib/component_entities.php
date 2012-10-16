@@ -5,14 +5,22 @@
  *
  */
 
+PL_Component_Entity::init();
+
 class PL_Component_Entity {
 
+	public static $featured_context;
 	/**
 	 * Featured listings logic
 	 * @param array $atts id or future arguments
 	 * @param string $filters filters for default_filters
 	 * @return boolean|string
 	 */
+	
+	public static function init() {
+		// add_action('init', array( __CLASS__, 'filter_featured_context' ) );
+	}
+	
 	public static function featured_listings_entity( $atts, $filters = '' ) {
 		if( ! isset( $atts['id'] ) ) {
 			return false;
@@ -24,7 +32,9 @@ class PL_Component_Entity {
 		$template_context = '';
 		if( isset( $atts['template'] ) ) {
 			$template_context = $atts['template'];
-			add_filter('pls_listings_list_ajax_item_html_' . $template_context, array(__CLASS__, 'featured_listings_ajax_templates'), 10, 3);
+			self::$featured_context = $template_context;
+			
+			add_action('init', array( __CLASS__, 'filter_featured_context' ) );
 		}
 		
 		// Print property_ids as argument to the listings
@@ -428,8 +438,14 @@ class PL_Component_Entity {
 		}
 		
 		// Provide template layout for featured listings
-		public static function featured_listings_ajax_templates( $item_html, $listing, $context_var = '' ) {
+		public static function featured_listings_ajax_templates( $item_html, $listing, $context_var ) {
+			//PL_Shortcodes::get_active_snippet_body('listings', self::$featured_context);			
+
 			return "<p>The item of the universe.</p>";
 		}
 		
+		public static function filter_featured_context() {
+			//add_filter('pls_listings_list_ajax_item_html_' . 'listings_search', array(__CLASS__, 'featured_listings_ajax_templates'), 10, 3);
+			add_filter('pls_listings_list_ajax_item_html_' . self::$featured_context, array(__CLASS__, 'featured_listings_ajax_templates'), 10, 3);
+		}
 }
