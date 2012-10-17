@@ -296,7 +296,7 @@ class PL_Shortcodes
 
 	/*** Helper Functions ***/
 
-	private static function get_active_snippet_body($shortcode)
+	public static function get_active_snippet_body($shortcode, $template_name = '')
 	{
 		// Get snippet ID currently associated with this shortcode...
 		$option_key = ('pls_' . $shortcode);
@@ -306,6 +306,10 @@ class PL_Shortcodes
 		$snippet_DB_key = ('pls_' . $shortcode . '_' . $snippet_name);
 		$type = ( get_option($snippet_DB_key) ? 'custom' : 'default' );
 
+		// assign a template as a shortcode arg
+		if( ! empty( $template_name ) ) {
+			$snippet_name = $template_name;
+		}
 		$snippet_body = PL_Router::load_snippet($shortcode, $snippet_name, $type);
 		return $snippet_body;
 	}
