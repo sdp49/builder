@@ -79,13 +79,20 @@ class PL_Component_Entity {
 		$atts = wp_parse_args($atts, array('limit' => 5, 'featured_id' => 'custom', 'context' => 'shortcode'));
 		ob_start();
 		
+		$template_context = '';
+		// pls_dump($atts);
+		if( isset( $atts['template'] ) ) {
+			$template_context = $atts['template'];
+			self::$featured_context = $template_context;
+		}
+		
 		// print filters from the static listing menu
 		$listing_filters = PL_Component_Entity::get_filters_by_listing( $atts['id'] );
 		$filters_string = PL_Component_Entity::convert_filters( $listing_filters );
 
 		// accepts string only due to shortcode evaluation algorithm
-		PL_Component_Entity::print_filters( $filters . $filters_string );
-		echo PLS_Partials::get_listings_list_ajax('table_id=placester_listings_list');
+		PL_Component_Entity::print_filters( $filters . $filters_string, $template_context );
+		echo PLS_Partials::get_listings_list_ajax( ( empty( $template_context ) ? '' : 'context=' . $template_context . '&' ). 'table_id=placester_listings_list');
 	
 		return ob_get_clean();
 	}
@@ -494,7 +501,10 @@ class PL_Component_Entity {
 			// assign a template as a shortcode arg
 			if( ! empty( $template_name ) ) {
 				$snippet_name = $template_name;
-				$type = 'default';
+				$type = 'custom';
+				if( in_array( $template_name, self::$defaults ) ) {
+					$type = 'default';
+				} 
 			}
 			$snippet_body = PL_Router::load_snippet($shortcode, $snippet_name, $type);
 			return $snippet_body;
