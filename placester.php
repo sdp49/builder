@@ -51,6 +51,9 @@ define( 'PL_VIEWS_SHORT_URL', trailingslashit(PL_VIEWS_URL) . 'shortcodes/' );
 define( 'PL_JS_DIR', trailingslashit(PL_PARENT_DIR) . 'js/' );
 define( 'PL_JS_URL', trailingslashit(PL_PARENT_URL) . 'js/' );
 
+define( 'PL_LIB_DIR', trailingslashit(PL_PARENT_DIR) . 'lib/' );
+define( 'PL_LIB_URL', trailingslashit(PL_PARENT_URL) . 'lib/' );
+
 define( 'PL_HLP_DIR', trailingslashit(PL_PARENT_DIR) . 'helpers/' );
 define( 'PL_HLP_URL', trailingslashit(PL_PARENT_URL) . 'helpers/' );
 
@@ -112,6 +115,9 @@ include_once('lib/shortcodes-new.php');
 include_once('lib/featured_listings_post_type.php');
 include_once('lib/demo_data.php');
 include_once('lib/customizer.php');
+
+//post types
+include_once('lib/post_types/pl_post_type_manager.php');
 
 //models
 include_once('models/listing.php');
