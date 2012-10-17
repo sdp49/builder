@@ -99,7 +99,60 @@ jQuery(document).ready(function($) {
 		window.location.href = new_href;
 	});
 
-	$('#pagination.prev')
+	// Logic to determine whether to hide or show pagination buttons based on change...
+	function paginationHideShow(oldIdx, newIdx, maxIdx) {
+		var prev = $('#pagination a.prev');
+		var next = $('#pagination a.next');
+		
+		// Handle previous...
+		if ( oldIdx == 0) { prev.css('visibility', 'visible'); } 
+		else if ( newIdx == 0 ) { prev.css('visibility', 'hidden'); }
+		else { /* No action necessary...*/ }
+
+		// Handle next...
+		if ( oldIdx == maxIdx ) { next.css('visibility', 'visible'); }
+		else if ( newIdx == maxIdx ) { next.css('visibility', 'hidden'); }
+		else { /* No action necessary...*/ }				
+	}
+
+	// On initial page load, hide/show the pagination buttons accordingly...
+	var newInd = $('#theme_choices').get(0).selectedIndex; // Current index is "new" index when initially setting this...
+	var maxInd = ( $('#theme_choices').get(0).options.length - 1 );
+	paginationHideShow( -1, newInd, maxInd ); // "old" index is set to -1 so it's value won't cause any changes...
+
+	// Handles "Previous" and "Next" pagination buttons...
+	$('#pagination a').on('click', function (event) {
+		var type = $(this).attr('class');
+		var selectElem = $('#theme_choices').get(0);
+		var maxIndex = (selectElem.options.length - 1);
+		var currIndex = selectElem.selectedIndex;
+		var newIndex;
+
+		// Handle each type accordingly
+		if ( type === 'prev' ) {
+			newIndex = (currIndex - 1);
+		}
+		else if ( type == 'next' ) {
+			newIndex = (currIndex + 1);
+		}
+		else {
+			console.log('Pagination button of type "' + type + '"not handled');
+			return;
+		}
+
+		// Validate new index
+		if ( newIndex < 0 || newIndex > maxIndex ) { 
+			console.log('Index out of bounds...reverting'); 
+			return;
+		}
+
+		// Call logic to hide and/or show pagination buttons based on old & new index...
+		paginationHideShow(currIndex, newIndex, maxIndex);
+
+		// Set selected theme to new index... 
+		selectElem.selectedIndex = newIndex;
+		$('#theme_choices').trigger('change');
+	});
 
 	// Ensures that saving a new theme in the customizer does NOT cause a redirect...
 	if (_wpCustomizeSettings) {

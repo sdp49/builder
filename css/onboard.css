@@ -493,9 +493,9 @@ div#pagination #center a.active:hover {
 	color:white;
 }
 
-div#pagination a.prev {float:left;}
-div#pagination a.next {float:right;}
-div#pagination span {font-weight:bold;}
+div#pagination a.prev {float: left;}
+div#pagination a.next {float: right;}
+div#pagination span {font-weight: bold;}
 
 
 div#pagination #center {
