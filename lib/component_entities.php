@@ -183,101 +183,7 @@ class PL_Component_Entity {
 		return ob_get_clean();
 	}
 	
-	public static function listing_sub_entity( $atts, $content, $tag ) {
-		$val = '';
 	
-		if (array_key_exists($tag, self::$listing['cur_data'])) {
-			$val = self::$listing['cur_data'][$tag];
-		}else if (array_key_exists($tag, self::$listing['location'])) {
-			$val = self::$listing['location'][$tag];
-		}else if (array_key_exists($tag, self::$listing['contact'])) {
-			$val = self::$listing['contact'][$tag];
-		}else if (array_key_exists($tag, self::$listing['rets'])) {
-			$val = self::$listing['rets'][$tag];
-		}
-		else {
-		}
-	
-		// This is an example of handling a specific tag in a different way
-		// TODO: make this more elegant...
-		switch ($tag)
-		{
-			case 'desc':
-				$max_len = @array_key_exists('maxlen', $atts) ? (int)$atts['maxlen'] : 500;
-				$val = substr($val, 0, $max_len);
-				break;
-			case 'image':
-				$width = @array_key_exists('width', $atts) ? (int)$atts['width'] : 180;
-				$height = @array_key_exists('height', $atts) ? (int)$atts['height'] : 120;
-				$val = PLS_Image::load(self::$listing['images'][0]['url'],
-						array('resize' => array('w' => $width, 'h' => $height),
-								'fancybox' => true,
-								'as_html' => true,
-								'html' => array('alt' => self::$listing['location']['full_address'],
-										'itemprop' => 'image')));
-				break;
-			case 'gallery':
-				ob_start();
-				?>
-						<div id="slideshow" class="clearfix theme-default left bottomborder">
-							<div class="grid_8 alpha">
-								<ul class="property-image-gallery grid_8 alpha">
-									<?php foreach (self::$listing['images'] as $image): ?>
-										<li><?php echo PLS_Image::load($image['url'], 
-											                           array('resize' => array('w' => 100, 'h' => 75), 
-																	   		 'fancybox' => true, 
-																	   		 'as_html' => false, 
-																	   		 'html' => array('itemprop' => 'image'))); ?>
-										</li>
-									<?php endforeach ?>
-								</ul>
-							</div>
-						</div>
-					<?php
-					$val = ob_get_clean();
-					break;
-				case 'map':
-					$val = PLS_Map::lifestyle(self::$listing, array('width' => 590, 'height' => 250, 'zoom' => 16, 'life_style_search' => true,
-																	'show_lifestyle_controls' => true, 'show_lifestyle_checkboxes' => true, 
-																	'lat' => self::$listing['location']['coords'][0], 'lng' => self::$listing['location']['coords'][1]));
-					break;
-				case 'price':
-					$val = PLS_Format::number(self::$listing['cur_data']['price'], array('abbreviate' => false, 'add_currency_sign' => true));
-					break;
-				case 'listing_type':
-					$val = PLS_Format::translate_property_type(self::$listing);
-					break;
-				case 'amenities':
-					$amenities = PLS_Format::amenities_but(&self::$listing, array('half_baths', 'beds', 'baths', 'url', 'sqft', 'avail_on', 'price', 'desc'));
-					$amen_type = array_key_exists('type', $atts) ? (string)$atts['type'] : 'list';
-					ob_start();
-					?>
-						<div class="amenities-section grid_8 alpha">
-		                    <ul>
-		                    	<?php if (is_array($amenities[$amen_type])): ?>
-		                    	<?php PLS_Format::translate_amenities(&$amenities[$amen_type]); ?>
-				                    <?php foreach ($amenities[$amen_type] as $amenity => $value): ?>
-				                        <li><span><?php echo $amenity; ?></span> <?php echo $value ?></li>
-				                    <?php endforeach ?>		
-		                      	<?php endif ?>
-		                    </ul>
-		                </div>
-					<?php 
-					$val = ob_get_clean();
-					break;
-				  case 'compliance':
-				  	ob_start();
-				  	PLS_Listing_Helper::get_compliance(array('context' => 'listings', 
-		  												     'agent_name' => self::$listing['rets']['aname'] , 
-		  												     'office_name' => self::$listing['rets']['oname'], 
-		  												     'office_phone' => PLS_Format::phone(self::$listing['contact']['phone'])));
-				  	$val = ob_get_clean();
-				  	break;
-				default:
-			}
-			
-			return $val;
-		}
 		
 		public static function listing_slideshow( $atts ) {
 			$atts = wp_parse_args($atts, array(
@@ -321,6 +227,112 @@ class PL_Component_Entity {
 		
 			return ob_get_clean();
 		}
+		
+		public static function listing_sub_entity( $atts, $content, $tag ) {
+			$val = '';
+			
+			$listing_list = array();
+			
+			if( ! is_null( self::$listing ) ) {
+				$listing_list = self::$listing;
+			} else if ( ! is_null( PL_Shortcodes::$listing ) ) {
+				$listing_list = PL_Shortcodes::$listing;
+			} else {
+				return;
+			}
+		
+			if (array_key_exists($tag, $listing_list['cur_data'])) {
+				$val = $listing_list['cur_data'][$tag];
+			}else if (array_key_exists($tag, $listing_list['location'])) {
+				$val = $listing_list['location'][$tag];
+			}else if (array_key_exists($tag, $listing_list['contact'])) {
+				$val = $listing_list['contact'][$tag];
+			}else if (array_key_exists($tag, $listing_list['rets'])) {
+				$val = $listing_list['rets'][$tag];
+			}
+			else {
+			}
+		
+			// This is an example of handling a specific tag in a different way
+			// TODO: make this more elegant...
+			switch ($tag)
+			{
+				case 'desc':
+					$max_len = @array_key_exists('maxlen', $atts) ? (int)$atts['maxlen'] : 500;
+					$val = substr($val, 0, $max_len);
+					break;
+				case 'image':
+					$width = @array_key_exists('width', $atts) ? (int)$atts['width'] : 180;
+					$height = @array_key_exists('height', $atts) ? (int)$atts['height'] : 120;
+					$val = PLS_Image::load($listing_list['images'][0]['url'],
+							array('resize' => array('w' => $width, 'h' => $height),
+									'fancybox' => true,
+									'as_html' => true,
+									'html' => array('alt' => $listing_list['location']['full_address'],
+											'itemprop' => 'image')));
+					break;
+				case 'gallery':
+					ob_start();
+					?>
+								<div id="slideshow" class="clearfix theme-default left bottomborder">
+									<div class="grid_8 alpha">
+										<ul class="property-image-gallery grid_8 alpha">
+											<?php foreach ($listing_list['images'] as $image): ?>
+												<li><?php echo PLS_Image::load($image['url'], 
+													                           array('resize' => array('w' => 100, 'h' => 75), 
+																			   		 'fancybox' => true, 
+																			   		 'as_html' => false, 
+																			   		 'html' => array('itemprop' => 'image'))); ?>
+												</li>
+											<?php endforeach ?>
+										</ul>
+									</div>
+								</div>
+							<?php
+							$val = ob_get_clean();
+							break;
+						case 'map':
+							$val = PLS_Map::lifestyle($listing_list, array('width' => 590, 'height' => 250, 'zoom' => 16, 'life_style_search' => true,
+																			'show_lifestyle_controls' => true, 'show_lifestyle_checkboxes' => true, 
+																			'lat' => $listing_list['location']['coords'][0], 'lng' => $listing_list['location']['coords'][1]));
+							break;
+						case 'price':
+							$val = PLS_Format::number($listing_list['cur_data']['price'], array('abbreviate' => false, 'add_currency_sign' => true));
+							break;
+						case 'listing_type':
+							$val = PLS_Format::translate_property_type($listing_list);
+							break;
+						case 'amenities':
+							$amenities = PLS_Format::amenities_but(&$listing_list, array('half_baths', 'beds', 'baths', 'url', 'sqft', 'avail_on', 'price', 'desc'));
+							$amen_type = array_key_exists('type', $atts) ? (string)$atts['type'] : 'list';
+							ob_start();
+							?>
+								<div class="amenities-section grid_8 alpha">
+				                    <ul>
+				                    	<?php if (is_array($amenities[$amen_type])): ?>
+				                    	<?php PLS_Format::translate_amenities(&$amenities[$amen_type]); ?>
+						                    <?php foreach ($amenities[$amen_type] as $amenity => $value): ?>
+						                        <li><span><?php echo $amenity; ?></span> <?php echo $value ?></li>
+						                    <?php endforeach ?>		
+				                      	<?php endif ?>
+				                    </ul>
+				                </div>
+							<?php 
+							$val = ob_get_clean();
+							break;
+						  case 'compliance':
+						  	ob_start();
+						  	PLS_Listing_Helper::get_compliance(array('context' => 'listings', 
+				  												     'agent_name' => $listing_list['rets']['aname'] , 
+				  												     'office_name' => $listing_list['rets']['oname'], 
+				  												     'office_phone' => PLS_Format::phone($listing_list['contact']['phone'])));
+						  	$val = ob_get_clean();
+						  	break;
+						default:
+					}
+					
+					return $val;
+				}
 		
 		public static function search_form_entity( $atts ) {
 			// Handle attributes using shortcode_atts...
@@ -379,7 +391,7 @@ class PL_Component_Entity {
 		
 		private static function print_filters( $static_listing_filters, $context = 'listings_search' ) {
 			
-				wp_enqueue_script('filters-featured.js', trailingslashit(PLS_JS_URL) . 'scripts/filters.js', array('jquery'));l
+				wp_enqueue_script('filters-featured.js', trailingslashit(PLS_JS_URL) . 'scripts/filters.js', array('jquery'));
 				?>
 					<script type="text/javascript">
 
@@ -492,7 +504,7 @@ class PL_Component_Entity {
 		{
 			// Get snippet ID currently associated with this shortcode...
 			$option_key = ('pls_' . $shortcode);
-			$snippet_name = get_option($option_key, self::$defaults[$shortcode][0]);
+			$snippet_name = get_option($option_key, self::$defaults[0]);
 		
 			// Determine if snippet is custom (in DB) or default (stored in flat-file)
 			$snippet_DB_key = ('pls_' . $shortcode . '_' . $snippet_name);
