@@ -19,7 +19,8 @@ function PL_customize_register( $wp_customize )
 
 	define_custom_controls();
 
-	$onboard = ( isset($_GET['onboard']) && strtolower($_GET['onboard']) == 'true' ) ? true : false;
+	/* NOTE: For now, always load customizer with onboard settings... */
+	$onboard = true; // ( isset($_GET['onboard']) && strtolower($_GET['onboard']) == 'true' ) ? true : false;
 	PL_Customizer::register_components( $wp_customize, $onboard );
 
 	// Prevent default control from being created
@@ -27,6 +28,38 @@ function PL_customize_register( $wp_customize )
 
 	// No infobar in theme previews...
 	remove_action( 'wp_head', 'placester_info_bar' );
+
+	// Register function to inject script to make postMessage settings work properly
+	if ( $wp_customize->is_preview() && ! is_admin() )
+	{ add_action( 'wp_footer', 'inject_postMessage_hooks', 21); }
+}
+
+function inject_postMessage_hooks() {
+  // Gets the theme that the customizer is currently set to display/preview...
+  global $wp_customize;
+  $theme_opts_key = $wp_customize->get_stylesheet();
+  // error_log($theme_opts_key);
+
+  $postMessage_settings = array('pls-site-title' => 'header h1 a', 
+  								'pls-site-subtitle' => 'header h2, #slogan', 
+  								'pls-user-email' => 'section.e-mail a, #contact .email a, header .phone a, section.email a, header p.h-email a', 
+  								'pls-user-phone' => '');
+
+  ?>
+    <script type="text/javascript">
+    ( function( $ ){
+    <?php foreach ($postMessage_settings as $id => $selector): ?>
+      wp.customize('<?php echo "{$theme_opts_key}[{$id}]"; ?>', function( value ) {
+        value.bind(function(to) {
+          //if (to) {	
+            $('<?php echo $selector; ?>').text(to);
+          //}
+        });
+      });
+    <?php endforeach; ?>  
+    } )( jQuery )
+    </script>
+  <?php
 }
 
 add_action( 'customize_controls_print_footer_scripts', 'load_preview_spinner' );
@@ -356,15 +389,23 @@ function define_custom_controls()
 
 class PL_Customizer 
 {
-	static $onboard_sections = array('General', 'User Info');
+	private static $onboard_sections = array('General', 'User Info');
 
-	static $def_setting_opts = array(
+	private static $def_setting_opts = array(
 			                          'default'   => '',
 			                          'type'      => 'option',
 			                          'transport' => 'refresh' 
 			                        );
 
 	private static $priority = 0;
+
+
+	private function get_setting_opts( $args = array() )
+	{
+		$merged_opts = wp_parse_args($args, self::$def_setting_opts);
+		
+		return $merged_opts;
+	}
 
 	private function get_priority( $onboard = false, $section = '' ) {
 	  	$new_priority;
@@ -380,12 +421,6 @@ class PL_Customizer
 	  	}
 
 	  	return $new_priority;
-	}
-
-	private function get_setting_opts( $args = array() )
-	{
-		$merged_opts = wp_parse_args($args, self::$def_setting_opts);
-		return $merged_opts;
 	}
 
 	private function get_control_opts( $id, $opts, $sect_id, $is_custom = false )
@@ -405,7 +440,7 @@ class PL_Customizer
 
 	public function register_components( $wp_customize, $onboard = false ) 
 	{
-		$theme_opts_id = $wp_customize->get_stylesheet();
+		$theme_opts_key = $wp_customize->get_stylesheet();
 	    $last_section_id = '';
 
 	    global $PL_CUSTOMIZER_ONBOARD_OPTS;
@@ -415,8 +450,13 @@ class PL_Customizer
 	    {
 	    	// Take care of defining some common vars used many of the cases below...
 	    	if ( isset($opt['id']) ) {
-	    		$setting_id = "{$theme_opts_id}[{$opt['id']}]";
+	    		$setting_id = "{$theme_opts_key}[{$opt['id']}]";
 	    		$control_id = "{$opt['id']}_ctrl";
+	    	}
+
+	    	$custom_args = array();
+	    	if ( isset($opt['transport']) ) {
+	    		$custom_args['transport'] = $opt['transport'];
 	    	}
 
 	        switch ( $opt['type'] ) 
@@ -446,14 +486,14 @@ class PL_Customizer
 	            // Handle the standard (i.e., 'built-in') controls...
 	            case 'text':
 	            case 'checkbox':
-	            	$wp_customize->add_setting( $setting_id, self::get_setting_opts() );
+	            	$wp_customize->add_setting( $setting_id, self::get_setting_opts($custom_args) );
 	                
 	                $args_control = self::get_control_opts( $setting_id, $opt, $last_section_id );
 	                $wp_customize->add_control( $control_id, $args_control);
 	                break;
 
 	            case 'textarea':
-		            $wp_customize->add_setting( $setting_id, self::get_setting_opts() );
+		            $wp_customize->add_setting( $setting_id, self::get_setting_opts($custom_args) );
 
 	                $args_control = self::get_control_opts( $setting_id, $opt, $last_section_id, true );
 	                $wp_customize->add_control( new PL_Customize_TextArea_Control($wp_customize, $control_id, $args_control) );

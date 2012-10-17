@@ -48,14 +48,16 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
             'name' => 'Site Title',
             'desc' => 'Site title in header.',
             'id' => 'pls-site-title',
-            'type' => 'text'
+            'type' => 'text',
+            'transport' => 'postMessage'
         ),
 
         array(
             'name' => 'Tagline',
             'desc' => 'Site subtitle in header.',
             'id' => 'pls-site-subtitle',
-            'type' => 'text'
+            'type' => 'text',
+            'transport' => 'postMessage'
         ),
 
         // array(
@@ -63,33 +65,35 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
         //     'type' => 'info'
         // ),
 
-        array(
-            'name' => 'First and Last Name',
-            'desc' => 'Add the name you want to display on the site.',
-            'id' => 'pls-user-name',
-            'type' => 'text'
-        ),
+        // array(
+        //     'name' => 'First and Last Name',
+        //     'desc' => 'Add the name you want to display on the site.',
+        //     'id' => 'pls-user-name',
+        //     'type' => 'text'
+        // ),
 
         array(
             'name' => 'Your Email Address',
             'desc' => 'Add the email address you want to display on the site.',
             'id' => 'pls-user-email',
-            'type' => 'text'
+            'type' => 'text',
+            'transport' => 'postMessage'
         ),
 
         array(
             'name' => 'Your Phone Number',
             'desc' => 'Add the phone you want to display on the site.',
             'id' => 'pls-user-phone',
-            'type' => 'text'
+            'type' => 'text',
+            'transport' => 'postMessage'
         ),
 
-        array(
-            'name' => 'Your Bio',
-            'desc' => 'Add your bio that you want to display on the site.',
-            'id' => 'pls-user-description',
-            'type' => 'textarea'
-        ),
+        // array(
+        //     'name' => 'Your Bio',
+        //     'desc' => 'Add your bio that you want to display on the site.',
+        //     'id' => 'pls-user-description',
+        //     'type' => 'textarea'
+        // ),
 
         // array(
         //     'name' => 'Your Headshot',

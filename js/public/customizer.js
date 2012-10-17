@@ -175,7 +175,7 @@ jQuery(document).ready(function($) {
 	}
 
 	$('.customize-control-text input[type=text]').on('keyup', function (event) { 
-		setPreviewLoading();
+		// setPreviewLoading();
 	});
 
 	$('.customize-control-checkbox input[type=checkbox]').on('change', function (event) {
