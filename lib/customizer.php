@@ -276,7 +276,7 @@ function define_custom_controls()
 	            <label>Post Excerpt</label><br>
 	            <textarea class="fw"></textarea>            
 	          
-	          	<?php $categories = array('Real Estate 101', 'Tax Advice', 'Mortgages', 'Market Update', 'Realtor Advice', ''); ?>
+	          	<?php $categories = array('Real Estate 101', 'Tax Advice', 'Mortgages', 'Market Update', 'Realtor Advice', 'Advertising'); ?>
 	            <label>Category</label>
 	            <ul id="checkboxlist">
 	              <?php foreach ($categories as $category) : ?>
