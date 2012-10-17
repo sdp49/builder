@@ -128,6 +128,7 @@ class PL_Listing_Helper {
 		$_POST['address_mode'] = 'exact';
 
 		// Sorting
+		// Controls the order of columns returned to the datatable
 		$columns = array('images','location.address', 'location.locality', 'location.region', 'location.postal', 'zoning_types', 'purchase_types', 'listing_types', 'property_type', 'cur_data.beds', 'cur_data.baths', 'cur_data.price', 'cur_data.sqft', 'cur_data.avail_on');
 		$_POST['sort_by'] = $columns[$_POST['iSortCol_0']];
 		$_POST['sort_type'] = $_POST['sSortDir_0'];
@@ -139,7 +140,55 @@ class PL_Listing_Helper {
 		// Pagination
 		$_POST['limit'] = $_POST['iDisplayLength'];
 		$_POST['offset'] = $_POST['iDisplayStart'];		
-		
+
+		// We need to check for and parse listing_types
+		// For now, values are mostly expected, but custom types can be added
+		$listing_type_string = $_POST['listing_types'][0];
+		if( !empty( $listing_type_string ) ) {
+      // Let's handle the most common types (non-custom)
+      switch( $listing_type_string) {
+        case "Residential Sale":
+          $_POST['zoning_types'][] = 'residential';
+          $_POST['purchase_types'][] = 'sale';
+          // empty listing_types so it doesn't negate our search
+          $_POST['listing_types'] = false;
+          break;
+        case "Residential Rental":
+          $_POST['zoning_types'][] = 'residential';
+          $_POST['purchase_types'][] = 'rental';
+          // empty listing_types so it doesn't negate our search
+          $_POST['listing_types'] = false;
+          break;
+        case "Commercial Sale":
+          $_POST['zoning_types'][] = 'commercial';
+          $_POST['purchase_types'][] = 'sale';
+          // empty listing_types so it doesn't negate our search
+          $_POST['listing_types'] = false;
+          break;
+        case "Commercial Rental":
+          $_POST['zoning_types'][] = 'commercial';
+          $_POST['purchase_types'][] = 'rental';
+          // empty listing_types so it doesn't negate our search
+          $_POST['listing_types'] = false;
+          break;
+        case "Vacation Rental":
+          $_POST['listing_types'][] = 'vac_rental';
+          // do we need to empty zoning and purchase types in these cases?
+          $_POST['zoning_types'] = false;
+          $_POST['purchase_types'] = false;
+          break;
+        case "Sublet":
+          $_POST['listing_types'][] = 'sublet';
+          // do we need to empty zoning and purchase types in these cases?
+          $_POST['zoning_types'] = false;
+          $_POST['purchase_types'] = false;
+          break;
+        default:
+          // if we get here, we have a custom type to deal with
+          // let's leave listing_types alone for now
+      }
+		}
+
 		// Get listings from model
 		$api_response = PL_Listing::get($_POST);
 		
