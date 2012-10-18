@@ -13,17 +13,30 @@ class PL_Post_Type_Manager {
 			include_once $post_type . '.php';
 		}
 		
-		add_action('admin_menu', array( __CLASS__, 'pl_register_posts_menu' ) );
+		add_action('admin_menu', array( __CLASS__, 'register_posts_menu' ) );
+		// add_filter('template_include', array( __CLASS__, 'post_type_templating' ) );
+		add_action('template_redirect', array( __CLASS__, 'post_type_templating' ) );
 	}
 		
-	public static function pl_register_posts_menu() {
-		add_menu_page('PL Extensions','PL Extensions','edit_pages','pl_extensions', array('PL_Router','pl_extensions'), plugins_url('/placester/images/logo_16.png'), '3c' /* position between 3 and 4 */ );
+	public static function register_posts_menu() {
+		add_menu_page('Widgets','Widgets','edit_pages','pl_extensions', array('PL_Router','pl_extensions'), plugins_url('/placester/images/logo_16.png'), '3c' /* position between 3 and 4 */ );
 		
 		foreach( self::$post_types as $post_type ) {
 			$post_type_title = self::get_post_type_title_helper( $post_type );
 			add_submenu_page( 'pl_extensions', $post_type_title, $post_type_title, 'edit_pages', PL_Router::post_type_path( $post_type, 'list' ) );
 		}
+	}
+	
+	public static function post_type_templating( $single ) {
+		global $post;
 		
+		// apply only to our post types
+		if( in_array( $post, self::$post_types ) ) {
+	 		include PL_LIB_DIR . '/post_types/pl_post_types_template.php';
+	 		die();
+		}
+		
+		return;
 	}
 	
 	public static function get_post_types($folder = PL_LIB_DIR) {
@@ -34,7 +47,7 @@ class PL_Post_Type_Manager {
 		}
 		
 		// ignore file paths we don't use and the manager
-		$ignore = array( '.', '..', 'pl_post_type_manager.php' );
+		$ignore = array( '.', '..', 'pl_post_type_manager.php', 'pl_post_types_template.php' );
 		
 		if ($handle = opendir( $folder ) ) {
 			while (false !== ($entry = readdir($handle))) {
