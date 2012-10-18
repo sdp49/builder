@@ -61,8 +61,7 @@ $(document).ready(function($) {
                 { sWidth: '300px' },    //address
                 { sWidth: '70px' },     //zip
                 { sWidth: '100px' },     //type
-                { sWidth: '2px' },     //listing, which we don't want but can't seem to get rid of yet
-                { sWidth: '90px' },     //property
+                { sWidth: '100px' },     //property
                 { sWidth: '60px' },     //beds
                 { sWidth: '60px' },     //baths
                 { sWidth: '70px' },     //price

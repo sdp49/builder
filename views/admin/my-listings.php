@@ -13,7 +13,6 @@
         <th><span>Street</span></th>
         <th><span>Zip</span></th>
         <th><span>Listing Type</span></th>
-        <th>&ndash;</th>
         <th><span>Property Type</span></th>
         <th><span>Beds</span></th>
         <th><span>Baths</span></th>
@@ -25,7 +24,6 @@
     <tbody></tbody>
     <tfoot>
       <tr>
-        <th></th>
         <th></th>
         <th></th>
         <th></th>
