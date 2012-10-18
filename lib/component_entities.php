@@ -361,7 +361,12 @@ class PL_Component_Entity {
 			</script>
 	
 			<?php
-			return ( $header . PLS_Partials_Listing_Search_Form::init(array('context' => 'shortcode', 'ajax' => true)) . $footer );
+			
+			// add context and ajax support if missing
+			if( !isset( $atts['context'] ) ) { $atts['context'] = 'shortcode'; }
+			if( !isset( $atts['ajax'] ) ) { $atts['ajax'] = true; }
+			
+			return ( $header . PLS_Partials_Listing_Search_Form::init($atts) . $footer );
 		} 
 		
 		/**

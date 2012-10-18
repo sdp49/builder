@@ -82,7 +82,7 @@ class PL_Shortcodes
             												'mls_id',
             												'map',
             												'listing_type',
-            												'gallery',
+            												'img_gallery',
             												'amenities',
             												'compliance')
             						);
@@ -250,8 +250,8 @@ class PL_Shortcodes
 /*** Sub-Shortcode Handlers ***/
 
 	public static function search_form_sub_shortcode_handler ($atts, $content, $tag) 
-	{
-		return self::$form_html[$tag];
+	{ 
+		return isset( self::$form_html[$tag] ) ? self::$form_html[$tag] : '';
 	}
 
 	public static function listing_sub_shortcode_handler ($atts, $content, $tag) {

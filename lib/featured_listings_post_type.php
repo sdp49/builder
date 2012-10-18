@@ -164,8 +164,8 @@ function pl_featured_listings_meta_box_cb( $post ) {
 							array(
 								'codes' => array( 'featured_listings', 'static_listings' ), 
 								'p_codes' => array( 
-									'featured_listings' => 'Slideshow Template',
-									'static_listings' => 'Slideshow Template' 
+									'featured_listings' => 'Featured Listings',
+									'static_listings' => 'Static Listings' 
 									)) 
 								); 
 			?>

@@ -42,6 +42,15 @@ function pl_search_listings_meta_box_cb( $post ) {
 	// get meta values from custom fields
 	$pl_featured_listing_meta = isset( $values['pl_featured_listing_meta'] ) ? unserialize($values['pl_featured_listing_meta'][0]) : '';
 	$pl_featured_meta_value = empty( $pl_featured_listing_meta ) ? '' : $pl_featured_listing_meta['featured-listings-type'];
+
+	PL_Snippet_Template::prepare_template(
+		array(
+			'codes' => array( 'search_listings' ),
+			'p_codes' => array(
+				'search_form' => 'Search Listings'
+			)
+		)
+	);
 }
 
 add_action( 'save_post', 'pl_search_listings_meta_box_save' );
