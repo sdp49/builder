@@ -231,6 +231,9 @@ class PL_Listing_Helper {
 		if (isset($api_response['id'])) {
 			PL_HTTP::clear_cache();
 			self::details(array('id' => $api_response['id']));
+			
+			// If on, turn off demo data...
+			PL_Option_Helper::set_demo_data_flag(false);
 		}
 		die();
 	}	
