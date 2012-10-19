@@ -75,11 +75,11 @@
 
 #pls_integration_form select {
 	margin-bottom: 18px;
-	width: 438px;
+	width: 100%;
 }
 
 #pls_integration_form input[type=text] {
-	width: 438px;
+	width: 100%;
 }
 
 #customize_integration_submit {

@@ -240,29 +240,48 @@ function define_custom_controls()
    		public $type = 'listing';
 
    		public function render() {
+   			// ob_start();
+   			// pls_dump(PL_Config::PL_API_LISTINGS('create', 'args', 'compound_type'));
+   	  //   	error_log(ob_get_clean());
+
    			?>
    			  <div id='create_listing'>
-	            <label>Address Line 01</label><br>
-	            <input class="fw" type="text" value="Boston Realtors">
+
+   			  	<?php $listing_types = PL_Config::PL_API_LISTINGS('create', 'args', 'compound_type'); ?>
+
+   			  	<div id="switcher">
+		          <h2><?php echo $listing_types['label']; ?></h2>
+		          <select id="compound_type">
+				    <?php foreach ( $listing_types['options'] as $val => $text) : ?>
+				  	  <option value="<?php echo $val; ?>" <?php // selected( $this->manager->get_stylesheet(), $stylesheet ); ?>><?php echo $text; ?></option>
+				    <?php endforeach; ?>
+				  </select>
+		        </div>
+
+	            <label>Street Address</label><br>
+	            <input id="addr" class="fw" type="text">
 	            
-	            <label>Address Line 02</label>
-	            <input class="fw" type="text" value="John Doe">
+	            <label>Unit No.</label>
+	            <input id="unit" class="fw" type="text">
 	            
 	            <label>City</label><br>
-	            <select class="mw">
-	              <option>Select City</option>
-	            </select><br>        
+	            <input id="city" class="fw" type="text">       
 	            
 	            <label>State</label><br>
-	            <select class="sw">
-	              <option>Select State</option>
-	            </select><br>                  
+	            <input id="state" class="sw" type="text"><br>                
 	          
 	            <label>Zip Code</label><br>
-	            <input class="sw" type="text" value="Zip"><br>          
+	            <input id="zip" class="sw" type="text"><br>         
 	          
-	            <label>Brief Description</label><br>
-	            <textarea class="fw"></textarea>
+	            <label>Country</label><br>
+	            <select class="mw">
+	              <?php foreach ( PL_Listing_Helper::supported_countries() as $code => $text ): ?>
+	                <option value="<?php echo $code; ?>" <?php selected( "US", $code ); ?>><?php echo $text; ?></option>
+	              <?php endforeach; ?>
+	            </select><br>
+
+	            <label>Brief Description</label>
+	            <textarea id="brief_desc"></textarea>
 	    
 	    		<?php $amenities = array('Pets Allowed', 'Hot Water', 'Air Conditioning', 'Furnished', 'Balcony', 'Pets Allowed'); ?>
 	            <label>Amenities</label>
@@ -276,14 +295,15 @@ function define_custom_controls()
 	            </ul>
 	            <br>
 
-	            <label>Upload Images</label>
+	            <!-- <label>Upload Images</label> -->
 
 
 	            <!-- Upload Plugin Goes Here -->
 	            <br><br><br><br><br>
 	          
-	          
-	            <input class="bt-norm" type="button" value="Post Listing">
+				<div class="button-container">	          
+	              <input class="bt-norm" type="button" value="Post Listing">
+		        <div>
 		      </div>
    			<?php
    		}
@@ -304,30 +324,34 @@ function define_custom_controls()
 	            <input class="fw" type="text" value="My First Real Estate Post">
 	            
 	            <label>Content</label><br>
-	            <textarea class="fw"></textarea>
+	            <textarea class="post-content"></textarea>
 	          
-	            <label>Post Excerpt</label><br>
-	            <textarea class="fw"></textarea>            
+	            <!-- <label>Post Excerpt</label><br>
+	            <textarea class="fw"></textarea>  -->           
 	          
-	          	<?php $categories = array('Real Estate 101', 'Tax Advice', 'Mortgages', 'Market Update', 'Realtor Advice', 'Advertising'); ?>
+	          	<?php // $categories = array('Real Estate 101', 'Tax Advice', 'Mortgages', 'Market Update', 'Realtor Advice', 'Advertising'); ?>
+	        <!-- 
 	            <label>Category</label>
 	            <ul id="checkboxlist">
-	              <?php foreach ($categories as $category) : ?>
+	              <?php // foreach ($categories as $category) : ?>
 	                <li>
 	                  <input class="cb" type="radio">
-	                  <?php echo $category; ?>
+	                  <?php // echo $category; ?>
 	                </li>
-	              <?php endforeach; ?>
+	              <?php // endforeach; ?>
 	                <li id="addlink"><a href="#">Add a Category</a></li>
 	            </ul>
 	    
 	            <br>
 	            <label>Upload Images</label>
 	          
-	            <!-- Upload Plugin Goes Here -->
-	            <br><br><br><br><br>
+	            <!-- Upload Plugin Goes Here ->
+	            <br><br><br><br><br> 
+	         -->
 	          
-	            <input class="bt-norm" type="button" value="Post">
+	          	<div class="button-container">
+	              <input class="bt-norm" type="button" value="Publish">
+	            </div>
 	          </div>
    			<?php
    		}
@@ -518,6 +542,14 @@ class PL_Customizer
 	            	$args_control = self::get_control_opts( $setting_id, $opt, $last_section_id, true );
 	                $wp_customize->add_control( new WP_Customize_Upload_Control($wp_customize, $control_id, $args_control) );
 	            	break;
+
+	            case 'background':
+	            	$setting_id .= '[color]';
+	            	$wp_customize->add_setting( $setting_id, self::get_setting_opts() );
+
+	            	$args_control = self::get_control_opts( $setting_id, $opt, $last_section_id, true );
+	            	$wp_customize->add_control( new WP_Customize_Color_Control($wp_customize, $control_id, $args_control) );
+	            	break;	
 
 	            case 'custom':
 	            	// Register PL component...

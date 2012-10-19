@@ -315,7 +315,8 @@ div#switcher h2 {
 	font-size: 20px;
 }
 
-div#switcher select {
+div#switcher select,
+div#propType select {
 	float: right;
 	height: 39px; 
 	width: 65%;
@@ -371,6 +372,10 @@ textarea {
 	-moz-box-shadow: inset 0px 1px 1px rgba(0,0,0,0.1);
 	-webkit-box-shadow: inset 0px 1px 1px rgba(0,0,0,0.1);
 	box-shadow: inset 0px 1px 1px rgba(0,0,0,0.1);	
+}
+
+textarea.post-content {
+	height: 360px;
 }
 
 input[type=button] {
@@ -619,4 +624,8 @@ a.ico-responsive {
 .radio label {
 	margin-right:10px;
 	font-size:14px;
+}
+
+div.button-container {
+	height: 45px;
 }

@@ -174,11 +174,7 @@ jQuery(document).ready(function($) {
 		}  
 	}
 
-	$('.customize-control-text input[type=text]').on('keyup', function (event) { 
-		// setPreviewLoading();
-	});
-
-	$('.customize-control-checkbox input[type=checkbox]').on('change', function (event) {
+	$('#customize-control-pls-google-analytics_ctrl input[type=text]').on('keyup', function (event) {
 		setPreviewLoading();
 	});
 
@@ -194,7 +190,8 @@ jQuery(document).ready(function($) {
   	$('#confirm').on('click', function (event) {
 		event.preventDefault;
 		$('#save').trigger('click');
-		console.log('Finished saving...');
+		// console.log('Finished saving...');
+		setTimeout( function () { window.location.href = window.location.origin; }, 1200 ); 
 	});
 
 	$('#navlist .no-pane').on('click', function (event) {

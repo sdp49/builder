@@ -5,6 +5,7 @@ class PL_WordPress_Helper {
 	
 	function init () {
 		add_action('switch_theme', array(__CLASS__, 'report_theme'));
+		add_action('wp_ajax_publish_post', array(__CLASS__, 'publish_post' ) );
 	}
 
 	function report_theme () {
@@ -26,5 +27,24 @@ class PL_WordPress_Helper {
 	function remote_filter_update ($args = array()) {
 		$args = wp_parse_args($args);
 		PL_Helper_User::set_global_filters($args);
+	}
+
+	function publish_post() {
+		global $user_ID;
+		$new_post = array(
+		    'post_title' => 'My New Post',
+		    'post_content' => $_POST[,
+		    'post_status' => 'publish',
+		    'post_date' => date('Y-m-d H:i:s'),
+		    'post_author' => $user_ID,
+		    'post_type' => 'post',
+		    // 'post_category' => array(0)
+		);
+
+		// Insert new post...
+		$post_id = wp_insert_post($new_post);	
+
+		echo json_encode( array('new_post_id' => $post_id) );
+		die();
 	}
 }

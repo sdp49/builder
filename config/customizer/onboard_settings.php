@@ -39,7 +39,7 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
 
         array(
             'name' => 'Title & Slogan',
-            'desc' => 'Let Your Customers Know Who You Are',
+            'desc' => 'Introduce Yourself To Potential Clients',
             'id' => 'title',
             'type' => 'heading'
         ),
@@ -53,7 +53,7 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
         ),
 
         array(
-            'name' => 'Tagline',
+            'name' => 'Slogan',
             'desc' => 'Site subtitle in header.',
             'id' => 'pls-site-subtitle',
             'type' => 'text',
@@ -109,29 +109,31 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
             'type' => 'heading'
         ),
 
-        // array(
-        //     'name' => 'Site Background',
-        //     'desc' => 'Change the site\'s background.',
-        //     'id' => 'site_background',
-        //     'selector' => 'body',
-        //     'type' => 'background'
-        // ),
-
-        // array(
-        //     'name' => 'Inner Background',
-        //     'desc' => 'Change the site\'s inner background.',
-        //     'id' => 'inner_background',
-        //     'selector' => '.inner',
-        //     'type' => 'background'
-        // ),
+        array(
+            'name' => 'Site Background',
+            'desc' => 'Change the site\'s background.',
+            'id' => 'site_background',
+            'selector' => 'body',
+            'type' => 'background',
+            'transport' => 'postMessage'
+        ),
 
         array(
-            'name' => 'H1 Title',
-            'desc' => 'Change main site title\'s size, font-family, styling, and color.',
-            'id' => 'h1_title',
-            'selector' => 'header h1 a',
-            'type' => 'typography'
+            'name' => 'Inner Background',
+            'desc' => 'Change the site\'s inner background.',
+            'id' => 'inner_background',
+            'selector' => '.inner',
+            'type' => 'background',
+            'transport' => 'postMessage'
         ),
+
+        // array(
+        //     'name' => 'H1 Title',
+        //     'desc' => 'Change main site title\'s size, font-family, styling, and color.',
+        //     'id' => 'h1_title',
+        //     'selector' => 'header h1 a',
+        //     'type' => 'typography'
+        // ),
 
         // array(
         //     'name' => 'H2 Subtitle',
