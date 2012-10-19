@@ -40,10 +40,12 @@ function inject_postMessage_hooks() {
   $theme_opts_key = $wp_customize->get_stylesheet();
   // error_log($theme_opts_key);
 
-  $postMessage_settings = array('pls-site-title' => 'header h1 a', 
-  								'pls-site-subtitle' => 'header h2, #slogan', 
-  								'pls-user-email' => 'section.e-mail a, #contact .email a, header .phone a, section.email a, header p.h-email a', 
-  								'pls-user-phone' => '');
+  $postMessage_settings = array(
+  								 'pls-site-title' => 'header h1 a', 
+  								 'pls-site-subtitle' => 'header h2, #slogan', 
+  								 'pls-user-email' => 'section.e-mail a, #contact .email a, header .phone a, section.email a, header p.h-email a', 
+  								 'pls-user-phone' => 'section.contact-info .phone, header p.h-phone, header div.phone, header section.phone .phone-bg-mid'
+  								);
 
   ?>
     <script type="text/javascript">
@@ -193,8 +195,12 @@ function define_custom_controls()
 	        <div id="switcher">
 	          <h2>Select Theme</h2>
 	          <select id="theme_choices">
-			    <?php foreach ($PL_CUSTOMIZER_THEMES as $name => $stylesheet) : ?>
-			  	  <option value="<?php echo wp_customize_url($stylesheet); ?>" <?php selected( $this->manager->get_stylesheet(), $stylesheet ); ?>><?php echo $name; ?></option>
+			    <?php foreach ($PL_CUSTOMIZER_THEMES as $group => $themes): ?>
+			      <optgroup label="<?php echo $group; ?>">
+			  	    <?php foreach ($themes as $name => $stylesheet): ?>
+			  	  	  <option value="<?php echo wp_customize_url($stylesheet); ?>" <?php selected( $this->manager->get_stylesheet(), $stylesheet ); ?>><?php echo $name; ?></option>
+			        <?php endforeach; ?>
+			      </optgroup>
 			    <?php endforeach; ?>
 			  </select>
 	        </div><!--theme-switcher-->

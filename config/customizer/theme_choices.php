@@ -2,14 +2,18 @@
 
 global $PL_CUSTOMIZER_THEMES;
 $PL_CUSTOMIZER_THEMES = array(
-								'Bluestone' => 'bluestone',
-								'Columbus' => 'columbus',
-								'Highland' => 'highland',
-								// 'Hyde Park' => 'hydepark',
-								'Manchester' => 'manchester',
-								'Slate' => 'slate',
-								'Tampa' => 'tampa',
-								'Ventura' => 'ventura'
+							    'Single-Listing' => array(
+												'Bluestone' => 'bluestone',
+												'Slate' => 'slate',
+												),
+								'Multi-Listing' => array(
+												'Columbus' => 'columbus',
+												'Highland' => 'highland',
+												// 'Hyde Park' => 'hydepark',
+												'Manchester' => 'manchester',
+												'Tampa' => 'tampa',
+												'Ventura' => 'ventura'
+												)
 							 );
 
 ?>
