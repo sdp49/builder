@@ -54,9 +54,20 @@ class PL_Map_CPT {
 	// add meta box for featured listings- adding custom fields
 	public static function pl_maps_meta_box_cb( $post ) {
 		$values = get_post_custom( $post->ID );
+
 		// get meta values from custom fields
-		$pl_featured_listing_meta = isset( $values['pl_featured_listing_meta'] ) ? unserialize($values['pl_featured_listing_meta'][0]) : '';
-		$pl_featured_meta_value = empty( $pl_featured_listing_meta ) ? '' : $pl_featured_listing_meta['featured-listings-type'];
+		foreach( self::$fields as $field => $arguments ) {
+			$value = isset( $values[$field] ) ? $values[$field][0] : '';
+		
+			if( !empty( $value ) && empty( $_POST[$field] ) ) {
+				$_POST[$field] = $value;
+			}
+			$label = empty( $arguments['label'] ) ? '' : $arguments['label'];
+				
+			echo PL_Form::item($field, array( 'label' => $label, 'type' => $arguments['type'] ), 'POST');
+		}
+		
+		wp_nonce_field( 'pl_cpt_meta_box_nonce', 'meta_box_nonce' );
 	
 		PL_Snippet_Template::prepare_template(
 			array(
@@ -74,17 +85,15 @@ class PL_Map_CPT {
 		if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
 	
 		// Verify nonces for ineffective calls
-		if( !isset( $_POST['meta_box_nonce'] ) || !wp_verify_nonce( $_POST['meta_box_nonce'], 'pl_fl_meta_box_nonce' ) ) return;
-	
-		update_post_meta( $post_id, 'pl_static_listings_option', $static_listings_option );
-		update_post_meta( $post_id, 'pl_listing_type', $_POST['pl_listing_type']);
+		if( !isset( $_POST['meta_box_nonce'] ) || !wp_verify_nonce( $_POST['meta_box_nonce'], 'pl_cpt_meta_box_nonce' ) ) return;
 	
 		// if our current user can't edit this post, bail
 		if( !current_user_can( 'edit_post' ) ) return;
 	
-		// Verify if the time field is set
-		if( isset( $_POST['pl_featured_listing_meta'] ) ) {
-			update_post_meta( $post_id, 'pl_featured_listing_meta',  $_POST['pl_featured_listing_meta'] );
+		foreach( self::$fields as $field => $values ) {
+			if( !empty( $_POST[$field] ) ) {
+				update_post_meta( $post_id, $field, $_POST[$field] );
+			}
 		}
 	}
 }
