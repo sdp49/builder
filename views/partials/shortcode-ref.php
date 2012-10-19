@@ -2,8 +2,8 @@
   <h3><u>Usage</u></h3>
 	<?php if ($shortcode == 'search_form'): ?>
 	  <p>
-		You can insert your "activated" Search Form snippet by using the [searchform] shortcode in a page or a post. 
-		This control is intended to be used alongside the [listings] shortcode (defined below) to display the search 
+		You can insert your "activated" Search Form snippet by using the [search_form] shortcode in a page or a post. 
+		This control is intended to be used alongside the [search_listings] shortcode (defined below) to display the search 
 		form's results.
 	  </p>
 	  <p>
@@ -14,15 +14,15 @@
   	    [<?php echo $subcode ?>], &nbsp;
       <?php endforeach ?>
 
-	<?php elseif ($shortcode == 'listings'): ?>
+	<?php elseif ($shortcode == 'search_listings'): ?>
 	  <p>
-		You can insert your "activated" Listings snippet by using the [searchform] shortcode in a page or a post.
-		The listings view is intended to be used alongside the [searchform] shortcode defined above as a container
+		You can insert your "activated" Listings snippet by using the [search_form] shortcode in a page or a post.
+		The listings view is intended to be used alongside the [search_form] shortcode defined above as a container
 		for the results of the search, with the snippet representing how an <i>individual</i> listing that matches
 		the search criteria will be displayed.
 	  </p>
 	  <p>
-		<b>NOTE:</b> The snippet that will be used by [listings] is the one that you last clicked "Activate" while 
+		<b>NOTE:</b> The snippet that will be used by [search_listings] is the one that you last clicked "Activate" while 
 		viewing or editing.
 	  </p>
 	  <p>

@@ -82,7 +82,7 @@ class PL_Shortcodes
             												'mls_id',
             												'map',
             												'listing_type',
-            												'gallery',
+            												'img_gallery',
             												'amenities',
             												'compliance')
             						);
