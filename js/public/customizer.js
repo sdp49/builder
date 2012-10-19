@@ -94,7 +94,7 @@ jQuery(document).ready(function($) {
 		}  
 	}
 
-	refPrev = function refreshPreview() {
+	function refreshPreview() {
 		var ctrl = $('#customize-control-pls-google-analytics_ctrl input[type=text]');
 		var newVal = ctrl.val() ? '' : '3';
 		
@@ -104,6 +104,9 @@ jQuery(document).ready(function($) {
 		
 		setPreviewLoading();
 	}
+
+	// TODO: Remove this, it's for testing purposes...
+	refPrev = refreshPreview;
 
 	$('#customize-control-pls-google-analytics_ctrl input[type=text]').on('keyup', function (event) {
 		setPreviewLoading();
@@ -345,6 +348,7 @@ jQuery(document).ready(function($) {
 			} 
 			else if (response && response['id']) {
 				alert('Listing successfully created!');
+				setTimeout( function () { refreshPreview(); }, 1200 ); 
 				// $('#manage_listing_message').html('<div id="message" class="updated below-h2"><p>Listing successfully created!</p></div>');
 			}
 		}, 'json');
