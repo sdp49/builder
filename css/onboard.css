@@ -318,7 +318,7 @@ div#switcher h2 {
 div#switcher select,
 div#propType select {
 	float: right;
-	height: 39px; 
+	height: 38px; 
 	width: 65%;
 	font-size: 16px;
 	/*font-weight: lighter;*/
@@ -345,23 +345,24 @@ input[type="radio"] {
 
 label 
 {
-	font-size: 16px; 
+	font-size: 15px;
+	font-weight: bold;
 	color: #4c4c4c; 
 	clear: both;
 }
 
-label span {font-size: 14px;}
+label span {font-size: 15px;}
 
-input.fw {width: 100%;}
+input.fw {width: 100%; margin-bottom: 25px;}
 input.mw {width: 240px;}
-input.sw {width: 107px;}
+input.sw {width: 107px; margin-bottom: 25px;}
 input.fr {width: 40px; float: right;}
 input.cb {margin: 10px 5px 0px 1px;}
 input.fl-m {margin-right: 7px;}
 
 textarea {
 	padding: 12px; 
-	margin: 5px 0px 15px 0px;
+	margin: 5px 0px 25px 0px;
 	border-radius: 4px;
 	-moz-border-radius: 4px;
 	border: 1px solid #b0b0b0;
@@ -431,7 +432,13 @@ select {padding:10px; border:1px solid #cfcfcf; border-radius:6px; -moz-border-r
 select.mw {width:240px; margin:5px 0px 15px 0px;}
 select.sw {width:120px; margin:5px 0px 15px 0px;}
 select.cw290 {width:280px; margin:5px 0px 15px 0px;}
-
+select.cl {
+	height: 38px;
+	width: 100%;
+	margin: 5px 0px 25px 0px;
+	font-size: 14px;
+	color: gray;
+}
 
 #fb-32, #tw-32, #ld-32, #gl-32, #fb-32-active, #tw-32-active, #ld-32-active, #gl-32-active {height:32px; width:32px; display:block;}
 
@@ -536,6 +543,29 @@ div.featureicon:hover {
  background:url(../images/onboard_icons.png) -15px -690px;	
 }
 
+div.button-container {
+	height: 45px;
+}
+
+div.lg {
+	float: left;
+	width: 110px;
+	margin-right: 20px;
+}
+
+div.lg-cl {
+	float: left;
+	width: 200px;
+}
+
+div.error h3 {
+	margin: 9px 0px;
+	font-weight: bold;
+	font-size: 15px;
+	color: #4C4C4C;
+	clear: both;
+}
+
 a.ico-responsive {
 	height:24px;
 	width:24px;
@@ -624,8 +654,4 @@ a.ico-responsive {
 .radio label {
 	margin-right:10px;
 	font-size:14px;
-}
-
-div.button-container {
-	height: 45px;
 }

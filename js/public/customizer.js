@@ -81,6 +81,38 @@ jQuery(document).ready(function($) {
 		});
 	});
 
+ /*
+  * Trigger preview re-load + display loading overlay for input changes...
+  */
+
+	function setPreviewLoading() {
+		if ( !customizer_global.refreshing ) {
+		  	$('#customize-preview').fadeTo(800, 0.3);
+			$('#preview_load_spinner').fadeTo(700, 1);
+
+			customizer_global.refreshing = true;
+		}  
+	}
+
+	refPrev = function refreshPreview() {
+		var ctrl = $('#customize-control-pls-google-analytics_ctrl input[type=text]');
+		var newVal = ctrl.val() ? '' : '3';
+		
+		// We need to change the control value AND trigger the keyup even in succession...
+		ctrl.val(newVal);
+		ctrl.trigger('keyup');
+		
+		setPreviewLoading();
+	}
+
+	$('#customize-control-pls-google-analytics_ctrl input[type=text]').on('keyup', function (event) {
+		setPreviewLoading();
+	});
+
+	$('select.of-typography, #theme_choices').on('change', function (event) {
+		setPreviewLoading();
+	});
+
 
  /*
   * Handles switching themes in the preview iframe...
@@ -162,37 +194,8 @@ jQuery(document).ready(function($) {
 
 
  /*
-  * Display loading for input changes...
-  */
-
-	function setPreviewLoading() {
-		if ( !customizer_global.refreshing ) {
-		  	$('#customize-preview').fadeTo(800, 0.3);
-			$('#preview_load_spinner').fadeTo(700, 1);
-
-			customizer_global.refreshing = true;
-		}  
-	}
-
-	$('#customize-control-pls-google-analytics_ctrl input[type=text]').on('keyup', function (event) {
-		setPreviewLoading();
-	});
-
-	$('select.of-typography, #theme_choices').on('change', function (event) {
-		setPreviewLoading();
-	});
-
-
- /*
   * Bind onboarding menu actions...
   */
-  
-  	$('#confirm').on('click', function (event) {
-		event.preventDefault;
-		$('#save').trigger('click');
-		// console.log('Finished saving...');
-		setTimeout( function () { window.location.href = window.location.origin; }, 1200 ); 
-	});
 
 	$('#navlist .no-pane').on('click', function (event) {
 		$('#pane').css('display', 'none');
@@ -227,6 +230,125 @@ jQuery(document).ready(function($) {
 		$(containerId).css('display', 'block');
 	});
 
+	$('#confirm').on('click', function (event) {
+		event.preventDefault;
+		$('#save').trigger('click');
+		// console.log('Finished saving...');
+		setTimeout( function () { window.location.href = window.location.origin; }, 1200 ); 
+	});
+
+
+ /*
+  * Handle creating listings + making blog posts...
+  */	
+
+	function toggleInvalid (item, invalid) {
+        if (invalid) {
+		  	item.addClass('invalid');
+		  	item.prev().addClass('invalid');
+		}
+		else {
+			item.removeClass('invalid');
+			item.prev().removeClass('invalid');
+		}
+	}
+
+  	$('#submit_blogpost').on('click', function (event) {
+  		var title = $('#blogpost_title');
+  		var content = $('#blogpost_content');
+
+  		if ( !title.val() || !content.val()  ) {
+  			$('#blogpost_message').show();
+
+  			if ( !title.val() ) { toggleInvalid(title, true); }
+			if ( !content.val() ) { toggleInvalid(content, true); }  			
+
+  			return;
+  		}
+  		else {
+  			$('#blogpost_message').hide();
+
+  			toggleInvalid(title, false);
+  			toggleInvalid(content, false);
+  		}
+
+  		var data = {
+    	  	action: 'publish_post',
+	        title: title.val(),
+	        content: content.val()
+	    };
+
+	    // console.log(data);
+	    // return;
+
+	    $.post(ajaxurl, data, function (response) {
+	        if ( response && response.new_post_id ) {
+	        	alert('Post created successfully!');
+	            console.log(response.new_post_id);
+
+	            // Reset blog post form fields...
+	            title.val('');
+	            content.val('');
+	        }
+	    },'json');
+  	});
+
+  	$('#submit_listing').on('click', function (event) {
+		// $('#loading_overlay').show();
+
+       	// Hide all previous validation issues
+       	$('#listing_message').hide();
+
+       	// Prep form values for submission
+        var form_values = {}
+        form_values['action'] = 'add_listing';
+        
+        // Get each of the form values, set key/values in array based off name attribute
+        $.each($('#create_listing :input').serializeArray(), function (i, field) {
+    		form_values[field.name] = field.value;
+        });
+       
+
+        // console.log(form_values); 
+        // return;
+        
+        $.post(ajaxurl, form_values, function (response) {
+			// $('#loading_overlay').hide();
+			if (response && response['validations']) {
+				var item_messages = [];
+
+				for (var key in response['validations']) 
+				{
+					var item = response['validations'][key];
+
+					if (typeof item == 'object') {
+						for (var k in item) {
+							if (typeof item[k] == 'string') {
+								var message = '<p class="red">' + response['human_names'][key] + ' ' + item[k] + '</p>';
+							} else {
+								var message = '<p class="red">' + response['human_names'][k] + ' ' + item[k].join(',') + '</p>';
+							}
+							// $("#" + key + '-' + k).prepend(message);
+							item_messages.push(message);
+						}
+					} 
+					else {
+						var message = '<p class="red">'+item[key].join(',') + '</p>';
+						// $("#" + key).prepend(message);
+						item_messages.push(message);
+					}
+				} 
+
+				// Populate and show error messages...
+				$('#listing_message').html( '<h3>' + response['message'] + '</h3>' + item_messages.join(' ') );
+				$('#listing_message').show();
+			} 
+			else if (response && response['id']) {
+				alert('Listing successfully created!');
+				// $('#manage_listing_message').html('<div id="message" class="updated below-h2"><p>Listing successfully created!</p></div>');
+			}
+		}, 'json');
+    });
 });	
 
 

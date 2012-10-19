@@ -247,62 +247,82 @@ function define_custom_controls()
    			?>
    			  <div id='create_listing'>
 
-   			  	<?php $listing_types = PL_Config::PL_API_LISTINGS('create', 'args', 'compound_type'); ?>
+   			  	<div id="listing_message" class="error" style="display: none">
+   			  	  <!-- <h3></h3> -->
+   			  	</div>
 
+   			  	<?php $listing_types = PL_Config::PL_API_LISTINGS('create', 'args', 'compound_type'); ?>
+   			  	
    			  	<div id="switcher">
 		          <h2><?php echo $listing_types['label']; ?></h2>
-		          <select id="compound_type">
+		          <select id="compound_type" name="compound_type">
 				    <?php foreach ( $listing_types['options'] as $val => $text) : ?>
-				  	  <option value="<?php echo $val; ?>" <?php // selected( $this->manager->get_stylesheet(), $stylesheet ); ?>><?php echo $text; ?></option>
+				  	  <option value="<?php echo $val; ?>"><?php echo $text; ?></option>
 				    <?php endforeach; ?>
 				  </select>
 		        </div>
 
-	            <label>Street Address</label><br>
-	            <input id="addr" class="fw" type="text">
+	            <label>Street Address</label>
+	            <input id="listing_addr" name="location[address]" class="fw" type="text">
 	            
-	            <label>Unit No.</label>
-	            <input id="unit" class="fw" type="text">
+	            <label>City</label>
+	            <input id="listing_city" name="location[locality]" class="fw" type="text">       
 	            
-	            <label>City</label><br>
-	            <input id="city" class="fw" type="text">       
-	            
-	            <label>State</label><br>
-	            <input id="state" class="sw" type="text"><br>                
-	          
-	            <label>Zip Code</label><br>
-	            <input id="zip" class="sw" type="text"><br>         
-	          
-	            <label>Country</label><br>
-	            <select class="mw">
-	              <?php foreach ( PL_Listing_Helper::supported_countries() as $code => $text ): ?>
-	                <option value="<?php echo $code; ?>" <?php selected( "US", $code ); ?>><?php echo $text; ?></option>
-	              <?php endforeach; ?>
-	            </select><br>
+	            <div class="lg">
+	              <label>State</label>
+	              <input id="listing_state" name="location[region]" class="sw" type="text">                
+	            </div>
 
-	            <label>Brief Description</label>
-	            <textarea id="brief_desc"></textarea>
-	    
-	    		<?php $amenities = array('Pets Allowed', 'Hot Water', 'Air Conditioning', 'Furnished', 'Balcony', 'Pets Allowed'); ?>
+	            <div class="lg">
+	              <label>Zip Code</label>
+	              <input id="listing_zip" name="location[postal]" class="sw" type="text">       
+	         	</div>
+
+	         	<div class="lg-cl">
+	              <label>Country</label>
+	              <select id="listing_country" name="location[country]" class="cl">
+	                <?php foreach ( PL_Listing_Helper::supported_countries() as $code => $text ): ?>
+	                  <option value="<?php echo $code; ?>" <?php selected( "US", $code ); ?>><?php echo $text; ?></option>
+	                <?php endforeach; ?>
+	              </select>       
+	         	</div>
+
+	         	<div class="lg">
+	              <label>Price*</label>
+	              <input id="listing_price" name="metadata[price]" class="sw" type="text">
+	            </div>
+
+	            <div style="float: left; 
+	            			font-size: 13px;
+							width: 300px;
+							font-style: italic;
+							color: gray;
+							padding-top: 21px;
+							line-height: 18px;">
+	              * Represents monthly rate for rentals 
+	              <br> 
+	              * Leave out commas &amp; currency symbols
+	            </div>
+
+	            <label style="display: block">Brief Description</label>
+	            <textarea id="listing_desc" name="metadata[desc]"></textarea>
+			<!-- 	    
+	    		<?php // $amenities = array('Pets Allowed', 'Hot Water', 'Air Conditioning', 'Furnished', 'Balcony', 'Pets Allowed'); ?>
 	            <label>Amenities</label>
 	            <ul id="checkboxlist">
-	              <?php foreach ($amenities as $amenity) : ?>
+	              <?php // foreach ($amenities as $amenity) : ?>
 	                <li>
 	                  <input class="cb" type="checkbox">
-	                  <?php echo $amenity; ?>          
+	                  <?php // echo $amenity; ?>          
 	                </li>               
-	              <?php endforeach; ?>
+	              <?php // endforeach; ?>
 	            </ul>
 	            <br>
-
+ 			-->
 	            <!-- <label>Upload Images</label> -->
-
-
-	            <!-- Upload Plugin Goes Here -->
-	            <br><br><br><br><br>
 	          
 				<div class="button-container">	          
-	              <input class="bt-norm" type="button" value="Post Listing">
+	              <input id="submit_listing" class="bt-norm" type="button" value="Post Listing">
 		        <div>
 		      </div>
    			<?php
@@ -320,11 +340,15 @@ function define_custom_controls()
    		public function render() {
    			?>
    			  <div id="create_post">
-	            <label>Title</label><br>
-	            <input class="fw" type="text" value="My First Real Estate Post">
+   			  	<div id="blogpost_message" class="error" style="display: none">
+   			  	  <h3>Make sure to fill-in the <u>title</u> and <u>content</u> of your post</h3>
+   			  	</div>
+
+	            <label>Title</label>
+	            <input id="blogpost_title" class="fw" type="text" value="My First Real Estate Post">
 	            
-	            <label>Content</label><br>
-	            <textarea class="post-content"></textarea>
+	            <label>Content</label>
+	            <textarea id="blogpost_content" class="post-content"></textarea>
 	          
 	            <!-- <label>Post Excerpt</label><br>
 	            <textarea class="fw"></textarea>  -->           
@@ -350,7 +374,7 @@ function define_custom_controls()
 	         -->
 	          
 	          	<div class="button-container">
-	              <input class="bt-norm" type="button" value="Publish">
+	              <input id="submit_blogpost" class="bt-norm" type="button" value="Publish">
 	            </div>
 	          </div>
    			<?php

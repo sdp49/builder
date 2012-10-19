@@ -30,15 +30,25 @@ class PL_WordPress_Helper {
 	}
 
 	function publish_post() {
+		// Get current user's WP id...
 		global $user_ID;
+
+		// Format & sanitize title & content...
+		$title = stripslashes($_POST['title']);
+		$title = preg_replace('/<\?.*?(\?>|$)/', '', strip_tags($title));
+
+		$content = stripslashes($_POST['content']);
+		$content = preg_replace('/<\?.*?(\?>|$)/', '', strip_tags($content));
+
 		$new_post = array(
-		    'post_title' => 'My New Post',
-		    'post_content' => $_POST[,
+		    'post_title' => $title,
+		    'post_content' => $content,
 		    'post_status' => 'publish',
 		    'post_date' => date('Y-m-d H:i:s'),
 		    'post_author' => $user_ID,
 		    'post_type' => 'post',
-		    // 'post_category' => array(0)
+		    // 'post_category' => array(0),
+		    // 'tags_input' => $tags
 		);
 
 		// Insert new post...

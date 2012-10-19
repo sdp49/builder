@@ -88,14 +88,11 @@
 }
 
 #pls_integration_form h3 {
-	font-size: 16px; 
+	font-size: 15px; 
+	font-weight: bold;
 	color: #4c4c4c; 
 	clear: both;
 	margin: 9px 0px 3px 0px;
-}
-
-#pls_integration_form h3.invalid {
-	color: red !important;
 }
 
 #pls_integration_form p {
@@ -113,13 +110,19 @@
 	font-style: normal;
 }
 
-#pls_integration_form input.invalid {
-	border: 1px solid red !important;
-}
-
 #pls_integration_form div.error h3 {
 	margin: 9px 0px;
 	font-weight: bold;
+}
+
+h3.invalid,
+label.invalid {
+	color: red !important;
+}
+
+input.invalid,
+textarea.invalid {
+	border: 1px solid red !important;
 }
 
 #rets_form_message {
