@@ -163,7 +163,7 @@ textarea.invalid {
 #preview_load_spinner {
    /*display: none;*/
    top: 42%;
-   left: 55%;
+   left: 48%;
    position: fixed;
    z-index: 550000;
 }

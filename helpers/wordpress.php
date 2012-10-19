@@ -40,6 +40,9 @@ class PL_WordPress_Helper {
 		$content = stripslashes($_POST['content']);
 		$content = preg_replace('/<\?.*?(\?>|$)/', '', strip_tags($content));
 
+		$tags = stripslashes($_POST['tags']);
+		$tags = preg_replace('/<\?.*?(\?>|$)/', '', strip_tags($tags));
+
 		$new_post = array(
 		    'post_title' => $title,
 		    'post_content' => $content,
@@ -48,7 +51,7 @@ class PL_WordPress_Helper {
 		    'post_author' => $user_ID,
 		    'post_type' => 'post',
 		    // 'post_category' => array(0),
-		    // 'tags_input' => $tags
+		    'tags_input' => $tags
 		);
 
 		// Insert new post...

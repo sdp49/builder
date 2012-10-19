@@ -200,16 +200,16 @@ jQuery(document).ready(function($) {
   * Bind onboarding menu actions...
   */
 
-	$('#navlist .no-pane').on('click', function (event) {
-		$('#pane').css('display', 'none');
-		$('.control-container').css('display', 'none');
+	// $('#navlist .no-pane').on('click', function (event) {
+	// 	$('#pane').css('display', 'none');
+	// 	$('.control-container').css('display', 'none');
 
-		// Remove active class from any existing elements...
-		var activeLi = $('#navlist li.active');
-		if ( activeLi.length > 0 ) {
-			activeLi.each( function() { $(this).toggleClass('active'); } );
-		}
-	});
+	// 	// Remove active class from any existing elements...
+	// 	var activeLi = $('#navlist li.active');
+	// 	if ( activeLi.length > 0 ) {
+	// 		activeLi.each( function() { $(this).toggleClass('active'); } );
+	// 	}
+	// });
 
 	$('#navlist li:not(.no-pane)').on('click', function (event) {
 		// If activated menu section is clicked, do nothing...
@@ -259,6 +259,7 @@ jQuery(document).ready(function($) {
   	$('#submit_blogpost').on('click', function (event) {
   		var title = $('#blogpost_title');
   		var content = $('#blogpost_content');
+  		var tags = $('#blogpost_tags');
 
   		if ( !title.val() || !content.val()  ) {
   			$('#blogpost_message').show();
@@ -278,7 +279,8 @@ jQuery(document).ready(function($) {
   		var data = {
     	  	action: 'publish_post',
 	        title: title.val(),
-	        content: content.val()
+	        content: content.val(),
+	        tags: tags.val()
 	    };
 
 	    // console.log(data);
@@ -292,6 +294,7 @@ jQuery(document).ready(function($) {
 	            // Reset blog post form fields...
 	            title.val('');
 	            content.val('');
+	            tags.val('');
 	        }
 	    },'json');
   	});

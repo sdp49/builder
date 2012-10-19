@@ -351,11 +351,14 @@ function define_custom_controls()
    			  	</div>
 
 	            <label>Title</label>
-	            <input id="blogpost_title" class="fw" type="text" value="My First Real Estate Post">
+	            <input id="blogpost_title" class="fw" type="text" placeholder="My First Real Estate Post">
 	            
 	            <label>Content</label>
 	            <textarea id="blogpost_content" class="post-content"></textarea>
 	          
+	            <label>Tags</label>
+	            <input id="blogpost_tags" class="fw" type="text" placeholder="Separate tags with commas">
+
 	            <!-- <label>Post Excerpt</label><br>
 	            <textarea class="fw"></textarea>  -->           
 	          
