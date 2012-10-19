@@ -73,7 +73,7 @@ class PL_Map_CPT {
 			array(
 				'codes' => array( 'search_map' ),
 				'p_codes' => array(
-					'search_form' => 'Search Map'
+					'search_map' => 'Search Map'
 				)
 			)
 		);

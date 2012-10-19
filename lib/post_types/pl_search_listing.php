@@ -73,7 +73,7 @@ class PL_Search_Listing_CPT {
 			array(
 				'codes' => array( 'search_listings' ),
 				'p_codes' => array(
-					'search_form' => 'Search Listings'
+					'search_listings' => 'Search Listings'
 				)
 			)
 		);

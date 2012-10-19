@@ -74,7 +74,7 @@ class PL_Slideshow_CPT {
 			array(
 				'codes' => array( 'listing_slideshow' ),
 				'p_codes' => array(
-					'search_form' => 'Listing Slideshow'
+					'listing_slideshow' => 'Listing Slideshow'
 				)
 			)
 		);
