@@ -49,7 +49,7 @@ class PL_Slideshow_CPT {
 	
 	
 	public static function pl_slideshows_meta_box() {
-		add_meta_box( 'my-meta-box-id', 'Page Subtitle', 'pl_slideshows_meta_box_cb', array( __CLASS__, 'pl_slideshow' ), 'normal', 'high' );
+		add_meta_box( 'my-meta-box-id', 'Page Subtitle', array( __CLASS__, 'pl_slideshows_meta_box_cb' ), 'pl_slideshow', 'normal', 'high' );
 	}
 	
 	// add meta box for featured listings- adding custom fields

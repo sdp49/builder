@@ -48,7 +48,7 @@ class PL_Search_Listing_CPT {
 	
 	
 	public static function pl_search_listings_meta_box() {
-		add_meta_box( 'my-meta-box-id', 'Page Subtitle', 'pl_search_listings_meta_box_cb', array( __CLASS__, 'pl_search_listing' ), 'normal', 'high' );
+		add_meta_box( 'my-meta-box-id', 'Page Subtitle', array( __CLASS__, 'pl_search_listings_meta_box_cb' ), 'pl_search_listing', 'normal', 'high' );
 	}
 	
 	// add meta box for featured listings- adding custom fields

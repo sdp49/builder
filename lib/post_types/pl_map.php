@@ -48,7 +48,7 @@ class PL_Map_CPT {
 	
 	
 	public static function pl_maps_meta_box() {
-		add_meta_box( 'my-meta-box-id', 'Maps', 'pl_maps_meta_box_cb', array( __CLASS__, 'pl_map' ), 'normal', 'high' );
+		add_meta_box( 'my-meta-box-id', 'Maps', array( __CLASS__, 'pl_maps_meta_box_cb'), 'pl_map', 'normal', 'high' );
 	}
 	
 	// add meta box for featured listings- adding custom fields
