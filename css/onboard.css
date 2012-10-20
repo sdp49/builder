@@ -566,6 +566,16 @@ div.error h3 {
 	clear: both;
 }
 
+div.disclaimer {
+	float: left; 
+	font-size: 13px;
+	width: 300px;
+	font-style: italic;
+	color: gray;
+	padding-top: 21px;
+	line-height: 18px;
+}
+
 a.ico-responsive {
 	height:24px;
 	width:24px;

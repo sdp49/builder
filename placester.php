@@ -112,6 +112,7 @@ include_once('lib/shortcodes-new.php');
 include_once('lib/featured_listings_post_type.php');
 include_once('lib/demo_data.php');
 include_once('lib/customizer.php');
+include_once('lib/customizer_entities.php');
 
 //models
 include_once('models/listing.php');
@@ -150,6 +151,7 @@ include_once('helpers/caching.php');
 include_once('helpers/membership.php');
 include_once('helpers/snippet.php');
 include_once('helpers/template.php');
+include_once('helpers/customizer.php');
 
 
 //third-party scripts

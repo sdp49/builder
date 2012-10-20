@@ -2,17 +2,17 @@
 
 global $PL_CUSTOMIZER_ONBOARD_SECTIONS;
 $PL_CUSTOMIZER_ONBOARD_SECTIONS = array(
-                                  'Placester Logo' => 1,
-								  'Theme Selection' => 10,
-								  'Title & Slogan' => 20,
-								  'Colors & Style' => 30,
-                                  'Upload Logo' => 40,
-								  'MLS Integration' => 50,
-								  'Post a Listing' => 60,
-								  'Write a Blog Post' => 70,
+                                  'logo' => 1,
+								  'theme' => 10,
+								  'title' => 20,
+								  'colors' => 30,
+                                  'brand' => 40,
+								  'mls' => 50,
+								  'listing' => 60,
+								  'post' => 70,
                                   // 'Invite Your Friends' => 80,
-								  'Analytics & Webmasters' => 90,
-                                  'Save & Continue' => 1000
+								  'analytics' => 90,
+                                  'confirm' => 1000
 							   );
 
 global $PL_CUSTOMIZER_ONBOARD_OPTS;
@@ -61,11 +61,6 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
         ),
 
         // array(
-        //     'name' => 'Contact Info',
-        //     'type' => 'info'
-        // ),
-
-        // array(
         //     'name' => 'First and Last Name',
         //     'desc' => 'Add the name you want to display on the site.',
         //     'id' => 'pls-user-name',
@@ -88,60 +83,24 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
             'transport' => 'postMessage'
         ),
 
-        // array(
-        //     'name' => 'Your Bio',
-        //     'desc' => 'Add your bio that you want to display on the site.',
-        //     'id' => 'pls-user-description',
-        //     'type' => 'textarea'
-        // ),
-
-        // array(
-        //     'name' => 'Your Headshot',
-        //     'desc' => 'Add your headshot that you want to display on the site.',
-        //     'id' => 'pls-user-image',
-        //     'type' => 'upload'
-        // ),
-
         array(
             'name' => 'Colors & Style',
-            'desc' => 'Customize Your Site Even More',
+            'desc' => 'Skin Your Theme For Greater Customization',
             'id' => 'colors',
             'type' => 'heading'
         ),
 
         array(
-            'name' => 'Site Background',
-            'desc' => 'Change the site\'s background.',
-            'id' => 'site_background',
-            'selector' => 'body',
-            'type' => 'background',
-            'transport' => 'postMessage'
+            'name' => 'color-scheme',
+            'type' => 'custom'
         ),
 
-        array(
-            'name' => 'Inner Background',
-            'desc' => 'Change the site\'s inner background.',
-            'id' => 'inner_background',
-            'selector' => '.inner',
-            'type' => 'background',
-            'transport' => 'postMessage'
-        ),
-
-        // array(
-        //     'name' => 'H1 Title',
-        //     'desc' => 'Change main site title\'s size, font-family, styling, and color.',
-        //     'id' => 'h1_title',
-        //     'selector' => 'header h1 a',
-        //     'type' => 'typography'
-        // ),
-
-        // array(
-        //     'name' => 'H2 Subtitle',
-        //     'desc' => 'Change the site subtitle\'s size, font-family, styling, and color.',
-        //     'id' => 'h2_subtitle',
-        //     'selector' => 'header h2',
-        //     'type' => 'typography'
-        // ),       
+        array( 
+            "name" => "Custom CSS",
+            "desc" => "Enter custom css styles here. Will override any theme styles as well as any theme options you've already set.",
+            "id" => "pls-custom-css",
+            "type" => "textarea"
+        ),  
 
         array(
             'name' => 'Upload Logo',

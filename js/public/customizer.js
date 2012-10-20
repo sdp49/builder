@@ -200,16 +200,18 @@ jQuery(document).ready(function($) {
   * Bind onboarding menu actions...
   */
 
-	// $('#navlist .no-pane').on('click', function (event) {
-	// 	$('#pane').css('display', 'none');
-	// 	$('.control-container').css('display', 'none');
+	$('#hide_pane').on('click', function (event) {
+		console.log('clicked!');
+		console.log(this);
+		$('#pane').css('display', 'none');
+		$('.control-container').css('display', 'none');
 
-	// 	// Remove active class from any existing elements...
-	// 	var activeLi = $('#navlist li.active');
-	// 	if ( activeLi.length > 0 ) {
-	// 		activeLi.each( function() { $(this).toggleClass('active'); } );
-	// 	}
-	// });
+		// Remove active class from any existing elements...
+		var activeLi = $('#navlist li.active');
+		if ( activeLi.length > 0 ) {
+			activeLi.each( function() { $(this).toggleClass('active'); } );
+		}
+	});
 
 	$('#navlist li:not(.no-pane)').on('click', function (event) {
 		// If activated menu section is clicked, do nothing...
@@ -356,6 +358,47 @@ jQuery(document).ready(function($) {
 			}
 		}, 'json');
     });
+
+	$('#color_select').on('change', function (event) {
+		// We need this to update styling--exit if it's not there...
+		if (!_wpCustomizeSettings) {
+			return;
+		}
+
+		var updateCustomCSS = function (css) {
+			var custom_css = $('#colors_content').find('textarea');
+    		custom_css.val(css);
+    		custom_css.trigger('keyup');
+		}
+
+		// Let the user know there's work being done...
+		setPreviewLoading();
+
+		// Check for default
+		if ($(this).val() == 'default') {
+			updateCustomCSS('');
+			return;
+		}
+
+		// Construct request to fetch styles...
+		var data = {
+    	  	action: 'load_custom_styles',
+	        template: _wpCustomizeSettings.theme.stylesheet,
+	        color: $(this).val()
+	    };
+
+	    // console.log(data);
+	    // return;
+
+	    $.post(ajaxurl, data, function (response) {
+	    	// console.log(response);
+	    	if (response && response.styles) {
+	    		// Set the Custom CSS textarea to update preview pane...
+	    		updateCustomCSS(response.styles);
+	    	}
+	    },'json');
+	});
+
 });	
 
 
