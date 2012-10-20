@@ -367,7 +367,7 @@ jQuery(document).ready(function($) {
 
 	$('#color_select').on('change', function (event) {
 		// We need this to update styling--exit if it's not there...
-		if (!_wpCustomizeSettings) {
+		if (!_wpCustomizeSettings || _wpCustomizeSettings.theme.stylesheet != 'columbus') {
 			return;
 		}
 
