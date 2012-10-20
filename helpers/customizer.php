@@ -112,7 +112,7 @@ class PL_Customizer_Helper
 	      			header: '1. Theme Selection',
 	      			content: '',
 	      			link: 'Select a Theme',
-	      			pane_id: 'theme_content'
+	      			pane_id: 'theme_content',
 	      			left: '75px',
 	      			top: '50px',
 	      			next_state: 'title'
@@ -121,7 +121,7 @@ class PL_Customizer_Helper
 	      			header: '2. Slogan & Title',
 	      			content: 'Add a Title',
 	      			link_text: '',
-	      			pane_id: 'title_content'
+	      			pane_id: 'title_content',
 	      			left: '75px',
 	      			top: '100px',
 	      			next_state: 'colors'
@@ -188,7 +188,7 @@ class PL_Customizer_Helper
 	      			left: '75px',
 	      			top: '450px',
 	      			next_state: ''
-	      		},
+	      		}
 	      	},
 	      	active_state: 'welcome' // Initially set to this value for page_load...
 	      }
