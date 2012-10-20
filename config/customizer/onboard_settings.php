@@ -109,12 +109,12 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
             'type' => 'heading'
         ),
 
-        array(
-            'name' => 'Site Logo',
-            'desc' => 'Upload your logo here. It will appear in the header and will override the title you\'ve provided above.',
-            'id' => 'pls-site-logo',
-            'type' => 'upload'
-        ),
+        // array(
+        //     'name' => 'Site Logo',
+        //     'desc' => 'Upload your logo here. It will appear in the header and will override the title you\'ve provided above.',
+        //     'id' => 'pls-site-logo',
+        //     'type' => 'upload'
+        // ),
 
         array(
             'name' => 'MLS Integration',
