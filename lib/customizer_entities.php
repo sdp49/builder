@@ -293,7 +293,7 @@ function define_custom_controls()
    			  								 'Navy Blue' => '#000080',
    			  								 'Maroon' => '#AD0707',
    			  								 'Violet' => '#800080',
-   			  								 'Golden' => '#E0E010'); 
+   			  								 'Golden' => '#CCB400'); 
    			  	?>
 
    			  	<div id="switcher">

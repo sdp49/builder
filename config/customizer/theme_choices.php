@@ -2,16 +2,16 @@
 
 global $PL_CUSTOMIZER_THEMES;
 $PL_CUSTOMIZER_THEMES = array(
-							    'Single-Listing' => array(
-												'Bluestone' => 'bluestone',
-												'Slate' => 'slate',
-												),
-								'Multi-Listing' => array(
+							    'Agency' => array(
 												'Columbus' => 'columbus',
 												'Highland' => 'highland',
 												'Manchester' => 'manchester',
 												'Tampa' => 'tampa',
 												'Ventura' => 'ventura'
+												),
+							    'Single Property' => array(
+												'Bluestone' => 'bluestone',
+												'Slate' => 'slate',
 												)
 							 );
 

@@ -96,12 +96,17 @@ jQuery(document).ready(function($) {
 
 	function refreshPreview() {
 		var ctrl = $('#customize-control-pls-google-analytics_ctrl input[type=text]');
-		var newVal = ctrl.val() ? '' : '3';
+		var currVal = ctrl.val()
+		var newVal = currVal + '3';
 		
 		// We need to change the control value AND trigger the keyup even in succession...
 		ctrl.val(newVal);
 		ctrl.trigger('keyup');
-		
+
+		// Change back to existing value...
+		ctrl.val(currVal);
+		ctrl.trigger('keyup');
+
 		setPreviewLoading();
 	}
 
@@ -291,7 +296,8 @@ jQuery(document).ready(function($) {
 	    $.post(ajaxurl, data, function (response) {
 	        if ( response && response.new_post_id ) {
 	        	alert('Post created successfully!');
-	            console.log(response.new_post_id);
+	            // console.log(response.new_post_id);
+	            setTimeout( function () { refreshPreview(); }, 300 );
 
 	            // Reset blog post form fields...
 	            title.val('');
