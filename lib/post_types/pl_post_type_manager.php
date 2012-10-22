@@ -1,5 +1,7 @@
 <?php
 
+include_once 'pl_post_base.php';
+
 PL_Post_Type_Manager::init();
 
 class PL_Post_Type_Manager {
@@ -47,7 +49,11 @@ class PL_Post_Type_Manager {
 		}
 		
 		// ignore file paths we don't use and the manager
-		$ignore = array( '.', '..', 'pl_post_type_manager.php', 'pl_post_types_template.php' );
+		$ignore = array( '.',
+						 '..', 
+						 'pl_post_type_manager.php', 
+						 'pl_post_types_template.php',
+						 'pl_post_base.php' );
 		
 		if ($handle = opendir( $folder ) ) {
 			while (false !== ($entry = readdir($handle))) {

@@ -122,6 +122,7 @@ class PL_Component_Entity {
 	}
 	
 	public static function search_map_entity( $atts ) {
+		$atts = wp_parse_args($atts, array('type' => 'listings'));
 		ob_start();
 	?>
 	 <script type="text/javascript">
@@ -133,17 +134,32 @@ class PL_Component_Entity {
     			map: map
     			// filter: filter,
     		});
+    		<?php if($atts['type'] == 'lifestyle'): ?>
+	    		var lifestyle = new Lifestyle( {
+	        		map: map
+	    		});
+    		<?php endif; ?>
+
+    		<?php if($atts['type'] == 'lifestyle_poligon' ): ?>
+	    		var lifestyle_poligon = new Lifestyle_Poligon( {
+					map: map
+	        	});
+        	<?php endif;?>
             
             var status = new Status_Window ({map: map, listings:listings});
             
             map.init({
+				type: '<?php echo $atts['type']; ?>',
+                listings: listings,
+                <?php if($atts['type'] == 'lifestyle' ): ?>
+                	lifestyle: lifestyle,
+                <?php elseif($atts['type'] == 'lifestyle_poligon' ): ?>
+                	lifestyle_polygon: lifestyle_polygon,
+                <?php endif;?>
                 // type: 'lifestyle',
                 // type: 'lifestyle_polygon',
                 // type: 'neighborhood',
-                type: 'listings',
-                // lifestyle: lifestyle,
-                listings: listings,
-                // lifestyle_polygon: lifestyle_polygon,
+                // type: 'listings',
                 status_window: status
             });
 
