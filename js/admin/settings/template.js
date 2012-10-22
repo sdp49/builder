@@ -8,7 +8,7 @@ jQuery(document).ready(function($) {
       return; 
     }
 
-    data = {
+    var data = {
     	  action: 'get_snippet_body',
         shortcode: container.find('.shortcode').val(),
         snippet: container.find('.snippet_list option:selected').val(),
@@ -50,7 +50,7 @@ jQuery(document).ready(function($) {
       return; 
     }
 
-    data = {
+    var data = {
     	action: 'activate_snippet',
       shortcode: container.find('.shortcode').val(),
       snippet: container.find('.snippet_list option:selected').val()
@@ -118,7 +118,7 @@ jQuery(document).ready(function($) {
     if (!snippet_body) { snippet_body = 'Empty Template' }
 
     // AJAX call to persist new snippet...
-    data = {
+    var data = {
       action: 'save_custom_snippet',
       shortcode: container.find('.shortcode').val(),
       snippet: snippet_name,
@@ -207,7 +207,7 @@ jQuery(document).ready(function($) {
   });
 
   $('.enabled_check').live('change', function() {
-    data = {
+    var data = {
       action: 'toggle_prop_details',
     };
       

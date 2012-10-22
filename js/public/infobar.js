@@ -13,7 +13,7 @@ jQuery(document).ready(function($) {
 	});
 
 	$('#infobar .msg .close').live('click', function() {
-		$('#infobar').css('display', 'none');
+		$('#infobar, #infobar-buffer').css('display', 'none');
 	});
 
 });
