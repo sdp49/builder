@@ -11,7 +11,8 @@ class PL_Compliance {
 										'office_phone' => false,
 										'agent_license' => false,
 										'co_agent_name' => false,
-										'co_office_name' => false
+										'co_office_name' => false,
+										'provider_id' => false
 										)
 									)
 								);
