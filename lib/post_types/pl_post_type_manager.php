@@ -17,7 +17,6 @@ class PL_Post_Type_Manager {
 		
 		add_action('admin_menu', array( __CLASS__, 'register_posts_menu' ) );
 		// add_filter('template_include', array( __CLASS__, 'post_type_templating' ) );
-		add_action('template_redirect', array( __CLASS__, 'post_type_templating' ) );
 	}
 		
 	public static function register_posts_menu() {
@@ -27,18 +26,6 @@ class PL_Post_Type_Manager {
 			$post_type_title = self::get_post_type_title_helper( $post_type );
 			add_submenu_page( 'pl_extensions', $post_type_title, $post_type_title, 'edit_pages', PL_Router::post_type_path( $post_type, 'list' ) );
 		}
-	}
-	
-	public static function post_type_templating( $single ) {
-		global $post;
-		
-		// apply only to our post types
-		if( in_array( $post, self::$post_types ) ) {
-	 		include PL_LIB_DIR . '/post_types/pl_post_types_template.php';
-	 		die();
-		}
-		
-		return;
 	}
 	
 	public static function get_post_types($folder = PL_LIB_DIR) {
@@ -78,6 +65,20 @@ class PL_Post_Type_Manager {
  		} 
 		
 		return trim( $title );
+	}
+	
+	// get the class name by the convention PL_Post_Type_Name_CPT
+	private static function get_post_type_class_name_helper( $post_type ) {
+		$title = '';
+		$type_parts = explode( '_', $post_type );
+		foreach( $type_parts as $part ) {
+			$title .= ucfirst( $part ) . '_';
+		}
+		
+		$title = str_replace( 'Pl_', 'PL_', $title );
+		$title .= 'CPT';
+	
+		return $title;
 	}
 }
 

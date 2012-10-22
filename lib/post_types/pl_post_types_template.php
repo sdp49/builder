@@ -6,7 +6,7 @@
 // 		include_once PL_PARENT_DIR . '/helpers/js.php';
 // 	}
 	global $post;
-	echo do_shortcode($post->post_content);
+	echo do_shortcode( $post->post_content );
 // 	get_footer();
 	wp_footer();
 ?>
