@@ -122,7 +122,7 @@ class PL_Component_Entity {
 	}
 	
 	public static function search_map_entity( $atts ) {
-		$atts = wp_parse_args($atts, array('type' => 'listings'));
+		$atts = wp_parse_args($atts, array('type' => 'listings', 'width' => 600, 'height' => 400));
 		ob_start();
 	?>
 	 <script type="text/javascript">
@@ -169,7 +169,7 @@ class PL_Component_Entity {
     </script>
 
 	<?php
-	    echo PLS_Map::listings( null, array('width' => 600, 'height' => 400) );
+	    echo PLS_Map::listings( null, array('width' => $atts['width'], 'height' => $atts['height']) );
 	  	return ob_get_clean();  
 	}
 	

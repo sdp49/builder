@@ -4,9 +4,8 @@ class PL_Form_CPT extends PL_Post_Base {
 
 	// Leverage the PL_Form class and it's fields format (and implement below)
 	public  $fields = array(
-				'field1' => array( 'type' => 'text', 'label' => 'Field 1' ),
-				'field2' => array( 'type' => 'select', 'label' => 'Field 2', 'options' => array( 'one' => 'one', 'two' => 'two' ) ),
-				'field3' => array( 'type' => 'checkbox', 'label' => 'Field 3' ),
+				'context' => array( 'type' => 'text', 'label' => 'Context' ),
+				'ajax' => array( 'type' => 'checkbox', 'label' => 'AJAX' ),
 			);
 
 	public function register_post_type() {
@@ -51,13 +50,12 @@ class PL_Form_CPT extends PL_Post_Base {
 		// get meta values from custom fields
 		foreach( $this->fields as $field => $arguments ) {
 			$value = isset( $values[$field] ) ? $values[$field][0] : '';
-
+		
 			if( !empty( $value ) && empty( $_POST[$field] ) ) {
 				$_POST[$field] = $value;
 			}
-			$label = empty( $arguments['label'] ) ? '' : $arguments['label'];
-			
-			echo PL_Form::item($field, array( 'label' => $label, 'type' => $arguments['type'] ), 'POST');
+				
+			echo PL_Form::item($field, $arguments, 'POST');
 		}
 
 		wp_nonce_field( 'pl_cpt_meta_box_nonce', 'meta_box_nonce' );
@@ -83,9 +81,31 @@ class PL_Form_CPT extends PL_Post_Base {
 		if( !current_user_can( 'edit_post' ) ) return;
 	
 		foreach( $this->fields as $field => $values ) {
-			if( !empty( $_POST[$field] ) ) {
+			if( isset( $_POST[$field] ) ) {
 				update_post_meta( $post_id, $field, $_POST[$field] );
 			}
+		}
+	}
+
+	public function post_type_templating( $single ) {
+		global $post;
+		
+		if( ! empty( $post ) && $post->post_type === 'pl_form' ) {
+			$args = '';
+			$meta = get_post_custom( $post->ID );
+				
+			foreach( $meta as $key => $value ) {
+				// ignore underscored private meta keys from WP
+				if( strpos( $key, '_', 0 ) !== 0 && ! empty( $value[0] ) ) {
+					$args .= "$key = '{$value[0]}' ";
+				}
+			}
+				
+			$shortcode = '[search_form ' . $args . ']';
+				
+			include PL_LIB_DIR . '/post_types/pl_post_types_template.php';
+				
+			die();
 		}
 	}
 }

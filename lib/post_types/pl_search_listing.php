@@ -54,9 +54,8 @@ class PL_Search_Listing_CPT extends PL_Post_Base {
 			if( !empty( $value ) && empty( $_POST[$field] ) ) {
 				$_POST[$field] = $value;
 			}
-			$label = empty( $arguments['label'] ) ? '' : $arguments['label'];
-		
-			echo PL_Form::item($field, array( 'label' => $label, 'type' => $arguments['type'] ), 'POST');
+				
+			echo PL_Form::item($field, $arguments, 'POST');
 		}
 		
 		wp_nonce_field( 'pl_cpt_meta_box_nonce', 'meta_box_nonce' );
@@ -87,6 +86,8 @@ class PL_Search_Listing_CPT extends PL_Post_Base {
 			}
 		}
 	}
+	
+	public function post_type_templating( $single ) {}
 }
 
 new PL_Search_Listing_CPT();

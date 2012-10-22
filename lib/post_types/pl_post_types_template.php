@@ -6,7 +6,11 @@
 // 		include_once PL_PARENT_DIR . '/helpers/js.php';
 // 	}
 	global $post;
-	echo do_shortcode( $post->post_content );
+	if( isset( $shortcode ) ) {
+		echo do_shortcode( $shortcode );
+	} else {
+		echo do_shortcode( $post->post_content );
+	}
 // 	get_footer();
 	wp_footer();
 ?>
