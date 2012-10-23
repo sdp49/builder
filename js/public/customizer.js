@@ -17,7 +17,8 @@ var customizer_global = {
 
 		// Set to let other components know that refresh has been completed...
 		this.refreshing = false;
-	}
+	},
+	stateAltered: false
 };
 
 // The main form/sidebar is initially hidden so that the mangled-mess that exists before
@@ -58,28 +59,6 @@ jQuery(document).ready(function($) {
 
 	$('#customize-controls').append('<input type="submit" name="save" id="save" style="display:none">');
 
-	/*
-	 * Applies to loading default theme options "pallets"
-	 */
-	$('#btn_def_opts').live('click', function (event) {
-		event.preventDefault();
-
-		if (!confirm('Are you sure you want to overwrite your existing Theme Options?'))
-		{ return; }
-
-		var data = { action: 'import_default_options',
-					 name: $('#def_theme_opts option:selected').val() }
-		// console.log(data);
-		
-		$.post(ajaxurl, data, function(response) {
-		  if (response) {
-		  	// console.log(response);
-		  }
-		  
-	      // Refresh theme options to reflect newly imported settings...
-	      window.location.reload(true);  
-		});
-	});
 
  /*
   * Trigger preview re-load + display loading overlay for input changes...
@@ -119,6 +98,61 @@ jQuery(document).ready(function($) {
 
 	$('select.of-typography, #theme_choices').on('change', function (event) {
 		setPreviewLoading();
+	});
+
+
+ /*
+  * Bind onboarding menu actions...
+  */
+
+	$('#hide_pane').on('click', function (event) {
+		console.log('clicked!');
+		console.log(this);
+		$('#pane').css('display', 'none');
+		$('.control-container').css('display', 'none');
+
+		// Remove active class from any existing elements...
+		var activeLi = $('#navlist li.active');
+		if ( activeLi.length > 0 ) {
+			activeLi.each( function() { $(this).toggleClass('active'); } );
+		}
+	});
+
+	$('#navlist li:not(.no-pane)').on('click', function (event) {
+		event.preventDefault();
+
+		// If activated menu section is clicked, do nothing...
+		if ( $(this).hasClass('active') ) { return; }
+
+		// Remove active class from any existing elements...
+		var activeLi = $('#navlist li.active');
+		if ( activeLi.length > 0 ) {
+			activeLi.each( function() { $(this).toggleClass('active'); } );
+		}
+
+		// Set the current menu item to 'active'
+		$(this).toggleClass('active');
+
+		// Make sure pane is visible, then hide any visible control-container(s)...
+		$('#pane').css('display', 'block');
+		$('.control-container').css('display', 'none');
+		
+		// Construct the associated control-container's id and show it...
+		var containerId = '#' + $(this).attr('id') + '_content';
+		$(containerId).css('display', 'block');
+	});
+
+	$('#confirm').on('click', function (event) {
+		event.preventDefault();
+		setPreviewLoading();
+
+		$('#save').trigger('click');
+		// console.log('Finished saving...');
+		setTimeout( function () { window.location.href = window.location.origin; }, 1200 ); 
+	});
+
+	$('input[data-customize-setting-link]').on('change', function (event) { 
+		console.log('saving shit...');
 	});
 
 
@@ -202,55 +236,10 @@ jQuery(document).ready(function($) {
 
 
  /*
-  * Bind onboarding menu actions...
-  */
-
-	$('#hide_pane').on('click', function (event) {
-		console.log('clicked!');
-		console.log(this);
-		$('#pane').css('display', 'none');
-		$('.control-container').css('display', 'none');
-
-		// Remove active class from any existing elements...
-		var activeLi = $('#navlist li.active');
-		if ( activeLi.length > 0 ) {
-			activeLi.each( function() { $(this).toggleClass('active'); } );
-		}
-	});
-
-	$('#navlist li:not(.no-pane)').on('click', function (event) {
-		// If activated menu section is clicked, do nothing...
-		if ( $(this).hasClass('active') ) { return; }
-
-		// Remove active class from any existing elements...
-		var activeLi = $('#navlist li.active');
-		if ( activeLi.length > 0 ) {
-			activeLi.each( function() { $(this).toggleClass('active'); } );
-		}
-
-		// Set the current menu item to 'active'
-		$(this).toggleClass('active');
-
-		// Make sure pane is visible, then hide any visible control-container(s)...
-		$('#pane').css('display', 'block');
-		$('.control-container').css('display', 'none');
-		
-		// Construct the associated control-container's id and show it...
-		var containerId = '#' + $(this).attr('id') + '_content';
-		$(containerId).css('display', 'block');
-	});
-
-	$('#confirm').on('click', function (event) {
-		event.preventDefault;
-		$('#save').trigger('click');
-		// console.log('Finished saving...');
-		setTimeout( function () { window.location.href = window.location.origin; }, 1200 ); 
-	});
-
-
- /*
-  * Handle creating listings + making blog posts...
+  * Handle custom controls...
   */	
+
+  	// --- Blog Post ---
 
 	function toggleInvalid (item, invalid) {
         if (invalid) {
@@ -306,6 +295,9 @@ jQuery(document).ready(function($) {
 	        }
 	    },'json');
   	});
+
+	
+	// --- Create a Listing ---
 
   	$('#submit_listing').on('click', function (event) {
 		// $('#loading_overlay').show();
@@ -365,16 +357,30 @@ jQuery(document).ready(function($) {
 		}, 'json');
     });
 
+
+	// -- Custom CSS --
+
+	// Hide the theme customizer control that actually connects to theme option...
+	$('#customize-control-pls-custom-css_ctrl').hide();
+
+	function updateCustomCSS (css) {
+		var custom_css = $('#customize-control-pls-custom-css_ctrl textarea');
+
+		// Handle case where fetched CSS equals what's currently in the input (i.e., won't trigger preview refresh)
+		if (custom_css.val() == css) {
+			// console.log('Same-sies!!!');
+			customizer_global.previewLoaded();
+			return;
+		}
+
+		custom_css.val(css);
+		custom_css.trigger('keyup');
+	}
+
 	$('#color_select').on('change', function (event) {
 		// We need this to update styling--exit if it's not there...
 		if (!_wpCustomizeSettings || _wpCustomizeSettings.theme.stylesheet != 'columbus') {
 			return;
-		}
-
-		var updateCustomCSS = function (css) {
-			var custom_css = $('#colors_content').find('textarea');
-    		custom_css.val(css);
-    		custom_css.trigger('keyup');
 		}
 
 		// Let the user know there's work being done...
@@ -399,10 +405,40 @@ jQuery(document).ready(function($) {
 	    $.post(ajaxurl, data, function (response) {
 	    	// console.log(response);
 	    	if (response && response.styles) {
-	    		// Set the Custom CSS textarea to update preview pane...
+	    		// Change the linked CSS textarea to trigger an update of the preview pane...
 	    		updateCustomCSS(response.styles);
+
+	    		// Change visible CSS textarea editor to reflect update...
+				$('#custom_css').val(response.styles);
 	    	}
 	    },'json');
+	});
+
+	$('#toggle_css_edit').on('click', function (event) {
+		event.preventDefault();
+		console.log('clicked!');
+
+		var show_txt = '[+] Show'
+		var hide_txt = '[\u2013] Hide';
+		
+		var jThis = $(this);
+		var editDiv = $('#css_edit_container');
+
+		if ( jThis.text() == show_txt ) {
+			jThis.text(hide_txt);
+			editDiv.show();
+		}
+		else {
+			jThis.text(show_txt);
+			editDiv.hide();
+		}
+	});
+
+	$('#submit_custom_css').on('click', function (event) {
+		var new_css = $('#custom_css').val();
+
+		setPreviewLoading();
+		updateCustomCSS(new_css);
 	});
 
 });	
