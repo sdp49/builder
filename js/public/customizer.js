@@ -17,7 +17,8 @@ var customizer_global = {
 
 		// Set to let other components know that refresh has been completed...
 		this.refreshing = false;
-	}
+	},
+	stateAltered: false
 };
 
 // The main form/sidebar is initially hidden so that the mangled-mess that exists before
@@ -123,6 +124,59 @@ jQuery(document).ready(function($) {
 
 
  /*
+  * Bind onboarding menu actions...
+  */
+
+	$('#hide_pane').on('click', function (event) {
+		console.log('clicked!');
+		console.log(this);
+		$('#pane').css('display', 'none');
+		$('.control-container').css('display', 'none');
+
+		// Remove active class from any existing elements...
+		var activeLi = $('#navlist li.active');
+		if ( activeLi.length > 0 ) {
+			activeLi.each( function() { $(this).toggleClass('active'); } );
+		}
+	});
+
+	$('#navlist li:not(.no-pane)').on('click', function (event) {
+		// If activated menu section is clicked, do nothing...
+		if ( $(this).hasClass('active') ) { return; }
+
+		// Remove active class from any existing elements...
+		var activeLi = $('#navlist li.active');
+		if ( activeLi.length > 0 ) {
+			activeLi.each( function() { $(this).toggleClass('active'); } );
+		}
+
+		// Set the current menu item to 'active'
+		$(this).toggleClass('active');
+
+		// Make sure pane is visible, then hide any visible control-container(s)...
+		$('#pane').css('display', 'block');
+		$('.control-container').css('display', 'none');
+		
+		// Construct the associated control-container's id and show it...
+		var containerId = '#' + $(this).attr('id') + '_content';
+		$(containerId).css('display', 'block');
+	});
+
+	$('#confirm').on('click', function (event) {
+		event.preventDefault;
+		setPreviewLoading();
+
+		$('#save').trigger('click');
+		// console.log('Finished saving...');
+		setTimeout( function () { window.location.href = window.location.origin; }, 1200 ); 
+	});
+
+	$('input[data-customize-setting-link]').on('change', function (event) { 
+		console.log('saving shit...');
+	});
+
+
+ /*
   * Handles switching themes in the preview iframe...
   */
 
@@ -199,53 +253,6 @@ jQuery(document).ready(function($) {
 		var boolSuccess = delete _wpCustomizeSettings.url.activated;
 		// console.log('redirect deleted: ' + boolSuccess);
 	}
-
-
- /*
-  * Bind onboarding menu actions...
-  */
-
-	$('#hide_pane').on('click', function (event) {
-		console.log('clicked!');
-		console.log(this);
-		$('#pane').css('display', 'none');
-		$('.control-container').css('display', 'none');
-
-		// Remove active class from any existing elements...
-		var activeLi = $('#navlist li.active');
-		if ( activeLi.length > 0 ) {
-			activeLi.each( function() { $(this).toggleClass('active'); } );
-		}
-	});
-
-	$('#navlist li:not(.no-pane)').on('click', function (event) {
-		// If activated menu section is clicked, do nothing...
-		if ( $(this).hasClass('active') ) { return; }
-
-		// Remove active class from any existing elements...
-		var activeLi = $('#navlist li.active');
-		if ( activeLi.length > 0 ) {
-			activeLi.each( function() { $(this).toggleClass('active'); } );
-		}
-
-		// Set the current menu item to 'active'
-		$(this).toggleClass('active');
-
-		// Make sure pane is visible, then hide any visible control-container(s)...
-		$('#pane').css('display', 'block');
-		$('.control-container').css('display', 'none');
-		
-		// Construct the associated control-container's id and show it...
-		var containerId = '#' + $(this).attr('id') + '_content';
-		$(containerId).css('display', 'block');
-	});
-
-	$('#confirm').on('click', function (event) {
-		event.preventDefault;
-		$('#save').trigger('click');
-		// console.log('Finished saving...');
-		setTimeout( function () { window.location.href = window.location.origin; }, 1200 ); 
-	});
 
 
  /*
@@ -373,6 +380,14 @@ jQuery(document).ready(function($) {
 
 		var updateCustomCSS = function (css) {
 			var custom_css = $('#colors_content').find('textarea');
+
+			// Handle case where fetched CSS equals what's currently in the input (i.e., won't trigger preview refresh)
+			if (custom_css.val() == css) {
+				console.log('Same-sies!!!');
+				customizer_global.previewLoaded();
+				return;
+			}
+
     		custom_css.val(css);
     		custom_css.trigger('keyup');
 		}

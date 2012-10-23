@@ -159,7 +159,19 @@ textarea.invalid {
    -khtml-opacity:0.3;  /* Safari/Conqueror extension */
    opacity:0.3; /* CSS3 */
    background-color: lightgrey;
+   margin-left: 56px;
 }
+
+/* Large screens ----------- */
+/*@media only screen */
+/*and (min-width : 1824px) {*/
+/* Styles */
+  /*#customize-preview {*/
+  	/*margin-left: 375px;*/
+  }
+}
+
+
 #preview_load_spinner {
    /*display: none;*/
    top: 42%;
