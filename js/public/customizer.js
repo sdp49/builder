@@ -118,6 +118,10 @@ jQuery(document).ready(function($) {
 		}
 	});
 
+	$('#navlist #logo').on('click', function (event) {
+		
+	});
+
 	$('#navlist li:not(.no-pane)').on('click', function (event) {
 		event.preventDefault();
 
@@ -140,6 +144,9 @@ jQuery(document).ready(function($) {
 		// Construct the associated control-container's id and show it...
 		var containerId = '#' + $(this).attr('id') + '_content';
 		$(containerId).css('display', 'block');
+
+		// $(containerId).show('slide', { direction: 'left'}, 1000);
+		// $('#pane').show("slide", { direction: "left" }, 1000);
 	});
 
 	$('#confirm').on('click', function (event) {
