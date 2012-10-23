@@ -101,7 +101,7 @@ class PL_Form_CPT extends PL_Post_Base {
 				}
 			}
 				
-			$shortcode = '[search_form ' . $args . ']';
+			$shortcode = '[search_form ' . $args . '] [search_listings]';
 				
 			include PL_LIB_DIR . '/post_types/pl_post_types_template.php';
 				
