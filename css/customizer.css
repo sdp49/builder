@@ -166,11 +166,10 @@ textarea.invalid {
 /*@media only screen */
 /*and (min-width : 1824px) {*/
 /* Styles */
-  /*#customize-preview {*/
-  	/*margin-left: 375px;*/
+/*  #customize-preview {
+  	margin-left: 375px;
   }
-}
-
+}*/
 
 #preview_load_spinner {
    /*display: none;*/

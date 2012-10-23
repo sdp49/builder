@@ -11,7 +11,7 @@ function define_custom_controls()
           ?>
             <label>
               <span class="customize-control-title"><?php echo esc_html( $this->label ); ?></span>
-              <textarea rows="5" <?php $this->link(); ?>><?php echo esc_textarea( $this->value() ); ?></textarea>
+              <textarea class="customize-control-textarea" rows="5" <?php $this->link(); ?>><?php echo esc_textarea( $this->value() ); ?></textarea>
             </label>
           <?php
         }
@@ -135,8 +135,10 @@ function define_custom_controls()
 	        </div><!--theme-switcher-->
 	        
 	        <?php $screenshot = $this->manager->theme()->get_screenshot(); ?>
-	        <img class="theme-screenshot" src="<?php echo esc_url( $screenshot ); ?>" />
-	      
+	        <div class="theme-screenshot">
+	          <img src="<?php echo esc_url( $screenshot ); ?>" />
+	      	</div>
+
 	        <h2>Theme Description</h2>
 	        <p><?php echo $this->manager->theme()->display('Description'); ?></p>
 	        <!-- 
@@ -221,7 +223,7 @@ function define_custom_controls()
 	            </div>
 
 	            <label style="display: block">Brief Description</label>
-	            <textarea id="listing_desc" name="metadata[desc]"></textarea>
+	            <textarea id="listing_desc" name="metadata[desc]" maxlength="450"></textarea>
 			<!-- 	    
 	    		<?php // $amenities = array('Pets Allowed', 'Hot Water', 'Air Conditioning', 'Furnished', 'Balcony', 'Pets Allowed'); ?>
 	            <label>Amenities</label>
@@ -307,6 +309,10 @@ function define_custom_controls()
 				      <!-- </optgroup> -->
 				    <?php endforeach; ?>
 				  </select>
+		        </div>
+
+		        <div id="custom_css" class="css-edit-box">
+		        	
 		        </div>
 
 	          </div>
