@@ -386,7 +386,8 @@ jQuery(document).ready(function($) {
 
 	$('#color_select').on('change', function (event) {
 		// We need this to update styling--exit if it's not there...
-		if (!_wpCustomizeSettings || _wpCustomizeSettings.theme.stylesheet != 'columbus') {
+		var supportedThemeList = ['columbus','ventura'];
+		if (!_wpCustomizeSettings || supportedThemeList.indexOf(_wpCustomizeSettings.theme.stylesheet) == -1 ) {
 			return;
 		}
 
