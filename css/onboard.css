@@ -379,6 +379,11 @@ textarea.post-content {
 	height: 360px;
 }
 
+textarea.css-edit-box {
+	margin-top: 15px;
+	height: 425px;
+}
+
 input[type=button] {
 	clear:both;
 	margin-top: 5px;
@@ -587,6 +592,11 @@ a.ico-responsive {
 	width:24px;
 	display:block;
 	background:url(../images/onboard_icons.png) -15px -743px;		
+}
+
+a.toggle-display {
+	float: right;
+	font-size: 14px;
 }
 
 .tip {

@@ -311,9 +311,18 @@ function define_custom_controls()
 				  </select>
 		        </div>
 
-		        <div id="custom_css" class="css-edit-box">
-		        	
-		        </div>
+		        <div>
+		          <label>Edit Custom CSS</label>
+		          <a id="toggle_css_edit" class="toggle-display" href="#">[+] Show</a>
+		    	</div>
+
+		        <div id="css_edit_container" style="display: none">
+		          <textarea id="custom_css" class="css-edit-box"></textarea>
+
+		          <div class="button-container">
+	                <input id="submit_custom_css" class="bt-norm" type="button" value="Preview">
+	              </div>
+	            </div>
 
 	          </div>
    			<?php
