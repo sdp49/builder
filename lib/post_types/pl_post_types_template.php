@@ -1,5 +1,4 @@
 <?php
-// 	add_action('wp_enqueue_scripts', 'pl_template_inc_scripts');
 	if( isset( $drop_modernizr )) {
 		add_action('wp_enqueue_scripts', 'pl_template_drop_modernizr');
 	} else {
