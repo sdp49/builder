@@ -11,7 +11,7 @@
 PL_Shortcodes::init();
 class PL_Shortcodes
 {
-	public static $codes = array('search_form', 'search_listings', 'prop_details', 'search_map', 'listing_slideshow', 'advanced_slideshow','featured_listings', 'static_listings', 'post_listing');
+	public static $codes = array('search_form', 'search_listings', 'prop_details', 'search_map', 'listing_slideshow', 'advanced_slideshow','featured_listings', 'static_listings', 'post_listing', 'pl_neighborhood');
 
 	public static $p_codes = array(	'search_form' => 'Search Form Shortcode',
 									'search_listings' => 'Search Listings Shortcode',
@@ -22,6 +22,7 @@ class PL_Shortcodes
 									'featured_listings' => 'Slideshow Template',
 									'static_listings' => 'Slideshow Template',
 									'post_listing' => 'Post Listing Template',
+									'pl_neighborhood' => 'Neighborhood Template',
 								);
 	
 	// TODO: Construct these lists dynamically by examining the doc hierarchy...
@@ -34,6 +35,7 @@ class PL_Shortcodes
 	  				                'featured_listings' => array('twentyten', 'twentyeleven'),
 	  				                'static_listings' 	=> array('twentyten', 'twentyeleven'),
 	  				                'post_listing' 			=> array('twentyten', 'twentyeleven'),
+									'pl_neighborhood' 			=> array('twentyten', 'twentyeleven'),
 			               			'listings' 			=> array('twentyten', 'twentyeleven') );
 
 	public static $subcodes = array('search_form'  =>  array('bedrooms',
@@ -137,6 +139,13 @@ class PL_Shortcodes
 		$content = PL_Component_Entity::search_form_entity( $atts );
 		
 		return PL_Shortcode_Wrapper::create( 'search_form', $content );
+	}
+	
+	public static function neighborhood_shortcode_handler($atts) {
+		//$content = PL_Component_Entity::search_form_entity( $atts );
+		$content = '';
+		
+		return PL_Shortcode_Wrapper::create( 'neighborhood', $content );
 	}
 
 

@@ -24,9 +24,36 @@ class PL_Component_Entity {
 	public static function init() {
 		// add_action('init', array( __CLASS__, 'filter_featured_context' ) );
 
-		$templates = self::get_shortcode_snippet_list( 'featured_listings', self::$defaults );
-		foreach ($templates as $template => $type) {
+		$shortcodes_to_iterate = array(
+			'featured_listings' => 'pls_listings_list_ajax_item_html_',
+			'search_form' => 'pls_listings_search_form_outer_',
+// 			'search_map' => '',
+// 			'pl_neighborhood' => '',
+			'listing_slideshow' => 'pls_slideshow_html_',
+			'search_listings' => 'pls_listings_list_ajax_item_html_'
+				
+		);
+		
+		// TODO: make dynamic function control over templates
+		// currently they have different logic and diff input parameters 
+		$featured_templates = self::get_shortcode_snippet_list( 'featured_listings', self::$defaults );
+		foreach ($featured_templates as $template => $type) {
 			add_filter( 'pls_listings_list_ajax_item_html_' . $template, array(__CLASS__,'featured_listings_ajax_templates'), 10, 3 );	
+		}
+		
+		$search_form_templates = self::get_shortcode_snippet_list( 'search_form', self::$defaults );
+		foreach ($search_form_templates as $template => $type) {
+			add_filter( 'pls_listings_search_form_outer_' . $template, array(__CLASS__,'search_form_templates'), 10, 6 );
+		}
+		
+		$listing_slideshow_templates = self::get_shortcode_snippet_list( 'search_form', self::$defaults );
+		foreach ($listing_slideshow_templates as $template => $type) {
+			add_filter( 'pls_slideshow_html_' . $template, array(__CLASS__,'search_form_templates'), 10, 6 );
+		}
+		
+		$search_listings_templates = self::get_shortcode_snippet_list( 'search_form', self::$defaults );
+		foreach ($search_listings_templates as $template => $type) {
+			add_filter( 'pls_listings_search_form_outer_' . $template, array(__CLASS__,'search_form_templates'), 10, 6 );
 		}
 
 	}
@@ -502,6 +529,10 @@ class PL_Component_Entity {
 			}
 			return ob_get_clean();
 		}
+		
+		/**
+		 * Template functions to override template
+		 */
 		
 		// Provide template layout for featured listings
 		public static function featured_listings_ajax_templates( $item_html, $listing, $context_var ) {

@@ -5,9 +5,13 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 
 	// Leverage the PL_Form class and it's fields format (and implement below)
 	public $fields = array(
-			'field1' => array( 'type' => 'text', 'label' => 'Field 1' ),
-			'field2' => array( 'type' => 'select', 'label' => 'Field 2', 'options' => array( 'one' => 'one', 'two' => 'two' ) ),
-			'field3' => array( 'type' => 'checkbox', 'label' => 'Field 3' ),
+			'nb_type' => array( 'type' => 'radio', 'label' => 'Neighborhood type', 'options' => array( 
+												'city' => 'city',
+												'state' => 'state',
+												'neighborhood' => 'neighborhood',
+												'zip' => 'zip' 
+										) 
+								),
 	);
 
 	public function register_post_type() {
@@ -58,8 +62,25 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 				
 			echo PL_Form::item($field, $arguments, 'POST');
 		}
+	?>
+	<script type="text/javascript">
+	jQuery(document).ready(function($) {
+		$('#nb_type_city').attr('checked', true);
+
+	});
+	</script>	
 		
+	<?php 	
 		wp_nonce_field( 'pl_cpt_meta_box_nonce', 'meta_box_nonce' );
+		
+		PL_Snippet_Template::prepare_template(
+			array(
+				'codes' => array( 'pl_neighborhood' ),
+					'p_codes' => array(
+					'pl_neighborhood' => 'Neighborhood'
+				)
+			)
+		);
 	
 	}
 	

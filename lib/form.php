@@ -129,7 +129,20 @@ class PL_Form {
 					$bundle .= "</section>";
 				}
 			 echo $bundle;
-		} elseif ( $type == 'custom_data' ) {
+		} elseif ($type == 'radio') {
+			?>
+				<section id="<?php echo $id ?>" class="pls_search_form <?php echo $css ?>" >
+					<label for="<?php echo $id ?>"><?php echo $text ?></label>
+					<?php foreach( $options as $key => $text ): ?>
+					<div class="<?php echo $name . '_radios'; ?>">
+						<label for="<?php echo $name . '_' . $key; ?>"><?php echo $text ?></label>
+						<input id="<?php echo $name . '_' . $key; ?>" type="radio" value="<?php echo $text; ?>" name="<?php echo $name; ?>" />
+					</div>
+					<?php endforeach; ?>	
+				</section>
+			<?php	
+		}
+		 elseif ( $type == 'custom_data' ) {
 			?>
 				<section id="<?php echo $id ?>" class="pls_search_form <?php echo $css ?>">
 					<label for="">Category Name</label>

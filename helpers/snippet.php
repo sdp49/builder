@@ -131,7 +131,7 @@ class PL_Snippet_Helper {
 		foreach ($snip_arr as $snippet) {
 			$snippet_type_map[$snippet] = 'custom'; 
 		}
-
+		
 		return $snippet_type_map;
 	}
 
