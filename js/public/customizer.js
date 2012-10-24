@@ -162,12 +162,28 @@ jQuery(document).ready(function($) {
 		console.log('saving shit...');
 	});
 
+	$('.control-container label').on('click', function (event) {
+		$(this).next('input, textarea').focus();
+	});
+
 
  /*
   * Handles switching themes in the preview iframe...
   */
 
 	$('#theme_choices').on('change', function (event) {
+		// If theme selected is set to current one, set the submit button to disabled, otherwise enable it
+		var submitElem = $('#submit_theme');
+		if ( _wpCustomizeSettings && _wpCustomizeSettings.theme.stylesheet == $(this).val() ) {
+			submitElem.attr('disabled', 'disabled');
+			submitElem.addClass('bt-disabled');
+		}
+		else {
+		// Might not be necessary--done to handle all cases properly
+			submitElem.removeAttr('disabled');
+			submitElem.removeClass('bt-disabled');
+		}	
+
 		data = { action: 'load_theme_info', theme: $(this).val() };
 		
 		// console.log(data);

@@ -123,7 +123,9 @@ function define_custom_controls()
 
 	        <div id="switcher">
 	          <h2>Select Theme</h2>
-	          <select id="theme_choices">
+			  <input id="submit_theme" class="bt-disabled" type="button" value="Activate" disabled="disabled">
+
+	          <select id="theme_choices" style="width: 50%">
 			    <?php foreach ($PL_CUSTOMIZER_THEMES as $group => $themes): ?>
 			      <optgroup label="<?php echo $group; ?>">
 			  	    <?php foreach ($themes as $name => $stylesheet): ?>
@@ -158,10 +160,6 @@ function define_custom_controls()
 	          <a class="next" href="#">Next</a>
 	          <div class="clearfix"></div>
 	        </div><!--pagination-->
-
-	        <div class="button-container">	          
-              <input id="submit_theme" class="bt-norm" type="button" value="Use this Theme">
-	        <div>
    		  <?php
    		}
 
@@ -188,6 +186,7 @@ function define_custom_controls()
 		          <h2><?php echo $listing_types['label']; ?></h2>
 		          <select id="compound_type" name="compound_type">
 				    <?php foreach ( $listing_types['options'] as $val => $text) : ?>
+				      <?php if ( $text == 'Not Set' ) { $text = 'Select One'; } ?>
 				  	  <option value="<?php echo $val; ?>"><?php echo $text; ?></option>
 				    <?php endforeach; ?>
 				  </select>
