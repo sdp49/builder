@@ -6,6 +6,7 @@ class PL_Form_CPT extends PL_Post_Base {
 	public  $fields = array(
 				'context' => array( 'type' => 'text', 'label' => 'Context' ),
 				'ajax' => array( 'type' => 'checkbox', 'label' => 'AJAX' ),
+				'modernizr' => array( 'type' => 'checkbox', 'label' => 'Drop Modernizr' ),
 			);
 
 	public function register_post_type() {
@@ -83,6 +84,8 @@ class PL_Form_CPT extends PL_Post_Base {
 		foreach( $this->fields as $field => $values ) {
 			if( isset( $_POST[$field] ) ) {
 				update_post_meta( $post_id, $field, $_POST[$field] );
+			} else if( $values['type'] === 'checkbox' && ! isset( $_POST[$field] ) ) {
+				update_post_meta( $post_id, $field, false );
 			}
 		}
 	}
@@ -99,8 +102,11 @@ class PL_Form_CPT extends PL_Post_Base {
 				if( strpos( $key, '_', 0 ) !== 0 && ! empty( $value[0] ) ) {
 					$args .= "$key = '{$value[0]}' ";
 				}
+				if( $key === 'modernizr' && $value[0] == 'true' ) {
+					$drop_modernizr = true;
+				}
 			}
-				
+			
 			$shortcode = '[search_form ' . $args . '] [search_listings]';
 				
 			include PL_LIB_DIR . '/post_types/pl_post_types_template.php';

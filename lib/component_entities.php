@@ -357,8 +357,9 @@ class PL_Component_Entity {
 			// Default form enclosure
 			$header = '<form method="post" action="' . esc_url( home_url( '/' ) ) . 'listings" class="pls_search_form_listings">';
 			$footer = '</form>';
-			wp_register_script( 'modernizr', trailingslashit( PLS_JS_URL ) . 'libs/modernizr/modernizr.min.js' , array(), '2.6.1');
-			wp_enqueue_script( 'modernizr' );
+			
+// 			wp_register_script( 'modernizr', trailingslashit( PLS_JS_URL ) . 'libs/modernizr/modernizr.min.js' , array(), '2.6.1');
+// 			wp_enqueue_script( 'modernizr' );
 			?>
 			<script type="text/javascript" src="<?php echo trailingslashit(PLS_JS_URL); ?>scripts/filters.js"></script>
 			<script type="text/javascript">
@@ -542,5 +543,4 @@ class PL_Component_Entity {
 			$snippet_body = PL_Router::load_snippet($shortcode, $snippet_name, $type);
 			return $snippet_body;
 		}
-		
 }
