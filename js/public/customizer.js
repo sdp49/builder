@@ -403,8 +403,9 @@ jQuery(document).ready(function($) {
 	}
 
 	$('#color_select').on('change', function (event) {
-		// We need this to update styling--exit if it's not there...
-		if (!_wpCustomizeSettings) {
+		// Check for wp JS object (we need this to update styling) and for current theme support--exit if either are false...
+		var supportedThemeList = ['columbus','ventura'];
+		if (!_wpCustomizeSettings || supportedThemeList.indexOf(_wpCustomizeSettings.theme.stylesheet) == -1 ) {
 			return;
 		}
 
