@@ -352,14 +352,17 @@ class PL_Component_Entity {
 		
 		public static function search_form_entity( $atts ) {
 			// Handle attributes using shortcode_atts...
-			// Ajax setting as an attr?
+			$form_action = 	esc_url( home_url( '/' ) ) . 'listings';		
 			
+			// use the form action from the metabox if AJAX is disabled
+			if( isset( $atts['ajax'] ) && $atts['ajax'] == 'true' && isset( $atts['formaction'] ) ) {
+				$form_action = $atts['formaction'];
+			}
+
 			// Default form enclosure
-			$header = '<form method="post" action="' . esc_url( home_url( '/' ) ) . 'listings" class="pls_search_form_listings">';
+			$header = '<form method="POST" action="' . $form_action . '" class="pls_search_form_listings">';
 			$footer = '</form>';
 			
-// 			wp_register_script( 'modernizr', trailingslashit( PLS_JS_URL ) . 'libs/modernizr/modernizr.min.js' , array(), '2.6.1');
-// 			wp_enqueue_script( 'modernizr' );
 			?>
 			<script type="text/javascript" src="<?php echo trailingslashit(PLS_JS_URL); ?>scripts/filters.js"></script>
 			<script type="text/javascript">
@@ -381,7 +384,13 @@ class PL_Component_Entity {
 			
 			// add context and ajax support if missing
 			if( !isset( $atts['context'] ) ) { $atts['context'] = 'shortcode'; }
-			if( !isset( $atts['ajax'] ) ) { $atts['ajax'] = true; }
+			// ajax option from UI means ajax is disabled
+		
+			if( isset( $atts['ajax'] ) ) { 
+				$atts['ajax'] = false; 
+			} else {
+				$atts['ajax'] = true;
+			}
 			
 			return ( $header . PLS_Partials_Listing_Search_Form::init($atts) . $footer );
 		} 

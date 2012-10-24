@@ -5,7 +5,8 @@ class PL_Form_CPT extends PL_Post_Base {
 	// Leverage the PL_Form class and it's fields format (and implement below)
 	public  $fields = array(
 				'context' => array( 'type' => 'text', 'label' => 'Context' ),
-				'ajax' => array( 'type' => 'checkbox', 'label' => 'AJAX' ),
+				'ajax' => array( 'type' => 'checkbox', 'label' => 'Disable AJAX' ),
+				'formaction' => array( 'type' => 'text', 'label' => 'Form URL when AJAX is disabled' ),
 				'modernizr' => array( 'type' => 'checkbox', 'label' => 'Drop Modernizr' ),
 			);
 
