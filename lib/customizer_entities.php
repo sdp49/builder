@@ -127,34 +127,41 @@ function define_custom_controls()
 			    <?php foreach ($PL_CUSTOMIZER_THEMES as $group => $themes): ?>
 			      <optgroup label="<?php echo $group; ?>">
 			  	    <?php foreach ($themes as $name => $stylesheet): ?>
-			  	  	  <option value="<?php echo wp_customize_url($stylesheet); ?>" <?php selected( $this->manager->get_stylesheet(), $stylesheet ); ?>><?php echo $name; ?></option>
+			  	  	  <option value="<?php echo $stylesheet ?>" <?php selected( $this->manager->get_stylesheet(), $stylesheet ); ?>><?php echo $name; ?></option>
 			        <?php endforeach; ?>
 			      </optgroup>
 			    <?php endforeach; ?>
 			  </select>
 	        </div><!--theme-switcher-->
 	        
-	        <?php $screenshot = $this->manager->theme()->get_screenshot(); ?>
-	        <div class="theme-screenshot">
-	          <img src="<?php echo esc_url( $screenshot ); ?>" />
-	      	</div>
+	        <div id="theme_info">
+	          <?php $screenshot = $this->manager->theme()->get_screenshot(); ?>
+	          <div class="theme-screenshot">
+	            <img src="<?php echo esc_url( $screenshot ); ?>" />
+	      	  </div>
 
-	        <h2>Theme Description</h2>
-	        <p><?php echo $this->manager->theme()->display('Description'); ?></p>
-	        <!-- 
-	        <h2>Features</h2>
-	        <ul id="featureslist">
-	          <li>
-	          	<div class="featureicon"><a class="ico-responsive" href="#"></a></div>
-	          	Responsive Web Design
-	          </li>                
-	        </ul>
-	         -->
+	          <h2>Theme Description</h2>
+	          <p><?php echo $this->manager->theme()->display('Description'); ?></p>
+	          <!-- 
+	          <h2>Features</h2>
+	          <ul id="featureslist">
+	            <li>
+	          	  <div class="featureicon"><a class="ico-responsive" href="#"></a></div>
+	          	  Responsive Web Design
+	            </li>                
+	          </ul>
+	           -->
+	        </div>
+
 	        <div id="pagination">
 	          <a class="prev" href="#">Previous</a>                                       
 	          <a class="next" href="#">Next</a>
 	          <div class="clearfix"></div>
 	        </div><!--pagination-->
+
+	        <div class="button-container">	          
+              <input id="submit_theme" class="bt-norm" type="button" value="Use this Theme">
+	        <div>
    		  <?php
    		}
 

@@ -96,7 +96,7 @@ jQuery(document).ready(function($) {
 		setPreviewLoading();
 	});
 
-	$('select.of-typography, #theme_choices').on('change', function (event) {
+	$('select.of-typography').on('change', function (event) {
 		setPreviewLoading();
 	});
 
@@ -167,17 +167,35 @@ jQuery(document).ready(function($) {
   * Handles switching themes in the preview iframe...
   */
 
-	$('#theme_choices').live('change', function (event) {
-		// console.log($(this).val());
-		var curr_href = window.location.href;
-		var new_href = $(this).val()
+	$('#theme_choices').on('change', function (event) {
+		data = { action: 'load_theme_info', theme: $(this).val() };
+		
+		// console.log(data);
+		// return;
 
-		// Check to see if the current URL contains a flag for onboarding--if so, replicate it in the new href...
-		if ( curr_href.indexOf('onboard=true') != -1 ) {
-			new_href += '&onboard=true';
-		}  
+		$.post(ajaxurl, data, function (response) {
+	        if ( response && response.theme_info ) {
+	            // Populate theme info with new html...
+	            $('#theme_info').html(response.theme_info);
+	        }
+	    },'json');
+	});
 
-		window.location.href = new_href;
+	$('#submit_theme').on('click', function (event) {
+		data = { action: 'change_theme', new_theme: $('#theme_choices').val() };
+		
+		console.log(data);
+		// return;
+
+		$.post(ajaxurl, data, function (response) {
+	        if ( response && response.success ) {
+	        	console.log(response.success);
+	            // setTimeout( function () { refreshPreview(); }, 300 );
+
+	            // Reload customizer to display new theme...
+	            window.location.reload(true);
+	        }
+	    },'json');
 	});
 
 	// Logic to determine whether to hide or show pagination buttons based on change...
