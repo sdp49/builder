@@ -11,7 +11,7 @@ function define_custom_controls()
           ?>
             <label>
               <span class="customize-control-title"><?php echo esc_html( $this->label ); ?></span>
-              <textarea rows="5" <?php $this->link(); ?>><?php echo esc_textarea( $this->value() ); ?></textarea>
+              <textarea class="customize-control-textarea" rows="5" <?php $this->link(); ?>><?php echo esc_textarea( $this->value() ); ?></textarea>
             </label>
           <?php
         }
@@ -127,32 +127,41 @@ function define_custom_controls()
 			    <?php foreach ($PL_CUSTOMIZER_THEMES as $group => $themes): ?>
 			      <optgroup label="<?php echo $group; ?>">
 			  	    <?php foreach ($themes as $name => $stylesheet): ?>
-			  	  	  <option value="<?php echo wp_customize_url($stylesheet); ?>" <?php selected( $this->manager->get_stylesheet(), $stylesheet ); ?>><?php echo $name; ?></option>
+			  	  	  <option value="<?php echo $stylesheet ?>" <?php selected( $this->manager->get_stylesheet(), $stylesheet ); ?>><?php echo $name; ?></option>
 			        <?php endforeach; ?>
 			      </optgroup>
 			    <?php endforeach; ?>
 			  </select>
 	        </div><!--theme-switcher-->
 	        
-	        <?php $screenshot = $this->manager->theme()->get_screenshot(); ?>
-	        <img class="theme-screenshot" src="<?php echo esc_url( $screenshot ); ?>" />
-	      
-	        <h2>Theme Description</h2>
-	        <p><?php echo $this->manager->theme()->display('Description'); ?></p>
-	        <!-- 
-	        <h2>Features</h2>
-	        <ul id="featureslist">
-	          <li>
-	          	<div class="featureicon"><a class="ico-responsive" href="#"></a></div>
-	          	Responsive Web Design
-	          </li>                
-	        </ul>
-	         -->
+	        <div id="theme_info">
+	          <?php $screenshot = $this->manager->theme()->get_screenshot(); ?>
+	          <div class="theme-screenshot">
+	            <img src="<?php echo esc_url( $screenshot ); ?>" />
+	      	  </div>
+
+	          <h2>Theme Description</h2>
+	          <p><?php echo $this->manager->theme()->display('Description'); ?></p>
+	          <!-- 
+	          <h2>Features</h2>
+	          <ul id="featureslist">
+	            <li>
+	          	  <div class="featureicon"><a class="ico-responsive" href="#"></a></div>
+	          	  Responsive Web Design
+	            </li>                
+	          </ul>
+	           -->
+	        </div>
+
 	        <div id="pagination">
 	          <a class="prev" href="#">Previous</a>                                       
 	          <a class="next" href="#">Next</a>
 	          <div class="clearfix"></div>
 	        </div><!--pagination-->
+
+	        <div class="button-container">	          
+              <input id="submit_theme" class="bt-norm" type="button" value="Use this Theme">
+	        <div>
    		  <?php
    		}
 
@@ -221,7 +230,7 @@ function define_custom_controls()
 	            </div>
 
 	            <label style="display: block">Brief Description</label>
-	            <textarea id="listing_desc" name="metadata[desc]"></textarea>
+	            <textarea id="listing_desc" name="metadata[desc]" maxlength="450"></textarea>
 			<!-- 	    
 	    		<?php // $amenities = array('Pets Allowed', 'Hot Water', 'Air Conditioning', 'Furnished', 'Balcony', 'Pets Allowed'); ?>
 	            <label>Amenities</label>
@@ -308,6 +317,19 @@ function define_custom_controls()
 				    <?php endforeach; ?>
 				  </select>
 		        </div>
+
+		        <div>
+		          <label>Edit Custom CSS</label>
+		          <a id="toggle_css_edit" class="toggle-display" href="#">[+] Show</a>
+		    	</div>
+
+		        <div id="css_edit_container" style="display: none">
+		          <textarea id="custom_css" class="css-edit-box"></textarea>
+
+		          <div class="button-container">
+	                <input id="submit_custom_css" class="bt-norm" type="button" value="Preview">
+	              </div>
+	            </div>
 
 	          </div>
    			<?php

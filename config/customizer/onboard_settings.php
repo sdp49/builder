@@ -27,7 +27,7 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
 
         array(
             'name' => 'Theme Selection',
-            'desc' => 'Select the Right Look-and-Feel',
+            'desc' => 'Choose the Right Look-and-Feel for your Business',
             'id' => 'theme',
             'type' => 'heading'
         ),
@@ -38,8 +38,8 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
         ),
 
         array(
-            'name' => 'Title & Slogan',
-            'desc' => 'Introduce Yourself To Potential Clients',
+            'name' => 'Site Title & Slogan',
+            'desc' => 'Name your Website and Add your Contact Info',
             'id' => 'title',
             'type' => 'heading'
         ),
@@ -80,12 +80,12 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
             'desc' => 'Add the phone you want to display on the site.',
             'id' => 'pls-user-phone',
             'type' => 'text',
-            'transport' => 'postMessage'
+            'transport' => 'refresh'
         ),
 
         array(
-            'name' => 'Colors & Style',
-            'desc' => 'Skin Your Theme For Greater Customization',
+            'name' => 'Color Palette & Styling',
+            'desc' => 'Customize your Theme to your Heart\'s Content',
             'id' => 'colors',
             'type' => 'heading'
         ),
@@ -129,8 +129,8 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
         ), 
 
         array(
-            'name' => 'Post a Listing',
-            'desc' => 'Create Your Own Custom Listings to Display',
+            'name' => 'Create a Property Listing',
+            'desc' => 'Quickly Add the First Listing to your Site',
             'id' => 'listing',
             'type' => 'heading'
         ),
@@ -141,8 +141,8 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
         ),   
 
         array(
-            'name' => 'Write a Blog Post',
-            'desc' => 'Start Creating Content for Visitors',
+            'name' => 'Create a Blog Post',
+            'desc' => 'Show your Expertise by Creating Unique Content',
             'id' => 'post',
             'type' => 'heading'
         ),
@@ -153,8 +153,8 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
         ),   
 
         array(
-            'name' => 'Analytics & Webmasters',
-            'desc' => 'Authorize Placester with Google',
+            'name' => 'Google Analytics',
+            'desc' => 'Track your Site\'s Traffic Statistics',
             'id' => 'analytics',
             'type' => 'heading'
         ),

@@ -13,6 +13,8 @@ class PL_Customizer_Helper
 		add_action( 'customize_controls_print_footer_scripts', array(__CLASS__, 'load_partials') );
 
 		add_action( 'wp_ajax_load_custom_styles', array(__CLASS__, 'load_custom_styles') );
+		add_action( 'wp_ajax_load_theme_info', array(__CLASS__, 'load_theme_info') );
+		add_action( 'wp_ajax_change_theme', array(__CLASS__, 'change_theme') );
 	}
 
 	public static function is_onboarding() {
@@ -59,8 +61,8 @@ class PL_Customizer_Helper
 	  $postMessage_settings = array(
 	  								 'pls-site-title' => 'header h1 a', 
 	  								 'pls-site-subtitle' => 'header h2, #slogan', 
-	  								 'pls-user-email' => 'section.e-mail a, #contact .email a, header .phone a, section.email a, header p.h-email a', 
-	  								 'pls-user-phone' => 'section.contact-info .phone, header p.h-phone, header div.phone, header section.phone .phone-bg-mid'
+	  								 'pls-user-email' => 'section.e-mail a, #contact .email a, header .phone a, section.email a, header p.h-email a, .widget-pls-agent .email', 
+	  								 'pls-user-phone' => 'section.contact-info .phone, header p.h-phone, header div.phone, header section.phone .phone-bg-mid, .widget-pls-agent .phone'
 	  								);
 
 	  ?>
@@ -111,7 +113,7 @@ class PL_Customizer_Helper
 	      		theme: {
 	      			header: '1. Theme Selection',
 	      			content: '',
-	      			link: 'Select a Theme',
+	      			link_text: 'Select a Theme',
 	      			pane_id: 'theme_content',
 	      			left: '75px',
 	      			top: '50px',
@@ -127,54 +129,54 @@ class PL_Customizer_Helper
 	      			next_state: 'colors'
 	      		},
 	      		colors: {
-	      			header: '',
+	      			header: '3. Colors & Style',
 	      			content: '',
-	      			link_text: '',
+	      			link_text: 'Customize your Theme',
 	      			pane_id: 'colors_content',
 	      			left: '75px',
 	      			top: '150px',
 	      			next_state: 'brand'
 	      		},
 	      		brand: {
-	      			header: '',
+	      			header: '4. Upload Logo',
 	      			content: '',
-	      			link_text: '',
+	      			link_text: 'Upload my Logo',
 	      			pane_id: 'brand_content',
 	      			left: '75px',
 	      			top: '200px',
 	      			next_state: 'mls'
 	      		},
 	      		mls:  {
-	      			header: '',
+	      			header: '5. MLS Integration',
 	      			content: '',
-	      			link_text: '',
+	      			link_text: 'Integrate with your MLS',
 	      			pane_id: 'mls_content',
 	      			left: '75px',
 	      			top: '250px',
 	      			next_state: 'listing'
 	      		},
 	      		listing: {
-	      			header: '',
+	      			header: '6. Post a Listing',
 	      			content: '',
-	      			link_text: '',
+	      			link_text: 'Post my First Listing',
 	      			pane_id: 'listing_content',
 	      			left: '75px',
 	      			top: '300px',
 	      			next_state: 'post'
 	      		},
 	      		post: {
-	      			header: '',
+	      			header: '7. Make a Blog Post',
 	      			content: '',
-	      			link_text: '',
+	      			link_text: 'Make a Post',
 	      			pane_id: 'post_content',
 	      			left: '75px',
 	      			top: '350px',
 	      			next_state: 'analytics'
 	      		},
 	      		analytics: {
-	      			header: '',
+	      			header: '8. Analytics',
 	      			content: '',
-	      			link_text: '',
+	      			link_text: 'Integrate with Google',
 	      			pane_id: 'analytics_content',
 	      			left: '75px',
 	      			top: '400px',
@@ -208,6 +210,43 @@ class PL_Customizer_Helper
 			$styles = ob_get_clean();			
 
 			echo json_encode( array( 'styles' => $styles ) );
+		}
+
+		die();
+	}
+
+	public static function load_theme_info() {
+		if ( isset($_POST['theme']) ) {
+			$theme_name = $_POST['theme'];
+			// switch_theme( $theme_name, $theme_name);
+
+			$theme_obj = wp_get_theme( $theme_name );
+
+			ob_start();
+			?>
+	            <div class="theme-screenshot">
+	              <img src="<?php echo esc_url( $theme_obj->get_screenshot() ); ?>" />
+	      	    </div>
+
+	            <h2>Theme Description</h2>
+	            <p><?php echo $theme_obj->display('Description'); ?></p>
+	        <?php
+	        $new_html = ob_get_clean();
+	       	    
+			echo json_encode(array('theme_info' => $new_html));
+		}
+
+		die();
+	}
+
+	public static function change_theme() {
+		if ( isset ($_POST['new_theme']) ) {
+			$new_theme = $_POST['new_theme'];
+
+			// Assume stylesheet and template name are the same for now...
+			switch_theme( $new_theme, $new_theme );
+
+			echo json_encode(array('success' => 'true'));
 		}
 
 		die();
