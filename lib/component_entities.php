@@ -129,39 +129,44 @@ class PL_Component_Entity {
     	jQuery(document).ready(function( $ ) {
     		
     		var map = new Map (); 
+    		var json_atts = jQuery.parseJSON(' <?php echo json_encode( $atts ); ?> ');
+
     		// var filter = new Filters ();
     		var listings = new Listings ({
     			map: map
     			// filter: filter,
     		});
-    		<?php if($atts['type'] == 'lifestyle'): ?>
+    		if(json_atts.type == 'lifestyle') {
 	    		var lifestyle = new Lifestyle( {
 	        		map: map
 	    		});
-    		<?php endif; ?>
-
-    		<?php if($atts['type'] == 'lifestyle_poligon' ): ?>
-	    		var lifestyle_poligon = new Lifestyle_Poligon( {
+    		}
+    		if(json_atts.type == 'lifestyle_polygon' ) {
+	    		var lifestyle_polygon = new Lifestyle_Polygon( {
 					map: map
 	        	});
-        	<?php endif;?>
+        	}
             
             var status = new Status_Window ({map: map, listings:listings});
-            
-            map.init({
-				type: '<?php echo $atts['type']; ?>',
-                listings: listings,
-                <?php if($atts['type'] == 'lifestyle' ): ?>
-                	lifestyle: lifestyle,
-                <?php elseif($atts['type'] == 'lifestyle_poligon' ): ?>
-                	lifestyle_polygon: lifestyle_polygon,
-                <?php endif;?>
-                // type: 'lifestyle',
-                // type: 'lifestyle_polygon',
-                // type: 'neighborhood',
-                // type: 'listings',
-                status_window: status
-            });
+
+            // fill map init args
+			var init_args = new Object();
+			
+			init_args.type = json_atts.type;
+			init_args.listings = listings;
+			init_args.status_window = status;
+
+			if( json_atts.type == 'lifestyle' ) {
+				init_args.lifestyle = lifestyle;
+			}
+			else if( json_atts.type == 'lifestyle_polygon' ) {
+				init_args.lifestyle_polygon = lifestyle_polygon;
+			}
+
+			// init maps		
+			map.init( init_args );
+            // type: 'neighborhood',
+            // type: 'listings',
 
     		listings.init();
     		
