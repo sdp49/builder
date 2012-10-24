@@ -14,6 +14,8 @@ class PL_Component_Entity {
 	public static $featured_context;
 	
 	public static $listing;
+	
+	public static $form_html;
 	/**
 	 * Featured listings logic
 	 * @param array $atts id or future arguments
@@ -45,16 +47,16 @@ class PL_Component_Entity {
 		foreach ($search_form_templates as $template => $type) {
 			add_filter( 'pls_listings_search_form_outer_' . $template, array(__CLASS__,'search_form_templates'), 10, 6 );
 		}
+
+// 		$listing_slideshow_templates = self::get_shortcode_snippet_list( 'search_form', self::$defaults );
+// 		foreach ($listing_slideshow_templates as $template => $type) {
+// 			add_filter( 'pls_slideshow_html_' . $template, array(__CLASS__,'listing_slideshow_templates'), 10, 6 );
+// 		}
 		
-		$listing_slideshow_templates = self::get_shortcode_snippet_list( 'search_form', self::$defaults );
-		foreach ($listing_slideshow_templates as $template => $type) {
-			add_filter( 'pls_slideshow_html_' . $template, array(__CLASS__,'search_form_templates'), 10, 6 );
-		}
-		
-		$search_listings_templates = self::get_shortcode_snippet_list( 'search_form', self::$defaults );
-		foreach ($search_listings_templates as $template => $type) {
-			add_filter( 'pls_listings_search_form_outer_' . $template, array(__CLASS__,'search_form_templates'), 10, 6 );
-		}
+// 		$search_listings_templates = self::get_shortcode_snippet_list( 'search_form', self::$defaults );
+// 		foreach ($search_listings_templates as $template => $type) {
+// 			add_filter( 'pls_listings_search_form_outer_' . $template, array(__CLASS__,'search_listings_templates'), 10, 6 );
+// 		}
 
 	}
 	
@@ -395,6 +397,11 @@ class PL_Component_Entity {
 			$header = '<form method="POST" action="' . $form_action . '" class="pls_search_form_listings">';
 			$footer = '</form>';
 			
+			$context = 'shortcode';
+			if( isset( $atts['context'] ) ) {
+				$context = $atts['context'];
+			}
+			
 			?>
 			<script type="text/javascript" src="<?php echo trailingslashit(PLS_JS_URL); ?>scripts/filters.js"></script>
 			<script type="text/javascript">
@@ -405,9 +412,9 @@ class PL_Component_Entity {
 			  jQuery(document).ready(function( $ ) {
 			  	if (typeof bootloader !== 'object') {
 			  		bootloader = new SearchLoader();
-			  		bootloader.add_param({filter: {context: "shortcode"}});
+			  		bootloader.add_param({filter: {context: "<?php echo $context; ?>"}});
 			  	} else {
-			  		bootloader.add_param({filter: {context: "shortcode"}});
+			  		bootloader.add_param({filter: {context: "<?php echo $context; ?>"}});
 			  	}
 			  });
 			</script>
@@ -546,6 +553,30 @@ class PL_Component_Entity {
 			
 			return do_shortcode( $template_body );
 		}
+		
+		public static function search_form_templates($form, $form_html, $form_options, $section_title, $form_data) {
+			$shortcode = 'search_form';
+			self::$form_html = $form_html;
+			
+			// get the template attached as a context arg, 33 is the length of the filter prefix
+			$template = substr(current_filter(), 31);
+			
+			if( $template == 'twentyten' ) {
+				return "<h1>Broken Form!</h1>";
+			}
+		
+			$snippet_body = self::get_active_snippet_body($shortcode);
+			return do_shortcode($snippet_body);
+		}
+		
+		public static function search_listings_templates($item_html, $listing) {
+			$shortcode = 'search_listings';
+			self::$listing = $listing;
+		
+			$snippet_body = self::get_active_snippet_body($shortcode);
+			return do_shortcode($snippet_body);
+		}
+		
 		
 		public static function get_shortcode_snippet_list($shortcode, $default_snippets)
 		{

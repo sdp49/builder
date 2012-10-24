@@ -78,7 +78,9 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 				'codes' => array( 'pl_neighborhood' ),
 					'p_codes' => array(
 					'pl_neighborhood' => 'Neighborhood'
-				)
+				),
+				'select_name' => 'pl_cpt_template',
+				'value' => isset( $values['pl_cpt_template'] ) ? $values['pl_cpt_template'][0] : ''
 			)
 		);
 	
@@ -98,6 +100,10 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 			if( !empty( $_POST[$field] ) ) {
 				update_post_meta( $post_id, $field, $_POST[$field] );
 			}
+		}
+		
+		if( isset( $_POST['pl_cpt_template'] ) ) {
+			update_post_meta( $post_id, 'pl_cpt_template', $_POST['pl_cpt_template']);
 		}
 	}
 	

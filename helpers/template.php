@@ -7,16 +7,18 @@ class PL_Snippet_Template {
 		
 		$defaults = array(
 			'codes' => array(),
-			'p_codes' => array()
+			'p_codes' => array(),
+			'select_name' => '',
+			'value' => ''
 		);
 		
 		$args = wp_parse_args($args, $defaults);
 		
 		// could be improved, pass arr or extract here - future will tell
-		PL_Snippet_Template::create_template( $args['codes'], $args['p_codes'] );
+		PL_Snippet_Template::create_template( $args['codes'], $args['p_codes'], $args['select_name'], $args['value'] );
 	}
 	
-	public static function create_template( $codes, $p_codes ) {
+	public static function create_template( $codes, $p_codes, $select_name = '', $value = '' ) {
 		extract(PL_Page_Helper::get_types()); ?>
 
 		<style type="text/css">
@@ -105,12 +107,16 @@ class PL_Snippet_Template {
 		        </div>
 			  	  <section id="shortcode_ref"> 
 		    			<label for="snippet_list">Available Implementations:</label>	
-		    			<select class="snippet_list">
+		    			<select class="snippet_list" <?php if( ! empty( $select_name ) ) { echo 'name="'. $select_name . '"'; } ?>>
 		            <?php foreach ($pl_snippet_types as $curr_type => $title_type): ?>
 		              <optgroup label="<?php echo $title_type?>">
 		    				    <?php foreach ($pl_snippet_list[$code] as $snippet => $type): ?>
 		                  <?php if ($type != $curr_type) { continue; } ?>
-		    					    <option id="<?php echo $snippet ?>" value="<?php echo $snippet ?>" class="<?php echo $type ?>" <?php echo $pl_active_snippets[$code] == $snippet ? 'selected' : '' ?>>
+		                  			<?php if( empty( $value ) ): ?>
+		    					   		<option id="<?php echo $snippet ?>" value="<?php echo $snippet ?>" class="<?php echo $type ?>" <?php echo $pl_active_snippets[$code] == $snippet ? 'selected' : '' ?>>
+		    					    <?php else: ?>
+		    					    	<option id="<?php echo $snippet ?>" value="<?php echo $snippet ?>" class="<?php echo $type ?>" <?php echo $value == $snippet ? 'selected' : '' ?>>
+		    					    <?php endif; ?>
 		                    <?php echo $snippet ?>
 		                  </option>
 		    				    <?php endforeach ?>	

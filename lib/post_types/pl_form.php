@@ -61,13 +61,15 @@ class PL_Form_CPT extends PL_Post_Base {
 		}
 
 		wp_nonce_field( 'pl_cpt_meta_box_nonce', 'meta_box_nonce' );
-		
+
 		PL_Snippet_Template::prepare_template(
 				array(
 						'codes' => array( 'search_form' ),
 						'p_codes' => array(
 								'search_form' => 'Search Form'
-						)
+						),
+						'select_name' => 'pl_cpt_template',
+						'value' => isset( $values['pl_cpt_template'] ) ? $values['pl_cpt_template'][0] : ''
 				)
 			);
 	}
@@ -89,6 +91,10 @@ class PL_Form_CPT extends PL_Post_Base {
 				update_post_meta( $post_id, $field, false );
 			}
 		}
+		
+		if( isset( $_POST['pl_cpt_template'] ) ) {
+			update_post_meta( $post_id, 'pl_cpt_template', $_POST['pl_cpt_template']);
+		}
 	}
 
 	public function post_type_templating( $single ) {
@@ -100,7 +106,10 @@ class PL_Form_CPT extends PL_Post_Base {
 				
 			foreach( $meta as $key => $value ) {
 				// ignore underscored private meta keys from WP
-				if( strpos( $key, '_', 0 ) !== 0 && ! empty( $value[0] ) ) {
+				if( $key === 'pl_cpt_template' ) {
+					$args .= "context='{$value[0]}' ";
+				}
+				else if( strpos( $key, '_', 0 ) !== 0 && ! empty( $value[0] ) && ( $key !== 'context' ) ) {
 					$args .= "$key = '{$value[0]}' ";
 				}
 				if( $key === 'modernizr' && $value[0] == 'true' ) {
@@ -109,7 +118,7 @@ class PL_Form_CPT extends PL_Post_Base {
 			}
 			
 			$shortcode = '[search_form ' . $args . '] [search_listings]';
-				
+			
 			include PL_LIB_DIR . '/post_types/pl_post_types_template.php';
 				
 			die();

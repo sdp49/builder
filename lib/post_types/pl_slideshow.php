@@ -74,7 +74,9 @@ class PL_Slideshow_CPT extends PL_Post_Base {
 				'codes' => array( 'listing_slideshow' ),
 				'p_codes' => array(
 					'listing_slideshow' => 'Listing Slideshow'
-				)
+				),
+				'select_name' => 'pl_cpt_template',
+				'value' => isset( $values['pl_cpt_template'] ) ? $values['pl_cpt_template'][0] : ''
 			)
 		);
 	}
@@ -95,6 +97,10 @@ class PL_Slideshow_CPT extends PL_Post_Base {
 			} else if( $values['type'] === 'checkbox' && ! isset( $_POST[$field] ) ) {
 				update_post_meta( $post_id, $field, false );
 			}
+		}
+		
+		if( isset( $_POST['pl_cpt_template'] ) ) {
+			update_post_meta( $post_id, 'pl_cpt_template', $_POST['pl_cpt_template']);
 		}
 	}
 	
