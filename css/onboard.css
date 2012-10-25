@@ -263,7 +263,8 @@ overflow:hidden;
 #social a:hover {height:50px; width:50px; background:url(../images/onboard_icons.png) -50px -450px;}
 #social.active a {height:50px; width:50px; background:url(../images/onboard_icons.png) -50px -450px;}
 
-#confirm a {height:50px; width:50px; background:url(../images/onboard_icons.png) -47px -500px;}
+#confirm { opacity: 0.3; }
+#confirm a { height:50px; width:50px; background:url(../images/onboard_icons.png) -47px -500px; }
 
 section#pane {
 

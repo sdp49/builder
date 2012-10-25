@@ -80,7 +80,7 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
             'desc' => 'Add the phone you want to display on the site.',
             'id' => 'pls-user-phone',
             'type' => 'text',
-            'transport' => 'refresh'
+            'transport' => 'postMessage'
         ),
 
         array(

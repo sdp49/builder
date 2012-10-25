@@ -33,6 +33,23 @@ window.onload = function () {
 	}  
 }
 
+// Define AJAX spinner...
+var spinningBars = '<div id="spinner">'
+				   + '<div class="bar1"></div>'
+				   + '<div class="bar2"></div>'
+				   + '<div class="bar3"></div>'
+				   + '<div class="bar4"></div>' 
+				   + '<div class="bar5"></div>'
+				   + '<div class="bar6"></div>'
+				   + '<div class="bar7"></div>'
+				   + '<div class="bar8"></div>'
+				   + '</div>';
+
+
+/*
+ * Main JS
+ */
+
 jQuery(document).ready(function($) {
 
  /*
@@ -89,8 +106,8 @@ jQuery(document).ready(function($) {
 		setPreviewLoading();
 	}
 
-	// TODO: Remove this, it's for testing purposes...
-	refPrev = refreshPreview;
+	// NOTE: Uncomment this for testing purposes...
+	// refPrev = refreshPreview;
 
 	$('#customize-control-pls-google-analytics_ctrl input[type=text]').on('keyup', function (event) {
 		setPreviewLoading();
@@ -151,6 +168,8 @@ jQuery(document).ready(function($) {
 
 	$('#confirm').on('click', function (event) {
 		event.preventDefault();
+		if ( !customizer_global.stateAltered ) { return; }
+
 		setPreviewLoading();
 
 		$('#save').trigger('click');
@@ -182,7 +201,11 @@ jQuery(document).ready(function($) {
 		// Might not be necessary--done to handle all cases properly
 			submitElem.removeAttr('disabled');
 			submitElem.removeClass('bt-disabled');
-		}	
+		}
+
+		var infoElem = $('#theme_info');
+		infoElem.prepend(spinningBars);
+		infoElem.css('opacity', '0.7');
 
 		data = { action: 'load_theme_info', theme: $(this).val() };
 		
@@ -192,7 +215,8 @@ jQuery(document).ready(function($) {
 		$.post(ajaxurl, data, function (response) {
 	        if ( response && response.theme_info ) {
 	            // Populate theme info with new html...
-	            $('#theme_info').html(response.theme_info);
+	            infoElem.html(response.theme_info);
+	            infoElem.css('opacity', '1');
 	        }
 	    },'json');
 	});
@@ -422,8 +446,15 @@ jQuery(document).ready(function($) {
 		// Check for wp JS object (we need this to update styling) and for current theme support--exit if either are false...
 		var supportedThemeList = ['columbus','ventura'];
 		if (!_wpCustomizeSettings || supportedThemeList.indexOf(_wpCustomizeSettings.theme.stylesheet) == -1 ) {
+			var errMsg = $('#color_message.error');
+			errMsg.html('<h3>Sorry, this feature is currently not available for this theme</h3>');
+			errMsg.show();
+
 			return;
 		}
+
+		// Just in case...
+		$('#color_message.error').hide();
 
 		// Let the user know there's work being done...
 		setPreviewLoading();
