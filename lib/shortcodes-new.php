@@ -198,12 +198,22 @@ class PL_Shortcodes
 	}
 
 
-	public static function search_listings_shortcode_handler( $atts )
+	public static function search_listings_shortcode_handler( $atts, $content )
 	{
+		add_filter('pl_filter_wrap_filter', array( __CLASS__, 'pl_filter_wrap_default_filters' ));
+		$filters = '';
+		
+		// call do_shortcode for all pl_filter shortcodes
+		// Note: don't leave whitespace or other non-valuable symbols
+		if( ! empty( $content ) ) {
+			$filters = do_shortcode( strip_tags( $content ) );
+		}
+		$filters = str_replace('&nbsp;', '', $filters);
+		
 		// Handle attributes using shortcode_atts...
 		// These attributes will hand the look and feel of the listing form container, as 
 		// the context func applies to each individual listing.
-		$content = PL_Component_Entity::search_listings_entity( $atts );
+		$content = PL_Component_Entity::search_listings_entity( $atts, $filters );
 		
 		return PL_Shortcode_Wrapper::create( 'search_listings', $content );
 	}
@@ -212,6 +222,13 @@ class PL_Shortcodes
 		$content = PL_Component_Entity::search_map_entity( $atts );
 		
 		return PL_Shortcode_Wrapper::create( 'search_map', $content );
+	}
+	
+
+	public static function pl_neighborhood_shortcode_handler( $atts ) {
+		$content = PL_Component_Entity::pl_neighborhood_entity( $atts );
+	
+		return PL_Shortcode_Wrapper::create( 'pl_neighborhood', $content );
 	}
 
 /*** Context Filter Handlers ***/	

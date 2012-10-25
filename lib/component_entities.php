@@ -53,10 +53,10 @@ class PL_Component_Entity {
 // 			add_filter( 'pls_slideshow_html_' . $template, array(__CLASS__,'listing_slideshow_templates'), 10, 6 );
 // 		}
 		
-// 		$search_listings_templates = self::get_shortcode_snippet_list( 'search_form', self::$defaults );
-// 		foreach ($search_listings_templates as $template => $type) {
-// 			add_filter( 'pls_listings_search_form_outer_' . $template, array(__CLASS__,'search_listings_templates'), 10, 6 );
-// 		}
+		$search_listings_templates = self::get_shortcode_snippet_list( 'search_listings', self::$defaults );
+		foreach ($search_listings_templates as $template => $type) {
+			add_filter( 'pls_listings_list_ajax_item_html_' . $template, array(__CLASS__,'search_listings_templates'), 10, 3 );
+		}
 
 	}
 	
@@ -126,28 +126,13 @@ class PL_Component_Entity {
 		return ob_get_clean();
 	}
 	
-	public static function search_listings_entity( $atts ) {
+	public static function search_listings_entity( $atts, $filters = '' ) {
+		$context = isset( $atts['context'] ) ? $atts['context'] : 'shortcode';
+		self::print_filters($filters, $context);
+		
 		ob_start();
-		?>
-			  	<script type="text/javascript">
-				  	if (typeof bootloader !== 'object') {
-						var bootloader;
-					}
-				  jQuery(document).ready(function( $ ) {
-		
-				  	if (typeof bootloader !== 'object') {
-				  		bootloader = new SearchLoader();
-				  		bootloader.add_param({list: {context: "shortcode"}});
-				  	} else {
-				  		bootloader.add_param({list: {context: "shortcode"}});
-				  	}
-				  });
-				</script>
-		
-		
-			  	<?php
-			    PLS_Partials_Get_Listings_Ajax::load(array('context' => 'shortcode'));
-			  return ob_get_clean();  
+		PLS_Partials_Get_Listings_Ajax::load(array('context' => $context));
+		return ob_get_clean();  
 	}
 	
 	public static function search_map_entity( $atts ) {
@@ -383,6 +368,45 @@ class PL_Component_Entity {
 					
 					return $val;
 				}
+				
+		public static function pl_neighborhood_entity( $atts ) {
+			ob_start();
+			
+			// API searches for neighborhood by slug
+			foreach( $atts as $key => $value ) {
+				if( in_array( $key, array( 'state', 'city', 'neighborhood', 'zip', 'street' ) ) ) {
+					$term = get_term_by('id', $value, $key);
+					if( ! empty( $term ) ) {
+						$atts[$key] = $term->slug;
+					}
+				}
+			}
+			
+			$args = wp_parse_args($atts, array('','state' => false, 'city' => false, 'neighborhood' => false, 'zip' => false, 'street' => false, 'image_limit' => 20, 'width' => 400, 'height' => 400, 'zoom' => '16'));
+			$taxonomy = PLS_Taxonomy::get($args);
+		?>
+			 <script type="text/javascript">
+				 if (typeof bootloader !== 'object') {
+						var bootloader;
+					}
+
+				 
+				  jQuery(document).ready(function( $ ) {
+					var map = new Map();
+
+				  	if (typeof bootloader !== 'object') {
+				  		bootloader = new SearchLoader();
+				  		bootloader.add_param({map: map});
+				  	} else {
+				  		bootloader.add_param({map: map});
+				  	}
+				  });
+		    </script>
+		
+			<?php
+			    echo PLS_Map::neighborhood( $taxonomy['listings_raw'], $atts, array(), $taxonomy['polygon'] );
+			  	return ob_get_clean();  
+		}		
 		
 		public static function search_form_entity( $atts ) {
 			// Handle attributes using shortcode_atts...
@@ -557,19 +581,24 @@ class PL_Component_Entity {
 		public static function search_form_templates($form, $form_html, $form_options, $section_title, $form_data) {
 			$shortcode = 'search_form';
 			self::$form_html = $form_html;
-			
+			PL_Shortcodes::$form_html = $form_html;
+
 			// get the template attached as a context arg, 33 is the length of the filter prefix
 			$template = substr(current_filter(), 31);
 		
 			$snippet_body = self::get_active_snippet_body($shortcode);
+			
 			return do_shortcode($snippet_body);
 		}
 		
-		public static function search_listings_templates($item_html, $listing) {
+		public static function search_listings_templates( $item_html, $listing, $context_var ) {
 			$shortcode = 'search_listings';
 			self::$listing = $listing;
-		
-			$snippet_body = self::get_active_snippet_body($shortcode);
+			
+			// get the template attached as a context arg, 33 is the length of the filter prefix
+			$template = substr(current_filter(), 33);
+			
+			$snippet_body = self::get_active_snippet_body($shortcode, $template);
 			return do_shortcode($snippet_body);
 		}
 		

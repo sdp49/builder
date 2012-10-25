@@ -52,6 +52,21 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 	public function pl_neighborhoods_meta_box_cb( $post ) {
 		$values = get_post_custom( $post->ID );
 		
+		// get link for iframe
+		$permalink = '';
+		if( isset( $_GET['post'] ) ) {
+			$permalink = get_permalink($post->ID);
+		}
+		
+		if( ! empty( $permalink ) ):
+		$iframe = '<iframe src="' . $permalink . '"></iframe>';
+		?>		<div id="iframe_code">
+					<h2>Neihgborhood Frame code</h2>
+					<p>Use this code snippet inside of a page: <strong><?php echo esc_html( $iframe ); ?></strong></p>
+					<em>By copying this code and pasting it into a page you display your view.</em>
+				</div>
+		<?php endif;
+		
 		// get radio values
 		$radio_def = isset( $values['radio-type'] ) ? $values['radio-type'][0] : 'state';
 		$select_id = 'nb-select-' . $radio_def;
@@ -162,7 +177,38 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 	}
 	
 	public function post_type_templating( $single ) {
+		global $post;
 		
+		$location_taxonomies = PL_Taxonomy_Helper::$location_taxonomies;
+		$taxonomy_args = array_keys( $location_taxonomies );
+
+		if( ! empty( $post ) && $post->post_type === 'pl_neighborhood' ) {
+			$args = '';
+			$meta = get_post_custom( $post->ID );
+		
+			foreach( $meta as $key => $value ) {
+				// ignore underscored private meta keys from WP
+				if( strpos( $key, '_', 0 ) !== 0 && ! empty( $value[0] ) ) {
+					if( $key == 'radio-type' ) { // handle neighborhood items
+						if( in_array( $value[0], $taxonomy_args ) ) {
+							$nb_type = $value[0];
+							$nb_value_key = 'nb-select-' . $nb_type;
+							$nb_value = isset( $meta[$nb_value_key] ) ? $meta[$nb_value_key][0] : ''; 
+							$args .= "$nb_type = '{$nb_value}' ";
+						}
+					} else if( ! in_array( $key, array('pl_cpt_template', 'type') ) ) {
+						$args .= "$key = '{$value[0]}' ";
+					}
+				}
+				
+			}
+		
+			$shortcode = '[pl_neighborhood ' . $args . ']';
+
+			include PL_LIB_DIR . '/post_types/pl_post_types_template.php';
+		
+			die();
+		}
 	}
 }
 

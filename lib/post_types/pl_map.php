@@ -50,6 +50,21 @@ class PL_Map_CPT extends PL_Post_Base {
 	public  function pl_maps_meta_box_cb( $post ) {
 		$values = get_post_custom( $post->ID );
 
+		// get link for iframe
+		$permalink = '';
+		if( isset( $_GET['post'] ) ) {
+			$permalink = get_permalink($post->ID);
+		}
+		
+		if( ! empty( $permalink ) ):
+		$iframe = '<iframe src="' . $permalink . '"></iframe>';
+		?>		<div id="iframe_code">
+					<h2>Map Frame code</h2>
+					<p>Use this code snippet inside of a page: <strong><?php echo esc_html( $iframe ); ?></strong></p>
+					<em>By copying this code and pasting it into a page you display your view.</em>
+				</div>
+		<?php endif;
+		
 		$atts = array();
 		
 		// get meta values from custom fields
