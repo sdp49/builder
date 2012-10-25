@@ -295,7 +295,7 @@ class PL_Taxonomy_Helper {
 		return self::$location_taxonomies;
 	}
 
-	function get_taxonomy_items ($tax, $args = array()) {
+	public static function get_taxonomy_items ($tax, $args = array()) {
 		$terms = get_terms( $tax, $args );
 		$response = array();
 		foreach ($terms as $key => $term) {

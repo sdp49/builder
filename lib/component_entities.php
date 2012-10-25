@@ -560,10 +560,6 @@ class PL_Component_Entity {
 			
 			// get the template attached as a context arg, 33 is the length of the filter prefix
 			$template = substr(current_filter(), 31);
-			
-			if( $template == 'twentyten' ) {
-				return "<h1>Broken Form!</h1>";
-			}
 		
 			$snippet_body = self::get_active_snippet_body($shortcode);
 			return do_shortcode($snippet_body);
