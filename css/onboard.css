@@ -428,10 +428,28 @@ input[type=button]:hover {
 	
 }
 
-input.bt-norm {padding:10px 20px;	font-size:16px; float:right;}
-input.bt-inline {float:right; margin-top: 5px; padding:10px 12px;	font-size:14px;}
-input.bt-left {text-align:center; width:224px; padding:10px 20px;	font-size:16px; margin:5px 0px 20px 0px;}
-input.bt-right {text-align:center; width:224px; padding:10px 20px;	font-size:16px; float:right; margin:5px 0px 20px 0px;}
+input.bt-norm { padding: 10px 20px; font-size: 16px; float: right; }
+input.bt-inline {float:right; margin-top: 5px; padding: 10px 12px; font-size: 14px;}
+input.bt-left {text-align: center; width: 224px; padding: 10px 20px; font-size: 16px; margin: 5px 0px 20px 0px;}
+input.bt-right {text-align: center; width:224px; padding:10px 20px; font-size:16px; float:right; margin:5px 0px 20px 0px;}
+
+input#submit_theme {
+	clear: none;
+	float: right;
+	font-size: 14px;
+	margin: 1px 0px 0px 10px;
+	padding: 10px 10px;
+}
+
+input.bt-disabled { 
+	color: #8C8C8C !important;
+	opacity: 0.3;
+}
+
+input[type=button].disabled:hover {
+	background: auto;
+
+}
 
 select {padding:10px; border:1px solid #cfcfcf; border-radius:6px; -moz-border-radius:6px; background:#fdfdfd;}
 select.mw {width:240px; margin:5px 0px 15px 0px;}
