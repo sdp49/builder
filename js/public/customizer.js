@@ -182,9 +182,12 @@ jQuery(document).ready(function($) {
 		if ( !customizer_global.stateAltered ) { return; }
 
 		setPreviewLoading();
-
 		$('#save').trigger('click');
-		// console.log('Finished saving...');
+		
+		// Set this back to false so that user won't be prompted about "losing changes" 
+		// when re-directing back to homepage...
+		customizer_global.stateAltered = false;
+		
 		setTimeout( function () { window.location.href = window.location.origin; }, 1200 ); 
 	});
 
