@@ -157,7 +157,7 @@ if ( isset($color) )
 		border: 1px solid <?php echo $color; ?>; 
 	} 
 
-	div#full-form #search-button:hover, #search-widget input#search:hover, #comments-template form p input#submit , #comments-template form p input#submit:hover { 
+	div#full-form #search-button:hover, #search-widget input#search:hover, #comments-template form p input#submit, #comments-template form p input#submit:hover { 
 		background: <?php echo $color; ?>; 
 		border: 1px solid <?php echo $color; ?>; 
 	}
@@ -167,7 +167,7 @@ if ( isset($color) )
 		border: 1px solid <?php echo $color; ?>; 
 	}
 
-	div.main-widget.amenities-widget h3 , .widget-pls-agent h3, .widget-pls-listings h3 { 
+	div.main-widget.amenities-widget h3, .widget-pls-agent h3, .widget-pls-listings h3 { 
 		background: <?php echo $color; ?>; 
 		border: 1px solid <?php echo $color; ?>; 
 	}
@@ -176,20 +176,20 @@ if ( isset($color) )
 		border: 1px solid <?php echo $color; ?>; 
 	}
 
-	.orbit-caption p.address , section#location-widget h3 , #featured-widget h3 { 
+	.orbit-wrapper .orbit-caption p.address, section#location-widget h3, #featured-widget h3 { 
 		background: <?php echo $color; ?>; 
 		border: 1px solid <?php echo $color; ?>; 
 	}
 
-	section.pls-listing-get_listings_widget div.featured-slot span , section#fold .fold-r p.price  {
+	section.pls-listing-get_listings_widget div.featured-slot span, section#fold .fold-r p.price  {
 		color: <?php echo $color; ?>; 
 	}
 
-	a:hover , a:visited , a , div.lu-right #pl_add_remove_lead_favorites a , #agent-widget span.email a , #agent-widget span.phone a {
+	a:hover , a:visited , a , div.lu-right #pl_add_remove_lead_favorites a, #agent-widget span.email a, #agent-widget span.phone a {
 		color: <?php echo $color; ?>;
 	}
 
-	a.read-more , body.single-post article a:visited , body.single-post article a , a:post-edit-link {
+	a.read-more , body.single-post article a:visited, body.single-post article a, a:post-edit-link {
 		color: <?php echo $color; ?>;
 	}
   <?php

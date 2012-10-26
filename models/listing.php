@@ -67,6 +67,10 @@ class PL_Listing {
 		if ( defined('HOSTED_PLUGIN_KEY') ) {
 			$request['hosted_key'] = HOSTED_PLUGIN_KEY;
 		}
+		// sometimes id is not defined
+		if( ! isset( $request['id'] ) ) {
+		  $request['id'] = '';
+		}
 		$details_url = trailingslashit($config['request']['url']) . $request['id'];
 		$response = PL_HTTP::send_request($details_url, $request, $config['request']['type']);
 		$response = PL_Validate::attributes($response, $config['returns']);

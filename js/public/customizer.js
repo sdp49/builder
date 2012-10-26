@@ -17,7 +17,8 @@ var customizer_global = {
 
 		// Set to let other components know that refresh has been completed...
 		this.refreshing = false;
-	}
+	},
+	stateAltered: false
 };
 
 // The main form/sidebar is initially hidden so that the mangled-mess that exists before
@@ -27,10 +28,33 @@ window.onload = function () {
 
 	// If there's a theme arg in the query string, user just switched themes so make
 	// sure to have the theme selection pane appear upon page load...
-	if ( window.location.href.indexOf('theme=') != -1 ) {
+	if ( window.location.href.indexOf('theme_change=true') != -1 ) {
 		jQuery('li#theme').trigger('click');
 	}  
 }
+
+window.onbeforeunload = function () {
+	if ( customizer_global.stateAltered ) {
+		return 'You have unsaved changes that will be lost!';
+	}
+}
+
+// Define AJAX spinner...
+var spinningBars = '<div id="spinner">'
+				   + '<div class="bar1"></div>'
+				   + '<div class="bar2"></div>'
+				   + '<div class="bar3"></div>'
+				   + '<div class="bar4"></div>' 
+				   + '<div class="bar5"></div>'
+				   + '<div class="bar6"></div>'
+				   + '<div class="bar7"></div>'
+				   + '<div class="bar8"></div>'
+				   + '</div>';
+
+
+/*
+ * Main JS
+ */
 
 jQuery(document).ready(function($) {
 
@@ -58,28 +82,6 @@ jQuery(document).ready(function($) {
 
 	$('#customize-controls').append('<input type="submit" name="save" id="save" style="display:none">');
 
-	/*
-	 * Applies to loading default theme options "pallets"
-	 */
-	$('#btn_def_opts').live('click', function (event) {
-		event.preventDefault();
-
-		if (!confirm('Are you sure you want to overwrite your existing Theme Options?'))
-		{ return; }
-
-		var data = { action: 'import_default_options',
-					 name: $('#def_theme_opts option:selected').val() }
-		// console.log(data);
-		
-		$.post(ajaxurl, data, function(response) {
-		  if (response) {
-		  	// console.log(response);
-		  }
-		  
-	      // Refresh theme options to reflect newly imported settings...
-	      window.location.reload(true);  
-		});
-	});
 
  /*
   * Trigger preview re-load + display loading overlay for input changes...
@@ -110,15 +112,87 @@ jQuery(document).ready(function($) {
 		setPreviewLoading();
 	}
 
-	// TODO: Remove this, it's for testing purposes...
-	refPrev = refreshPreview;
+	// NOTE: Uncomment this for testing purposes...
+	// refPrev = refreshPreview;
 
-	$('#customize-control-pls-google-analytics_ctrl input[type=text]').on('keyup', function (event) {
-		setPreviewLoading();
+	$('[data-customize-setting-link]').on('keyup change', function (event) { 
+		if ( !customizer_global.stateAltered ) {
+			var conf = $('#confirm');
+			conf.fadeTo(600, 1, function() {
+				conf.fadeTo(600, 0.3, function() {
+						conf.fadeTo(600, 1);
+				});
+			});
+
+			customizer_global.stateAltered = true;
+		}
 	});
 
-	$('select.of-typography, #theme_choices').on('change', function (event) {
+
+ /*
+  * Bind onboarding menu actions...
+  */
+
+	$('#hide_pane').on('click', function (event) {
+		console.log('clicked!');
+		console.log(this);
+		$('#pane').css('display', 'none');
+		$('.control-container').css('display', 'none');
+
+		// Remove active class from any existing elements...
+		var activeLi = $('#navlist li.active');
+		if ( activeLi.length > 0 ) {
+			activeLi.each( function() { $(this).toggleClass('active'); } );
+		}
+	});
+
+	$('#navlist #logo').on('click', function (event) {
+		
+	});
+
+	$('#navlist li:not(.no-pane)').on('click', function (event) {
+		event.preventDefault();
+
+		// If activated menu section is clicked, do nothing...
+		if ( $(this).hasClass('active') ) { return; }
+
+		// Remove active class from any existing elements...
+		var activeLi = $('#navlist li.active');
+		if ( activeLi.length > 0 ) {
+			activeLi.each( function() { $(this).toggleClass('active'); } );
+		}
+
+		// Set the current menu item to 'active'
+		$(this).toggleClass('active');
+
+		// Make sure pane is visible, then hide any visible control-container(s)...
+		$('#pane').css('display', 'block');
+		$('.control-container').css('display', 'none');
+		
+		// Construct the associated control-container's id and show it...
+		var containerId = '#' + $(this).attr('id') + '_content';
+		$(containerId).css('display', 'block');
+
+		// $(containerId).show('slide', { direction: 'left'}, 1000);
+		// $('#pane').show("slide", { direction: "left" }, 1000);
+	});
+
+	$('#confirm').on('click', function (event) {
+		event.preventDefault();
+		if ( !customizer_global.stateAltered ) { return; }
+
 		setPreviewLoading();
+		$('#save').trigger('click');
+		
+		// Set this back to false so that user won't be prompted about "losing changes" 
+		// when re-directing back to homepage...
+		customizer_global.stateAltered = false;
+		
+		setTimeout( function () { window.location.href = window.location.origin; }, 1200 ); 
+	});
+
+	$('.control-container label').on('click', function (event) {
+		$(this).next('input, textarea').focus();
 	});
 
 
@@ -126,17 +200,52 @@ jQuery(document).ready(function($) {
   * Handles switching themes in the preview iframe...
   */
 
-	$('#theme_choices').live('change', function (event) {
-		// console.log($(this).val());
-		var curr_href = window.location.href;
-		var new_href = $(this).val()
+	$('#theme_choices').on('change', function (event) {
+		// If theme selected is set to current one, set the submit button to disabled, otherwise enable it
+		var submitElem = $('#submit_theme');
+		if ( _wpCustomizeSettings && _wpCustomizeSettings.theme.stylesheet == $(this).val() ) {
+			submitElem.attr('disabled', 'disabled');
+			submitElem.addClass('bt-disabled');
+		}
+		else {
+		// Might not be necessary--done to handle all cases properly
+			submitElem.removeAttr('disabled');
+			submitElem.removeClass('bt-disabled');
+		}
 
-		// Check to see if the current URL contains a flag for onboarding--if so, replicate it in the new href...
-		if ( curr_href.indexOf('onboard=true') != -1 ) {
-			new_href += '&onboard=true';
-		}  
+		var infoElem = $('#theme_info');
+		infoElem.prepend(spinningBars);
+		infoElem.css('opacity', '0.7');
 
-		window.location.href = new_href;
+		data = { action: 'load_theme_info', theme: $(this).val() };
+		
+		// console.log(data);
+		// return;
+
+		$.post(ajaxurl, data, function (response) {
+	        if ( response && response.theme_info ) {
+	            // Populate theme info with new html...
+	            infoElem.html(response.theme_info);
+	            infoElem.css('opacity', '1');
+	        }
+	    },'json');
+	});
+
+	$('#submit_theme').on('click', function (event) {
+		data = { action: 'change_theme', new_theme: $('#theme_choices').val() };
+		
+		console.log(data);
+		// return;
+
+		$.post(ajaxurl, data, function (response) {
+	        if ( response && response.success ) {
+	        	console.log(response.success);
+	            // setTimeout( function () { refreshPreview(); }, 300 );
+
+	            // Reload customizer to display new theme...
+	            window.location.reload(true);
+	        }
+	    },'json');
 	});
 
 	// Logic to determine whether to hide or show pagination buttons based on change...
@@ -202,55 +311,10 @@ jQuery(document).ready(function($) {
 
 
  /*
-  * Bind onboarding menu actions...
-  */
-
-	$('#hide_pane').on('click', function (event) {
-		console.log('clicked!');
-		console.log(this);
-		$('#pane').css('display', 'none');
-		$('.control-container').css('display', 'none');
-
-		// Remove active class from any existing elements...
-		var activeLi = $('#navlist li.active');
-		if ( activeLi.length > 0 ) {
-			activeLi.each( function() { $(this).toggleClass('active'); } );
-		}
-	});
-
-	$('#navlist li:not(.no-pane)').on('click', function (event) {
-		// If activated menu section is clicked, do nothing...
-		if ( $(this).hasClass('active') ) { return; }
-
-		// Remove active class from any existing elements...
-		var activeLi = $('#navlist li.active');
-		if ( activeLi.length > 0 ) {
-			activeLi.each( function() { $(this).toggleClass('active'); } );
-		}
-
-		// Set the current menu item to 'active'
-		$(this).toggleClass('active');
-
-		// Make sure pane is visible, then hide any visible control-container(s)...
-		$('#pane').css('display', 'block');
-		$('.control-container').css('display', 'none');
-		
-		// Construct the associated control-container's id and show it...
-		var containerId = '#' + $(this).attr('id') + '_content';
-		$(containerId).css('display', 'block');
-	});
-
-	$('#confirm').on('click', function (event) {
-		event.preventDefault;
-		$('#save').trigger('click');
-		// console.log('Finished saving...');
-		setTimeout( function () { window.location.href = window.location.origin; }, 1200 ); 
-	});
-
-
- /*
-  * Handle creating listings + making blog posts...
+  * Handle custom controls...
   */	
+
+  	// --- Blog Post ---
 
 	function toggleInvalid (item, invalid) {
         if (invalid) {
@@ -306,6 +370,9 @@ jQuery(document).ready(function($) {
 	        }
 	    },'json');
   	});
+
+	
+	// --- Create a Listing ---
 
   	$('#submit_listing').on('click', function (event) {
 		// $('#loading_overlay').show();
@@ -365,17 +432,39 @@ jQuery(document).ready(function($) {
 		}, 'json');
     });
 
-	$('#color_select').on('change', function (event) {
-		// We need this to update styling--exit if it's not there...
-		if (!_wpCustomizeSettings || _wpCustomizeSettings.theme.stylesheet != 'columbus') {
+
+	// -- Custom CSS --
+
+	// Hide the theme customizer control that actually connects to theme option...
+	$('#customize-control-pls-custom-css_ctrl').hide();
+
+	function updateCustomCSS (css) {
+		var custom_css = $('#customize-control-pls-custom-css_ctrl textarea');
+
+		// Handle case where fetched CSS equals what's currently in the input (i.e., won't trigger preview refresh)
+		if (custom_css.val() == css) {
+			// console.log('Same-sies!!!');
+			customizer_global.previewLoaded();
 			return;
 		}
 
-		var updateCustomCSS = function (css) {
-			var custom_css = $('#colors_content').find('textarea');
-    		custom_css.val(css);
-    		custom_css.trigger('keyup');
+		custom_css.val(css);
+		custom_css.trigger('keyup');
+	}
+
+	$('#color_select').on('change', function (event) {
+		// Check for wp JS object (we need this to update styling) and for current theme support--exit if either are false...
+		var supportedThemeList = ['columbus','ventura'];
+		if (!_wpCustomizeSettings || supportedThemeList.indexOf(_wpCustomizeSettings.theme.stylesheet) == -1 ) {
+			var errMsg = $('#color_message.error');
+			errMsg.html('<h3>Sorry, this feature is currently not available for this theme</h3>');
+			errMsg.show();
+
+			return;
 		}
+
+		// Just in case...
+		$('#color_message.error').hide();
 
 		// Let the user know there's work being done...
 		setPreviewLoading();
@@ -399,10 +488,40 @@ jQuery(document).ready(function($) {
 	    $.post(ajaxurl, data, function (response) {
 	    	// console.log(response);
 	    	if (response && response.styles) {
-	    		// Set the Custom CSS textarea to update preview pane...
+	    		// Change the linked CSS textarea to trigger an update of the preview pane...
 	    		updateCustomCSS(response.styles);
+
+	    		// Change visible CSS textarea editor to reflect update...
+				$('#custom_css').val(response.styles);
 	    	}
 	    },'json');
+	});
+
+	$('#toggle_css_edit').on('click', function (event) {
+		event.preventDefault();
+		console.log('clicked!');
+
+		var show_txt = '[+] Show'
+		var hide_txt = '[\u2013] Hide';
+		
+		var jThis = $(this);
+		var editDiv = $('#css_edit_container');
+
+		if ( jThis.text() == show_txt ) {
+			jThis.text(hide_txt);
+			editDiv.show();
+		}
+		else {
+			jThis.text(show_txt);
+			editDiv.hide();
+		}
+	});
+
+	$('#submit_custom_css').on('click', function (event) {
+		var new_css = $('#custom_css').val();
+
+		setPreviewLoading();
+		updateCustomCSS(new_css);
 	});
 
 });	
