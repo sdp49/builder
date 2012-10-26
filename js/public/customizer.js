@@ -35,7 +35,7 @@ window.onload = function () {
 
 window.onbeforeunload = function () {
 	if ( customizer_global.stateAltered ) {
-		return 'You have unsaved changes that will be lost if you proceed';
+		return 'You have unsaved changes that will be lost!';
 	}
 }
 
