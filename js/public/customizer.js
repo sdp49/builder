@@ -28,9 +28,15 @@ window.onload = function () {
 
 	// If there's a theme arg in the query string, user just switched themes so make
 	// sure to have the theme selection pane appear upon page load...
-	if ( window.location.href.indexOf('theme=') != -1 ) {
+	if ( window.location.href.indexOf('theme_change=true') != -1 ) {
 		jQuery('li#theme').trigger('click');
 	}  
+}
+
+window.onbeforeunload = function () {
+	if ( customizer_global.stateAltered ) {
+		return 'You have unsaved changes that will be lost if you proceed';
+	}
 }
 
 // Define AJAX spinner...
@@ -109,12 +115,17 @@ jQuery(document).ready(function($) {
 	// NOTE: Uncomment this for testing purposes...
 	// refPrev = refreshPreview;
 
-	$('#customize-control-pls-google-analytics_ctrl input[type=text]').on('keyup', function (event) {
-		setPreviewLoading();
-	});
+	$('[data-customize-setting-link]').on('keyup change', function (event) { 
+		if ( !customizer_global.stateAltered ) {
+			var conf = $('#confirm');
+			conf.fadeTo(600, 1, function() {
+				conf.fadeTo(600, 0.3, function() {
+						conf.fadeTo(600, 1);
+				});
+			});
 
-	$('select.of-typography').on('change', function (event) {
-		setPreviewLoading();
+			customizer_global.stateAltered = true;
+		}
 	});
 
 
@@ -175,10 +186,6 @@ jQuery(document).ready(function($) {
 		$('#save').trigger('click');
 		// console.log('Finished saving...');
 		setTimeout( function () { window.location.href = window.location.origin; }, 1200 ); 
-	});
-
-	$('input[data-customize-setting-link]').on('change', function (event) { 
-		console.log('saving shit...');
 	});
 
 	$('.control-container label').on('click', function (event) {

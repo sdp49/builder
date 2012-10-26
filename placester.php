@@ -237,12 +237,6 @@ function iframe_load_notify () {
                 top.customizer_global.previewLoaded();
             }
         }
-
-        window.beforeunload = function () {
-            if ( (top.location != self.location) && top.customizer_global ) {
-                return confirm('It worked!');
-            }
-        }
     </script>
     <?php
   echo ob_get_clean();
