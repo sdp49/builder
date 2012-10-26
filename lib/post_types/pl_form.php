@@ -4,6 +4,8 @@ class PL_Form_CPT extends PL_Post_Base {
 
 	// Leverage the PL_Form class and it's fields format (and implement below)
 	public  $fields = array(
+				'width' => array( 'type' => 'text', 'label' => 'Width' ),
+				'height' => array( 'type' => 'text', 'label' => 'Height' ),
 				'context' => array( 'type' => 'text', 'label' => 'Context' ),
 				'ajax' => array( 'type' => 'checkbox', 'label' => 'Disable AJAX' ),
 				'formaction' => array( 'type' => 'text', 'label' => 'Form URL when AJAX is disabled' ),
@@ -55,8 +57,12 @@ class PL_Form_CPT extends PL_Post_Base {
 			$permalink = get_permalink($post->ID);
 		}
 		
-		if( ! empty( $permalink ) ): 
-			$iframe = '<iframe src="' . $permalink . '"></iframe>';
+		$width =  isset( $values['width'] ) && ! empty( $values['width'][0] ) ? $values['width'][0] : '600';
+		$height = isset( $values['height'] ) && ! empty( $values['height'][0] ) ? $values['height'][0] : '600';
+		$style = ' style="width: ' . $width . 'px; height: ' . $height . 'px" ';
+		
+		if( ! empty( $permalink ) ):
+		$iframe = '<iframe src="' . $permalink . '"'. $style . '></iframe>';
 		?>		<div id="iframe_code">
 					<h2>Form Frame code</h2>
 					<p>Use this code snippet inside of a page: <strong><?php echo esc_html( $iframe ); ?></strong></p>

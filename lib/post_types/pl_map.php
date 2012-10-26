@@ -49,6 +49,10 @@ class PL_Map_CPT extends PL_Post_Base {
 	// add meta box for featured listings- adding custom fields
 	public  function pl_maps_meta_box_cb( $post ) {
 		$values = get_post_custom( $post->ID );
+		
+		$pl_featured_listing_meta = isset( $values['pl_featured_listing_meta'] ) ? unserialize($values['pl_featured_listing_meta'][0]) : '';
+		$pl_featured_meta_value = empty( $pl_featured_listing_meta ) ? '' : $pl_featured_listing_meta['featured-listings-type'];
+		
 
 		// get link for iframe
 		$permalink = '';
@@ -56,16 +60,59 @@ class PL_Map_CPT extends PL_Post_Base {
 			$permalink = get_permalink($post->ID);
 		}
 		
+		$width =  isset( $values['width'] ) && ! empty( $values['width'][0] ) ? $values['width'][0] : '300';
+		$height = isset( $values['height'] ) && ! empty( $values['height'][0] ) ? $values['height'][0] : '300';
+		$style = ' style="width: ' . $width . 'px; height: ' . $height . 'px" ';
+		
 		if( ! empty( $permalink ) ):
-		$iframe = '<iframe src="' . $permalink . '"></iframe>';
+		$iframe = '<iframe src="' . $permalink . '"'. $style . '></iframe>';
 		?>		<div id="iframe_code">
 					<h2>Map Frame code</h2>
 					<p>Use this code snippet inside of a page: <strong><?php echo esc_html( $iframe ); ?></strong></p>
 					<em>By copying this code and pasting it into a page you display your view.</em>
 				</div>
-		<?php endif;
+		<?php endif; ?>
+		<h2>Pick a Listing</h2>
+				<div id="pl-fl-meta">
+					<div style="width: 400px; min-height: 200px">
+						<div id="pl_featured_listing_block">
+						<?php 
+							include PLS_OPTRM_DIR . '/views/featured-listings.php';
+							// Enqueue all required stylings and scripts
+							wp_enqueue_style('featured-listings', OPTIONS_FRAMEWORK_DIRECTORY.'css/featured-listings.css');
+							
+							wp_register_script( 'datatable', trailingslashit( PLS_JS_URL ) . 'libs/datatables/jquery.dataTables.js' , array( 'jquery'), NULL, true );
+							wp_enqueue_script('datatable'); 
+							wp_enqueue_script('jquery-ui-core');
+							wp_enqueue_style('jquery-ui-dialog', OPTIONS_FRAMEWORK_DIRECTORY.'css/jquery-ui-1.8.22.custom.css');
+							wp_enqueue_script('jquery-ui-dialog');
+							wp_enqueue_script('options-custom', OPTIONS_FRAMEWORK_DIRECTORY.'js/options-custom.js', array('jquery'));
+							wp_enqueue_script('featured-listing', OPTIONS_FRAMEWORK_DIRECTORY.'js/featured-listing.js', array('jquery'));
+					
+							// Generate the popup dialog with featured			
+							echo pls_generate_featured_listings_ui(array(
+												'name' => 'Featured Meta',
+												'desc' => '',
+												'id' => 'featured-listings-type',
+												'type' => 'featured_listing'
+												) ,$pl_featured_meta_value
+												, 'pl_featured_listing_meta');
+						?>
+						</div><!-- end of #pl_featured_listing_block -->
+						<div id="pl_static_listing_block" style="display: none;">
+							<?php echo PL_Form::generate_form(
+										PL_Config::PL_API_LISTINGS('get', 'args'),
+										array('method' => "POST", 
+												'title' => true,
+												'wrap_form' => false, 
+										 		'echo_form' => false, 
+												'include_submit' => false, 
+												'id' => 'pls_admin_my_listings')); ?>
+						</div><!-- end of #pl_static_listing_block -->
+					</div>
+				<div>
 		
-		$atts = array();
+		<?php $atts = array();
 		
 		// get meta values from custom fields
 		foreach( $this->fields as $field => $arguments ) {
@@ -106,6 +153,10 @@ class PL_Map_CPT extends PL_Post_Base {
 				update_post_meta( $post_id, $field, $_POST[$field] );
 			}
 		}
+		
+		if( isset( $_POST['pl_featured_listing_meta'] ) ) {
+			update_post_meta( $post_id, 'pl_featured_listing_meta',  $_POST['pl_featured_listing_meta'] );
+		}
 	}
 	
 	public function post_type_templating( $single ) {
@@ -118,9 +169,12 @@ class PL_Map_CPT extends PL_Post_Base {
 			foreach( $meta as $key => $value ) {
 				// ignore underscored private meta keys from WP
 				if( strpos( $key, '_', 0 ) !== 0 && ! empty( $value[0] ) ) {
-					$args .= "$key = '{$value[0]}' ";
+					if( 'pl_static_listings_option' !== $key  && 'pl_featured_listing_meta' !== $key) {
+						$args .= "$key = '{$value[0]}' ";
+					}
 				}
 			}
+			$args .= ' map_id="' . $post->ID . '"';
 			
 			$shortcode = '[search_map ' . $args . ']'; 
 			

@@ -4,6 +4,8 @@ class PL_Search_Listing_CPT extends PL_Post_Base {
 
 	// Leverage the PL_Form class and it's fields format (and implement below)
 	public  $fields = array(
+			'width' => array( 'type' => 'text', 'label' => 'Width' ),
+			'height' => array( 'type' => 'text', 'label' => 'Height' ),
 // 			'field1' => array( 'type' => 'text', 'label' => 'Field 1' ),
 // 			'field2' => array( 'type' => 'select', 'label' => 'Field 2', 'options' => array( 'one' => 'one', 'two' => 'two' ) ),
 // 			'field3' => array( 'type' => 'checkbox', 'label' => 'Field 3' ),
@@ -60,8 +62,13 @@ class PL_Search_Listing_CPT extends PL_Post_Base {
 			}
 		}
 		
+		$width =  isset( $values['width'] ) && ! empty( $values['width'][0] ) ? $values['width'][0] : '300';
+		$height = isset( $values['height'] ) && ! empty( $values['height'][0] ) ? $values['height'][0] : '300';
+		$style = ' style="width: ' . $width . 'px; height: ' . $height . 'px" ';
+		
 		if( ! empty( $permalink ) ):
-		$iframe = '<iframe src="' . $permalink . '"></iframe>';
+		$iframe = '<iframe src="' . $permalink . '"'. $style . '></iframe>';
+		
 		?>		<div id="iframe_code">
 					<h2>Search Listing Frame code</h2>
 					<p>Use this code snippet inside of a page: <strong><?php echo esc_html( $iframe ); ?></strong></p>

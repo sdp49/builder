@@ -63,8 +63,8 @@ class PL_Post_Type_Manager {
 		foreach( $type_parts as $part ) {
 			$title .= ucfirst( $part ) . ' ';
  		} 
-		
-		return trim( $title );
+
+ 		return trim( str_replace('Pl', '', $title) );
 	}
 	
 	// get the class name by the convention PL_Post_Type_Name_CPT

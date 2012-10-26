@@ -5,6 +5,8 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 
 	// Leverage the PL_Form class and it's fields format (and implement below)
 	public $fields = array(
+			'width' => array( 'type' => 'text', 'label' => 'Width' ),
+			'height' => array( 'type' => 'text', 'label' => 'Height' ),
 // 			'nb_type' => array( 'type' => 'radio', 'label' => 'Neighborhood type', 'options' => array( 
 // 												'city' => 'city',
 // 												'state' => 'state',
@@ -58,8 +60,12 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 			$permalink = get_permalink($post->ID);
 		}
 		
+		$width =  isset( $values['width'] ) && ! empty( $values['width'][0] ) ? $values['width'][0] : '300';
+		$height = isset( $values['height'] ) && ! empty( $values['height'][0] ) ? $values['height'][0] : '300';
+		$style = ' style="width: ' . $width . 'px; height: ' . $height . 'px" ';  
+		
 		if( ! empty( $permalink ) ):
-		$iframe = '<iframe src="' . $permalink . '"></iframe>';
+		$iframe = '<iframe src="' . $permalink . '"'. $style . '></iframe>';
 		?>		<div id="iframe_code">
 					<h2>Neihgborhood Frame code</h2>
 					<p>Use this code snippet inside of a page: <strong><?php echo esc_html( $iframe ); ?></strong></p>

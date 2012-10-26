@@ -137,6 +137,14 @@ class PL_Component_Entity {
 	
 	public static function search_map_entity( $atts ) {
 		$atts = wp_parse_args($atts, array('type' => 'listings', 'width' => 600, 'height' => 400));
+		$map_id = $atts['map_id'];
+		
+		$values = get_post_meta( $map_id );
+		$pl_featured_listing_meta = isset( $values['pl_featured_listing_meta'] ) ? unserialize($values['pl_featured_listing_meta'][0]) : '';
+		$pl_featured_meta_value = empty( $pl_featured_listing_meta ) ? '' : $pl_featured_listing_meta['featured-listings-type'];
+		
+		$property_ids = array_flip( $pl_featured_meta_value );
+		
 		ob_start();
 	?>
 	 <script type="text/javascript">
@@ -147,7 +155,8 @@ class PL_Component_Entity {
 
     		// var filter = new Filters ();
     		var listings = new Listings ({
-    			map: map
+    			map: map,
+    			<?php // echo "property_ids: ['" . implode("','", $property_ids) . "'],"; ?>
     			// filter: filter,
     		});
     		if(json_atts.type == 'lifestyle') {

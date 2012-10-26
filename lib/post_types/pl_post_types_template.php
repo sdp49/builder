@@ -3,7 +3,6 @@
 		<?php wp_head(); ?>
 	</head>
 	<body>
-	<h1>Template header</h1>
 	<?php
 		
 		if( isset( $drop_modernizr )) {
