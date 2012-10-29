@@ -6,9 +6,6 @@ class PL_Search_Listing_CPT extends PL_Post_Base {
 	public  $fields = array(
 			'width' => array( 'type' => 'text', 'label' => 'Width' ),
 			'height' => array( 'type' => 'text', 'label' => 'Height' ),
-// 			'field1' => array( 'type' => 'text', 'label' => 'Field 1' ),
-// 			'field2' => array( 'type' => 'select', 'label' => 'Field 2', 'options' => array( 'one' => 'one', 'two' => 'two' ) ),
-// 			'field3' => array( 'type' => 'checkbox', 'label' => 'Field 3' ),
 	);
 
 	public function register_post_type() {
@@ -173,7 +170,7 @@ class PL_Search_Listing_CPT extends PL_Post_Base {
 		}
 	}
 	
-	public function post_type_templating( $single ) {
+	public static function post_type_templating( $single ) {
 		global $post;
 		
 		if( ! empty( $post ) && $post->post_type === 'pl_search_listing' ) {

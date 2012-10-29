@@ -16,7 +16,6 @@ class PL_Post_Type_Manager {
 		}
 		
 		add_action('admin_menu', array( __CLASS__, 'register_posts_menu' ) );
-		// add_filter('template_include', array( __CLASS__, 'post_type_templating' ) );
 	}
 		
 	public static function register_posts_menu() {

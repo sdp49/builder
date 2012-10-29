@@ -78,10 +78,6 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 		$select_id = 'nb-select-' . $radio_def;
 		$select_def = isset( $values[ $select_id ] ) ? $values[ $select_id ][0] : '0';
 		
-// 		var_dump($values); die();
-// 		var_dump($radio_def);
-// 		var_dump($select_def);
-		
 		// get meta values from custom fields
 		foreach( $this->fields as $field => $arguments ) {
 			$value = isset( $values[$field] ) ? $values[$field][0] : '';
@@ -182,7 +178,7 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 		}
 	}
 	
-	public function post_type_templating( $single ) {
+	public static function post_type_templating( $single ) {
 		global $post;
 		
 		$location_taxonomies = PL_Taxonomy_Helper::$location_taxonomies;

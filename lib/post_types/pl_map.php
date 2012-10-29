@@ -159,7 +159,7 @@ class PL_Map_CPT extends PL_Post_Base {
 		}
 	}
 	
-	public function post_type_templating( $single ) {
+	public static function post_type_templating( $single ) {
 		global $post;
 		
 		if( ! empty( $post ) && $post->post_type === 'pl_map' ) {

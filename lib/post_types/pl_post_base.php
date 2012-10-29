@@ -25,7 +25,7 @@ abstract class PL_Post_Base {
 	public abstract function register_post_type( );
 	public abstract function meta_box( );
 	public abstract function meta_box_save( $post_id );
-	public abstract function post_type_templating( $single );
+//	public abstract function post_type_templating( $single );
 	
 // 	public function post_type_templating( $single ) {
 // 		global $post;
