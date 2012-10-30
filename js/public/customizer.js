@@ -59,8 +59,8 @@ var spinningBars = '<div id="spinner">'
 jQuery(document).ready(function($) {
 
  /*
-  * Add custom javascript here that applies/affects the customizer as a whole. 
-  * (Configured to execute on any load of customize.php)
+  * Using JS, give the customizer a "facelift" and structural re-org to create
+  * the "Placester" version...
   */
 
 	// Hide the "You are Previewing" div + header & footer--no hook to prevent these from
@@ -71,10 +71,9 @@ jQuery(document).ready(function($) {
 
 	$('div.wp-full-overlay').attr('id', 'full-overlay');
 	$('div.wp-full-overlay-sidebar-content').removeClass('wp-full-overlay-sidebar-content').attr('id', 'sidebar');
+	
 	$('#customize-theme-controls').first().attr('id', 'menu-nav');
 	$('#menu-nav > ul').first().attr('id', 'navlist');
-
-	// $('<section id="pane"></section>').appendTo('#menu-nav');
 	$('#menu-nav').after('<section id="pane"></section>');
 
 	var controlDivs = $('.control-container').detach();
@@ -130,12 +129,10 @@ jQuery(document).ready(function($) {
 
 
  /*
-  * Bind onboarding menu actions...
+  * Bind customizer menu actions...
   */
 
 	$('#hide_pane').on('click', function (event) {
-		console.log('clicked!');
-		console.log(this);
 		$('#pane').css('display', 'none');
 		$('.control-container').css('display', 'none');
 
@@ -197,7 +194,7 @@ jQuery(document).ready(function($) {
 
 
  /*
-  * Handles switching themes in the preview iframe...
+  * Handles theme selection...
   */
 
 	$('#theme_choices').on('change', function (event) {
@@ -234,8 +231,13 @@ jQuery(document).ready(function($) {
 	$('#submit_theme').on('click', function (event) {
 		data = { action: 'change_theme', new_theme: $('#theme_choices').val() };
 		
-		console.log(data);
+		// console.log(data);
 		// return;
+
+		// Show spinner to indicate theme activation is in progress...
+		var infoElem = $('#theme_info');
+		infoElem.prepend(spinningBars);
+		infoElem.css('opacity', '0.7');
 
 		$.post(ajaxurl, data, function (response) {
 	        if ( response && response.success ) {
@@ -244,6 +246,11 @@ jQuery(document).ready(function($) {
 
 	            // Reload customizer to display new theme...
 	            window.location.reload(true);
+	        }
+	        else {
+	        	// If theme switch fails, hide progress so user can try again...
+	        	infoElem.remove('#theme_info #spinner');
+	        	infoElem.css('opacity', '1');
 	        }
 	    },'json');
 	});
