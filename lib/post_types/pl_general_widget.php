@@ -140,14 +140,14 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 						?>
 						</div><!-- end of #pl_featured_listing_block -->
 						<div id="pl_static_listing_block">
-							<?php echo PL_Form::generate_form(
-										PL_Config::PL_API_LISTINGS('get', 'args'),
-										array('method' => "POST", 
-												'title' => true,
-												'wrap_form' => false, 
-										 		'echo_form' => false, 
-												'include_submit' => false, 
-												'id' => 'pls_admin_my_listings')); ?>
+								<?php echo PL_Form::generate_form(
+											PL_Config::PL_API_LISTINGS('get', 'args'),
+											array('method' => "POST", 
+													'title' => true,
+													'wrap_form' => false, 
+											 		'echo_form' => false, 
+													'include_submit' => false, 
+													'id' => 'pls_admin_my_listings')); ?>
 						</div><!-- end of #pl_static_listing_block -->
 					</div>
 				<div>
