@@ -2,8 +2,6 @@
 
 class PL_Customizer 
 {
-	private static $onboard_sections = array('General', 'User Info');
-
 	private static $def_setting_opts = array(
 			                          'default'   => '',
 			                          'type'      => 'option',
@@ -20,19 +18,15 @@ class PL_Customizer
 		return $merged_opts;
 	}
 
-	private function get_priority( $onboard = false, $section = '' ) {
-	  	$new_priority;
+	private function get_priority( $section = '' ) 
+	{
+  		$new_priority = 10; // Default priority in case no other can be found...
+  		global $PL_CUSTOMIZER_ONBOARD_SECTIONS;
 
-	  	if ( $onboard ) {
-	  		global $PL_CUSTOMIZER_ONBOARD_SECTIONS;
-	  		$new_priority = ( is_array($PL_CUSTOMIZER_ONBOARD_SECTIONS) && !empty($section) )
-	  					  	? $PL_CUSTOMIZER_ONBOARD_SECTIONS[$section] : 10;
-	  	}
-	  	else {
-			// Return the newly incremented value (note the PREFIX operator...)
-			$new_priority = ++self::$priority;
-	  	}
-
+  		if ( is_array($PL_CUSTOMIZER_ONBOARD_SECTIONS) && !empty($section) ) {
+  			$new_priority = $PL_CUSTOMIZER_ONBOARD_SECTIONS[$section];
+  		}
+  			
 	  	return $new_priority;
 	}
 
@@ -51,13 +45,13 @@ class PL_Customizer
 		return $args;
 	}
 
-	public function register_components( $wp_customize, $onboard = false ) 
+	public function register_components( $wp_customize ) 
 	{
 		$theme_opts_key = $wp_customize->get_stylesheet();
 	    $last_section_id = '';
 
 	    global $PL_CUSTOMIZER_ONBOARD_OPTS;
-	    $options = ( $onboard ? $PL_CUSTOMIZER_ONBOARD_OPTS : PLS_Style::$styles );
+	    $options = $PL_CUSTOMIZER_ONBOARD_OPTS;
 
 	    foreach ($options as $opt) 
 	    {
@@ -76,11 +70,11 @@ class PL_Customizer
 	        {
 	            case 'heading':
 	                $args_section = array( 'title' => __($opt['name'],''), 'description' => $opt['name'] ); 
-	                $args_section['priority'] = self::get_priority($onboard, $opt['id']);
-	                if ( $onboard ) {
-	                	$args_section['subtitle'] = $opt['desc'];
-	                	$args_section['class'] = $opt['class'];
-	                }
+	                $args_section['priority'] = self::get_priority( $opt['id'] );
+                	$args_section['subtitle'] = $opt['desc'];
+                	if ( isset($opt['class']) ) {
+                		$args_section['class'] = $opt['class'];
+                	}
 
 	                $id_base = isset($opt['id']) ? $opt['id'] : $opt['name'];
 	                $section_id = strtolower( str_replace( ' ', '_', $id_base ) );
@@ -88,7 +82,7 @@ class PL_Customizer
 	                $wp_customize->add_section( new PL_Customize_Section( $wp_customize, $section_id, $args_section ) );
 
 	                // Add dummy control to certain sections so that they will appear...
-	                if ( $onboard && isset($opt['class']) && $opt['class'] == 'no-pane' ) {
+	                if ( isset($opt['class']) && $opt['class'] == 'no-pane' ) {
 	                	$wp_customize->add_setting( 'dummy_setting', array() );
 	                	$wp_customize->add_control( "dummy_ctrl_{$section_id}", array('settings' => 'dummy_setting', 'section' => $section_id, 'type' => 'none') );
 	            	}
@@ -142,7 +136,7 @@ class PL_Customizer
 
 	            case 'custom':
 	            	// Register PL component...
-	            	self::register_pl_control( $wp_customize, $opt['name'], $last_section_id, $onboard );
+	            	self::register_pl_control( $wp_customize, $opt['name'], $last_section_id );
 	            	break;
 
 	            default:
@@ -152,7 +146,7 @@ class PL_Customizer
 
 	}
 
-	public function register_pl_control( $wp_customize, $name, $section_id, $onboard = false ) 
+	public function register_pl_control( $wp_customize, $name, $section_id ) 
 	{
 		// Dummy setting must be associated with non-option sections in order for them to appear/function properly...
 	    $dummy_setting_id = 'dummy_setting';

@@ -17,9 +17,9 @@ class PL_Customizer_Helper
 		add_action( 'wp_ajax_change_theme', array(__CLASS__, 'change_theme') );
 	}
 
-	public static function is_onboarding() {
-		// NOTE: For now, always set onboarding to true--change this when releasing...
-		return true; // ( isset($_GET['onboard']) && strtolower($_GET['onboard']) == 'true' );
+	public static function is_onboarding() 
+	{
+		return ( isset($_GET['onboard']) && strtolower($_GET['onboard']) == 'true' );
 	}
 
 	public static function themedemo_admin() 
@@ -36,9 +36,8 @@ class PL_Customizer_Helper
 		// This is a global function, as PHP does not allow nested class declaration...
 		define_custom_controls();
 
-		/* NOTE: For now, always load customizer with onboard settings... */
-		$onboard = true; // ( isset($_GET['onboard']) && strtolower($_GET['onboard']) == 'true' );
-		PL_Customizer::register_components( $wp_customize, $onboard );
+		// Load the customizer with necessary flags...
+		PL_Customizer::register_components( $wp_customize, self::is_onboarding() );
 
 		// Prevent default control from being created
 		remove_action( 'customize_register', array(  $wp_customize, 'register_controls' ) );
@@ -52,12 +51,13 @@ class PL_Customizer_Helper
 		}
 	}
 
-	public static function inject_postMessage_hooks() {
-	  // Gets the theme that the customizer is currently set to display/preview...
+	public static function inject_postMessage_hooks() 
+	{
 	  global $wp_customize;
+
+	  // Gets the theme that the customizer is currently set to display/preview...
 	  $theme_opts_key = $wp_customize->get_stylesheet();
 	  // error_log($theme_opts_key);
-
 	  $postMessage_settings = array(
 	  								 'pls-site-title' => 'header h1 a', 
 	  								 'pls-site-subtitle' => 'header h2, #slogan', 
@@ -96,105 +96,6 @@ class PL_Customizer_Helper
 	      <br />You can always return to this customization wizard by clicking Appearance in the main menu, then clicking "Customize."</p>
 	      <p class="link"><a href="#">Let's Get Started</a></p>
 	    </div>
-
-	    <script type="text/javascript">
-	      var wizard_global = {
-	      	states: {
-	      		welcome: {
-	      			header: 'Welcome!',
-	      			content: 'Great!  You\'re making all the right moves.  We\'re going to take you into the main admin panel now so you can further customize your web site.<br />'
-	      					  + '<br />You can always return to this customization wizard by clicking Appearance in the main menu, then clicking "Customize."',
-	      			link: 'Let\'s Get Started',
-	      			pane_id: '',
-	      			left: '39%',
-	      			top: '36%',
-	      			next_state: 'theme'
-	      		},
-	      		theme: {
-	      			header: '1. Theme Selection',
-	      			content: '',
-	      			link_text: 'Select a Theme',
-	      			pane_id: 'theme_content',
-	      			left: '75px',
-	      			top: '50px',
-	      			next_state: 'title'
-	      		},
-	      		title: {
-	      			header: '2. Slogan & Title',
-	      			content: 'Add a Title',
-	      			link_text: '',
-	      			pane_id: 'title_content',
-	      			left: '75px',
-	      			top: '100px',
-	      			next_state: 'colors'
-	      		},
-	      		colors: {
-	      			header: '3. Colors & Style',
-	      			content: '',
-	      			link_text: 'Customize your Theme',
-	      			pane_id: 'colors_content',
-	      			left: '75px',
-	      			top: '150px',
-	      			next_state: 'brand'
-	      		},
-	      		brand: {
-	      			header: '4. Upload Logo',
-	      			content: '',
-	      			link_text: 'Upload my Logo',
-	      			pane_id: 'brand_content',
-	      			left: '75px',
-	      			top: '200px',
-	      			next_state: 'mls'
-	      		},
-	      		mls:  {
-	      			header: '5. MLS Integration',
-	      			content: '',
-	      			link_text: 'Integrate with your MLS',
-	      			pane_id: 'mls_content',
-	      			left: '75px',
-	      			top: '250px',
-	      			next_state: 'listing'
-	      		},
-	      		listing: {
-	      			header: '6. Post a Listing',
-	      			content: '',
-	      			link_text: 'Post my First Listing',
-	      			pane_id: 'listing_content',
-	      			left: '75px',
-	      			top: '300px',
-	      			next_state: 'post'
-	      		},
-	      		post: {
-	      			header: '7. Make a Blog Post',
-	      			content: '',
-	      			link_text: 'Make a Post',
-	      			pane_id: 'post_content',
-	      			left: '75px',
-	      			top: '350px',
-	      			next_state: 'analytics'
-	      		},
-	      		analytics: {
-	      			header: '8. Analytics',
-	      			content: '',
-	      			link_text: 'Integrate with Google',
-	      			pane_id: 'analytics_content',
-	      			left: '75px',
-	      			top: '400px',
-	      			next_state: 'confirm'
-	      		},
-	      		confirm: {
-	      			header: '',
-	      			content: '',
-	      			link_text: '',
-	      			pane_id: 'confirm_content',
-	      			left: '75px',
-	      			top: '450px',
-	      			next_state: ''
-	      		}
-	      	},
-	      	active_state: 'welcome' // Initially set to this value for page_load...
-	      }
-	    </script>
 	  <?php endif; ?>
 
 	  <?php

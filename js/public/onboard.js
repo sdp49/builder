@@ -1,0 +1,150 @@
+/*
+ * Onboarding Wizard global object -- contains each stage's data + state information
+ */
+
+var wizard_global = {
+  	states: {
+  		welcome: {
+  			header: 'Welcome!',
+  			content: 'Great!  You\'re making all the right moves.  We\'re going to take you into the main admin panel now so you can further customize your web site.<br />'
+  					  + '<br />You can always return to this customization wizard by clicking Appearance in the main menu, then clicking "Customize."',
+  			link: 'Let\'s Get Started',
+  			pane_id: '',
+  			left: '39%',
+  			top: '36%',
+  			next_state: 'theme'
+  		},
+  		theme: {
+  			header: '1. Theme Selection',
+  			content: '',
+  			link_text: 'Select a Theme',
+  			pane_id: 'theme_content',
+  			left: '75px',
+  			top: '50px',
+  			next_state: 'title'
+  		},
+  		title: {
+  			header: '2. Slogan & Title',
+  			content: 'Add a Title',
+  			link_text: '',
+  			pane_id: 'title_content',
+  			left: '75px',
+  			top: '100px',
+  			next_state: 'colors'
+  		},
+  		colors: {
+  			header: '3. Colors & Style',
+  			content: '',
+  			link_text: 'Customize your Theme',
+  			pane_id: 'colors_content',
+  			left: '75px',
+  			top: '150px',
+  			next_state: 'brand'
+  		},
+  		brand: {
+  			header: '4. Upload Logo',
+  			content: '',
+  			link_text: 'Upload my Logo',
+  			pane_id: 'brand_content',
+  			left: '75px',
+  			top: '200px',
+  			next_state: 'mls'
+  		},
+  		mls:  {
+  			header: '5. MLS Integration',
+  			content: '',
+  			link_text: 'Integrate with your MLS',
+  			pane_id: 'mls_content',
+  			left: '75px',
+  			top: '250px',
+  			next_state: 'listing'
+  		},
+  		listing: {
+  			header: '6. Post a Listing',
+  			content: '',
+  			link_text: 'Post my First Listing',
+  			pane_id: 'listing_content',
+  			left: '75px',
+  			top: '300px',
+  			next_state: 'post'
+  		},
+  		post: {
+  			header: '7. Make a Blog Post',
+  			content: '',
+  			link_text: 'Make a Post',
+  			pane_id: 'post_content',
+  			left: '75px',
+  			top: '350px',
+  			next_state: 'analytics'
+  		},
+  		analytics: {
+  			header: '8. Analytics',
+  			content: '',
+  			link_text: 'Integrate with Google',
+  			pane_id: 'analytics_content',
+  			left: '75px',
+  			top: '400px',
+  			next_state: 'confirm'
+  		},
+  		confirm: {
+  			header: 'Save your Changes',
+  			content: 'Alright, all done for now -- you can view these customization options in the future by visiting Appearance -> Customize from the admin panel',
+  			link_text: 'Take Me to my Site!',
+  			pane_id: 'confirm_content',
+  			left: '75px',
+  			top: '450px',
+  			next_state: ''
+  		}
+  	},
+  	active_state: 'welcome' // Initially set to this value for page_load...
+  }
+
+
+/*
+ * Onboarding Wizard actions + flow
+ */
+
+jQuery(document).ready(function($) {
+
+	// Main tooltip element...
+	var tooltip = $('#tooltip');
+
+	// Kick things off by positioning the tooltip based on it's inital active_state...
+	var initState = wizard_global.active_state;
+	var initStateObj = wizard_global.states[initState];
+	
+	tooltip.css('top', initStateObj.top);
+	tooltip.css('left', initStateObj.left);
+
+	// Bind main action of clicking tooltip link...
+	$('#tooltip .link a').on('click', function (event) {
+		event.preventDefault();
+
+		var currStateObj = wizard_global.states[wizard_global.active_state];
+		var nextStateObj = (currStateObj.next_state) ? wizard_global.states[currStateObj.next_state] : null;
+
+		// Initial state's link has been clicked...
+		if ( wizard_global.active_state == 'welcome' ) {
+			// Simply bring the tooltip in focus with the next state loaded...
+			tooltip.css('top', nextStateObj.top);
+			tooltip.css('left', nextStateObj.left);	
+			tooltip.show();
+		}
+		// Last state's link as been clicked...
+		else if ( !nextStateObj ) {
+			$('#confirm').trigger('click');
+		} 
+		// All else... (i.e., links that open panes)
+		else {
+			nextStateObj.pan_id
+		}
+	});
+
+	// Add handlers for menu items to parallel flow defined above...
+	$('#navlist li:not(.no-pane)').on('click', function (event) {
+		event.preventDefault();
+
+		
+	}
+
+});

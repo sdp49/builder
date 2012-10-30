@@ -59,8 +59,8 @@ var spinningBars = '<div id="spinner">'
 jQuery(document).ready(function($) {
 
  /*
-  * Add custom javascript here that applies/affects the customizer as a whole. 
-  * (Configured to execute on any load of customize.php)
+  * Using JS, give the customizer a "facelift" and structural re-org to create
+  * the "Placester" version...
   */
 
 	// Hide the "You are Previewing" div + header & footer--no hook to prevent these from
@@ -71,10 +71,9 @@ jQuery(document).ready(function($) {
 
 	$('div.wp-full-overlay').attr('id', 'full-overlay');
 	$('div.wp-full-overlay-sidebar-content').removeClass('wp-full-overlay-sidebar-content').attr('id', 'sidebar');
+	
 	$('#customize-theme-controls').first().attr('id', 'menu-nav');
 	$('#menu-nav > ul').first().attr('id', 'navlist');
-
-	// $('<section id="pane"></section>').appendTo('#menu-nav');
 	$('#menu-nav').after('<section id="pane"></section>');
 
 	var controlDivs = $('.control-container').detach();
