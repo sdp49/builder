@@ -129,7 +129,7 @@ jQuery(document).ready(function($) {
 
 
  /*
-  * Bind onboarding menu actions...
+  * Bind customizer menu actions...
   */
 
 	$('#hide_pane').on('click', function (event) {
