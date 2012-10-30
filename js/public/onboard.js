@@ -188,6 +188,9 @@ jQuery(document).ready(function($) {
           if ( tooltip.css('display') != 'none' ) {
             openStatePane();
           }
+          else {
+            tooltip.show();
+          }
         });
       }
 
@@ -209,12 +212,6 @@ jQuery(document).ready(function($) {
   $('#tooltip a.close').on('click', function (event) {
     event.preventDefault();
     tooltip.hide();
-  });
-
-  // Handle the user clicking on the menu after then have closed the tooltip...
-  $('#menu-overlay, #welcome-overlay').on('click', function (event) {
-    event.preventDefault();
-    tooltip.show();
   });
 
 });

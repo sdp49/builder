@@ -245,7 +245,14 @@ jQuery(document).ready(function($) {
 	            // setTimeout( function () { refreshPreview(); }, 300 );
 
 	            // Reload customizer to display new theme...
-	            window.location.reload(true);
+	            var curr_href = window.location.href;
+	            
+	           if ( curr_href.indexOf('onboard') != -1 && curr_href.indexOf('theme') == -1 ) {
+	            	window.location.href = curr_href + '&theme=changed'
+	            }
+	            else {
+	            	window.location.reload(true);
+	            }
 	        }
 	        else {
 	        	// If theme switch fails, hide progress so user can try again...
