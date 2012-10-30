@@ -132,7 +132,7 @@ jQuery(document).ready(function($) {
   * Bind customizer menu actions...
   */
 
-	$('#hide_pane').on('click', function (event) {
+	$('#hide_pane, #logo').on('click', function (event) {
 		$('#pane').css('display', 'none');
 		$('.control-container').css('display', 'none');
 
