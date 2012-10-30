@@ -606,11 +606,28 @@ div.disclaimer {
 	line-height: 18px;
 }
 
+div#welcome-overlay {
+	opacity: 0;
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	background-color: black;
+	opacity: .5;
+	z-index: 50;
+}
+
+div#menu-overlay {
+	position: fixed;
+	height: 100%;
+	width: 56px;
+	z-index: 50;
+}
+
 a.ico-responsive {
-	height:24px;
-	width:24px;
-	display:block;
-	background:url(../images/onboard_icons.png) -15px -743px;		
+	height: 24px;
+	width: 24px;
+	display: block;
+	background: url(../images/onboard_icons.png) -15px -743px;		
 }
 
 a.toggle-display {
@@ -630,8 +647,45 @@ a.toggle-display {
 	z-index: 100;
 }
 
-/* arrows - :before and :after */
-.tip:before {
+.tip h4 {
+	margin: 0px 0px 5px 0px;
+	padding: 0px;
+	font-size: 20px;
+	color: #4c4c4c;
+	font-weight: lighter;
+}
+
+.tip p.desc {
+	font-size: 13px;
+	color: #696969;
+	line-height: 18px;
+	margin: 5px 0px 5px 0px;	
+}
+
+.tip p.link a {
+	text-decoration: none;
+	color: #0c60a7;
+	font-weight: bold;
+	font-size: 13px;
+	margin: 0px;
+}
+
+.tip p.link a:hover {
+	text-decoration: underline;
+}
+
+.tip a.close {
+	display: none;
+	height: 27px;
+	width: 27px;
+	background: url(../images/onboard_icons.png) -13px -656px;
+	position: absolute;
+	right: -11px;
+	top: -11px;
+}
+
+/* tooltip arrow (using :before and :after) -- add/remove .arrow class to toggle its visibility */
+.arrow:before {
 	position: absolute;
 	display: inline-block;
 	border-top: 8px solid transparent;
@@ -643,7 +697,7 @@ a.toggle-display {
 	content: '';
 }
 
-.tip:after {
+.arrow:after {
 	position: absolute;
 	display: inline-block;
 	border-top: 8px solid transparent;
@@ -652,43 +706,6 @@ a.toggle-display {
 	left: -8px;
 	top: 21px;
 	content: '';
-}
-
-.tip h4 {
-	margin:0px 0px 5px 0px;
-	padding:0px;
-	font-size:20px;
-	color:#4c4c4c;
-	font-weight:lighter;
-}
-
-.tip p.desc {
-	font-size:13px;
-	color:#696969;
-	line-height:18px;
-	margin:5px 0px 5px 0px;	
-}
-
-.tip p.link a {
-	text-decoration:none;
-	color:#0c60a7;
-	font-weight:bold;
-	font-size:13px;
-	margin:0px;
-}
-
-.tip p.link a:hover {
-	text-decoration:underline;
-}
-
-.tip a.close {
-	height:27px;
-	width:27px;
-	background:url(../images/onboard_icons.png) -13px -656px;
-	display:block;
-	position:absolute;
-	right:-11px;
-	top:-11px;
 }
 
 .radio {

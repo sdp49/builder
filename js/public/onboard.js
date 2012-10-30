@@ -87,9 +87,77 @@ var wizard_global = {
   		}
   	},
   	initial_state: 'welcome', 
-  	active_state: this.initial_state // Set to initial value...
+  	active_state: 'welcome', // Set to initial value...
+    previewLoaded: function () {
+      // Kick things off by loading the initial state...
+      jQuery('#full-overlay').prepend('<div id="welcome-overlay"></div>');
+
+      wiz = this;
+      jQuery('#welcome-overlay').fadeIn(500, function () {
+        loadState(wiz.initial_state);
+      });
+    }
   }
 
+
+/*
+ * Onboarding global functions
+ */
+
+function loadState (state) {
+  var tooltip = jQuery('#tooltip');
+
+  // Retrieve associated state object...
+  var stateObj = wizard_global.states[state];
+  
+  // Populate tooltip w/given state's copy... (no need to do this for initial state, rendered in response)
+  if ( state != wizard_global.initial_state ) {
+    tooltip.find('h4').text(stateObj.header);
+    tooltip.find('p.desc').html(stateObj.content);
+    tooltip.find('.link a').text(stateObj.link_text);
+  }
+  
+  // Position tooltip + make sure it is visible...
+  tooltip.css('top', stateObj.top);
+  tooltip.css('left', stateObj.left);
+  tooltip.show();
+}
+
+function handleState (state) {
+  var tooltip = jQuery('#tooltip');
+
+  var currStateObj = wizard_global.states[wizard_global.active_state];
+  var nextStateObj = (currStateObj.next_state) ? wizard_global.states[currStateObj.next_state] : null;
+
+  
+  // // Last state's link as been clicked...
+  // else if ( !nextStateObj ) {
+  //  $('#confirm').trigger('click');
+  // } 
+  // // All else... (i.e., links that open panes)
+  // else {
+    
+  // }
+
+  // Set next state to active...
+  wizard_global.active_state = nextStateObj.next_state;
+}
+
+function moveToNextState () {
+  var currStateObj = wizard_global.states[wizard_global.active_state];
+  wizard_global.active_state = currStateObj.next_state;
+}
+
+function openStatePane () {
+  console.log('in openStatePane...');
+
+  // Just mimic related menu-item click...
+  jQuery('#' + wizard_global.active_state).trigger('click');
+
+  // Set active state to the next state + hide the tooltip...
+  moveToNextState();
+  jQuery('#tooltip').hide();
+}
 
 /*
  * Onboarding Wizard actions + flow
@@ -97,72 +165,56 @@ var wizard_global = {
 
 jQuery(document).ready(function($) {
 
-	// Main tooltip element...
-	var tooltip = $('#tooltip');
+   // Main tooltip element...
+  var tooltip = $('#tooltip');
 
-	function loadState (state) {
-		// Retrieve associated state object...
-		var stateObj = wizard_global.states[state];
-
-		// Populate tooltip w/given state's copy... (no need to do this for initial state, rendered in response)
-		if ( state != wizard_global.initial_state ) {
-			tooltip.find('h4').text(stateObj.header);
-			tooltip.find('p.desc').html(stateObj.content);
-			tooltip.find('a').text(stateObj.link_text);
-		}
-
-		// Position tooltip + make sure it is visible...
-		tooltip.css('top', stateObj.top);
-		tooltip.css('left', stateObj.left);
-		tooltip.show();
-	}
-
-	// Kick things off by loading the initial state...
-	loadState(wizard_global.initial_state);
-
-	function handleNextState (state) {
-		var currStateObj = wizard_global.states[wizard_global.active_state];
-		var nextStateObj = (currStateObj.next_state) ? wizard_global.states[currStateObj.next_state] : null;
-
-		
-		// Last state's link as been clicked...
-		else if ( !nextStateObj ) {
-			$('#confirm').trigger('click');
-		} 
-		// All else... (i.e., links that open panes)
-		else {
-			
-		}
-
-		// Set next state to active...
-		wizard_global.active_state = nextStateObj.
-	}
-
+  // Add handlers for menu items to add an extra step for onboarding on top of existing event-handlers...
 
 	// Bind main action of clicking tooltip link...
 	$('#tooltip .link a').on('click', function (event) {
 		event.preventDefault();
-		var currStateObj = wizard_global.states[active_state];
 
 		// Initial state's link has been clicked...
 		if ( wizard_global.active_state == wizard_global.initial_state ) {
-			// Simply bring the tooltip in focus with the next state loaded...
-			tooltip.hide();
-			loadState(wizard_global.active_state);
+      // Get rid of welcome overlay & hide tooltip
+      tooltip.hide();
+      $('#welcome-overlay').remove();
+
+      // Insert menu overlay (to prevent clicking other menu items directly...)
+      if ( $('#menu-overlay').length == 0 ) {
+        $('#menu-nav').prepend('<div id="menu-overlay"></div>');
+        $('#menu-overlay').on('click', function () { 
+          // If a pane is not already open (i.e., tooltip IS visible), move open active state's pane...
+          if ( tooltip.css('display') != 'none' ) {
+            openStatePane();
+          }
+        });
+      }
+
+      // Tack on tooltip display elements needed going forward...
+      tooltip.addClass('arrow');
+      tooltip.find('a.close').show();
+
+      //  Bring the tooltip back into focus with the next state loaded...
+			moveToNextState();
+      loadState(wizard_global.active_state);
 		}
 		else {
-			// Just mimic related menu-item click...
-			$('#' + wizard_global.active_state).trigger('click');
+      console.log('Here!');
+		  openStatePane();	
 		}
 	});
 
-	// Add handlers for menu items to add an extra step for onboarding on top of existing event-handlers...
-	$('#navlist li').on('click', function (event) {
-		event.preventDefault();
+  // Handle close tooltip close...
+  $('#tooltip a.close').on('click', function (event) {
+    event.preventDefault();
+    tooltip.hide();
+  });
 
-		// Set active state to the next state + hide the tooltip...
-		wizard_global.active_state = wizard_global.states[wizard_global.active_state].next_state;
-		tooltip.hide();
-	});
+  // Handle the user clicking on the menu after then have closed the tooltip...
+  $('#menu-overlay, #welcome-overlay').on('click', function (event) {
+    event.preventDefault();
+    tooltip.show();
+  });
 
 });
