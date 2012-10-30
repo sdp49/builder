@@ -76,7 +76,6 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		$pl_featured_listing_meta = isset( $values['pl_featured_listing_meta'] ) ? unserialize($values['pl_featured_listing_meta'][0]) : '';
 		$pl_featured_meta_value = empty( $pl_featured_listing_meta ) ? '' : $pl_featured_listing_meta['featured-listings-type'];
 		
-
 		// get link for iframe
 		$permalink = '';
 		if( isset( $_GET['post'] ) ) {
@@ -158,7 +157,6 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		$radio_def = isset( $values['radio-type'] ) ? $values['radio-type'][0] : 'state';
 		$select_id = 'nb-select-' . $radio_def;
 		$select_def = isset( $values[ $select_id ] ) ? $values[ $select_id ][0] : '0';
-
 		?>
 			<script type="text/javascript">
 			jQuery(document).ready(function($) {
@@ -219,7 +217,15 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		wp_nonce_field( 'pl_cpt_meta_box_nonce', 'meta_box_nonce' );
 	
 		echo '<section id="pl_location_tax" class="pl_neighborhood">';
-		echo PL_Taxonomy_Helper::taxonomies_as_checkboxes();
+		$taxonomies = PL_Taxonomy_Helper::get_taxonomies();
+		?>
+				<?php foreach ($taxonomies as $slug => $label): ?>
+					<section>
+						<input type="radio" id="<?php echo $slug ?>" name="radio-type" value="<?php echo $slug ?>">
+						<label for="<?php echo $slug ?>"><?php echo $label ?></label>
+					</section>
+				<?php endforeach ?>	
+		<?php
 		echo '</section>';
 		
 		$taxonomies = PL_Taxonomy_Helper::$location_taxonomies;
@@ -250,7 +256,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		echo '</div>'; // end of #widget-meta-wrapper
 	}
 	
-	public  function meta_box_save( $post_id ) {
+	public function meta_box_save( $post_id ) {
 		// Avoid autosaves
 		if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
 	
@@ -263,6 +269,16 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		foreach( $this->fields as $field => $values ) {
 			if( isset( $_POST[$field] ) ) {
 				update_post_meta( $post_id, $field, $_POST[$field] );
+			}
+		}
+		
+		if( isset( $_POST['radio-type'] ) ) {
+			$radio_type = $_POST['radio-type'];
+			$select_type = 'nb-select-' . $radio_type;
+			if( isset( $_POST[$select_type] ) ) {
+				// persist radio box storage based on what is saved
+				update_post_meta( $post_id, 'radio-type', $_POST['radio-type'] );
+				update_post_meta( $post_id, $select_type, $_POST[ $select_type ] );
 			}
 		}
 		

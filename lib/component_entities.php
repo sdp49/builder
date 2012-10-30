@@ -141,7 +141,7 @@ class PL_Component_Entity {
 		
 		$values = get_post_meta( $map_id );
 		$pl_featured_listing_meta = isset( $values['pl_featured_listing_meta'] ) ? unserialize($values['pl_featured_listing_meta'][0]) : '';
-		$pl_featured_meta_value = empty( $pl_featured_listing_meta ) ? '' : $pl_featured_listing_meta['featured-listings-type'];
+		$pl_featured_meta_value = empty( $pl_featured_listing_meta ) ? array() : $pl_featured_listing_meta['featured-listings-type'];
 		
 		$property_ids = array_flip( $pl_featured_meta_value );
 		
@@ -380,6 +380,7 @@ class PL_Component_Entity {
 				
 		public static function pl_neighborhood_entity( $atts ) {
 			ob_start();
+			$taxonomy = null;
 			
 			// API searches for neighborhood by slug
 			foreach( $atts as $key => $value ) {
@@ -387,21 +388,44 @@ class PL_Component_Entity {
 					$term = get_term_by('id', $value, $key);
 					if( ! empty( $term ) ) {
 						$atts[$key] = $term->slug;
+						$taxonomy = get_taxonomy( $key );
 					}
 				}
 			}
 			
-			$args = wp_parse_args($atts, array('','state' => false, 'city' => false, 'neighborhood' => false, 'zip' => false, 'street' => false, 'image_limit' => 20, 'width' => 400, 'height' => 400, 'zoom' => '16'));
-			$taxonomy = PLS_Taxonomy::get($args);
+// 			if( empty ( $taxonomy ) ) {
+// 				return;
+// 			}
+			
+			$args = wp_parse_args($atts, array('state' => false, 'city' => false, 'neighborhood' => false, 'zip' => false, 'street' => false, 'image_limit' => 20, 'width' => 400, 'height' => 400, 'zoom' => 16));
+			
 		?>
 			 <script type="text/javascript">
 				 if (typeof bootloader !== 'object') {
-						var bootloader;
-					}
+					var bootloader;
+				 }
 
-				 
+				 var taxonomy = jQuery.parseJSON(' <?php echo json_encode( $taxonomy ); ?> ');
+
 				  jQuery(document).ready(function( $ ) {
 					var map = new Map();
+					//var list = new List();
+					var listings = new Listings({
+					//	list: list,
+						map: map
+					});
+					var neighborhood = new Neighborhood({
+						map: map,
+			            type: taxonomy.name,
+			            name: escape(taxonomy.labels.name),
+			            slug: taxonomy.name
+					});
+
+					map.init({
+						type: 'neighborhood',
+						neighborhood: neighborhood,
+						listings: listings
+					});
 
 				  	if (typeof bootloader !== 'object') {
 				  		bootloader = new SearchLoader();
@@ -409,11 +433,22 @@ class PL_Component_Entity {
 				  	} else {
 				  		bootloader.add_param({map: map});
 				  	}
+
+				  	listings.init();
+				  	
 				  });
 		    </script>
 		
 			<?php
-			    echo PLS_Map::neighborhood( $taxonomy['listings_raw'], $atts, array(), $taxonomy['polygon'] );
+			    echo PLS_Map::polygon( null, array(
+					'width' => 629,
+					'height' => 303,
+					'zoom' => 16,
+					'polygon_search' => $taxonomy->taxonomy,
+					'polygon' => $taxonomy->slug,
+					'loading_overlay' => '<div id="spinner"><div class="bar1"></div><div class="bar2"></div><div class="bar3"></div><div class="bar4"></div><div class="bar5"></div><div class="bar6"></div><div class="bar7"></div><div class="bar8"></div></div>',
+					'class' => 'polygon_search') 
+				);
 			  	return ob_get_clean();  
 		}		
 		
