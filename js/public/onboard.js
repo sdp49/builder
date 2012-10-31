@@ -89,7 +89,7 @@ var wizard_global = {
   	initial_state: 'welcome', 
   	active_state: 'welcome', // Set to initial value...
     previewLoaded: function () {
-      if ( window.location.href.indexOf('theme=changed') == -1 ) {
+      if ( window.location.href.indexOf('theme_changed=true') == -1 ) {
         // Kick things off by loading the initial state...
         jQuery('#full-overlay').prepend('<div id="welcome-overlay"></div>');
 
@@ -100,6 +100,15 @@ var wizard_global = {
       }
       else {
         this.active_state = 'theme';
+
+        // Insert menu overlay (to prevent clicking other menu items directly...)
+        generateMenuOverlay();
+
+        // Tack on tooltip display elements needed going forward...
+        var tooltip = jQuery('#tooltip');
+        tooltip.addClass('arrow');
+        tooltip.find('a.close').show();
+
         moveToNextState();
         loadState(this.active_state);
       }    
@@ -146,6 +155,24 @@ function openStatePane () {
   jQuery('#tooltip').hide();
 }
 
+function generateMenuOverlay () {
+  var tooltip = jQuery('#tooltip');
+
+  // Check for existence -- create and bind event if not there...
+  if ( jQuery('#menu-overlay').length == 0 ) {
+    jQuery('#menu-nav').prepend('<div id="menu-overlay"></div>');
+    jQuery('#menu-overlay').on('click', function () { 
+      // If a pane is not already open (i.e., tooltip IS visible), move open active state's pane...
+      if ( tooltip.css('display') != 'none' ) {
+        openStatePane();
+      }
+      else {
+        tooltip.show();
+      }
+    });
+  }
+}
+
 /*
  * Onboarding Wizard actions + flow
  */
@@ -168,18 +195,7 @@ jQuery(document).ready(function($) {
       $('#welcome-overlay').remove();
 
       // Insert menu overlay (to prevent clicking other menu items directly...)
-      if ( $('#menu-overlay').length == 0 ) {
-        $('#menu-nav').prepend('<div id="menu-overlay"></div>');
-        $('#menu-overlay').on('click', function () { 
-          // If a pane is not already open (i.e., tooltip IS visible), move open active state's pane...
-          if ( tooltip.css('display') != 'none' ) {
-            openStatePane();
-          }
-          else {
-            tooltip.show();
-          }
-        });
-      }
+      generateMenuOverlay();
 
       // Tack on tooltip display elements needed going forward...
       tooltip.addClass('arrow');

@@ -244,8 +244,8 @@ jQuery(document).ready(function($) {
 	            // Reload customizer to display new theme...
 	            var curr_href = window.location.href;
 	            
-	           	if ( curr_href.indexOf('onboard=true') != -1 && curr_href.indexOf('theme=changed') == -1 ) {
-	            	window.location.href = curr_href + '&theme=changed'
+	           	if ( curr_href.indexOf('onboard=true') != -1 && curr_href.indexOf('theme_changed=true') == -1 ) {
+	            	window.location.href = curr_href + '&theme_changed=true';
 	            }
 	            else {
 	            	window.location.reload(true);
