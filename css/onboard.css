@@ -636,8 +636,10 @@ a.toggle-display {
 }
 
 a.wizard-next {
-	float: right;
-	font-size: 12px;
+	position: fixed;
+	top: 15px;
+	left: 450px;
+	font-size: 13px;
 }
 
 .tip {
