@@ -3,7 +3,9 @@
 <?php  
 
 	$response = wp_remote_get("http://placester.com/wp-admin/admin-ajax.php?action=get_themes_api", array('timeout' => 10));
-
+	ob_start();
+	  pls_dump($response);
+	error_log(ob_get_clean());
 ?>
 <form class="search-form filter-form" action="" method="get">
 	<!-- <div class="theme-search-wrapper">
@@ -42,7 +44,8 @@
 	</table>		
 </form>
 
-<?php echo PL_Router::load_builder_partial('free-trial.php'); ?>		
+<!-- Commenting out for now, this is already included by default in all Placester admin pages... -->
+<?php // echo PL_Router::load_builder_partial('free-trial.php'); ?>		
 
 
 <?php /*
