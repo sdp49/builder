@@ -102,12 +102,12 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
             "type" => "textarea"
         ),  
 
-        array(
-            'name' => 'Upload Logo',
-            'desc' => 'Display Your Brand',
-            'id' => 'brand',
-            'type' => 'heading'
-        ),
+        // array(
+        //     'name' => 'Upload Logo',
+        //     'desc' => 'Display Your Brand',
+        //     'id' => 'brand',
+        //     'type' => 'heading'
+        // ),
 
         // array(
         //     'name' => 'Site Logo',
@@ -129,7 +129,7 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
         ), 
 
         array(
-            'name' => 'Create a Property Listing',
+            'name' => 'Create a Listing',
             'desc' => 'Quickly Add the First Listing to your Site',
             'id' => 'listing',
             'type' => 'heading'
