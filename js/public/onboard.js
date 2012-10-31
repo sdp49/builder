@@ -227,4 +227,9 @@ jQuery(document).ready(function($) {
 
   // });
 
+  // Custom additional handler for submit theme that prevents the beforeunload prompt...
+  $('#submit_theme').on('click', function (event) {
+    customizer_global.stateAltered = false;
+  });
+
 });
