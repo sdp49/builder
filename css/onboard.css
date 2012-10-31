@@ -635,6 +635,13 @@ a.toggle-display {
 	font-size: 14px;
 }
 
+a.wizard-next {
+	position: fixed;
+	top: 15px;
+	left: 445px;
+	font-size: 13px;
+}
+
 .tip {
 	display: none;
 	background: #f7f7f7;
