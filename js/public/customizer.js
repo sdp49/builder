@@ -8,7 +8,7 @@ var ajaxurl = window.location.origin + '/wp-admin/admin-ajax.php';
 // This global variable must be defined in order to conditionally prevent iframes from being
 // automatically "busted" when in the hosted environment... (see hosted-modifications plugin)
 var customizer_global = {
-	refreshing: false,
+	refreshing: true,
 	previewLoaded: function () {
 		// alert('Preview finished loading...');
 		// jQuery('#customize-preview').removeClass('preview-load-indicator');
@@ -39,18 +39,22 @@ window.onbeforeunload = function () {
 	}
 }
 
-// Define AJAX spinner...
-var spinningBars = '<div id="spinner">'
-				   + '<div class="bar1"></div>'
-				   + '<div class="bar2"></div>'
-				   + '<div class="bar3"></div>'
-				   + '<div class="bar4"></div>' 
-				   + '<div class="bar5"></div>'
-				   + '<div class="bar6"></div>'
-				   + '<div class="bar7"></div>'
-				   + '<div class="bar8"></div>'
-				   + '</div>';
+// Generate AJAX spinner...
+function newSpinner (id) {
+	var attrID = id ? id : 'spinner';
+	var spinnerElem = '<div id="' + attrID + '" class="spinningBars">'
+					  + '<div class="bar1"></div>'
+					  + '<div class="bar2"></div>'
+					  + '<div class="bar3"></div>'
+					  + '<div class="bar4"></div>' 
+					  + '<div class="bar5"></div>'
+					  + '<div class="bar6"></div>'
+					  + '<div class="bar7"></div>'
+					  + '<div class="bar8"></div>'
+					  + '</div>';
 
+	return spinnerElem;				   
+}
 
 /*
  * Main JS
@@ -143,15 +147,11 @@ jQuery(document).ready(function($) {
 		}
 	});
 
-	$('#navlist #logo').on('click', function (event) {
-		
-	});
-
 	$('#navlist li:not(.no-pane)').on('click', function (event) {
 		event.preventDefault();
 
-		// If activated menu section is clicked, do nothing...
-		if ( $(this).hasClass('active') ) { return; }
+		// If activated menu section is clicked OR preview is refreshing/loading, do nothing...
+		if ( $(this).hasClass('active') || customizer_global.refreshing ) { return; }
 
 		// Remove active class from any existing elements...
 		var activeLi = $('#navlist li.active');
@@ -211,7 +211,7 @@ jQuery(document).ready(function($) {
 		}
 
 		var infoElem = $('#theme_info');
-		infoElem.prepend(spinningBars);
+		infoElem.prepend(newSpinner());
 		infoElem.css('opacity', '0.7');
 
 		data = { action: 'load_theme_info', theme: $(this).val() };
@@ -236,16 +236,20 @@ jQuery(document).ready(function($) {
 
 		// Show spinner to indicate theme activation is in progress...
 		var infoElem = $('#theme_info');
-		infoElem.prepend(spinningBars);
+		infoElem.prepend(newSpinner());
 		infoElem.css('opacity', '0.7');
 
 		$.post(ajaxurl, data, function (response) {
 	        if ( response && response.success ) {
-	        	console.log(response.success);
-	            // setTimeout( function () { refreshPreview(); }, 300 );
-
 	            // Reload customizer to display new theme...
-	            window.location.reload(true);
+	            var curr_href = window.location.href;
+	            
+	           	if ( curr_href.indexOf('onboard=true') != -1 && curr_href.indexOf('theme_changed=true') == -1 ) {
+	            	window.location.href = curr_href + '&theme_changed=true';
+	            }
+	            else {
+	            	window.location.reload(true);
+	            }
 	        }
 	        else {
 	        	// If theme switch fails, hide progress so user can try again...
