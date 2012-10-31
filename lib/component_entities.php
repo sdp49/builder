@@ -417,7 +417,7 @@ class PL_Component_Entity {
 					var neighborhood = new Neighborhood({
 						map: map,
 			            type: taxonomy.name,
-			            name: escape(taxonomy.labels.name),
+			            name: taxonomy.labels.name,
 			            slug: taxonomy.name
 					});
 

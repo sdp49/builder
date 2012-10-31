@@ -56,7 +56,7 @@ class PL_Post_Type_Manager {
 	}
 	
 	// Helper for wrapping the name based on post_type filename
-	private static function get_post_type_title_helper( $post_type ) {
+	public static function get_post_type_title_helper( $post_type ) {
 		$title = '';
 		$type_parts = explode( '_', $post_type );
 		foreach( $type_parts as $part ) {

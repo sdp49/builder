@@ -57,16 +57,18 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		register_post_type('pl_general_widget', $args );
 	}
 	
+	public function __construct() {
+		parent::__construct();
+		
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_styles' ) );
+		add_filter( 'manage_edit-pl_general_widget_columns' , array( $this, 'widget_edit_columns' ) );
+ 		add_filter( 'manage_pl_general_widget_posts_custom_column', array( $this, 'widget_custom_columns' ) );
+		
+	}
+ 	
 	
 	public  function meta_box() {
-		add_meta_box( 'pl-meta-box-preview', 'Preview', array( $this, 'pl_preview_meta_box_cb'), 'pl_general_widget', 'normal', 'high' );
 		add_meta_box( 'my-meta-box-id', 'Placester Widgets', array( $this, 'pl_widgets_meta_box_cb'), 'pl_general_widget', 'normal', 'high' );
-	}
-	
-	public function pl_preview_meta_box_cb( $post ) {
-	?>
-		<div id="pl_widget_preview"></div>
-	<?php 	
 	}
 	
 	// add meta box for featured listings- adding custom fields
@@ -81,7 +83,10 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		if( isset( $_GET['post'] ) ) {
 			$permalink = get_permalink($post->ID);
 		}
-		
+		?>
+		<div id='preview-meta-widget'>
+		</div>
+		<?php 
 		echo '<div id="widget-meta-wrapper">';
 		
 		$width =  isset( $values['width'] ) && ! empty( $values['width'][0] ) ? $values['width'][0] : '300';
@@ -89,13 +94,8 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		$style = ' style="width: ' . $width . 'px; height: ' . $height . 'px" ';
 		
 		if( ! empty( $permalink ) ):
-		$iframe = '<iframe src="' . $permalink . '"'. $style . '></iframe>';
-		?>		<div id="iframe_code">
-					<h2>Map Frame code</h2>
-					<p>Use this code snippet inside of a page: <strong><?php echo esc_html( $iframe ); ?></strong></p>
-					<em>By copying this code and pasting it into a page you display your view.</em>
-				</div>
-		<?php endif; ?>
+			$iframe = '<iframe src="' . $permalink . '"'. $style . '></iframe>';
+		endif; ?>
 		<div class="pl_widget_block">
 		<?php // get meta values from custom fields
 		foreach( $this->fields as $field => $arguments ) {
@@ -107,7 +107,6 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				
 			echo PL_Form::item($field, $arguments, 'POST');
 		}
-		
 		?>
 		</div>
 		
@@ -129,24 +128,25 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 							wp_enqueue_script('featured-listing', OPTIONS_FRAMEWORK_DIRECTORY.'js/featured-listing.js', array('jquery'));
 					
 							// Generate the popup dialog with featured			
-							echo pls_generate_featured_listings_ui(array(
-												'name' => 'Featured Meta',
-												'desc' => '',
-												'id' => 'featured-listings-type',
-												'type' => 'featured_listing'
-												) ,$pl_featured_meta_value
-												, 'pl_featured_listing_meta');
+// 							echo pls_generate_featured_listings_ui(array(
+// 												'name' => 'Featured Meta',
+// 												'desc' => '',
+// 												'id' => 'featured-listings-type',
+// 												'type' => 'featured_listing'
+// 												) ,$pl_featured_meta_value
+// 												, 'pl_featured_listing_meta');
 						?>
 						</div><!-- end of #pl_featured_listing_block -->
 						<div id="pl_static_listing_block">
-								<?php echo PL_Form::generate_form(
-											PL_Config::PL_API_LISTINGS('get', 'args'),
-											array('method' => "POST", 
-													'title' => true,
-													'wrap_form' => false, 
-											 		'echo_form' => false, 
-													'include_submit' => false, 
-													'id' => 'pls_admin_my_listings')); ?>
+								<?php 
+// 								echo PL_Form::generate_form(
+// 											PL_Config::PL_API_LISTINGS('get', 'args'),
+// 											array('method' => "POST", 
+// 													'title' => true,
+// 													'wrap_form' => false, 
+// 											 		'echo_form' => false, 
+// 													'include_submit' => false, 
+// 													'id' => 'pls_admin_my_listings')); ?>
 						</div><!-- end of #pl_static_listing_block -->
 					</div>
 				<div>
@@ -198,6 +198,10 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 					});
 				});
 
+				$('#widget-meta-wrapper section input, #widget-meta-wrapper section select').on('change', function() {
+					autosave();
+				});
+
 				$('#pl_static_listing_block #advanced').css('display', 'none');
 				$('#pl_static_listing_block #amenities').css('display', 'none');
 				$('#pl_static_listing_block #custom').css('display', 'none');
@@ -209,10 +213,16 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 					$('#pl_static_listing_block #amenities').css('display', 'block');
 					$('#pl_static_listing_block #custom').css('display', 'block');
 				});
+
+				<?php if( ! empty( $_GET['post'] ) ) { ?>
+				$('#edit-slug-box').html('<?php echo esc_html( $iframe ); ?>');
+				$('#edit-slug-box').show();
+				
+				<?php }	?>
 			});
 			</script>	
 				
-		<?php 	
+		<?php 
 		
 		wp_nonce_field( 'pl_cpt_meta_box_nonce', 'meta_box_nonce' );
 	
@@ -258,7 +268,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	
 	public function meta_box_save( $post_id ) {
 		// Avoid autosaves
-		if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+// 		if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
 	
 		// Verify nonces for ineffective calls
 		if( !isset( $_POST['meta_box_nonce'] ) || !wp_verify_nonce( $_POST['meta_box_nonce'], 'pl_cpt_meta_box_nonce' ) ) return;
@@ -311,6 +321,48 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		
 		// Silence is gold.
 	}
+	
+	public function admin_styles( $hook ) {
+		if( ( $hook === 'post.php' && ! empty( $_GET['post'] ) )
+			|| ( $hook === 'post-new.php' && ! empty( $_GET['post_type'] ) && $_GET['post_type'] == 'pl_general_widget' ) ) {
+			global $post;
+			if( ! empty( $post ) && $post->post_type === 'pl_general_widget' ) {
+				wp_enqueue_style( 'placester-widget', trailingslashit( PL_CSS_ADMIN_URL ) . 'placester-widget.css' );
+			}
+		}
+	}
+	
+	public function widget_edit_columns( $columns ) {
+// 		$columns = array(
+// 				"cb" => "<input type=\"checkbox\" />",
+// 				"title" => "Portfolio Title",
+// 				"description" => "Description",
+// 				"year" => "Year Completed",
+// 				"skills" => "Skills",
+// 		);
+
+		$new_columns = array(); 
+		$new_columns['title'] = $columns['title']; 
+		$new_columns['type'] = "Widget type";
+		$new_columns['date'] = $columns['date'];
+	
+		return $new_columns;
+	}
+	
+	public function widget_custom_columns( $column ) {
+		global $post;
+		$widget_type = get_post_meta( $post->ID, 'pl_post_type', true );
+	
+		switch ($column) {
+			case "type":
+				if( ! empty( $widget_type ) ) {
+					echo PL_Post_Type_Manager::get_post_type_title_helper( $widget_type );
+				}
+				break;
+		}
+	}
+
 }
+
 
 new PL_General_Widget_CPT();
