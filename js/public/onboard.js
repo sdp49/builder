@@ -73,31 +73,39 @@ var wizard_global = {
   	active_state: 'welcome', // Set to initial value...
     top_default: 50,
     left_default: 75,
+    top_reload: true,
     previewLoaded: function () {
-      if ( window.location.href.indexOf('theme_changed=true') == -1 ) {
-        // Kick things off by loading the initial state...
-        jQuery('#full-overlay').prepend('<div id="welcome-overlay"></div>');
+      // Only perform these actions the FIRST time the preview loads...
+      if ( this.top_reload ) 
+      {
+        if ( window.location.href.indexOf('theme_changed=true') == -1 ) {
+          // Kick things off by loading the initial state...
+          jQuery('#full-overlay').prepend('<div id="welcome-overlay"></div>');
 
-        wiz = this;
-        jQuery('#welcome-overlay').fadeIn(500, function () {
-          loadState(wiz.initial_state);
-        });
+          wiz = this;
+          jQuery('#welcome-overlay').fadeIn(500, function () {
+            loadState(wiz.initial_state);
+          });
+        }
+        else {
+          this.active_state = 'theme';
+          this.state_num = 1; // This is subject to change...
+
+          // Insert menu overlay (to prevent clicking other menu items directly...)
+          generateMenuOverlay();
+
+          // Tack on tooltip display elements needed going forward...
+          var tooltip = jQuery('#tooltip');
+          tooltip.addClass('arrow');
+          tooltip.find('a.close').show();
+
+          moveToNextState();
+          loadState(this.active_state);
+        }
       }
-      else {
-        this.active_state = 'theme';
-        this.state_num = 1; // This is subject to change...
-
-        // Insert menu overlay (to prevent clicking other menu items directly...)
-        generateMenuOverlay();
-
-        // Tack on tooltip display elements needed going forward...
-        var tooltip = jQuery('#tooltip');
-        tooltip.addClass('arrow');
-        tooltip.find('a.close').show();
-
-        moveToNextState();
-        loadState(this.active_state);
-      }    
+      
+      // Ensures we only do this once per main page load (i.e., only the first time the preview is loaded)...
+      this.top_reload = false;
     }
   }
 
@@ -105,6 +113,10 @@ var wizard_global = {
 /*
  * Onboarding global functions
  */
+
+function onMainLoad () {
+
+}
 
 function loadState (state) {
   var tooltip = jQuery('#tooltip');
