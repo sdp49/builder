@@ -89,13 +89,20 @@ var wizard_global = {
   	initial_state: 'welcome', 
   	active_state: 'welcome', // Set to initial value...
     previewLoaded: function () {
-      // Kick things off by loading the initial state...
-      jQuery('#full-overlay').prepend('<div id="welcome-overlay"></div>');
+      if ( window.location.href.indexOf('theme=changed') == -1 ) {
+        // Kick things off by loading the initial state...
+        jQuery('#full-overlay').prepend('<div id="welcome-overlay"></div>');
 
-      wiz = this;
-      jQuery('#welcome-overlay').fadeIn(500, function () {
-        loadState(wiz.initial_state);
-      });
+        wiz = this;
+        jQuery('#welcome-overlay').fadeIn(500, function () {
+          loadState(wiz.initial_state);
+        });
+      }
+      else {
+        this.active_state = 'theme';
+        moveToNextState();
+        loadState(this.active_state);
+      }    
     }
   }
 
@@ -123,26 +130,6 @@ function loadState (state) {
   tooltip.show();
 }
 
-function handleState (state) {
-  var tooltip = jQuery('#tooltip');
-
-  var currStateObj = wizard_global.states[wizard_global.active_state];
-  var nextStateObj = (currStateObj.next_state) ? wizard_global.states[currStateObj.next_state] : null;
-
-  
-  // // Last state's link as been clicked...
-  // else if ( !nextStateObj ) {
-  //  $('#confirm').trigger('click');
-  // } 
-  // // All else... (i.e., links that open panes)
-  // else {
-    
-  // }
-
-  // Set next state to active...
-  wizard_global.active_state = nextStateObj.next_state;
-}
-
 function moveToNextState () {
   var currStateObj = wizard_global.states[wizard_global.active_state];
   wizard_global.active_state = currStateObj.next_state;
@@ -164,11 +151,11 @@ function openStatePane () {
  */
 
 jQuery(document).ready(function($) {
+  // Append "next/skip" to existing panes...
+  $('.control-container').prepend('<a class="wizard-next" href="#">Move to Next Step</a>');
 
-   // Main tooltip element...
+  // Main tooltip element...
   var tooltip = $('#tooltip');
-
-  // Add handlers for menu items to add an extra step for onboarding on top of existing event-handlers...
 
 	// Bind main action of clicking tooltip link...
 	$('#tooltip .link a').on('click', function (event) {
@@ -203,7 +190,7 @@ jQuery(document).ready(function($) {
       loadState(wizard_global.active_state);
 		}
 		else {
-      console.log('Here!');
+      // console.log('Here!');
 		  openStatePane();	
 		}
 	});
@@ -213,5 +200,19 @@ jQuery(document).ready(function($) {
     event.preventDefault();
     tooltip.hide();
   });
+
+  // Load the next state...
+  $('a.wizard-next').on('click', function (event) {
+    // Mimic hide-pane functionality...
+    $('#logo').trigger('click');
+
+    // Load the activate state (which was bumped to next when the last pane appeared)...
+    loadState(wizard_global.active_state);
+  });
+
+  // Detect any submission/input button clicks from inside the pane...
+  // $('.control-container input[type=button]').on('click', function (event) {
+
+  // });
 
 });

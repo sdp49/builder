@@ -635,6 +635,11 @@ a.toggle-display {
 	font-size: 14px;
 }
 
+a.wizard-next {
+	float: right;
+	font-size: 12px;
+}
+
 .tip {
 	display: none;
 	background: #f7f7f7;

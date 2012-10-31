@@ -299,7 +299,7 @@ textarea.invalid {
   -moz-transform:rotate(315deg) translate(0, -40px);
   -webkit-transform:rotate(315deg) translate(0, -40px);opacity:1;
 }
-#spinner {
+.spinningBars {
   position: absolute;
   top: 30%;
   left: 270px;
@@ -313,7 +313,7 @@ textarea.invalid {
   -webkit-transform: scale(0.5);
 }
 
-#spinner div {
+.spinningBars div {
   width: 10px;
   height: 30px;
   background: #000;
@@ -325,7 +325,7 @@ textarea.invalid {
   from {-webkit-transform:scale(0.5) rotate(0deg);}
   to {-webkit-transform:scale(0.5) rotate(360deg);}
 }
-#spinner {
+.spinningBars {
   -webkit-animation-name: rotateThis;
   -webkit-animation-duration: 1.5s;
   -webkit-animation-iteration-count: infinite;
