@@ -119,7 +119,9 @@ class PL_Js_Helper {
 
 	public function customizer() {
 		self::register_enqueue_if_not('customizer', trailingslashit(PL_JS_PUB_URL) . 'customizer.js', array('jquery'));
-		self::register_enqueue_if_not('new-colorpicker', trailingslashit(PL_JS_URL) .  'lib/colorpicker/js/colorpicker.js', array( 'jquery'));
+		if ( PL_Customizer_Helper::is_onboarding() ) {
+			self::register_enqueue_if_not('onboard', trailingslashit(PL_JS_PUB_URL) . 'onboard.js', array('jquery'));
+		}
 
 		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/js/jquery-ui-1.8.17.custom.min.js', array( 'jquery'));
 		self::register_enqueue_if_not('global', trailingslashit(PL_JS_URL) .  'admin/global.js', array( 'jquery-ui'));

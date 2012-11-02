@@ -8,7 +8,7 @@ var ajaxurl = window.location.origin + '/wp-admin/admin-ajax.php';
 // This global variable must be defined in order to conditionally prevent iframes from being
 // automatically "busted" when in the hosted environment... (see hosted-modifications plugin)
 var customizer_global = {
-	refreshing: false,
+	refreshing: true,
 	previewLoaded: function () {
 		// alert('Preview finished loading...');
 		// jQuery('#customize-preview').removeClass('preview-load-indicator');
@@ -28,16 +28,43 @@ window.onload = function () {
 
 	// If there's a theme arg in the query string, user just switched themes so make
 	// sure to have the theme selection pane appear upon page load...
-	if ( window.location.href.indexOf('theme=') != -1 ) {
+	if ( window.location.href.indexOf('theme_change=true') != -1 ) {
 		jQuery('li#theme').trigger('click');
 	}  
 }
 
+window.onbeforeunload = function () {
+	if ( customizer_global.stateAltered ) {
+		return 'You have unsaved changes that will be lost!';
+	}
+}
+
+// Generate AJAX spinner...
+function newSpinner (id) {
+	var attrID = id ? id : 'spinner';
+	var spinnerElem = '<div id="' + attrID + '" class="spinningBars">'
+					  + '<div class="bar1"></div>'
+					  + '<div class="bar2"></div>'
+					  + '<div class="bar3"></div>'
+					  + '<div class="bar4"></div>' 
+					  + '<div class="bar5"></div>'
+					  + '<div class="bar6"></div>'
+					  + '<div class="bar7"></div>'
+					  + '<div class="bar8"></div>'
+					  + '</div>';
+
+	return spinnerElem;				   
+}
+
+/*
+ * Main JS
+ */
+
 jQuery(document).ready(function($) {
 
  /*
-  * Add custom javascript here that applies/affects the customizer as a whole. 
-  * (Configured to execute on any load of customize.php)
+  * Using JS, give the customizer a "facelift" and structural re-org to create
+  * the "Placester" version...
   */
 
 	// Hide the "You are Previewing" div + header & footer--no hook to prevent these from
@@ -48,10 +75,9 @@ jQuery(document).ready(function($) {
 
 	$('div.wp-full-overlay').attr('id', 'full-overlay');
 	$('div.wp-full-overlay-sidebar-content').removeClass('wp-full-overlay-sidebar-content').attr('id', 'sidebar');
+	
 	$('#customize-theme-controls').first().attr('id', 'menu-nav');
 	$('#menu-nav > ul').first().attr('id', 'navlist');
-
-	// $('<section id="pane"></section>').appendTo('#menu-nav');
 	$('#menu-nav').after('<section id="pane"></section>');
 
 	var controlDivs = $('.control-container').detach();
@@ -89,25 +115,28 @@ jQuery(document).ready(function($) {
 		setPreviewLoading();
 	}
 
-	// TODO: Remove this, it's for testing purposes...
-	refPrev = refreshPreview;
+	// NOTE: Uncomment this for testing purposes...
+	// refPrev = refreshPreview;
 
-	$('#customize-control-pls-google-analytics_ctrl input[type=text]').on('keyup', function (event) {
-		setPreviewLoading();
-	});
+	$('[data-customize-setting-link]').on('keyup change', function (event) { 
+		if ( !customizer_global.stateAltered ) {
+			var conf = $('#confirm');
+			conf.fadeTo(600, 1, function() {
+				conf.fadeTo(600, 0.3, function() {
+						conf.fadeTo(600, 1);
+				});
+			});
 
-	$('select.of-typography').on('change', function (event) {
-		setPreviewLoading();
+			customizer_global.stateAltered = true;
+		}
 	});
 
 
  /*
-  * Bind onboarding menu actions...
+  * Bind customizer menu actions...
   */
 
-	$('#hide_pane').on('click', function (event) {
-		console.log('clicked!');
-		console.log(this);
+	$('#hide_pane, #logo').on('click', function (event) {
 		$('#pane').css('display', 'none');
 		$('.control-container').css('display', 'none');
 
@@ -118,15 +147,11 @@ jQuery(document).ready(function($) {
 		}
 	});
 
-	$('#navlist #logo').on('click', function (event) {
-		
-	});
-
 	$('#navlist li:not(.no-pane)').on('click', function (event) {
 		event.preventDefault();
 
-		// If activated menu section is clicked, do nothing...
-		if ( $(this).hasClass('active') ) { return; }
+		// If activated menu section is clicked OR preview is refreshing/loading, do nothing...
+		if ( $(this).hasClass('active') || customizer_global.refreshing ) { return; }
 
 		// Remove active class from any existing elements...
 		var activeLi = $('#navlist li.active');
@@ -151,15 +176,16 @@ jQuery(document).ready(function($) {
 
 	$('#confirm').on('click', function (event) {
 		event.preventDefault();
+		if ( !customizer_global.stateAltered ) { return; }
+
 		setPreviewLoading();
-
 		$('#save').trigger('click');
-		// console.log('Finished saving...');
+		
+		// Set this back to false so that user won't be prompted about "losing changes" 
+		// when re-directing back to homepage...
+		customizer_global.stateAltered = false;
+		
 		setTimeout( function () { window.location.href = window.location.origin; }, 1200 ); 
-	});
-
-	$('input[data-customize-setting-link]').on('change', function (event) { 
-		console.log('saving shit...');
 	});
 
 	$('.control-container label').on('click', function (event) {
@@ -168,7 +194,7 @@ jQuery(document).ready(function($) {
 
 
  /*
-  * Handles switching themes in the preview iframe...
+  * Handles theme selection...
   */
 
 	$('#theme_choices').on('change', function (event) {
@@ -182,7 +208,11 @@ jQuery(document).ready(function($) {
 		// Might not be necessary--done to handle all cases properly
 			submitElem.removeAttr('disabled');
 			submitElem.removeClass('bt-disabled');
-		}	
+		}
+
+		var infoElem = $('#theme_info');
+		infoElem.prepend(newSpinner());
+		infoElem.css('opacity', '0.7');
 
 		data = { action: 'load_theme_info', theme: $(this).val() };
 		
@@ -192,7 +222,8 @@ jQuery(document).ready(function($) {
 		$.post(ajaxurl, data, function (response) {
 	        if ( response && response.theme_info ) {
 	            // Populate theme info with new html...
-	            $('#theme_info').html(response.theme_info);
+	            infoElem.html(response.theme_info);
+	            infoElem.css('opacity', '1');
 	        }
 	    },'json');
 	});
@@ -200,16 +231,30 @@ jQuery(document).ready(function($) {
 	$('#submit_theme').on('click', function (event) {
 		data = { action: 'change_theme', new_theme: $('#theme_choices').val() };
 		
-		console.log(data);
+		// console.log(data);
 		// return;
+
+		// Show spinner to indicate theme activation is in progress...
+		var infoElem = $('#theme_info');
+		infoElem.prepend(newSpinner());
+		infoElem.css('opacity', '0.7');
 
 		$.post(ajaxurl, data, function (response) {
 	        if ( response && response.success ) {
-	        	console.log(response.success);
-	            // setTimeout( function () { refreshPreview(); }, 300 );
-
 	            // Reload customizer to display new theme...
-	            window.location.reload(true);
+	            var curr_href = window.location.href;
+	            
+	           	if ( curr_href.indexOf('onboard=true') != -1 && curr_href.indexOf('theme_changed=true') == -1 ) {
+	            	window.location.href = curr_href + '&theme_changed=true';
+	            }
+	            else {
+	            	window.location.reload(true);
+	            }
+	        }
+	        else {
+	        	// If theme switch fails, hide progress so user can try again...
+	        	infoElem.remove('#theme_info #spinner');
+	        	infoElem.css('opacity', '1');
 	        }
 	    },'json');
 	});
@@ -422,8 +467,15 @@ jQuery(document).ready(function($) {
 		// Check for wp JS object (we need this to update styling) and for current theme support--exit if either are false...
 		var supportedThemeList = ['columbus','ventura'];
 		if (!_wpCustomizeSettings || supportedThemeList.indexOf(_wpCustomizeSettings.theme.stylesheet) == -1 ) {
+			var errMsg = $('#color_message.error');
+			errMsg.html('<h3>Sorry, this feature is currently not available for this theme</h3>');
+			errMsg.show();
+
 			return;
 		}
+
+		// Just in case...
+		$('#color_message.error').hide();
 
 		// Let the user know there's work being done...
 		setPreviewLoading();

@@ -81,6 +81,8 @@ define( 'PL_THIRD_PARTY_URL', trailingslashit(PL_PARENT_URL) . 'third-party/' );
 define('ADMIN_URL', trailingslashit( admin_url() ) );
 define('ADMIN_MENU_URL', trailingslashit( ADMIN_URL ) . 'admin.php' );
 
+// Demo Account API Key
+define('DEMO_API_KEY', '3eb444f8869cb88bbc349586573aabbb84a316d7');
 
 //config
 include_once('config/toggle_form_sections.php');
@@ -242,6 +244,11 @@ function iframe_load_notify () {
         window.onload = function () {  
             if ( (top.location != self.location) && top.customizer_global ) {
                 top.customizer_global.previewLoaded();
+
+                // Check for onboarding wizard, throw appropriate event..
+                if ( top.wizard_global ) {
+                    top.wizard_global.previewLoaded();
+                }
             }
         }
     </script>

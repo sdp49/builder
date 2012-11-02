@@ -136,7 +136,7 @@ function define_custom_controls()
 			  </select>
 	        </div><!--theme-switcher-->
 	        
-	        <div id="theme_info">
+	        <div id="theme_info" style="min-height: 300px">
 	          <?php $screenshot = $this->manager->theme()->get_screenshot(); ?>
 	          <div class="theme-screenshot">
 	            <img src="<?php echo esc_url( $screenshot ); ?>" />
@@ -303,6 +303,10 @@ function define_custom_controls()
    			  								 'Violet' => '#800080',
    			  								 'Golden' => '#CCB400'); 
    			  	?>
+
+   			  	<div id="color_message" class="error" style="display: none">
+   			  	  <!-- Inject error message(s) here... -->
+   			  	</div>
 
    			  	<div id="switcher">
 		          <h2>Select Palette</h2>
