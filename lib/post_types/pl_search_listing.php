@@ -173,7 +173,7 @@ class PL_Search_Listing_CPT extends PL_Post_Base {
 	public static function post_type_templating( $single ) {
 		global $post;
 		
-		if( ! empty( $post ) && $post->post_type === 'pl_search_listing' ) {
+		if( ! empty( $post ) && $post->post_type === 'pl_search_listings' ) {
 			$args = '';
 			$meta = get_post_custom( $post->ID );
 		
@@ -181,13 +181,6 @@ class PL_Search_Listing_CPT extends PL_Post_Base {
 				if( $key === 'pl_cpt_template' ) {
 					$args .= "context='{$value[0]}' ";
 				}
-// 				// ignore underscored private meta keys from WP
-// 				else if( strpos( $key, '_', 0 ) !== 0 && ! empty( $value[0] ) && ( $key !== 'context' ) ) {
-// 					$args .= "$key = '{$value[0]}' ";
-// 				}
-// 				if( $key === 'modernizr' && $value[0] == 'true' ) {
-// 					$drop_modernizr = true;
-// 				}
 			}
 
 			$shortcode = '[search_listings ' . $args . ']';
@@ -210,6 +203,7 @@ class PL_Search_Listing_CPT extends PL_Post_Base {
 			}
 			
 			$shortcode .= '[/search_listings]';
+			
 			
 			include PL_LIB_DIR . '/post_types/pl_post_types_template.php';
 		

@@ -194,7 +194,7 @@ class PL_Taxonomy_Helper {
 		die();
 	}
 
-	function get_polygons_by_type ($type = false) {
+	public static function get_polygons_by_type ($type = false) {
 		if (!$type) {
 			$type = $_POST['type'];
 		}

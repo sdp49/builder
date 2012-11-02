@@ -69,7 +69,6 @@ class PL_Snippet_Template {
 		    /*** Load initial data... ***/
 		
 		    $pl_snippet_list = array();
-		
 		    foreach ( $codes as $code ) {
 		      $pl_snippet_list[$code] = PL_Snippet_Helper::get_shortcode_snippet_list($code);
 		    }

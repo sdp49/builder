@@ -15,7 +15,7 @@ class PL_Post_Type_Manager {
 			include_once $post_type . '.php';
 		}
 		
-		add_action('admin_menu', array( __CLASS__, 'register_posts_menu' ) );
+		// add_action('admin_menu', array( __CLASS__, 'register_posts_menu' ) );
 	}
 		
 	public static function register_posts_menu() {

@@ -151,7 +151,7 @@ class PL_Component_Entity {
     	jQuery(document).ready(function( $ ) {
     		
     		var map = new Map (); 
-    		var json_atts = jQuery.parseJSON(' <?php echo json_encode( $atts ); ?> ');
+    		var json_atts = jQuery.parseJSON(' <?php echo str_replace( "'", "\'", json_encode( $atts ) ); ?> ');
 
     		// var filter = new Filters ();
     		var listings = new Listings ({
@@ -380,22 +380,30 @@ class PL_Component_Entity {
 				
 		public static function pl_neighborhood_entity( $atts ) {
 			ob_start();
+			$taxonomy_type = 'state';
 			$taxonomy = null;
+			$term_slug = '';
+			$term_name = '';
 			
 			// API searches for neighborhood by slug
 			foreach( $atts as $key => $value ) {
 				if( in_array( $key, array( 'state', 'city', 'neighborhood', 'zip', 'street' ) ) ) {
 					$term = get_term_by('id', $value, $key);
 					if( ! empty( $term ) ) {
-						$atts[$key] = $term->slug;
+						$taxonomy_type = $key;
 						$taxonomy = get_taxonomy( $key );
+						$atts[$key] = $term->slug;
+						$term_slug = $term->slug;
+						$term_name = $term->name;
 					}
 				}
 			}
 			
-// 			if( empty ( $taxonomy ) ) {
-// 				return;
-// 			}
+			if( empty( $taxonomy ) ) {
+				return;
+			}
+			
+// 			$polygons_by_type = PL_Taxonomy_Helper::get_polygons_by_type( $taxonomy_type );
 			
 			$args = wp_parse_args($atts, array('state' => false, 'city' => false, 'neighborhood' => false, 'zip' => false, 'street' => false, 'image_limit' => 20, 'width' => 400, 'height' => 400, 'zoom' => 16));
 			
@@ -405,20 +413,22 @@ class PL_Component_Entity {
 					var bootloader;
 				 }
 
-				 var taxonomy = jQuery.parseJSON(' <?php echo json_encode( $taxonomy ); ?> ');
 
 				  jQuery(document).ready(function( $ ) {
+					var taxonomy = jQuery.parseJSON(' <?php echo json_encode( $taxonomy ); ?> ');
 					var map = new Map();
 					//var list = new List();
 					var listings = new Listings({
 					//	list: list,
 						map: map
 					});
+					debugger;
+
 					var neighborhood = new Neighborhood({
 						map: map,
 			            type: taxonomy.name,
-			            name: taxonomy.labels.name,
-			            slug: taxonomy.name
+			            name: '<?php echo $term_name; ?>',
+			            slug: '<?php echo $term_slug; ?>'
 					});
 
 					map.init({
