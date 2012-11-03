@@ -54,6 +54,7 @@ class PL_Customizer_Helper
 	public static function inject_postMessage_hooks() 
 	{
 	  global $wp_customize;
+	  global $PL_CUSTOMIZER_THEME_DETAILS;
 
 	  // Gets the theme that the customizer is currently set to display/preview...
 	  $theme_opts_key = $wp_customize->get_stylesheet();
