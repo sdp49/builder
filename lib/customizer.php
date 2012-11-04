@@ -71,7 +71,10 @@ class PL_Customizer
 	            case 'heading':
 	                $args_section = array( 'title' => __($opt['name'],''), 'description' => $opt['name'] ); 
 	                $args_section['priority'] = self::get_priority( $opt['id'] );
-                	$args_section['subtitle'] = $opt['desc'];
+            		// Check for optional keys...
+                	if ( isset($opt['desc']) ) {
+                		$args_section['subtitle'] = $opt['desc'];	
+                	}
                 	if ( isset($opt['class']) ) {
                 		$args_section['class'] = $opt['class'];
                 	}
