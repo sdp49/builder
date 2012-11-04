@@ -62,8 +62,8 @@ class PL_Customizer_Helper
 	  $postMessage_settings = array(
 	  								 'pls-site-title' => 'header h1 a', 
 	  								 'pls-site-subtitle' => 'header h2, #slogan', 
-	  								 'pls-user-email' => 'section.e-mail a, #contact .email a, header .phone a, section.email a, header p.h-email a, .widget-pls-agent .email', 
-	  								 'pls-user-phone' => 'section.contact-info .phone, header p.h-phone, header div.phone, header section.phone .phone-bg-mid, .widget-pls-agent .phone'
+	  								 'pls-user-email' => 'section.e-mail a, #contact .email a, header .phone a, section.email a', 
+	  								 'pls-user-phone' => 'section.contact-info .phone, header div.phone, header section.phone .phone-bg-mid'
 	  								);
 
 	  ?>
