@@ -54,17 +54,13 @@ class PL_Customizer_Helper
 	public static function inject_postMessage_hooks() 
 	{
 	  global $wp_customize;
-	  global $PL_CUSTOMIZER_THEME_DETAILS;
+	  global $PL_CUSTOMIZER_THEME_INFO;
 
 	  // Gets the theme that the customizer is currently set to display/preview...
 	  $theme_opts_key = $wp_customize->get_stylesheet();
 	  // error_log($theme_opts_key);
-	  $postMessage_settings = array(
-	  								 'pls-site-title' => 'header h1 a', 
-	  								 'pls-site-subtitle' => 'header h2, #slogan', 
-	  								 'pls-user-email' => 'section.e-mail a, #contact .email a, section.email a', 
-	  								 'pls-user-phone' => 'section.contact-info .phone,  header section.phone '
-	  								);
+	  $postMessage_settings = isset($PL_CUSTOMIZER_THEME_INFO[$theme_opts_key]) ? $PL_CUSTOMIZER_THEME_INFO[$theme_opts_key] : array();
+	  // error_log(serialize($PL_CUSTOMIZER_THEME_INFO));
 
 	  ?>
 	    <script type="text/javascript">
