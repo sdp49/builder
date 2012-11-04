@@ -33,7 +33,7 @@ $PL_CUSTOMIZER_THEME_INFO = array(
 													 'pls-site-title' => 'header h1 a',
 													 'pls-site-subtitle' => 'header h2',
 													 'pls-user-email' => 'header .h-email a, footer .f-email a, .widget-pls-agent .email',
-													 'pls-user-phone' => 'header .h-phone, footer f-phone, .widget-pls-agent .phone'	
+													 'pls-user-phone' => 'header .h-phone, footer .f-phone, .widget-pls-agent .phone'	
 													 ),
 										'highland'	 => array(
 													 'pls-site-title' => 'header h1 a',
