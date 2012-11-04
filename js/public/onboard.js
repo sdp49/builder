@@ -168,7 +168,7 @@ function generateMenuOverlay () {
       if ( tooltip.css('display') != 'none' ) {
         openStatePane();
       }
-      else if ( jQuery('#pane').css('display') != none ) {
+      else if ( jQuery('#pane').css('display') != 'none' ) {
         // Make "move to next step" glow/light-up!!!
       }
       else {
