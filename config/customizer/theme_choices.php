@@ -32,14 +32,14 @@ $PL_CUSTOMIZER_THEME_STYLES = array(
 										'columbus' 	 => array(
 													 'pls-site-title' => 'header h1 a',
 													 'pls-site-subtitle' => 'header h2',
-													 'pls-user-email' => 'header p.h-email a, .widget-pls-agent .email',
-													 'pls-user-phone' => 'header p.h-phone, .widget-pls-agent .phone'	
+													 'pls-user-email' => 'header .h-email a, footer .f-email a, .widget-pls-agent .email',
+													 'pls-user-phone' => 'header .h-phone, footer f-phone, .widget-pls-agent .phone'	
 													 ),
 										'highland'	 => array(
 													 'pls-site-title' => 'header h1 a',
 													 'pls-site-subtitle' => 'header h2',
-													 'pls-user-email' => ', .widget-pls-agent .email',
-													 'pls-user-phone' => ', .widget-pls-agent .phone'	
+													 'pls-user-email' => 'header .phone a, .widget-pls-agent .email',
+													 'pls-user-phone' => 'header .phone, .widget-pls-agent .phone'	
 													 ),
 										'manchester' => array(
 													 'pls-site-title' => 'header h1 a',
@@ -55,9 +55,9 @@ $PL_CUSTOMIZER_THEME_STYLES = array(
 													 ),
 										'ventura' 	 => array(
 													 'pls-site-title' => 'header h1 a',
-													 'pls-site-subtitle' => '',
-													 'pls-user-email' => ', .widget-pls-agent .email',
-													 'pls-user-phone' => ', .widget-pls-agent .phone'	
+													 'pls-site-subtitle' => 'header h2',
+													 'pls-user-email' => 'header section.email li a, footer footer-contact p.info a, .widget-pls-agent .email',
+													 'pls-user-phone' => 'header section.phone li.phone-bg-mid, footer footer-contact p.info strong .widget-pls-agent .phone'	
 													 )
 							 		);
 
