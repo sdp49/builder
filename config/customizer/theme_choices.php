@@ -50,7 +50,7 @@ $PL_CUSTOMIZER_THEME_INFO = array(
 										'tampa' 	 => array(
 													 'pls-site-title' => 'header h1 a',
 													 'pls-site-subtitle' => 'header h2',
-													 'pls-user-email' => 'header .email a, footer .contact a, .widget-pls-agent .email',
+													 'pls-user-email' => 'header .email a, footer .contact a, .widget-pls-agent .agent a',
 													 'pls-user-phone' => 'header .phone, footer .contact strong, .widget-pls-agent .phone'	
 													 ),
 										'ventura' 	 => array(
