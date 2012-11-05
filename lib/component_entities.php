@@ -80,6 +80,7 @@ class PL_Component_Entity {
 		// Print property_ids as argument to the listings
 		global $property_ids;
 		$property_ids = self::get_property_ids( $atts['id'] );
+		var_dump($property_ids); die();
 		$property_ids = array_flip($property_ids);
 		
 		add_action('featured_filters_featured_ids', array( __CLASS__, 'print_property_listing_args') );

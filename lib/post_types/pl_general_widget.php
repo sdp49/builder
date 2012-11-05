@@ -20,7 +20,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 															'pl_search_listings' => 'Search Listings',
 															'pl_slideshow' => 'Slideshow',
 															'pl_neighborhood' => 'Neighborhood',
-															'featured_listings' => 'Featured Listings',
+// 															'featured_listings' => 'Featured Listings',
 															'static_listings' => 'Static Listings'
 					), 'css' => 'pl_map pl_form pl_search_listings pl_slideshow pl_neighborhood featured_listings static_listings' ),
 			'map_type' => array( 'type' => 'select', 'label' => 'Map Type', 'options' => array( 
@@ -76,6 +76,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		add_filter( 'manage_edit-pl_general_widget_columns' , array( $this, 'widget_edit_columns' ) );
  		add_filter( 'manage_pl_general_widget_posts_custom_column', array( $this, 'widget_custom_columns' ) );
 		add_action( 'wp_ajax_autosave', array( $this, 'autosave_refresh_iframe' ), 1 );
+		add_action( 'wp_ajax_autosave_widget', array( $this, 'autosave_save_post_for_iframe' ) );
 	}
  	
 	
@@ -241,7 +242,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				});
 
 				$('#widget-meta-wrapper section input, #widget-meta-wrapper section select').on('change', function() {
-					// widget_autosave();				
+					widget_autosave();				
 				});
 
 				$('#pl_static_listing_block #advanced').css('display', 'none');
@@ -462,6 +463,21 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		
 			die();
 		}
+	}
+	
+	public function autosave_save_post_for_iframe( ) {
+		if( ! empty ($_POST['post_id'] ) ) {
+			$post_id = $_POST['post_id'];
+			$pl_post_type = ! empty( $_POST['post_type'] ) ? $_POST['post_type'] : 'pl_map';
+
+			if( $pl_post_type === 'featured_listings' ||  $pl_post_type === 'static_listings') {			
+				pl_featured_listings_meta_box_save( $post_id );
+			}
+
+			update_post_meta( $post_id, 'pl_post_type', $pl_post_type );
+		}		
+
+		die();
 	}
 }
 
