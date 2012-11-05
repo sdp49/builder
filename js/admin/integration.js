@@ -23,7 +23,11 @@ jQuery(document).ready(function($) {
 	});
 
 	$('#customize_integration_submit').live('click', function() {
-		var clear_form = function () { 
+		var clear_form = function () {
+			// In case this is visible...
+			$('#message.error').remove();
+
+			// Clear form values... 
 			$.each($('#pls_integration_form').find('input, select'), function (i, elem) {
 				$(elem).val('');
 			});	
