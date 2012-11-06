@@ -165,21 +165,46 @@ class PL_Slideshow_CPT extends PL_Post_Base {
 		if( isset( $_POST['pl_cpt_template'] ) ) {
 			update_post_meta( $post_id, 'pl_cpt_template', $_POST['pl_cpt_template']);
 		}
+		
+		if( isset( $_POST['pl_featured_listing_meta'] ) ) {
+			update_post_meta( $post_id, 'pl_featured_listing_meta',  $_POST['pl_featured_listing_meta'] );
+		}
 	}
 	
-	public static function post_type_templating( $single ) {
+	public static function post_type_templating( $single, $skipdb = false ) {
 		global $post;
+		
+		unset( $_GET['skipdb'] );
+		$meta = $_GET;
 		
 		if( ! empty( $post ) && $post->post_type === 'pl_slideshow' ) {
 			$args = '';
-			$meta = get_post_custom( $post->ID );
-				
+			// verify if skipdb param is passed
+			if( ! $skipdb ) {
+				$meta_custom = get_post_custom( $post->ID );
+				$meta = array_merge( $meta_custom, $meta );
+			}
+			
+			if( isset( $meta['pl_static_listings_option'] ) ) { unset( $meta['pl_static_listings_option'] ); }
+
 			foreach( $meta as $key => $value ) {
+				// if featured listings, pass to slideshow args	
+				if( $key === 'pl_featured_listing_meta' && ! empty( $value ) ) {
+					$args .= "post_meta_key = 'pl_featured_listing_meta' ";
+				}
 				// ignore underscored private meta keys from WP
-				if( strpos( $key, '_', 0 ) !== 0 && ! empty( $value[0] ) ) {
-					$args .= "$key = '{$value[0]}' ";
+				else if( strpos( $key, '_', 0 ) !== 0 && ! empty( $value[0] ) ) {
+					if( is_array( $value ) ) {
+						// handle meta values as arrays
+						$args .= "$key = '{$value[0]}' ";
+					} else {
+						// handle _GET vars as strings
+						$args .= "$key = '{$value}' ";
+					}
 				}
 			}
+			
+			$args .= "post_id = '{$post->ID}'";
 				
 			$shortcode = '[listing_slideshow ' . $args . ']';
 				

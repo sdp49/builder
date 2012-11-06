@@ -15,15 +15,22 @@ widget_autosave = function() {
 			featured[element_key] = jQuery(this).val(); 
 		}
 	);
+	
+	var radio_type = jQuery("input[name='radio-type']").val();
+	var neighborhood_type = 'nb-id-select-' + radio_type; 
+	var neighborhood_value = jQuery('#' + neighborhood_type).val();
 
 	var post_data = {
 					'post_id': post_id,
 	                'action': 'autosave_widget',
-	                'post_type': jQuery('#pl_post_type :selected').val() || "",
+	                'pl_post_type': jQuery('#pl_post_type').val() || "",
 	                'width': jQuery('#widget-meta-wrapper input#width').val() || "250",
 	                'height': jQuery('#widget-meta-wrapper input#height').val() || "250",
-	                'pl_featured_listing_meta': JSON.stringify(featured)
+	                'pl_featured_listing_meta': JSON.stringify(featured),
+	                'radio-type': radio_type
 	};
+	
+	post_data[neighborhood_type] = neighborhood_value;
 	
 	jQuery.ajax({
 		data: post_data,
@@ -32,9 +39,12 @@ widget_autosave = function() {
 		url: ajaxurl,
 		success: function( response ) {
 			setTimeout(function() {
+				// breaks the overall layout
+				// var frame_width = post_data['width'];
+				var frame_width = '300';
 				var post_id = jQuery("#post_ID").val();
 				jQuery('#preview-meta-widget').html("<iframe src='" + siteurl + "/?p=" + post_id +
-						"&preview=true' width='" + post_data['width'] + "' height='" + post_data['height'] + "'></iframe>");
+						"&preview=true' width='" + frame_width + "px' height='" + post_data['height'] + "px'></iframe>");
 			}, 2000);
 			// alert(response);
 		}

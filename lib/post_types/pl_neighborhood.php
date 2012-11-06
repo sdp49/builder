@@ -178,15 +178,22 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 		}
 	}
 	
-	public static function post_type_templating( $single ) {
+	public static function post_type_templating( $single, $skipdb = false ) {
 		global $post;
+		
+		unset( $_GET['skipdb'] );
+		$meta = $_GET;
 		
 		$location_taxonomies = PL_Taxonomy_Helper::$location_taxonomies;
 		$taxonomy_args = array_keys( $location_taxonomies );
 
 		if( ! empty( $post ) && $post->post_type === 'pl_neighborhood' ) {
 			$args = '';
-			$meta = get_post_custom( $post->ID );
+			// verify if skipdb param is passed
+			if( ! $skipdb ) {
+				$meta_custom = get_post_custom( $post->ID );
+				$meta = array_merge( $meta_custom, $meta );
+			}
 		
 			foreach( $meta as $key => $value ) {
 				// ignore underscored private meta keys from WP
@@ -199,8 +206,15 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 							$args .= "$nb_type = '{$nb_value}' ";
 						}
 					} else if( ! in_array( $key, array('pl_cpt_template', 'type') ) ) {
-						$args .= "$key = '{$value[0]}' ";
+						if( is_array( $value ) ) {
+							// handle meta values as arrays
+							$args .= "$key = '{$value[0]}' ";
+						} else {
+							// handle _GET vars as strings
+							$args .= "$key = '{$value}' ";
+						}
 					}
+					
 				}
 				
 			}

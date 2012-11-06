@@ -10,7 +10,7 @@
 		} else {
 			add_action('wp_enqueue_scripts', 'pl_template_add_modernizr');
 		}
-			
+
 		global $post;
 		if( isset( $shortcode ) ) {
 			echo do_shortcode( $shortcode );

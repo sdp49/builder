@@ -146,13 +146,21 @@ class PL_Component_Entity {
 		
 		$property_ids = array_flip( $pl_featured_meta_value );
 		
+		$encoded_atts = array( 
+			'width' => $atts['width'],
+			'height' => $atts['height'],
+			'type' => $atts['type']
+		);
+
+		$encoded_atts = json_encode( $encoded_atts );
+		
 		ob_start();
 	?>
 	 <script type="text/javascript">
     	jQuery(document).ready(function( $ ) {
     		
     		var map = new Map (); 
-    		var json_atts = jQuery.parseJSON(' <?php echo str_replace( "'", "\'", json_encode( $atts ) ); ?> ');
+    		var json_atts = jQuery.parseJSON(' <?php echo $encoded_atts; ?> ');
 
     		// var filter = new Filters ();
     		var listings = new Listings ({

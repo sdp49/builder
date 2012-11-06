@@ -13,20 +13,33 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				'static_listings' => 'Static Listings'
 			);
 	
+	public $post_types =  array(
+				'pl_map' => 'Map',
+				'pl_form' => 'Search Form',
+				'pl_search_listings' => 'Search Listings',
+				'pl_slideshow' => 'Slideshow',
+				'pl_neighborhood' => 'Neighborhood',
+// 				'featured_listings' => 'Featured Listings',
+				'static_listings' => 'Static Listings'
+	);
+	
+	public $default_post_type = 'pl_map';
+	 
 	public $fields = array(
-			'pl_post_type' => array( 'type' => 'select', 'label' => 'Widget Type', 'options' => array(
-															'pl_map' => 'Map',
-															'pl_form' => 'Search Form',
-															'pl_search_listings' => 'Search Listings',
-															'pl_slideshow' => 'Slideshow',
-															'pl_neighborhood' => 'Neighborhood',
-// 															'featured_listings' => 'Featured Listings',
-															'static_listings' => 'Static Listings'
-					), 'css' => 'pl_map pl_form pl_search_listings pl_slideshow pl_neighborhood featured_listings static_listings' ),
+// 			'pl_post_type' => array( 'type' => 'select', 'label' => 'Widget Type', 'options' => array(
+// 															'pl_map' => 'Map',
+// 															'pl_form' => 'Search Form',
+// 															'pl_search_listings' => 'Search Listings',
+// 															'pl_slideshow' => 'Slideshow',
+// 															'pl_neighborhood' => 'Neighborhood',
+// // 															'featured_listings' => 'Featured Listings',
+// 															'static_listings' => 'Static Listings'
+// 					), 'css' => 'pl_map pl_form pl_search_listings pl_slideshow pl_neighborhood featured_listings static_listings' ),
 			'map_type' => array( 'type' => 'select', 'label' => 'Map Type', 'options' => array( 
 																	'listings' => 'listings',
 																	 'lifestyle' => 'lifestyle',
-																	'lifestyle_poligon' => 'lifestyle_poligon' ), 'css' => 'pl_map' ),
+// 																	'lifestyle_poligon' => 'lifestyle_poligon' 
+							), 'css' => 'pl_map' ),
 			'width' => array( 'type' => 'text', 'label' => 'Width', 'css' => 'pl_map pl_form pl_search_listings pl_slideshow pl_neighborhood featured_listings static_listings' ),
 			'height' => array( 'type' => 'text', 'label' => 'Height', 'css' => 'pl_map pl_form pl_search_listings pl_slideshow pl_neighborhood featured_listings static_listings' ),
 			'animation' => array( 'type' => 'select', 'label' => 'Animation', 'options' => array(
@@ -86,33 +99,63 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	
 	// add meta box for featured listings- adding custom fields
 	public  function pl_widgets_meta_box_cb( $post ) {
+		$is_post_new = true;
+		if( ! empty( $_GET['post'] ) ) {
+			$is_post_new = false;
+		}
+		
 		$values = get_post_custom( $post->ID );
 		
 		$pl_featured_listing_meta = isset( $values['pl_featured_listing_meta'] ) ? unserialize($values['pl_featured_listing_meta'][0]) : '';
 		$pl_featured_meta_value = empty( $pl_featured_listing_meta ) ? '' : $pl_featured_listing_meta['featured-listings-type'];
+
+		$pl_post_type = isset( $values['pl_post_type'] ) ? $values['pl_post_type'][0] : '';
 		
 		// get link for iframe
 		$permalink = '';
-		if( isset( $_GET['post'] ) ) {
+		if( ! $is_post_new ) {
 			$permalink = get_permalink($post->ID);
 		}
 		?>
 		<script type="text/javascript">
 		</script>
-		<div id='preview-meta-widget'>
-			<img id="preview_load_spinner" src="<?php echo plugins_url('/placester/images/preview_load_spin.gif'); ?>" alt="Widget options are Loading..." width="30px" height="30px" />
+		<div id='preview-wrapper'>
+			<div id='preview-title'>
+				<h2>Widget Preview</h2>
+			</div>
+			<div id='preview-meta-widget'>
+				<img id="preview_load_spinner" src="<?php echo plugins_url('/placester/images/preview_load_spin.gif'); ?>" alt="Widget options are Loading..." width="30px" height="30px" />
+			</div>
 		</div>
 		<?php 
 		echo '<div id="widget-meta-wrapper">';
 		
 		$width =  isset( $values['width'] ) && ! empty( $values['width'][0] ) ? $values['width'][0] : '300';
+		$_POST['width'] = $width;
 		$height = isset( $values['height'] ) && ! empty( $values['height'][0] ) ? $values['height'][0] : '300';
+		$_POST['height'] = $height;
+		$animationSpeed = isset( $values['animationSpeed'] ) && ! empty( $values['animationSpeed'][0] ) ? $values['animationSpeed'][0] : '800';
+		$_POST['animationSpeed'] = $animationSpeed;
+		
+		
 		$style = ' style="width: ' . $width . 'px; height: ' . $height . 'px" ';
 		
 		if( ! empty( $permalink ) ):
 			$iframe = '<iframe src="' . $permalink . '"'. $style . '></iframe>';
 		endif; ?>
 		<div class="pl_widget_block">
+			<div id="post_types_list">
+			<h2>Select Type: </h2>
+			<?php foreach( $this->post_types as $post_type => $label ):
+					$link_class = ''; 
+					if( $post_type == $pl_post_type ) {
+						$link_class = 'selected_type';
+					}
+			?>			
+				<a id="pl_post_type_<?php echo $post_type; ?>" href="#" class="<?php echo $link_class; ?>"><?php echo $label; ?></a>
+			<?php endforeach; ?>
+			</div>
+		<h2>Parameters</h2>
 		<?php // get meta values from custom fields
 		foreach( $this->fields as $field => $arguments ) {
 			$value = isset( $values[$field] ) ? $values[$field][0] : '';
@@ -129,7 +172,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		<h2>Pick a Listing</h2>
 				<div id="pl-fl-meta">
 					<div style="width: 400px; min-height: 200px">
-						<div id="pl_featured_listing_block" class="featured_listings">
+						<div id="pl_featured_listing_block" class="featured_listings pl_slideshow">
 						<?php 
 							include PLS_OPTRM_DIR . '/views/featured-listings.php';
 							// Enqueue all required stylings and scripts
@@ -165,8 +208,8 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 													'id' => 'pls_admin_my_listings')); ?>
 						</div><!-- end of #pl_static_listing_block -->
 					</div>
-				<div>
-		
+				</div>
+				<input type="hidden" name="pl_post_type" id="pl_post_type" value="pl_map" />
 		<?php $atts = array();
 		
 		// get radio values
@@ -196,8 +239,12 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 					});
 				}
 
-				$('#pl_post_type').change(function() {
-					var selected_cpt = $(this).find(':selected').val();
+				$('#post_types_list a').click(function() {
+					var selected_cpt = $(this).attr('id').substring('pl_post_type_'.length);
+
+					$('#post_types_list a').removeClass('selected_type');
+					$(this).addClass('selected_type');
+					$('#pl_post_type').val(selected_cpt);
 
 					$('#widget-meta-wrapper .pl_widget_block > section, #pl_location_tax').each(function() {
 						var section_class = $(this).attr('class');
@@ -211,7 +258,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 						}
 					});
 					$('.pl_template_block').each(function() {
-						var selected_cpt = $('#pl_post_type').find(':selected').val();
+						var selected_cpt = $('#pl_post_type').val();
 						var block_id = $(this).attr('id');
 						selected_cpt = selected_cpt.replace('pl_', '');
 
@@ -236,6 +283,8 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 					} else {
 						$('#pl_static_listing_block').show();
 					}
+
+					widget_autosave();
 					
 					$('#widget-meta-wrapper input, #widget-meta-wrapper select').css('background', '#ffffff');
 					$('#widget-meta-wrapper input:disabled, #widget-meta-wrapper select:disabled').css('background', '#eeeeee');
@@ -257,12 +306,15 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 					$('#pl_static_listing_block #custom').css('display', 'block');
 				});
 
-				<?php if( ! empty( $_GET['post'] ) ) { ?>
-				$('#edit-slug-box').after('<div class="iframe-link"><?php echo esc_html( $iframe ); ?></div>');
+				<?php if( ! $is_post_new ) { ?>
+					$('#edit-slug-box').after('<div class="iframe-link"><?php echo esc_html( $iframe ); ?></div>');
+					$('#pl_post_type_<?php echo $pl_post_type; ?>').trigger('click');
 				<?php }	?>
 
-				$('#pl_post_type').trigger('change');
+				
+				//$('#pl_post_type_<?php echo $pl_post_type; ?>').trigger('click');
 
+				$('#pl_post_type').trigger('change');
 				$('#preview_load_spinner').remove();
 			});
 			</script>	
@@ -299,6 +351,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		}
 		echo '</section>';
 		
+		echo '<div class="clear"></div>';
 
 		$this->print_template_blocks();
 		
@@ -315,10 +368,13 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		// if our current user can't edit this post, bail
 		if( !current_user_can( 'edit_post' ) ) return;
 	
+		$pl_post_type = $_POST['pl_post_type'];
 		
-		if( $_POST['pl_post_type'] === 'featured_listings' ||  $_POST['pl_post_type'] === 'static_listings') {
+		if( $pl_post_type === 'featured_listings' ||  $pl_post_type === 'static_listings') {
 			pl_featured_listings_meta_box_save( $post_id );
 		}
+		
+		update_post_meta( $post_id, 'pl_post_type', $pl_post_type );
 		
 		foreach( $this->fields as $field => $values ) {
 			if( isset( $_POST[$field] ) ) {
@@ -346,24 +402,29 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		
 		// map the post type from the meta key (as we use a single widget here)
 		$post_type = get_post_meta($post->ID, 'pl_post_type', true);
-		$post->post_type = $post_type;		
+		$post->post_type = $post_type;
+
+		$skipdb = false;
+		if( !empty ( $_GET['skipdb'] ) && $_GET['skipdb'] == 'true' ) {
+			$skipdb = true;
+		}
 		
 		if( ! empty( $post ) ) {
 			// TODO: make a more thoughtful loop here, interfaces or so
 			if( $post->post_type == 'pl_map' ) {
-				PL_Map_CPT::post_type_templating( $single );
+				PL_Map_CPT::post_type_templating( $single, $skipdb );
 			} else if( $post->post_type == 'pl_form' ) {
-				PL_Form_CPT::post_type_templating( $single );
+				PL_Form_CPT::post_type_templating( $single, $skipdb );
 			} else if( $post->post_type == 'pl_slideshow' ) {
-				PL_Slideshow_CPT::post_type_templating( $single );
+				PL_Slideshow_CPT::post_type_templating( $single, $skipdb );
 			} else if( $post->post_type == 'pl_search_listings' ) {
-				PL_Search_Listing_CPT::post_type_templating( $single );
+				PL_Search_Listing_CPT::post_type_templating( $single, $skipdb );
 			} else if( $post->post_type == 'pl_neighborhood' ) {
-				PL_Neighborhood_CPT::post_type_templating( $single );
+				PL_Neighborhood_CPT::post_type_templating( $single, $skipdb );
 			} else if( $post->post_type == 'featured_listings' ) {
-				$this->prepare_featured_template( $single );
+				$this->prepare_featured_template( $single, $skipdb );
 			} else if( $post->post_type == 'static_listings' ) {
-				$this->prepare_static_template( $single );
+				$this->prepare_static_template( $single, $skipdb );
 			}
 		}
 		
@@ -405,7 +466,6 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	
 	public function autosave_refresh_iframe( ) {
 		$id = isset( $_POST['post_ID'] ) ? (int) $_POST['post_ID'] : 0;
-
 		if ( ! $id )
 			wp_die( -1 );
 		
@@ -468,7 +528,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	public function autosave_save_post_for_iframe( ) {
 		if( ! empty ($_POST['post_id'] ) ) {
 			$post_id = $_POST['post_id'];
-			$pl_post_type = ! empty( $_POST['post_type'] ) ? $_POST['post_type'] : 'pl_map';
+			$pl_post_type = ! empty( $_POST['pl_post_type'] ) ? $_POST['pl_post_type'] : $this->default_post_type;
 
 			if( $pl_post_type === 'featured_listings' ||  $pl_post_type === 'static_listings') {			
 				pl_featured_listings_meta_box_save( $post_id );

@@ -170,12 +170,19 @@ class PL_Search_Listing_CPT extends PL_Post_Base {
 		}
 	}
 	
-	public static function post_type_templating( $single ) {
+	public static function post_type_templating( $single, $skipdb = false ) {
 		global $post;
+		
+		unset( $_GET['skipdb'] );
+		$meta = $_GET;
 		
 		if( ! empty( $post ) && $post->post_type === 'pl_search_listings' ) {
 			$args = '';
-			$meta = get_post_custom( $post->ID );
+			// verify if skipdb param is passed
+			if( ! $skipdb ) {
+				$meta_custom = get_post_custom( $post->ID );
+				$meta = array_merge( $meta_custom, $meta );
+			}
 		
 			foreach( $meta as $key => $value ) {
 				if( $key === 'pl_cpt_template' ) {
