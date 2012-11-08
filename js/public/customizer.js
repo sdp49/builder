@@ -239,6 +239,10 @@ jQuery(document).ready(function($) {
 		infoElem.prepend(newSpinner());
 		infoElem.css('opacity', '0.7');
 
+		var submitElem = $('#submit_theme');
+		submitElem.attr('disabled', 'disabled');
+		submitElem.addClass('bt-disabled');
+
 		$.post(ajaxurl, data, function (response) {
 	        if ( response && response.success ) {
 	            // Reload customizer to display new theme...
@@ -255,6 +259,9 @@ jQuery(document).ready(function($) {
 	        	// If theme switch fails, hide progress so user can try again...
 	        	infoElem.remove('#theme_info #spinner');
 	        	infoElem.css('opacity', '1');
+
+				submitElem.removeAttr('disabled');
+				submitElem.removeClass('bt-disabled');	        	
 	        }
 	    },'json');
 	});

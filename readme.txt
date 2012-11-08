@@ -3,7 +3,7 @@ Contributors: Placester
 Tags: real estate, realestate, home, housing, rentals, properties, neighborhood, map, mortgage, listing, listings, craigslist, rental, google map, mls, idx, rets, agent, broker, leasing, realty, realtor, placester, widget, buddypress
 Requires at least: 2.8
 Tested up to: 3.4.2
-Stable tag: 1.0.9
+Stable tag: 1.1.0
 
 Easily create and manage real estate sites powered by WordPress.
 
@@ -37,7 +37,7 @@ Check out premium themes available to hosted users:
 [Slate Theme](http://slate.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=slate)
 
 
-Find the latest themes and theme updates at [Placester.com/wordpress-themes/](https://placester.com/wordpress-themes/)
+Find the latest themes and theme updates at [Placester.com/portfolio/](https://placester.com/portfolio/)
 
 
 **Highlights:**

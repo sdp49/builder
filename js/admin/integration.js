@@ -23,7 +23,11 @@ jQuery(document).ready(function($) {
 	});
 
 	$('#customize_integration_submit').live('click', function() {
-		var clear_form = function () { 
+		var clear_form = function () {
+			// In case this is visible...
+			$('#message.error').remove();
+
+			// Clear form values... 
 			$.each($('#pls_integration_form').find('input, select'), function (i, elem) {
 				$(elem).val('');
 			});	
@@ -124,7 +128,7 @@ jQuery(document).ready(function($) {
 
 	function display_cancel_message () {
 		$('#rets_form_message').html('');
-		$('#pls_integration_form').prepend('<div id="message" class="error"><h3>Sorry, this feature requires a premium subscription</h3><p>However, you can test the MLS integration feature for free by creating a website <a href="https://placester.com" target="_blank">placester.com</a></p></div>');
+		$('#pls_integration_form').prepend('<div id="message" class="error"><h3>Sorry, this feature requires a premium subscription</h3><p>However, you can test the MLS integration feature for free by creating a website at <a href="https://placester.com" target="_blank">placester.com</a></p></div>');
 	}
 
 	var integration_buttons = {
