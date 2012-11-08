@@ -90,6 +90,11 @@ class PL_General_Widget_CPT extends PL_Post_Base {
  		add_filter( 'manage_pl_general_widget_posts_custom_column', array( $this, 'widget_custom_columns' ) );
 		add_action( 'wp_ajax_autosave', array( $this, 'autosave_refresh_iframe' ), 1 );
 		add_action( 'wp_ajax_autosave_widget', array( $this, 'autosave_save_post_for_iframe' ) );
+		add_action( 'wp_ajax_nopriv_alibaba', array( $this, 'alibaba' ) );
+	}
+	
+	public function alibaba() {
+		echo "yataaa";
 	}
  	
 	
