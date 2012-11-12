@@ -90,11 +90,42 @@ class PL_General_Widget_CPT extends PL_Post_Base {
  		add_filter( 'manage_pl_general_widget_posts_custom_column', array( $this, 'widget_custom_columns' ) );
 		add_action( 'wp_ajax_autosave', array( $this, 'autosave_refresh_iframe' ), 1 );
 		add_action( 'wp_ajax_autosave_widget', array( $this, 'autosave_save_post_for_iframe' ) );
-		add_action( 'wp_ajax_nopriv_alibaba', array( $this, 'alibaba' ) );
+		add_action( 'wp_ajax_nopriv_handlewidgetscript', array( $this, 'handle_iframe_cross_domain' ) );
 	}
 	
-	public function alibaba() {
-		echo "yataaa";
+	/**
+	 * Handle cross-domain script insertion and pass back to the embedded script for the iwdget
+	 */
+	public function handle_iframe_cross_domain() {
+		// don't process if widget ID is missing
+// 		if( ! isset( $_GET['id'] ) ) {
+// 			die();
+// 		}
+
+		echo $_GET['callback'] . '(' . json_encode( $_GET ) . ');';
+		die();
+		/* $args = array();
+		// default GET should have at least id, callback and action
+		if( count( $_GET ) == 3 ) {
+			$post_id = $_GET['id'];
+			$meta = get_post_custom( $post_id );
+			
+			foreach( $meta as $key => $value ) {
+				// ignore underscored private meta keys from WP
+				if( strpos( $key, '_', 0 ) !== 0 && is_array( $value ) && ! empty( $value[0] ) ) {
+					$args[$key] = $value[0];
+				}
+			}
+		} else {
+			$args = wp_parse_args( $_GET, array(
+				'width' => '300',
+				'height' => '300',
+			) );
+			
+			unset( $args['action'] );
+			unset( $args['callback'] );
+		}
+		*/
 	}
  	
 	
