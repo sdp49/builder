@@ -31,9 +31,18 @@ function callback( json ) {
 		
 		var iframe = document.createElement('iframe');
 		iframe.src = json.widget_url;
+		
+		for( var key in json ) {
+			// skip unnecessary keys
+			if( key !== 'post_id' && key !== 'pl_post_type' && key !== 'widget_url') {
+				iframe.src += '&' + key + '=' + encodeURIComponent( json[key] );
+			}
+		}
+		
 		iframe.width = json.width;
 		iframe.height = json.height;
 		
+		// insert the iframe next to the script
 		script_element.parentNode.insertBefore( iframe, script_element );
 	}
     console.log(json);

@@ -431,9 +431,12 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		update_post_meta( $post_id, 'pl_post_type', $pl_post_type );
 		
 		foreach( $this->fields as $field => $values ) {
-			if( isset( $_POST[$field] ) ) {
+			if( $values['type'] === 'checkbox' && ! isset( $_POST[$field] ) ) {
+				update_post_meta( $post_id, $field, false );
+			} else if( isset( $_POST[$field] ) ) {
 				update_post_meta( $post_id, $field, $_POST[$field] );
 			}
+			
 		}
 		
 		if( isset( $_POST['radio-type'] ) ) {
