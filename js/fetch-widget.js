@@ -13,7 +13,7 @@ var url_json = JSON.stringify( url_vars );
 
 window.addEventListener('load', function( ) {
 	var script = document.createElement('script');
-	script.src = action_url + '?action=handlewidgetscript&callback=callback';
+	script.src = action_url + '?action=handle_widget_script&callback=callback';
 	
 	for( var argument in url_vars ) {
 		script.src += '&' + argument + '=' + url_vars[argument];
@@ -25,6 +25,17 @@ window.addEventListener('load', function( ) {
 
 // Get response from the handle_script_insertion_cross_domain() PHP function and prepare the iframe
 function callback( json ) {
+	if( json.post_id !== undefined) {
+		var script_id = 'plwidget-' + json.post_id;
+		var script_element = document.getElementById( script_id );
+		
+		var iframe = document.createElement('iframe');
+		iframe.src = json.widget_url;
+		iframe.width = json.width;
+		iframe.height = json.height;
+		
+		script_element.parentNode.insertBefore( iframe, script_element );
+	}
     console.log(json);
 }
 

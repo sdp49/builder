@@ -90,7 +90,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
  		add_filter( 'manage_pl_general_widget_posts_custom_column', array( $this, 'widget_custom_columns' ) );
 		add_action( 'wp_ajax_autosave', array( $this, 'autosave_refresh_iframe' ), 1 );
 		add_action( 'wp_ajax_autosave_widget', array( $this, 'autosave_save_post_for_iframe' ) );
-		add_action( 'wp_ajax_nopriv_handlewidgetscript', array( $this, 'handle_iframe_cross_domain' ) );
+		add_action( 'wp_ajax_handle_widget_script', array( $this, 'handle_iframe_cross_domain' ) );
 	}
 	
 	/**
@@ -98,22 +98,27 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	 */
 	public function handle_iframe_cross_domain() {
 		// don't process if widget ID is missing
-// 		if( ! isset( $_GET['id'] ) ) {
-// 			die();
-// 		}
-
-		echo $_GET['callback'] . '(' . json_encode( $_GET ) . ');';
-		die();
-		/* $args = array();
+ 		if( ! isset( $_GET['id'] ) ) {
+ 			die();
+ 		}
+ 		
 		// default GET should have at least id, callback and action
-		if( count( $_GET ) == 3 ) {
+		if( count( $_GET ) === 3 ) {
 			$post_id = $_GET['id'];
 			$meta = get_post_custom( $post_id );
 			
+			$ignore_array = array(
+				'pl_static_listings_option',
+				'pl_featured_listings_option',
+			);
+			
 			foreach( $meta as $key => $value ) {
-				// ignore underscored private meta keys from WP
-				if( strpos( $key, '_', 0 ) !== 0 && is_array( $value ) && ! empty( $value[0] ) ) {
-					$args[$key] = $value[0];
+				// ignore several options that we don't need to pass
+				if( ! in_array( $key, $ignore_array ) ) {
+					// ignore underscored private meta keys from WP
+					if( strpos( $key, '_', 0 ) !== 0 && is_array( $value ) && ! empty( $value[0] ) ) {
+						$args[$key] = $value[0];
+					}
 				}
 			}
 		} else {
@@ -125,7 +130,11 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			unset( $args['action'] );
 			unset( $args['callback'] );
 		}
-		*/
+		
+		$args['post_id'] = $_GET['id'];
+		$args['widget_url'] =  home_url() . '/?p=' . $_GET['id'];
+		
+		echo $_GET['callback'] . '(' . json_encode( $args ) . ');';
 	}
  	
 	
@@ -146,6 +155,15 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		$pl_featured_meta_value = empty( $pl_featured_listing_meta ) ? '' : $pl_featured_listing_meta['featured-listings-type'];
 
 		$pl_post_type = isset( $values['pl_post_type'] ) ? $values['pl_post_type'][0] : '';
+		
+		$pl_static_listings_option = isset( $values['pl_static_listings_option'] ) ? unserialize($values['pl_static_listings_option'][0]) : '';
+		if( is_array( $pl_static_listings_option ) ) {
+			foreach( $pl_static_listings_option as $key => $value ) {
+				if( ! empty( $value ) ) {
+					$_POST[$key] = $value;
+				}
+			}
+		}
 		
 		// get link for iframe
 		$permalink = '';
@@ -441,7 +459,8 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		$post->post_type = $post_type;
 
 		$skipdb = false;
-		if( !empty ( $_GET['skipdb'] ) && $_GET['skipdb'] == 'true' ) {
+		// if( !empty ( $_GET['skipdb'] ) && $_GET['skipdb'] == 'true' ) {
+		if( isset( $_GET['action'] ) && isset( $_GET['id'] ) && count( $_GET ) > 3 ) {
 			$skipdb = true;
 		}
 		

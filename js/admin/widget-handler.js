@@ -45,6 +45,7 @@ widget_autosave = function() {
 				var post_id = jQuery("#post_ID").val();
 				jQuery('#preview-meta-widget').html("<iframe src='" + siteurl + "/?p=" + post_id +
 						"&preview=true' width='" + frame_width + "px' height='" + post_data['height'] + "px'></iframe>");
+				jQuery('#preview-meta-widget').css('height', post_data['height']);
 			}, 2000);
 			// alert(response);
 		}
