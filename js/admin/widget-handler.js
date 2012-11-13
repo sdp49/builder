@@ -25,10 +25,12 @@ widget_autosave = function() {
 	                'width': jQuery('#widget-meta-wrapper input#width').val() || "250",
 	                'height': jQuery('#widget-meta-wrapper input#height').val() || "250",
 	                'pl_featured_listing_meta': JSON.stringify(featured),
-	                'radio-type': radio_type
+	                'radio-type': radio_type,
+	                'meta_box_nonce': jQuery('#meta_box_nonce').val()
 	};
 	
 	post_data[neighborhood_type] = neighborhood_value;
+	post_data[radio_type] = neighborhood_value;
 	
 	jQuery.ajax({
 		data: post_data,

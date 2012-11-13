@@ -438,6 +438,10 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	
 		$pl_post_type = $_POST['pl_post_type'];
 		
+		if( $pl_post_type === 'pl_general_widget' ) {
+			return;
+		}
+		
 		if( $pl_post_type === 'featured_listings' ||  $pl_post_type === 'static_listings') {
 			pl_featured_listings_meta_box_save( $post_id );
 		}
@@ -454,11 +458,11 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		
 		if( isset( $_POST['radio-type'] ) ) {
 			$radio_type = $_POST['radio-type'];
-			$select_type = 'nb-select-' . $radio_type;
+			$select_type = 'nb-id-select-' . $radio_type;
 			if( isset( $_POST[$select_type] ) ) {
 				// persist radio box storage based on what is saved
-				update_post_meta( $post_id, 'radio-type', $_POST['radio-type'] );
-				update_post_meta( $post_id, $select_type, $_POST[ $select_type ] );
+				update_post_meta( $post_id, 'type', $_POST['radio-type'] );
+				update_post_meta( $post_id, 'nb-select-' . $radio_type, $_POST[ $select_type ] );
 			}
 		}
 		
@@ -508,7 +512,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			global $post;
 			if( ! empty( $post ) && $post->post_type === 'pl_general_widget' ) {
 				wp_enqueue_style( 'placester-widget', trailingslashit( PL_CSS_ADMIN_URL ) . 'placester-widget.css' );
-				wp_enqueue_script( 'placester-widget-script', trailingslashit( PL_JS_URL ) . 'admin/widget-handler.js', array( 'jquery' ), '1.1' );
+				wp_enqueue_script( 'placester-widget-script', trailingslashit( PL_JS_URL ) . 'admin/widget-handler.js', array( 'jquery' ), '1.1.2' );
 			}
 		}
 	}
@@ -543,7 +547,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		}
 	}
 	
-	public function autosave_refresh_iframe( ) {
+ 	public function autosave_refresh_iframe( ) {
 		$id = isset( $_POST['post_ID'] ) ? (int) $_POST['post_ID'] : 0;
 		if ( ! $id )
 			wp_die( -1 );
@@ -608,6 +612,9 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 
 			if( $pl_post_type === 'featured_listings' ||  $pl_post_type === 'static_listings') {			
 				pl_featured_listings_meta_box_save( $post_id );
+			}
+			if( $pl_post_type === 'pl_neighborhood' ) {
+				$this->meta_box_save( $post_id );
 			}
 
 			update_post_meta( $post_id, 'pl_post_type', $pl_post_type );

@@ -154,18 +154,23 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 	
 		// Verify nonces for ineffective calls
 		if( !isset( $_POST['meta_box_nonce'] ) || !wp_verify_nonce( $_POST['meta_box_nonce'], 'pl_cpt_meta_box_nonce' ) ) return;
+		
 		// if our current user can't edit this post, bail
 		if( !current_user_can( 'edit_post' ) ) return;
+		
 		foreach( $this->fields as $field => $values ) {
 			if( !empty( $_POST[$field] ) ) {
 				update_post_meta( $post_id, $field, $_POST[$field] );
 			}
 		}
 		
+		// different input values, type or radio-type (conflict avoided)
+		$radio_type = isset( $_POST['type'] ) ? $_POST['type'] : '';
+		$radio_type = isset( $_POST['radio-type'] ) ? $_POST['radio-type'] : '';
+		
 		// persist radio box and dropdown
-		if( isset( $_POST['type'] ) ) {
-			$radio_type = $_POST['type'];
-			$select_type = 'nb-select-' . $radio_type;
+		if( ! empty( $radio_type ) ) {
+			$select_type = 'nb-id-select-' . $radio_type;
 			if( isset( $_POST[$select_type] ) ) {
 				// persist radio box storage based on what is saved
 				update_post_meta( $post_id, 'radio-type', $_POST['type'] );
@@ -194,16 +199,20 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 				$meta_custom = get_post_custom( $post->ID );
 				$meta = array_merge( $meta_custom, $meta );
 			}
-		
+			
 			foreach( $meta as $key => $value ) {
 				// ignore underscored private meta keys from WP
 				if( strpos( $key, '_', 0 ) !== 0 && ! empty( $value[0] ) ) {
+					if( 'pl_static_listings_option' === $key  || 'pl_featured_listing_meta' === $key) {
+						continue;
+					}
 					if( $key == 'radio-type' ) { // handle neighborhood items
 						if( in_array( $value[0], $taxonomy_args ) ) {
 							$nb_type = $value[0];
 							$nb_value_key = 'nb-select-' . $nb_type;
 							$nb_value = isset( $meta[$nb_value_key] ) ? $meta[$nb_value_key][0] : ''; 
 							$args .= "$nb_type = '{$nb_value}' ";
+							$args .= "$nb_value_key = '{$nb_value}' ";
 						}
 					} else if( ! in_array( $key, array('pl_cpt_template', 'type') ) ) {
 						if( is_array( $value ) ) {
