@@ -2,6 +2,7 @@
 var scripts = document.getElementsByTagName( 'script' );
 var thisScriptTag = scripts[ scripts.length - 1 ];
 
+// read the WP related folders
 var wp_index = thisScriptTag.src.indexOf('wp-content/');
 var wp_folder = thisScriptTag.src.substring(0, wp_index);
 var action_url = wp_folder + 'wp-admin/admin-ajax.php';
@@ -12,9 +13,11 @@ var url_vars = getUrlVars( thisScriptTag.src );
 var url_json = JSON.stringify( url_vars );
 
 window.addEventListener('load', function( ) {
+	// JSONP approach for new elements creation
 	var script = document.createElement('script');
 	script.src = action_url + '?action=handle_widget_script&callback=callback';
 	
+	// add all variables to the new URL for the remote call
 	for( var argument in url_vars ) {
 		script.src += '&' + argument + '=' + url_vars[argument];
 	}
@@ -29,6 +32,7 @@ function callback( json ) {
 		var script_id = 'plwidget-' + json.post_id;
 		var script_element = document.getElementById( script_id );
 		
+		// create the iframe element
 		var iframe = document.createElement('iframe');
 		iframe.src = json.widget_url;
 		
@@ -45,6 +49,7 @@ function callback( json ) {
 		// insert the iframe next to the script
 		script_element.parentNode.insertBefore( iframe, script_element );
 	}
+	
     console.log(json);
 }
 
