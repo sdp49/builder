@@ -3,8 +3,6 @@ widget_autosave = function() {
 	var post_id = jQuery("#post_ID").val();
 	
 	//autosave();
-	
-	// var featured = jQuery("input[name^='pl_featured_listing_meta']").val();
 	var featured = {};
 	jQuery("input[name^='pl_featured_listing_meta']").map(function() {
 			var element_name = jQuery(this).attr('name');
@@ -43,19 +41,12 @@ widget_autosave = function() {
 				// var frame_width = post_data['width'];
 				var frame_width = '300';
 				var post_id = jQuery("#post_ID").val();
-				jQuery('#preview-meta-widget').html("<iframe src='" + siteurl + "/?p=" + post_id +
-						"&preview=true' width='" + frame_width + "px' height='" + post_data['height'] + "px'></iframe>");
+				// jQuery('#preview-meta-widget').html("<script src='" + placester_plugin_path + "js/fetch-widget.js?id=" + post_id +
+				// "&preview=true' width='" + frame_width + "px' height='" + post_data['height'] + "px'></script>");
+				jQuery('#preview-meta-widget').html("<iframe src='" + siteurl + "/?p=" + post_id + "&preview=true' width='" + frame_width + "px' height='" + post_data['height'] + "px'></iframe>");
 				jQuery('#preview-meta-widget').css('height', post_data['height']);
 			}, 2000);
 			// alert(response);
 		}
 	});
-	
-	
-	// jQuery('#preview-meta-widget').html("<iframe src='" + siteurl + "/?p=" + post_data['post_ID'] + "'></iframe>");
-}
-
-function pl_update_iframe_preview() {
-	var post_id = jQuery("#post_ID").val();
-	jQuery('#preview-meta-widget').html("<iframe src='" + siteurl + "/?p=" + post_id + "'></iframe>");
-}
+};

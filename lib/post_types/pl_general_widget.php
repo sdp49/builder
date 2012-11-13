@@ -86,6 +86,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		parent::__construct();
 		
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_styles' ) );
+		add_action( 'admin_head', array( $this, 'admin_head_plugin_path' ) );
 		add_filter( 'manage_edit-pl_general_widget_columns' , array( $this, 'widget_edit_columns' ) );
  		add_filter( 'manage_pl_general_widget_posts_custom_column', array( $this, 'widget_custom_columns' ) );
 		add_action( 'wp_ajax_autosave', array( $this, 'autosave_refresh_iframe' ), 1 );
@@ -196,6 +197,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		
 		if( ! empty( $permalink ) ):
 			$iframe = '<iframe src="' . $permalink . '"'. $style . '></iframe>';
+			$iframe_controller = '<script src="' . PL_PARENT_URL . 'js/fetch-widget.js?id=' . $_GET['post'] . '"'  . $style . '></script>';
 		endif; ?>
 		<div class="pl_widget_block">
 			<div id="post_types_list">
@@ -294,6 +296,11 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				}
 
 				$('#post_types_list a').click(function() {
+					if( $('#title').val() === '' ) {
+						alert('Please enter widget title first.');
+						return;
+					} 
+					
 					var selected_cpt = $(this).attr('id').substring('pl_post_type_'.length);
 
 					$('#post_types_list a').removeClass('selected_type');
@@ -361,7 +368,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				});
 
 				<?php if( ! $is_post_new ) { ?>
-					$('#edit-slug-box').after('<div class="iframe-link"><?php echo esc_html( $iframe ); ?></div>');
+					$('#edit-slug-box').after('<div class="iframe-link"><?php echo esc_html( $iframe_controller ); ?></div>');
 					$('#pl_post_type_<?php echo $pl_post_type; ?>').trigger('click');
 				<?php }	?>
 
@@ -370,6 +377,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 
 				$('#pl_post_type').trigger('change');
 				$('#preview_load_spinner').remove();
+				$('#preview-meta-widget').html('<?php echo $iframe; ?>');
 			});
 			</script>	
 				
@@ -495,9 +503,17 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			global $post;
 			if( ! empty( $post ) && $post->post_type === 'pl_general_widget' ) {
 				wp_enqueue_style( 'placester-widget', trailingslashit( PL_CSS_ADMIN_URL ) . 'placester-widget.css' );
-				wp_enqueue_script( 'placester-widget-script', trailingslashit( PL_JS_URL ) . 'admin/widget-handler.js', array( 'jquery' ) );
+				wp_enqueue_script( 'placester-widget-script', trailingslashit( PL_JS_URL ) . 'admin/widget-handler.js', array( 'jquery' ), '1.1' );
 			}
 		}
+	}
+		
+	public function admin_head_plugin_path( ) {
+	?>
+		<script type="text/javascript">
+			var placester_plugin_path = '<?php echo PL_PARENT_URL; ?>';
+		</script>
+	<?php 
 	}
 	
 	public function widget_edit_columns( $columns ) {
