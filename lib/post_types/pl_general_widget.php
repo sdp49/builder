@@ -192,7 +192,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		// for post edits, prepare the frame related variables (iframe and script)
 		if( ! empty( $permalink ) ):
 			$iframe = '<iframe src="' . $permalink . '"'. $style . '></iframe>';
-			$iframe_controller = '<script src="' . PL_PARENT_URL . 'js/fetch-widget.js?id=' . $_GET['post'] . '"'  . $style . '></script>';
+			$iframe_controller = '<script id="plwidget-' . $post->ID . '" src="' . PL_PARENT_URL . 'js/fetch-widget.js?id=' . $_GET['post'] . '"'  . $style . '></script>';
 		endif; ?>
 		<div class="pl_widget_block">
 			<div id="post_types_list">

@@ -165,15 +165,15 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 		}
 		
 		// different input values, type or radio-type (conflict avoided)
-		$radio_type = isset( $_POST['type'] ) ? $_POST['type'] : '';
-		$radio_type = isset( $_POST['radio-type'] ) ? $_POST['radio-type'] : '';
+		// $radio_type = isset( $_POST['type'] ) ? $_POST['type'] : '';
+		$radio_type = empty( $radio_type ) && isset( $_POST['radio-type'] ) ? $_POST['radio-type'] : '';
 		
 		// persist radio box and dropdown
 		if( ! empty( $radio_type ) ) {
-			$select_type = 'nb-id-select-' . $radio_type;
+			$select_type = 'nb-select-' . $radio_type;
 			if( isset( $_POST[$select_type] ) ) {
 				// persist radio box storage based on what is saved
-				update_post_meta( $post_id, 'radio-type', $_POST['type'] );
+				update_post_meta( $post_id, 'radio-type', $radio_type );
 				update_post_meta( $post_id, $select_type, $_POST[ $select_type ] );
 			}		
 		}	
@@ -206,7 +206,7 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 					if( 'pl_static_listings_option' === $key  || 'pl_featured_listing_meta' === $key) {
 						continue;
 					}
-					if( $key == 'radio-type' ) { // handle neighborhood items
+					if( $key === 'radio-type' ) { // handle neighborhood items
 						if( in_array( $value[0], $taxonomy_args ) ) {
 							$nb_type = $value[0];
 							$nb_value_key = 'nb-select-' . $nb_type;
