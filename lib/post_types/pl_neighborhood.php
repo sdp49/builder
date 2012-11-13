@@ -206,13 +206,13 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 					if( 'pl_static_listings_option' === $key  || 'pl_featured_listing_meta' === $key) {
 						continue;
 					}
-					if( $key === 'radio-type' ) { // handle neighborhood items
+					if( $key === 'type' ) { // handle neighborhood items
 						if( in_array( $value[0], $taxonomy_args ) ) {
 							$nb_type = $value[0];
 							$nb_value_key = 'nb-select-' . $nb_type;
 							$nb_value = isset( $meta[$nb_value_key] ) ? $meta[$nb_value_key][0] : ''; 
 							$args .= "$nb_type = '{$nb_value}' ";
-							$args .= "$nb_value_key = '{$nb_value}' ";
+							// $args .= "$nb_value_key = '{$nb_value}' ";
 						}
 					} else if( ! in_array( $key, array('pl_cpt_template', 'type') ) ) {
 						if( is_array( $value ) ) {
@@ -225,8 +225,10 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 					}
 					
 				}
-				
 			}
+			
+			// Workaround for autosave with incorrect post type
+			// update_post_meta( $post->ID, 'pl_post_type', 'pl_neighborhood' );
 		
 			$shortcode = '[pl_neighborhood ' . $args . ']';
 
