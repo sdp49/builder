@@ -28,6 +28,9 @@ div.wrap a.add-new-h2,
 .selected_type {
   font-weight: bold; }
 
+#message a {
+  display: none; }
+
 @media screen and (max-width: 1500px) {
   #preview-wrapper {
     position: static;
