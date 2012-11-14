@@ -1,6 +1,7 @@
 widget_autosave = function() {
 	
 	var post_id = jQuery("#post_ID").val();
+	var post_type = jQuery('#pl_post_type').val() || "";
 	
 	//autosave();
 	var featured = {};
@@ -14,6 +15,36 @@ widget_autosave = function() {
 		}
 	);
 	
+	var static_listings = {};
+	static_listings.location = {};
+	static_listings.metadata = {};
+	
+	// manage static listings form params
+	if( post_type === 'static_listings' || post_type === 'search_listings' ) {
+		jQuery('#pl_static_listing_block .form_group input, #pl_static_listing_block .form_group select').each(function() {
+			// omit blank values and not filled ones
+			var value = jQuery(this).val();
+			if( value !== undefined && value !== false && value !== '' ) {
+				var id = this.id;
+
+				if( id.indexOf('location-') !== -1 ) {
+					// get the part after location
+					var field = id.substring( 9 );
+					static_listings.location[field] = value;
+				} else if( id.indexOf('metadata-') !== -1 ) {
+					// get the part after metadata
+					var field = id.substring( 9 );
+					static_listings.metadata[field] = value;
+				} else {
+					static_listings[id] = value;
+				}
+				
+			}
+		});
+	}
+	
+	// debugger;
+	
 	var radio_type = jQuery("input[name='radio-type']").val();
 	var neighborhood_type = 'nb-id-select-' + radio_type; 
 	var neighborhood_value = jQuery('#' + neighborhood_type).val();
@@ -21,7 +52,7 @@ widget_autosave = function() {
 	var post_data = {
 					'post_id': post_id,
 	                'action': 'autosave_widget',
-	                'pl_post_type': jQuery('#pl_post_type').val() || "",
+	                'pl_post_type': post_type,
 	                'width': jQuery('#widget-meta-wrapper input#width').val() || "250",
 	                'height': jQuery('#widget-meta-wrapper input#height').val() || "250",
 	                'pl_featured_listing_meta': JSON.stringify(featured),
