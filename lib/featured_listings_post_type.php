@@ -179,9 +179,13 @@ function pl_featured_listings_meta_box_save( $post_id ) {
 	// Avoid autosaves
 	if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
 	
-	// Verify nonces for ineffective calls
-	if( !isset( $_POST['meta_box_nonce'] ) || !wp_verify_nonce( $_POST['meta_box_nonce'], 'pl_fl_meta_box_nonce' ) ) return;
+	// Verify nonces for ineffective calls - from featured listings and general widgets
+	if( !isset( $_POST['meta_box_nonce'] )) { return; }
 	
+	$verify_nonce = wp_verify_nonce( $_POST['meta_box_nonce'], 'pl_fl_meta_box_nonce' ) || wp_verify_nonce( $_POST['meta_box_nonce'], 'pl_cpt_meta_box_nonce' );
+	if( ! $verify_nonce ) {
+		return;
+	}
 	$static_listings_option = array();
 	
 	// Save search form fields if not empty
@@ -189,16 +193,41 @@ function pl_featured_listings_meta_box_save( $post_id ) {
 	if( ! empty( $_POST['zoning_types'] ) &&  'false' !== $_POST['zoning_types'] ) { $static_listings_option['zoning_types'] = $_POST['zoning_types']; }
 	if( ! empty( $_POST['purchase_types'] ) && 'false' !== $_POST['purchase_types'] ) { $static_listings_option['purchase_types'] = $_POST['purchase_types']; }
 	
-	if( isset( $_POST['location'] ) && is_array( $_POST['location'] ) ) {
-		foreach( $_POST['location'] as $key => $value ) {
+	// Save locations - verify is array or serialized from jQuery AJAX JSON data
+	if( isset( $_POST['location'] ) ) {
+		$location_arr = array();
+		$post_location = $_POST['location'];
+		
+		if( is_array( $post_location ) ) {
+			$location_arr = $post_location;
+		} else {
+			$post_location = str_replace('\\', '', $post_location); 
+			$location_arr = json_decode( $post_location );
+		}
+		
+		
+		// add the location data to the static listings array
+		foreach( $location_arr as $key => $value ) {
 			if( ! empty( $value ) ) {
 				$static_listings_option['location'][$key] = $value;
 			}
 		}
 	}
 	
-	if( isset( $_POST['metadata'] ) && is_array( $_POST['metadata'] ) ) {
-		foreach( $_POST['metadata'] as $key => $value ) {
+	// Prepare metadata array - from POST as array or as a json encoded data from a jQuery call
+	if( isset( $_POST['metadata'] ) ) {
+		$metadata_arr = array();
+		$post_metadata = $_POST['metadata'];
+		
+		if( is_array( $post_metadata ) ) {
+			$metadata_arr = $post_metadata;
+		}
+		else {
+			$post_metadata = str_replace( '\\', '', $post_metadata );
+			$metadata_arr = json_decode( $post_metadata );
+		}
+
+		foreach( $metadata_arr as $key => $value ) {
 			if( ! empty( $value ) ) {
 				$static_listings_option['metadata'][$key] = $value;
 			}
@@ -206,7 +235,7 @@ function pl_featured_listings_meta_box_save( $post_id ) {
 	}
 	
 	update_post_meta( $post_id, 'pl_static_listings_option', $static_listings_option );
-	update_post_meta( $post_id, 'pl_listing_type', $_POST['pl_listing_type']);
+	update_post_meta( $post_id, 'pl_listing_type', $_POST['pl_listing_type'] );
 	
 	// if our current user can't edit this post, bail
 	if( !current_user_can( 'edit_post' ) ) return;

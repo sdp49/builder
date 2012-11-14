@@ -579,7 +579,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		}
 	}
 	
-	// Helper function for featured and static listings
+	// Helper function for featured listings
 	// They are already available via other UI
 	private function prepare_featured_template( $single ) {
 		global $post;
@@ -593,6 +593,8 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		}
 	}
 	
+	// Helper function for static listings
+	// They are already available via other UI
 	private function prepare_static_template( $single ) {
 		global $post;
 
@@ -605,6 +607,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		}
 	}
 	
+	// Autosave function when any of the input fields is called
 	public function autosave_save_post_for_iframe( ) {
 		if( ! empty ($_POST['post_id'] ) ) {
 			$post_id = $_POST['post_id'];

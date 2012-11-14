@@ -57,9 +57,15 @@ widget_autosave = function() {
 	                'height': jQuery('#widget-meta-wrapper input#height').val() || "250",
 	                'pl_featured_listing_meta': JSON.stringify(featured),
 	                'radio-type': radio_type,
-	                'meta_box_nonce': jQuery('#meta_box_nonce').val()
+	                'meta_box_nonce': jQuery('#meta_box_nonce').val(),
+	                'listing_types': static_listings['listing_types'] || 'false',
+	                'zoning_types': static_listings['zoning_types'] || 'false',
+	                'purchase_types': static_listings['purchase_types'] || 'false',
+	                'location': JSON.stringify( static_listings.location ),
+	                'metadata': JSON.stringify( static_listings.metadata )
 	};
 	
+	debugger;
 	post_data[neighborhood_type] = neighborhood_value;
 	post_data[radio_type] = neighborhood_value;
 	
