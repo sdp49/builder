@@ -190,7 +190,9 @@ jQuery(document).ready(function($) {
 		// when re-directing back to homepage...
 		customizer_global.stateAltered = false;
 		
-		setTimeout( function () { window.location.href = window.location.origin; }, 1200 ); 
+		var home_url = ( window.location.origin ) ? window.location.origin : ( window.location.protocol + "//" + window.location.host );
+
+		setTimeout( function () { window.location.href = home_url; }, 1200 ); 
 	});
 
 	$('.control-container label').on('click', function (event) {
