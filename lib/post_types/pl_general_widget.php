@@ -233,6 +233,8 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 							wp_register_script( 'datatable', trailingslashit( PLS_JS_URL ) . 'libs/datatables/jquery.dataTables.js' , array( 'jquery'), NULL, true );
 							wp_enqueue_script('datatable'); 
 							wp_enqueue_script('jquery-ui-core');
+							wp_enqueue_style('jquery-ui-datepicker');
+							wp_enqueue_script('jquery-ui-datepicker');
 							wp_enqueue_style('jquery-ui-dialog', OPTIONS_FRAMEWORK_DIRECTORY.'css/jquery-ui-1.8.22.custom.css');
 							wp_enqueue_script('jquery-ui-dialog');
 							wp_enqueue_script('options-custom', OPTIONS_FRAMEWORK_DIRECTORY.'js/options-custom.js', array('jquery'));
@@ -292,6 +294,9 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 						}
 					});
 				}
+
+				$('#metadata-max_avail_on_picker').datepicker();
+				$('#metadata-min_avail_on_picker').datepicker();
 
 				// click a new post type as a widget type
 				$('#post_types_list a').click(function() {
