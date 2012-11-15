@@ -64,6 +64,7 @@ class PL_Snippet_Template {
 		    font-weight: normal;
 		  }
 		</style>
+		<?php do_action( 'pl_template_extra_styles' ); ?>
 		
 		<?php 
 		    /*** Load initial data... ***/

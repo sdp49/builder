@@ -7,6 +7,15 @@
   height: 300px;
   border: 1px solid gray; }
 
+.pl_template_block {
+  width: 400px; }
+
+#widget-meta-wrapper .shortcode_container input.save_snippet {
+  font-weight: normal;
+  color: #464646;
+  background: #21759b url(../images/button-grad.png) repeat-x scroll left top;
+  text-shadow: none; }
+
 #minor-publishing-actions,
 #edit-slug-box,
 div.wrap a.add-new-h2,

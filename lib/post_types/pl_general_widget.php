@@ -26,11 +26,11 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	public $default_post_type = 'pl_map';
 	 
 	public $fields = array(
-			'map_type' => array( 'type' => 'select', 'label' => 'Map Type', 'options' => array( 
-																	'listings' => 'listings',
-																	 'lifestyle' => 'lifestyle',
+// 			'map_type' => array( 'type' => 'select', 'label' => 'Map Type', 'options' => array( 
+// 																	'listings' => 'listings',
+// 																	 'lifestyle' => 'lifestyle',
 // 																	'lifestyle_poligon' => 'lifestyle_poligon' 
-							), 'css' => 'pl_map' ),
+// 							), 'css' => 'pl_map' ),
 			'width' => array( 'type' => 'text', 'label' => 'Width', 'css' => 'pl_map pl_form pl_search_listings pl_slideshow pl_neighborhood featured_listings static_listings' ),
 			'height' => array( 'type' => 'text', 'label' => 'Height', 'css' => 'pl_map pl_form pl_search_listings pl_slideshow pl_neighborhood featured_listings static_listings' ),
 			'animation' => array( 'type' => 'select', 'label' => 'Animation', 'options' => array(
@@ -248,7 +248,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 												, 'pl_featured_listing_meta');
 						?>
 						</div><!-- end of #pl_featured_listing_block -->
-						<div id="pl_static_listing_block" class="static_listings pl_search_listings pl_map">
+						<div id="pl_static_listing_block" class="static_listings pl_search_listings">
 								<?php 
 								// generate static listings
 								echo PL_Form::generate_form(
@@ -352,7 +352,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 					widget_autosave();
 					
 					$('#widget-meta-wrapper input, #widget-meta-wrapper select').css('background', '#ffffff');
-					$('#widget-meta-wrapper input:disabled, #widget-meta-wrapper select:disabled').css('background', '#eeeeee');
+					$('#widget-meta-wrapper input:disabled, #widget-meta-wrapper select:disabled').css('background', '#dddddd');
 				});
 
 				// call the custom autosave for every changed input and select
@@ -576,7 +576,10 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			);
 			
 			echo '</div>';
+			
+		    add_action( 'pl_template_extra_styles', array( $this, 'update_template_block_styles' ) );
 		}
+		
 	}
 	
 	// Helper function for featured listings
@@ -624,6 +627,21 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		}		
 
 		die();
+	}
+	
+	public function update_template_block_styles( ) {
+		ob_start();
+	?>	
+	<style type="text/css">
+		.snippet_container {
+			width: 400px;
+		}
+		.shortcode_container {
+			width: 100%;
+		}
+	</style>	
+	<?php 
+		echo ob_get_clean();
 	}
 }
 

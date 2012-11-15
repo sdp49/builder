@@ -4,6 +4,7 @@
 	</head>
 	<body>
 	<?php
+		add_filter('show_admin_bar', '__return_false');
 	
 		if( isset( $drop_modernizr )) {
 			add_action('wp_enqueue_scripts', 'pl_template_drop_modernizr');
