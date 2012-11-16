@@ -201,11 +201,20 @@ function placester_admin_menu() {
 
     add_submenu_page( 'placester', '','Listings', 'edit_pages', 'placester_properties', array('PL_Router','my_listings'));
     add_submenu_page( 'placester', '', 'Add Listing', 'edit_pages', 'placester_property_add', array('PL_Router','add_listings') );    
-    if ( !is_multisite() || !is_network_admin() ) {
+    
+    // If the site using the plugin is on our hosted network, don't show the theme gallery...
+    if ( !defined('HOSTED_PLUGIN_KEY') ) {
     	add_submenu_page( 'placester', '', 'Theme Gallery', 'edit_pages', 'placester_theme_gallery', array('PL_Router','theme_gallery') );    	
     }
+    
     global $settings_subpages;
-    $settings_subpages = array('Settings' => '','Client Settings' => '_client' ,'Caching Settings' => '_caching', 'Global Property Filtering' => '_filtering', 'Polygon Controls' => '_polygons', 'Property Pages' => '_property_pages', 'Template Controls' => '_template', 'International Settings' => '_international' );
+    $settings_subpages = array('Settings' => '',
+                               'Client Settings' => '_client',
+                               'Global Property Filtering' => '_filtering', 
+                               'Polygon Controls' => '_polygons', 
+                               'Property Pages' => '_property_pages', 
+                               'Template Controls' => '_template', 
+                               'International Settings' => '_international' );
     foreach ($settings_subpages as $name => $page_url) {
         add_submenu_page( 'placester', '', $name, 'edit_pages', 'placester_settings' . $page_url, array('PL_Router','settings' . $page_url) );    
     }

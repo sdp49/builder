@@ -21,11 +21,11 @@ class PL_Js_Helper {
 					   'placester_page_placester_settings_polygons', 
 					   'placester_page_placester_settings_property_pages', 
 					   'placester_page_placester_settings_international', 
-					   'placester_page_placester_settings_neighborhood', 
-					   'placester_page_placester_settings_caching', 
+					   'placester_page_placester_settings_neighborhood',
 					   'placester_page_placester_settings_filtering', 
 					   'placester_page_placester_settings_client',
 					   'placester_page_placester_settings_template');
+
 		if (!in_array($hook, $pages)) { return; }
 
 		// hack to force jquery to load properly. Needs to be removed once there's time to 
@@ -78,23 +78,24 @@ class PL_Js_Helper {
 			self::register_enqueue_if_not('settings-property', trailingslashit(PL_JS_URL) .  'admin/settings/property.js', array( 'jquery'));	
 			self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) .  'datatables/jquery.dataTables.js', array( 'jquery'));	
 		}
+		
 		if ($hook == 'placester_page_placester_settings_international') {
 			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) .  'admin/settings/international.js', array( 'jquery'));	
 			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) .  'admin/settings.js', array( 'jquery'));	
 		}
+		
 		if ($hook == 'placester_page_placester_settings_neighborhood') {
 			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) .  'admin/settings.js', array( 'jquery'));	
 		}
-		if ($hook == 'placester_page_placester_settings_caching') {
-			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) .  'admin/settings/caching.js', array( 'jquery'));	
-			self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) .  'datatables/jquery.dataTables.js', array( 'jquery'));	
-		}
+		
 		if ($hook == 'placester_page_placester_settings_filtering') {
 			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) .  'admin/settings/filtering.js', array( 'jquery'));	
 		}
+		
 		if ($hook == 'placester_page_placester_settings_client') {
 			self::register_enqueue_if_not('settings-client', trailingslashit(PL_JS_URL) .  'admin/settings/client.js', array( 'jquery'));	
 		}
+		
 		if ($hook == 'placester_page_placester_settings_template') {
 			self::register_enqueue_if_not('settings-template', trailingslashit(PL_JS_URL) .  'admin/settings/template.js', array( 'jquery'));	
 		}
