@@ -524,7 +524,7 @@ jQuery(document).ready(function($) {
 
 	$('#toggle_css_edit').on('click', function (event) {
 		event.preventDefault();
-		console.log('clicked!');
+		// console.log('clicked!');
 
 		var show_txt = '[+] Show'
 		var hide_txt = '[\u2013] Hide';
