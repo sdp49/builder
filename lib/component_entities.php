@@ -48,10 +48,10 @@ class PL_Component_Entity {
 			add_filter( 'pls_listings_search_form_outer_' . $template, array(__CLASS__,'search_form_templates'), 10, 6 );
 		}
 
-// 		$listing_slideshow_templates = self::get_shortcode_snippet_list( 'search_form', self::$defaults );
-// 		foreach ($listing_slideshow_templates as $template => $type) {
-// 			add_filter( 'pls_slideshow_html_' . $template, array(__CLASS__,'listing_slideshow_templates'), 10, 6 );
-// 		}
+		$listing_slideshow_templates = self::get_shortcode_snippet_list( 'search_form', self::$defaults );
+		foreach ($listing_slideshow_templates as $template => $type) {
+			add_filter( 'pls_slideshow_html_' . $template, array(__CLASS__,'listing_slideshow_templates'), 10, 6 );
+		}
 		
 		$search_listings_templates = self::get_shortcode_snippet_list( 'search_listings', self::$defaults );
 		foreach ($search_listings_templates as $template => $type) {
@@ -259,6 +259,7 @@ class PL_Component_Entity {
 				'featured_option_id' => 'slideshow-featured-listings',
 				'listings' => 'limit=5&is_featured=true&sort_by=price'
 			));
+
 			ob_start();
 			?>
 			<style type="text/css">
@@ -651,6 +652,17 @@ class PL_Component_Entity {
 		
 			$snippet_body = self::get_active_snippet_body($shortcode);
 			
+			return do_shortcode($snippet_body);
+		}
+		
+		public static function listing_slideshow_templates( $html, $data, $context, $context_var, $args ) {
+			$shortcode = 'listing_slideshow';
+			self::$listing = $listing;
+				
+			// get the template attached as a context arg, 33 is the length of the filter prefix
+			$template = $context;
+				
+			$snippet_body = self::get_active_snippet_body($shortcode, $template);
 			return do_shortcode($snippet_body);
 		}
 		

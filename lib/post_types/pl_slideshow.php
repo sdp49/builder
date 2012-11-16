@@ -162,6 +162,11 @@ class PL_Slideshow_CPT extends PL_Post_Base {
 			}
 		}
 		
+
+		if( isset( $_POST['pl_template_listing_slideshow'] ) ) {
+			update_post_meta( $post_id, 'pl_cpt_template', $_POST['listing_slideshow']);
+		}
+
 		if( isset( $_POST['pl_cpt_template'] ) ) {
 			update_post_meta( $post_id, 'pl_cpt_template', $_POST['pl_cpt_template']);
 		}
@@ -183,6 +188,7 @@ class PL_Slideshow_CPT extends PL_Post_Base {
 			if( ! $skipdb ) {
 				$meta_custom = get_post_custom( $post->ID );
 				$meta = array_merge( $meta_custom, $meta );
+				
 			}
 			
 			if( isset( $meta['pl_static_listings_option'] ) ) { unset( $meta['pl_static_listings_option'] ); }
@@ -204,7 +210,12 @@ class PL_Slideshow_CPT extends PL_Post_Base {
 				}
 			}
 			
-			$args .= "post_id = '{$post->ID}'";
+			$args .= "post_id = '{$post->ID}' ";
+			
+			if( isset( $meta['pl_cpt_template'] ) ) {
+				$context = $meta['pl_cpt_template'][0];
+				$args .= "context = '$context' ";
+			}
 				
 			$shortcode = '[listing_slideshow ' . $args . ']';
 				

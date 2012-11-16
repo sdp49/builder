@@ -578,8 +578,9 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				array(
 						'codes' => array( $code ),
 						'p_codes' => array(
-						$code => $label
-					)
+							$code => $label
+						),
+						'select_name' => 'pl_template_' . $code
 				)
 			);
 			

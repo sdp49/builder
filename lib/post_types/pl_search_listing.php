@@ -165,6 +165,11 @@ class PL_Search_Listing_CPT extends PL_Post_Base {
 		
 		update_post_meta( $post_id, 'pl_static_listings_option', $static_listings_option );
 		
+		// save templates
+		if( isset( $_POST['pl_template_search_listings'] ) ) {
+			update_post_meta( $post_id, 'pl_cpt_template', $_POST['pl_template_search_listings']);
+		}
+		
 		if( isset( $_POST['pl_cpt_template'] ) ) {
 			update_post_meta( $post_id, 'pl_cpt_template', $_POST['pl_cpt_template']);
 		}

@@ -237,6 +237,18 @@ function pl_featured_listings_meta_box_save( $post_id ) {
 	update_post_meta( $post_id, 'pl_static_listings_option', $static_listings_option );
 	update_post_meta( $post_id, 'pl_listing_type', $_POST['pl_listing_type'] );
 	
+	$pl_post_type = ! empty( $_POST['pl_post_type'] ) ? $_POST['pl_post_type'] : 'pl_general_widget';
+	
+	if( $pl_post_type === 'pl_general_widget' ) {
+		return;
+	}
+	
+	if( $pl_post_type === 'featured_listings' && ! empty( $_POST['pl_template_featured_listings'] ) ) {
+		update_post_meta( $post_id, 'pl_template_featured_listings',  $_POST['pl_template_featured_listings'] );
+	} else if( $pl_post_type === 'static_listings' && ! empty( $_POST['pl_template_static_listings'] )) {
+		update_post_meta( $post_id, 'pl_template_static_listings',  $_POST['pl_template_static_listings'] );
+	}
+	
 	// if our current user can't edit this post, bail
 	if( !current_user_can( 'edit_post' ) ) return;
 	
