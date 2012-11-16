@@ -3,7 +3,10 @@
  */
 
 // Usually defined by WordPress, but not in the customizer...
-var ajaxurl = window.location.origin + '/wp-admin/admin-ajax.php';
+var ajaxurl = ( window.location.origin ) ? window.location.origin : ( window.location.protocol + "//" + window.location.host );
+ajaxurl += '/wp-admin/admin-ajax.php';
+
+
 
 // This global variable must be defined in order to conditionally prevent iframes from being
 // automatically "busted" when in the hosted environment... (see hosted-modifications plugin)
@@ -137,6 +140,8 @@ jQuery(document).ready(function($) {
   */
 
 	$('#hide_pane, #logo').on('click', function (event) {
+		event.preventDefault();
+		
 		$('#pane').css('display', 'none');
 		$('.control-container').css('display', 'none');
 
@@ -185,7 +190,9 @@ jQuery(document).ready(function($) {
 		// when re-directing back to homepage...
 		customizer_global.stateAltered = false;
 		
-		setTimeout( function () { window.location.href = window.location.origin; }, 1200 ); 
+		var home_url = ( window.location.origin ) ? window.location.origin : ( window.location.protocol + "//" + window.location.host );
+
+		setTimeout( function () { window.location.href = home_url; }, 1200 ); 
 	});
 
 	$('.control-container label').on('click', function (event) {
