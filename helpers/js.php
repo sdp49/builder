@@ -115,7 +115,11 @@ class PL_Js_Helper {
 		self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) .  'datatables/jquery.dataTables.js', array( 'jquery'));			
 		self::register_enqueue_if_not('leads', trailingslashit(PL_JS_PUB_URL) .  'leads.js', array( 'jquery'));
 		self::register_enqueue_if_not('membership', trailingslashit(PL_JS_PUB_URL) .  'membership.js', array( 'jquery'));
-		self::register_enqueue_if_not('infobar', trailingslashit(PL_JS_PUB_URL) .  'infobar.js', array( 'jquery'));
+		self::register_enqueue_if_not('general', trailingslashit(PL_JS_PUB_URL) .  'general.js', array( 'jquery'));
+		
+		if ( PL_Option_Helper::get_demo_data_flag() ) {
+			self::register_enqueue_if_not('infobar', trailingslashit(PL_JS_PUB_URL) .  'infobar.js', array( 'jquery'));
+		}			
 	}
 
 	public function customizer() {
