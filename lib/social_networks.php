@@ -2,7 +2,7 @@
 
 // PL_Social_Networks::init();
 
-define( 'SOCIAL_DEBUGGER', true );
+define( 'SOCIAL_DEBUGGER', false );
 
 function debug_nasty_socials( $arg, $color = 'black' ) {
 	if( SOCIAL_DEBUGGER ) {
@@ -24,7 +24,7 @@ class PL_Social_Networks_Twitter {
 	public static $user_meta_key_token = 'pl_twitter_token';
 	public static $user_meta_key_token_secret = 'pl_twitter_token_secret';
 	public static $logged_user = NULL;
-	public static $twitter_redirect_uri = NULL;
+	public static $admin_redirect_uri = NULL;
 	
 	// Facebook related variables
 	public static $fb_user_meta_key_token = 'fb_token';
@@ -33,6 +33,7 @@ class PL_Social_Networks_Twitter {
 	public static $fb = NULL;
 	public static $fb_token = NULL;
 	public static $fb_profile = NULL;
+	public static $fb_default_proxy_url = 'http://plsbridge.dxdemos.eu/';
 	
 	public static function init() {
 		// init for Twitter
@@ -41,14 +42,15 @@ class PL_Social_Networks_Twitter {
 		
 		self::$plugin_dir = plugin_dir_path( __FILE__ );
 		self::$plugin_url = plugin_dir_url( __FILE__ );
-		add_action( 'admin_init', array( __CLASS__, 'init_twitter_redirect_uri' ), 1 );
+		add_action( 'admin_init', array( __CLASS__, 'init_admin_redirect_uri' ), 1 );
 		add_action( 'admin_menu', array( __CLASS__, 'add_social_settings_page' ) );
 		add_action( 'add_meta_boxes', array( __CLASS__, 'add_post_metaboxes' ) );
 		add_action( 'save_post', array( __CLASS__, 'save_post_social_messages' ) );
 		
 		// Facebook init
 		add_action( 'init', array( __CLASS__, 'fb_login_callback' ) );
-		add_action( 'admin_menu', array( __CLASS__, 'fb_add_admin_menu' ) );
+		add_action( 'pl_twitter_display', array( __CLASS__, 'twitter_handler' ) );
+		add_action( 'pl_facebook_display', array( __CLASS__, 'facebook_handler' ) );
 	}
 	
 	public static function verify_user_logged() {
@@ -58,9 +60,6 @@ class PL_Social_Networks_Twitter {
 			$current_user_id = self::$logged_user->ID;
 		
 			if( ! empty( $current_user_id ) ) {
-// 				delete_user_meta( $current_user_id , 'pl_twitter_token');
-// 				delete_user_meta( $current_user_id , 'pl_twitter_token_secret' );
-				
 				$user_token = get_user_meta( $current_user_id, self::$user_meta_key_token, true );
 				if( ! empty( $user_token ) ) {
 					self::$user_token = $user_token;
@@ -76,11 +75,11 @@ class PL_Social_Networks_Twitter {
 	}
 	
 	/**
-	 * Init the twitter redirect URI, unique for a site domain
+	 * Init the twitter and facebook redirect URI, unique for a site domain
 	 */
-	public static function init_twitter_redirect_uri() {
+	public static function init_admin_redirect_uri() {
 		$admin_url = admin_url( 'options-general.php?page=placester-social' );
-		self::$twitter_redirect_uri = $admin_url;
+		self::$admin_redirect_uri = $admin_url;
  		define('OAUTH_CALLBACK', $admin_url );
 	}
 
@@ -96,27 +95,68 @@ class PL_Social_Networks_Twitter {
 	 * Call settings page callback content for socials
 	 */
 	public static function add_social_settings_cb() {
+		if( is_user_logged_in() && ! empty( self::$logged_user ) ) {
+			$current_user_id = self::$logged_user;
+			
+			// Clear database variables based on a GET request
+			if( isset( $_GET['logout_clear'] ) && $_GET['logout_clear'] == 'twitter' ) {
+ 				delete_user_meta( $current_user_id, self::$user_meta_key_token );
+ 				delete_user_meta( $current_user_id, self::$user_meta_key_token_secret );
+ 				wp_redirect( self::$admin_redirect_uri );
+ 				exit;
+			}
+			if( isset( $_GET['logout_clear'] ) && $_GET['logout_clear'] == 'facebook' ) {
+				delete_user_meta( $current_user_id, self::$fb_user_meta_key_token );
+				wp_redirect( self::$admin_redirect_uri );
+				exit;
+			}
+			
+			// Call the template that loads Twitter and Facebook hooks
+			include_once( PL_VIEWS_ADMIN_DIR . 'social/social.php');
+		}
+	}
+	
+	/**
+	 * Manage all Facebook related work
+	 */
+	public static function facebook_handler() {
+		self::facebook_callback();
+	}
+	
+	/**
+	 * Manage steps 1-5 for Twitter authorization
+	 */
+	public static function twitter_handler() {
 		// Mandatory configs
 		include_once PL_LIB_DIR . 'twitteroauth/config.php';
 		include_once PL_LIB_DIR . 'twitteroauth/twitteroauth/twitteroauth.php';
- 		session_start();
- 		
- 		debug_nasty_socials('User token: ');
- 		debug_nasty_socials(self::$user_token, 'red');
- 		
+			
+		// Start a session if there hasn't been started yet
+		if( session_id() == '' ) {
+			session_start();
+		}
+			
+		debug_nasty_socials('User token: ');
+		debug_nasty_socials(self::$user_token, 'red');
+			
 		debug_nasty_socials($_REQUEST, 'red');
- 		debug_nasty_socials($_SESSION, 'yellow');
-
+		debug_nasty_socials($_SESSION, 'yellow');
+		
 		// Step 5 - we already know the user, he's authorized, we have the data in DB
 		if( ! empty( self::$user_token ) && ! empty( self::$user_token_secret ) ) {
 			$connection = new TwitterOAuth( CONSUMER_KEY, CONSUMER_SECRET, self::$user_token, self::$user_token_secret );
-
+		
 			if( isset( $_GET['postme'] ) ) {
 				$post_msg = urldecode( $_GET['postme'] );
 				$connection->post('statuses/update', array('status' => $post_msg));
 			}
+				
+			$user = $connection->get('account/verify_credentials');
+			if( is_object( $user ) ) {
+				echo "<p>Hello, " . $user->screen_name . "</p>";
+			}
 			
-			// $content = $connection->get('account/verify_credentials');
+			echo '<p><a href="' . self::$admin_redirect_uri .'&logout_clear=twitter">Logout from Twitter</a></p>';
 			debug_nasty_socials( 'Authorized:', 'brown');
 			debug_nasty_socials($content, 'brown');
 		} else {
@@ -150,10 +190,11 @@ class PL_Social_Networks_Twitter {
 		}
 		
 		/* Build an image link to start the redirect process. */
-		$content = '<a href="' . self::$twitter_redirect_uri . '&social_action=twitter-redirect"><img src=".twitteroauth/images/lighter.png" alt="Sign in with Twitter"/></a>';
+		$content = '<a href="' . self::$admin_redirect_uri . '&social_action=twitter-redirect"><img src="' . PL_LIB_URL . 'twitteroauth/images/lighter.png" alt="Sign in with Twitter"/></a>';
 			
+		echo $content;
 		/* Include HTML to display on the page. */
-		include PL_LIB_DIR . 'twitteroauth/html.inc';
+		// include PL_LIB_DIR . 'twitteroauth/html.inc';
 	}
 	
 	/**
@@ -188,6 +229,9 @@ class PL_Social_Networks_Twitter {
 			if( isset( $token_consumer['oauth_token'] ) && isset( $token_consumer['oauth_token_secret'] ) ) {
 				update_user_meta( self::$logged_user->ID, self::$user_meta_key_token, $token_consumer['oauth_token']);
 				update_user_meta( self::$logged_user->ID, self::$user_meta_key_token_secret, $token_consumer['oauth_token_secret']);
+				
+				wp_redirect( self::$admin_redirect_uri );
+				exit;
 			}
 			
 			debug_nasty_socials(' token and verifier - okay ', 'blue');
@@ -245,7 +289,9 @@ class PL_Social_Networks_Twitter {
 		$request_uri = $_SERVER['REQUEST_URI'];
 		
 		if( false !== strpos( $request_uri, 'page=placester-social&social_action=twitter-redirect' )
-		|| ( false !== strpos( $request_uri, 'page=placester-social' ) && false !== strpos( $request_uri, 'oauth_verifier=' ) ) ) {
+		|| ( false !== strpos( $request_uri, 'page=placester-social' ) && false !== strpos( $request_uri, 'oauth_verifier=' ) )
+		|| ( false !== strpos( $request_uri, 'page=placester-social' ) && false !== strpos( $request_uri, 'logout_clear=' ) ) ) {
+		
 			ob_start();
 		}
 	}
@@ -254,6 +300,9 @@ class PL_Social_Networks_Twitter {
 	 * Facebook functions
 	 */
 	
+	/**
+	 * Get the login callback for communication with the proxy
+	 */
 	public static function fb_login_callback() {
 		include_once PL_LIB_DIR . 'facebook-php-sdk/src/facebook.php';
 
@@ -261,7 +310,7 @@ class PL_Social_Networks_Twitter {
 			update_user_meta( get_current_user_id(), self::$fb_user_meta_key_token, $_GET[ self::$fb_token_name ] );
 			$redirect = self::fb_get_clean_url( get_bloginfo('url') . $_SERVER['REQUEST_URI'] );
 	
-			die( '<script type="text/javascript">top.location.href = "' .  $redirect . '";</script>' );
+ 			die( '<script type="text/javascript">top.location.href = "' .  $redirect . '";</script>' );
 		}
 	
 		self::$logged_in = FALSE;
@@ -298,15 +347,23 @@ class PL_Social_Networks_Twitter {
 		update_option( 'fb_proxy_url', $fb_proxy_url );
 	}
 	
-	public static function fb_add_admin_menu() {
-		add_menu_page( __('Facebook - DX Social Masta', 'social-masta'), __('Facebook', 'social-masta'), 'manage_options', 'soc-masta-facebook', array( __CLASS__, 'facebook_callback' ) );
+	/**
+	 * Print the login URL for Facebook
+	 * 
+	 * Part of a function to be reused in other sections if needed
+	 * 
+	 */
+	public static function fb_print_login_url() {
+		$proxy_url = get_option( 'fb_proxy_url', self::$fb_default_proxy_url );
+		
+		echo '<a href="' . trailingslashit( $proxy_url ) . 'login.php">Log In with Facebook</a>' . "<br />\n\n"; 
+		// . print_r($this->_profile, true) . "<br />\n\n";
 	}
 	
-	public static function fb_print_data_debug() {
-	
-		echo '<a href="' . trailingslashit( get_option('fb_proxy_url') ) . 'login.php">Log In with Facebook</a>' . "<br />\n\n"; // . print_r($this->_profile, true) . "<br />\n\n";
-	}
-	
+	/**
+	 * Manage Facebook arguments and add to temporary array for building proper query to the proxy
+	 * @return string url
+	 */
 	private static function fb_get_clean_url( $url ) {
 		$tmp = parse_url( $url );
 	
@@ -326,14 +383,17 @@ class PL_Social_Networks_Twitter {
 		return $tmp['scheme'] . '://' . $tmp['host'] . $tmp['path'] . $tmp['query'];
 	}
 	
-	public static function general_callback() {
-		include_once( PL_VIEWS_ADMIN_DIR . 'social/general.php');
-	}
+	/**
+	 * Menu page call
+	 */
 	
 	public static function facebook_callback() {
 		include_once( PL_VIEWS_ADMIN_DIR . 'social/facebook.php');
 	}
 	
+	/**
+	 * Property-alike helper functions for templates
+	 */
 	public static function get_user_meta_key_name() {
 		return self::$fb_user_meta_key_token;
 	}
