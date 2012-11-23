@@ -97,6 +97,7 @@ include_once('config/customizer/onboard_settings.php');
 include_once('config/customizer/theme_choices.php');
 
 //lib
+include_once('lib/social_networks.php');
 include_once('lib/config.php');
 include_once('lib/routes.php');
 include_once('lib/http.php');
