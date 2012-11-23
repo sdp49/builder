@@ -269,17 +269,50 @@ class PL_Social_Networks_Twitter {
 	public static function add_post_metaboxes_callback() {
 	?>
 		<h3>Facebook</h3>
-		<p><input type="text" name="pl_facebook_msg" /></p>
+		<p><input type="text" name="pl_facebook_message" /></p>
 		<h3>Twitter</h3>
-		<p><input type="text" name="pl_twitter_msg" /></p>
+		<p><input type="text" name="pl_twitter_message" /></p>
 	<?php 
 	}
 
 	/**
 	 * Save hook for post social messages
 	 */
-	public static function save_post_social_messages() {
+	public static function save_post_social_messages( $post_id ) {
+		// Avoid autosaves
+		if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
+		
+		// Verify nonces for ineffective calls
+// 		if( !isset( $_POST['pl_social_nonce'] ) || !wp_verify_nonce( $_POST['pl_social_nonce'], 'pl_social_nonce' ) ) return;
+		
+		// if our current user can't edit this post, bail
+		if( !current_user_can( 'edit_post' ) ) return;
+		
+		// Handle Facebook and Twitter messaging
+		if ( !wp_is_post_revision( $post_id ) ) {
+			$slug = get_permalink( $post_id );
+			
+			
+			if( ! empty( $_POST['pl_facebook_message'] ) ) {
+				$facebook = self::get_facebook_object();
 
+				if( $facebook ) {
+					$message = $_POST['pl_facebook_message'];
+					$facebook->api("/me/feed", "post", array(
+									    message => $message,
+									    link => $slug,
+									));
+				}
+			}
+			
+			if( ! empty( $_POST['pl_twitter_message'] ) ) {
+				$twitter = self::get_twitter_object();
+				if( $twitter ) {
+					$message = $_POST['pl_twitter_message'];
+					$twitter->post('statuses/update', array('status' => $message . ': ' . $slug ) );
+				}	
+			}
+		}
 	}
 	
 	/**
@@ -409,4 +442,92 @@ class PL_Social_Networks_Twitter {
 	public static function get_profile() {
 		return self::$fb_profile;
 	}
+	
+	/**
+	 * Helpers for checking whether a user is logged in or not
+	 */
+	
+	public static function is_facebook_authenticated() {
+		if( ! is_user_logged_in() ) {
+			return false;
+		}
+		$current_user = wp_get_current_user();
+		$current_user_id = $current_user->ID;
+		
+		$user_facebook_token = get_user_meta( $current_user_id, self::$fb_user_meta_key_token, true );
+		if( empty( $user_facebook_token ) ) {
+			return false;
+		}
+		
+		self::$fb_token = $user_facebook_token;
+		
+		return true;
+	}
+	
+	public static function is_twitter_authenticated() {
+		if( ! is_user_logged_in() ) {
+			return false;
+		}
+		$current_user = wp_get_current_user();
+		$current_user_id = $current_user->ID;
+		
+		$user_twitter_token = get_user_meta( $current_user_id, self::$user_meta_key_token, true );
+		$user_twitter_token_secret = get_user_meta( $current_user_id, self::$user_meta_key_token_secret, true );
+		if( empty( $user_twitter_token ) || empty( $user_twitter_token_secret ) ) {
+			return false;
+		}
+		
+		self::$user_token = $user_twitter_token;
+		self::$user_token_secret = $user_twitter_token_secret;
+		
+		return true;
+	}
+	
+	/**
+	 * Helper functions for getting the objects for Twitter/Facebook management
+	 */
+	
+	/**
+	 * Get Twitter object
+	 * @return TwitterOAuth or false
+	 */
+	public static function get_twitter_object() {
+		if( self::is_twitter_authenticated() ) {
+			include_once PL_LIB_DIR . 'twitteroauth/config.php';
+			include_once PL_LIB_DIR . 'twitteroauth/twitteroauth/twitteroauth.php';
+			
+			$connection = new TwitterOAuth( CONSUMER_KEY, CONSUMER_SECRET, self::$user_token, self::$user_token_secret );
+			
+			return $connection;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Get Facebook object
+	 * @return Facebook object or false
+	 */
+	public static function get_facebook_object() {
+		if( self::is_facebook_authenticated() ) {
+			include_once PL_LIB_DIR . 'facebook-php-sdk/src/facebook.php';
+
+			self::$fb = new Facebook( array( 'appId' => NULL, 'secret' => NULL ) );
+			self::$fb->setAccessToken( self::$fb_token );
+			
+			try {
+				self::$fb_profile = self::$fb->api( '/me' );
+				
+				
+				return self::$fb;
+			}
+			catch( FacebookApiException $e ) {
+				error_log($e->getMessage());
+				return false;
+			}
+		}
+		
+		return false;
+	}
+
 }
