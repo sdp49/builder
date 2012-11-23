@@ -2,7 +2,7 @@
 
 // PL_Social_Networks::init();
 
-define('SOCIAL_DEBUGGER', true);
+define( 'SOCIAL_DEBUGGER', true );
 
 function debug_nasty_socials( $arg, $color = 'black' ) {
 	if( SOCIAL_DEBUGGER ) {
@@ -48,12 +48,13 @@ class PL_Social_Networks_Twitter {
 		
 		// Facebook init
 		add_action( 'init', array( __CLASS__, 'fb_login_callback' ) );
-		add_action( 'admin_menu', array( __CLASS__, 'add_admin_menu' ) );
+		add_action( 'admin_menu', array( __CLASS__, 'fb_add_admin_menu' ) );
 	}
 	
 	public static function verify_user_logged() {
 		if( is_user_logged_in() ) {
 			self::$logged_user = wp_get_current_user();
+			debug_nasty_socials( 'in verify user logged' );
 			$current_user_id = self::$logged_user->ID;
 		
 			if( ! empty( $current_user_id ) ) {
@@ -68,8 +69,10 @@ class PL_Social_Networks_Twitter {
 				if( ! empty( $user_token_secret ) ) {
 					self::$user_token_secret = $user_token_secret;
 				}
+				return true;
 			}
 		}
+		return false; 
 	}
 	
 	/**
@@ -96,10 +99,13 @@ class PL_Social_Networks_Twitter {
 		// Mandatory configs
 		include_once PL_LIB_DIR . 'twitteroauth/config.php';
 		include_once PL_LIB_DIR . 'twitteroauth/twitteroauth/twitteroauth.php';
-// 		session_start();
-
+ 		session_start();
+ 		
+ 		debug_nasty_socials('User token: ');
+ 		debug_nasty_socials(self::$user_token, 'red');
+ 		
 		debug_nasty_socials($_REQUEST, 'red');
-// 		debug_nasty_socials($_SERVER, 'blue');
+ 		debug_nasty_socials($_SESSION, 'yellow');
 
 		// Step 5 - we already know the user, he's authorized, we have the data in DB
 		if( ! empty( self::$user_token ) && ! empty( self::$user_token_secret ) ) {
@@ -120,6 +126,7 @@ class PL_Social_Networks_Twitter {
 					$_SESSION['first_token'] = $_GET['oauth_token'];
 					self::step3_login();
 				} else {
+					// Update session due to step 3
 					session_destroy();
 					session_start();
 					self::step4_login();
@@ -175,14 +182,19 @@ class PL_Social_Networks_Twitter {
 		$connection = new TwitterOAuth( CONSUMER_KEY, CONSUMER_SECRET );
 // 		$token_consumer = $connection->getCorrectAccessToken( $_GET['oauth_token'], $_GET['oauth_verifier'], 'POST' );
 		$token_consumer = $connection->getAccessToken( $_GET['oauth_verifier'] );
-		
-		if( isset( $token_consumer['oauth_token'] ) && isset( $token_consumer['oauth_token_secret'] ) ) {
-			update_user_meta( self::$logged_user->ID, self::$user_meta_key_token, $token_consumer['oauth_token']);
-			update_user_meta( self::$logged_user->ID, self::$user_meta_key_token_secret, $token_consumer['oauth_token_secret']);
+
+		// check is not processed before that
+		if( self::verify_user_logged() ) {
+			if( isset( $token_consumer['oauth_token'] ) && isset( $token_consumer['oauth_token_secret'] ) ) {
+				update_user_meta( self::$logged_user->ID, self::$user_meta_key_token, $token_consumer['oauth_token']);
+				update_user_meta( self::$logged_user->ID, self::$user_meta_key_token_secret, $token_consumer['oauth_token_secret']);
+			}
+			
+			debug_nasty_socials(' token and verifier - okay ', 'blue');
+			debug_nasty_socials( $token_consumer, 'red' );
+		} else {
+			debug_nasty_socials(' No user verified ');
 		}
-		
-		debug_nasty_socials(' token and verifier - okay ', 'blue');
-		debug_nasty_socials( $token_consumer, 'red' );
 	}
  
 	/**
@@ -247,7 +259,7 @@ class PL_Social_Networks_Twitter {
 
 		if ( isset( $_GET[ self::$fb_token_name ] ) ) {
 			update_user_meta( get_current_user_id(), self::$fb_user_meta_key_token, $_GET[ self::$fb_token_name ] );
-			$redirect = self::$fb_get_clean_url( get_bloginfo('url') . $_SERVER['REQUEST_URI'] );
+			$redirect = self::fb_get_clean_url( get_bloginfo('url') . $_SERVER['REQUEST_URI'] );
 	
 			die( '<script type="text/javascript">top.location.href = "' .  $redirect . '";</script>' );
 		}
@@ -286,8 +298,40 @@ class PL_Social_Networks_Twitter {
 		update_option( 'fb_proxy_url', $fb_proxy_url );
 	}
 	
-	public static function add_admin_menu() {
-		add_submenu_page( 'soc-masta', __('Facebook - DX Social Masta', 'social-masta'), __('Facebook', 'social-masta'), 'manage_options', 'soc-masta-facebook', array( __CLASS__, 'facebook_callback' ) );
+	public static function fb_add_admin_menu() {
+		add_menu_page( __('Facebook - DX Social Masta', 'social-masta'), __('Facebook', 'social-masta'), 'manage_options', 'soc-masta-facebook', array( __CLASS__, 'facebook_callback' ) );
+	}
+	
+	public static function fb_print_data_debug() {
+	
+		echo '<a href="' . trailingslashit( get_option('fb_proxy_url') ) . 'login.php">Log In with Facebook</a>' . "<br />\n\n"; // . print_r($this->_profile, true) . "<br />\n\n";
+	}
+	
+	private static function fb_get_clean_url( $url ) {
+		$tmp = parse_url( $url );
+	
+		if ( !is_array( $tmp ) )
+			return $url;
+	
+		$tmp_query = array();
+		parse_str( @$tmp['query'], $tmp_query );
+	
+		unset($tmp_query[self::$fb_token_name]);
+	
+		$tmp['query'] = http_build_query( $tmp_query );
+	
+		if ( strlen( $tmp['query'] ) )
+			$tmp['query'] = '?' . $tmp['query'];
+	
+		return $tmp['scheme'] . '://' . $tmp['host'] . $tmp['path'] . $tmp['query'];
+	}
+	
+	public static function general_callback() {
+		include_once( PL_VIEWS_ADMIN_DIR . 'social/general.php');
+	}
+	
+	public static function facebook_callback() {
+		include_once( PL_VIEWS_ADMIN_DIR . 'social/facebook.php');
 	}
 	
 	public static function get_user_meta_key_name() {
