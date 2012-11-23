@@ -26,7 +26,7 @@ var customizer_global = {
 
 // The main form/sidebar is initially hidden so that the mangled-mess that exists before
 // the DOM manipulation is completed is NOT shown to the user...
-window.onload = function () {
+jQuery(window).load( function () {
 	jQuery('#customize-controls').css('display', 'block');
 
 	// If there's a theme arg in the query string, user just switched themes so make
@@ -34,7 +34,7 @@ window.onload = function () {
 	if ( window.location.href.indexOf('theme_change=true') != -1 ) {
 		jQuery('li#theme').trigger('click');
 	}  
-}
+});
 
 window.onbeforeunload = function () {
 	if ( customizer_global.stateAltered ) {
@@ -524,7 +524,7 @@ jQuery(document).ready(function($) {
 
 	$('#toggle_css_edit').on('click', function (event) {
 		event.preventDefault();
-		console.log('clicked!');
+		// console.log('clicked!');
 
 		var show_txt = '[+] Show'
 		var hide_txt = '[\u2013] Hide';

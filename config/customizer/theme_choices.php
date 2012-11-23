@@ -2,13 +2,16 @@
 
 global $PL_CUSTOMIZER_THEMES;
 $PL_CUSTOMIZER_THEMES = array(
-							    'Agency' => array(
-												'Columbus' => 'columbus',
-												'Highland' => 'highland',
-												'Manchester' => 'manchester',
-												'Tampa' => 'tampa',
-												'Ventura' => 'ventura'
-												),
+                  'Agency' => array(
+                        'Bethesda' => 'bethesda',
+                        'Charlotte' => 'charlotte',
+                        'Columbus' => 'columbus',
+                        'Highland' => 'highland',
+                        'Manchester' => 'manchester',
+                        'Ontario' => 'ontario',
+                        'Tampa' => 'tampa',
+                        'Toronto' => 'toronto',
+                        ),
 							    'Single Property' => array(
 												'Bluestone' => 'bluestone',
 												'Slate' => 'slate',
@@ -29,6 +32,18 @@ $PL_CUSTOMIZER_THEME_INFO = array(
 													 'pls-user-email' => '.agent-email a',
 													 'pls-user-phone' => '.agent-phone'	
 													 ),
+                    'bethesda' => array(
+                          'pls-site-title' => 'header h1 a',
+                          'pls-site-subtitle' => 'header h2',
+                          'pls-user-email' => 'header #header-email a, .widget-pls-agent .email',
+                          'pls-user-phone' => 'header #header-phone, .widget-pls-agent .phone'
+                          ),
+                    'charlotte' => array(
+                          'pls-site-title' => 'header a#site-title',
+                          'pls-site-subtitle' => '#search-label p',
+                          'pls-user-email' => '.widget-pls-agent .email a',
+                          'pls-user-phone' => 'header #header-phone, .widget-pls-agent .phone',
+                          ),
 										'columbus' 	 => array(
 													 'pls-site-title' => 'header h1 a',
 													 'pls-site-subtitle' => 'header h2',
@@ -47,12 +62,24 @@ $PL_CUSTOMIZER_THEME_INFO = array(
 													 'pls-user-email' => 'header .email a, footer .footer-contact a, .widget-pls-agent .nrm-txt a',
 													 'pls-user-phone' => 'header .phone, .widget-pls-agent .phone'
 													 ),
+                    'ontario' => array(
+                          'pls-site-title' => 'header h1 a',
+                          'pls-site-subtitle' => 'header h2',
+                          'pls-user-email' => '.widget-pls-agent .email',
+                          'pls-user-phone' => 'header .user-phone, .widget-pls-agent .phone'
+                          ),
 										'tampa' 	 => array(
 													 'pls-site-title' => 'header h1 a',
 													 'pls-site-subtitle' => 'header h2',
 													 'pls-user-email' => 'header .email a, footer .contact a, .widget-pls-agent .agent a',
 													 'pls-user-phone' => 'header .phone, footer .contact strong, .widget-pls-agent .phone'	
 													 ),
+                    'toronto' => array(
+                          'pls-site-title' => 'header h1 a',
+                          'pls-site-subtitle' => 'header h2',
+                          'pls-user-email' => '.widget-pls-agent .email',
+                          'pls-user-phone' => 'header .phone, .widget-pls-agent .phone'
+                          ),
 										'ventura' 	 => array(
 													 'pls-site-title' => 'header h1 a',
 													 'pls-site-subtitle' => 'header h2',
