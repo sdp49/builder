@@ -2,21 +2,23 @@
 
 global $PL_CUSTOMIZER_THEMES;
 $PL_CUSTOMIZER_THEMES = array(
-                  'Agency' => array(
-                        'Bethesda' => 'bethesda',
-                        'Charlotte' => 'charlotte',
-                        'Columbus' => 'columbus',
-                        'Highland' => 'highland',
-                        'Manchester' => 'manchester',
-                        'Ontario' => 'ontario',
-                        'Tampa' => 'tampa',
-                        'Toronto' => 'toronto',
-                        ),
-							    'Single Property' => array(
-												'Bluestone' => 'bluestone',
-												'Slate' => 'slate',
-												)
-							 );
+    'Agency' => array(
+        'Columbus' => 'columbus',
+        'Highland' => 'highland',
+        'Manchester' => 'manchester',
+        'Tampa' => 'tampa',
+        'Toronto' => 'toronto'
+    ),
+    'Single Property' => array(
+		'Bluestone' => 'bluestone',
+		'Slate' => 'slate',
+	),
+	'Premium' => array(
+        'Bethesda' => 'bethesda',
+        'Charlotte' => 'charlotte',
+        'Ontario' => 'ontario'
+	)
+);
 
 global $PL_CUSTOMIZER_THEME_INFO;
 $PL_CUSTOMIZER_THEME_INFO = array(
