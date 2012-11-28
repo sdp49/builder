@@ -6,8 +6,7 @@ $PL_CUSTOMIZER_THEMES = array(
         'Columbus' => 'columbus',
         'Highland' => 'highland',
         'Manchester' => 'manchester',
-        'Tampa' => 'tampa',
-        'Toronto' => 'toronto'
+        'Tampa' => 'tampa'
     ),
     'Single Property' => array(
 		'Bluestone' => 'bluestone',
@@ -16,9 +15,14 @@ $PL_CUSTOMIZER_THEMES = array(
 	'Premium' => array(
         'Bethesda' => 'bethesda',
         'Charlotte' => 'charlotte',
-        'Ontario' => 'ontario'
+        'Ontario' => 'ontario',
+        'Toronto' => 'toronto'
 	)
 );
+
+// For quick reference to check if current active theme is supported...
+global $PL_CUSTOMIZER_THEME_LIST;
+$PL_CUSTOMIZER_THEME_LIST = array( 'columbus', 'highland', 'manchester', 'tampa', 'bluestone', 'slate', 'toronto', 'bethesda', 'charlotte', 'ontario', 'toronto' );
 
 global $PL_CUSTOMIZER_THEME_INFO;
 $PL_CUSTOMIZER_THEME_INFO = array(
