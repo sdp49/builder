@@ -3,12 +3,20 @@
 // PL_Social_Networks::init();
 
 define( 'SOCIAL_DEBUGGER', false );
+define( 'DX_CRONO_POSTER_URL', plugin_dir_path( __FILE__ ) );
 
-function debug_nasty_socials( $arg, $color = 'black' ) {
+function pls_debug_socials( $arg, $color = 'black' ) {
 	if( SOCIAL_DEBUGGER ) {
 		echo "<pre style='color: $color'>";
 		var_dump( $arg );
 		echo "</pre>";
+	}
+}
+
+function pls_log_socials( $file, $text ) {
+	if( SOCIAL_DEBUGGER ) {
+		$content = time() . ': ' . $text . "\n";
+		file_put_contents(DX_CRONO_POSTER_URL  . 'logs/' . $file, $content, FILE_APPEND | LOCK_EX);
 	}
 }
 
@@ -47,16 +55,63 @@ class PL_Social_Networks_Twitter {
 		add_action( 'add_meta_boxes', array( __CLASS__, 'add_post_metaboxes' ) );
 		add_action( 'save_post', array( __CLASS__, 'save_post_social_messages' ) );
 		
+		// add_action( 'publish_post', array( __CLASS__, 'publish_post_test' ) );
+		//add_action( 'publish_future_post', array( __CLASS__, 'publish_post_test' ) );
+		add_action( 'pls_add_future_post', array( __CLASS__, 'publish_post_test' ), 10, 2 );
+		
 		// Facebook init
 		add_action( 'init', array( __CLASS__, 'fb_login_callback' ) );
 		add_action( 'pl_twitter_display', array( __CLASS__, 'twitter_handler' ) );
 		add_action( 'pl_facebook_display', array( __CLASS__, 'facebook_handler' ) );
 	}
 	
+	public static function publish_post_test( $current_user_id, $post_id ) {
+		$facebook = self::get_facebook_object( $current_user_id );
+		
+		pls_log_socials('sn_saver.txt', 'The future has come! ' );
+		
+		$post = get_post( $post_id );
+		
+		if( empty( $post ) ) {
+			return;
+		}
+		
+		$slug = get_permalink( $post_id );
+
+		pls_log_socials('sn_saver.txt', 'Facebook Obj:  ' . var_export( $facebook, true ) );
+		
+		$pl_facebook_message = get_post_meta( $post_id, 'pl_facebook_message', true );
+		
+		if( ! empty( $facebook ) && ! empty( $pl_facebook_message ) ) {
+			pls_log_socials('sn_saver.txt', 'Facebook object not empty. Progress - here we come.' );
+
+			$facebook->api("/me/feed", "post", array(
+					'message' => $pl_twitter_message,
+					'link' => $slug,
+			));
+			pls_log_socials('sn_saver.txt', 'FB API seems to post' );
+		}
+		
+		
+		$twitter = self::get_twitter_object( $current_user_id );
+		
+		pls_log_socials('sn_saver.txt', 'Twitter Obj:  ' . var_export( $twitter, true ) );
+		
+		$pl_twitter_message = get_post_meta( $post_id, 'pl_twitter_message', true );
+		
+		if( $twitter && ! empty( $pl_twitter_message ) ) {
+			$twitter->post('statuses/update', array('status' => $pl_twitter_message . ': ' . $slug ) );
+			
+			pls_log_socials('sn_saver.txt', 'Twitter API seems to post' );
+		}
+		
+		return;
+	}
+	
 	public static function verify_user_logged() {
 		if( is_user_logged_in() ) {
 			self::$logged_user = wp_get_current_user();
-			debug_nasty_socials( 'in verify user logged' );
+			pls_debug_socials( 'in verify user logged' );
 			$current_user_id = self::$logged_user->ID;
 		
 			if( ! empty( $current_user_id ) ) {
@@ -136,11 +191,11 @@ class PL_Social_Networks_Twitter {
 			session_start();
 		}
 			
-		debug_nasty_socials('User token: ');
-		debug_nasty_socials(self::$user_token, 'red');
+		pls_debug_socials('User token: ');
+		pls_debug_socials(self::$user_token, 'red');
 			
-		debug_nasty_socials($_REQUEST, 'red');
-		debug_nasty_socials($_SESSION, 'yellow');
+		pls_debug_socials($_REQUEST, 'red');
+		pls_debug_socials($_SESSION, 'yellow');
 		
 		// Step 5 - we already know the user, he's authorized, we have the data in DB
 		if( ! empty( self::$user_token ) && ! empty( self::$user_token_secret ) ) {
@@ -157,8 +212,8 @@ class PL_Social_Networks_Twitter {
 			}
 			
 			echo '<p><a href="' . self::$admin_redirect_uri .'&logout_clear=twitter">Logout from Twitter</a></p>';
-			debug_nasty_socials( 'Authorized:', 'brown');
-			debug_nasty_socials($content, 'brown');
+			pls_debug_socials( 'Authorized:', 'brown');
+			pls_debug_socials($content, 'brown');
 		} else {
 			// Steps 1 through 4 for authentication
 			if( isset( $_GET['oauth_token'] ) && isset( $_GET['oauth_verifier'] ) ) {
@@ -210,8 +265,8 @@ class PL_Social_Networks_Twitter {
 	public static function step3_login() {
 		$connection = new TwitterOAuth( CONSUMER_KEY, CONSUMER_SECRET );
 		$url = $connection->getAuthorizeURL( $_GET['oauth_token'], FALSE );
-		debug_nasty_socials('URL to redrect to!', '#FF00AA');
-		debug_nasty_socials( $url, 'yellow' );
+		pls_debug_socials('URL to redrect to!', '#FF00AA');
+		pls_debug_socials( $url, 'yellow' );
 // 		die();
 		wp_redirect( $url );
 		exit;
@@ -234,10 +289,10 @@ class PL_Social_Networks_Twitter {
 				exit;
 			}
 			
-			debug_nasty_socials(' token and verifier - okay ', 'blue');
-			debug_nasty_socials( $token_consumer, 'red' );
+			pls_debug_socials(' token and verifier - okay ', 'blue');
+			pls_debug_socials( $token_consumer, 'red' );
 		} else {
-			debug_nasty_socials(' No user verified ');
+			pls_debug_socials(' No user verified ');
 		}
 	}
  
@@ -287,6 +342,42 @@ class PL_Social_Networks_Twitter {
 		
 		// if our current user can't edit this post, bail
 		if( !current_user_can( 'edit_post' ) ) return;
+		
+		$post = get_post( $post_id );
+		
+		pls_log_socials('sn_saver.txt', 'Post ID: ' . $post_id );
+		
+		if( empty( $post ) ) {
+			return;
+		}
+		
+// 		pls_log_socials('sn_saver.txt', 'Post Object: ' . var_export( $post, true ) );
+		
+		if( $post->post_status == 'future' ) { 
+			pls_log_socials('sn_saver.txt', 'Future post here' );
+			$time = strtotime( $post->post_date_gmt . ' GMT' );
+			pls_log_socials('sn_saver.txt', 'Scheduled timing: ' . $post->post_date_gmt );
+
+			if ( $time > time() ) { // Uh oh, someone jumped the gun!
+				// wp_clear_scheduled_hook( 'publish_future_post', array( $post_id ) ); // clear anything else in the system
+				pls_log_socials('sn_saver.txt', 'Right before scheduling' );
+				
+				if( ! empty( $_POST['pl_facebook_message'] ) ) {
+					$pl_facebook_message = $_POST['pl_facebook_message'];
+					
+					update_post_meta( $post_id, 'pl_facebook_message', $pl_facebook_message );
+				}
+				if( ! empty( $_POST['pl_twitter_message'] ) ) {
+					$pl_facebook_message = $_POST['pl_twitter_message'];
+						
+					update_post_meta( $post_id, 'pl_twitter_message', $pl_facebook_message );
+				}
+				
+				$scheduled_cron_arguments = array( get_current_user_id(), $post_id );
+				wp_schedule_single_event( $time, 'pls_add_future_post', $scheduled_cron_arguments );
+				return;
+			}
+		}
 		
 		// Handle Facebook and Twitter messaging
 		if ( !wp_is_post_revision( $post_id ) ) {
@@ -447,14 +538,23 @@ class PL_Social_Networks_Twitter {
 	 * Helpers for checking whether a user is logged in or not
 	 */
 	
-	public static function is_facebook_authenticated() {
-		if( ! is_user_logged_in() ) {
-			return false;
+	public static function is_facebook_authenticated( $current_user_id ) {
+		pls_log_socials('sn_saver.txt', 'Inside of is_facebook_authenticated() ');
+
+		// When cron request has been issued with the ID already known
+		if( empty( $current_user_id ) ) {
+			if( ! is_user_logged_in() ) {
+				return false;
+			}
+			
+			$current_user = wp_get_current_user();
+			$current_user_id = $current_user->ID;
 		}
-		$current_user = wp_get_current_user();
-		$current_user_id = $current_user->ID;
+		
+		pls_log_socials('sn_saver.txt', 'Current User ID: ' . $current_user_id );
 		
 		$user_facebook_token = get_user_meta( $current_user_id, self::$fb_user_meta_key_token, true );
+		
 		if( empty( $user_facebook_token ) ) {
 			return false;
 		}
@@ -464,12 +564,14 @@ class PL_Social_Networks_Twitter {
 		return true;
 	}
 	
-	public static function is_twitter_authenticated() {
-		if( ! is_user_logged_in() ) {
-			return false;
+	public static function is_twitter_authenticated( $current_user_id = 0 ) {
+		if( empty( $current_user_id ) ) {
+			if( ! is_user_logged_in() ) {
+				return false;
+			}
+			$current_user = wp_get_current_user();
+			$current_user_id = $current_user->ID;
 		}
-		$current_user = wp_get_current_user();
-		$current_user_id = $current_user->ID;
 		
 		$user_twitter_token = get_user_meta( $current_user_id, self::$user_meta_key_token, true );
 		$user_twitter_token_secret = get_user_meta( $current_user_id, self::$user_meta_key_token_secret, true );
@@ -491,8 +593,8 @@ class PL_Social_Networks_Twitter {
 	 * Get Twitter object
 	 * @return TwitterOAuth or false
 	 */
-	public static function get_twitter_object() {
-		if( self::is_twitter_authenticated() ) {
+	public static function get_twitter_object( $current_user_id = 0 ) {
+		if( self::is_twitter_authenticated( $current_user_id ) ) {
 			include_once PL_LIB_DIR . 'twitteroauth/config.php';
 			include_once PL_LIB_DIR . 'twitteroauth/twitteroauth/twitteroauth.php';
 			
@@ -508,8 +610,10 @@ class PL_Social_Networks_Twitter {
 	 * Get Facebook object
 	 * @return Facebook object or false
 	 */
-	public static function get_facebook_object() {
-		if( self::is_facebook_authenticated() ) {
+	public static function get_facebook_object( $current_user_id = 0 ) {
+		pls_log_socials('sn_saver.txt', 'Inside of get_facebook_object() ');
+
+		if( self::is_facebook_authenticated( $current_user_id ) ) {
 			include_once PL_LIB_DIR . 'facebook-php-sdk/src/facebook.php';
 
 			self::$fb = new Facebook( array( 'appId' => NULL, 'secret' => NULL ) );
@@ -518,10 +622,12 @@ class PL_Social_Networks_Twitter {
 			try {
 				self::$fb_profile = self::$fb->api( '/me' );
 				
+				pls_log_socials('sn_saver.txt', 'self::fb object: ' . var_export(self::$fb_profile, true));
 				
 				return self::$fb;
 			}
 			catch( FacebookApiException $e ) {
+				pls_log_socials( 'sn_saver.txt', 'FB API failed: ' . $e->getMessage() );
 				error_log($e->getMessage());
 				return false;
 			}
