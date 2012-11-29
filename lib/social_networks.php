@@ -323,12 +323,66 @@ class PL_Social_Networks_Twitter {
 	 */
 	public static function add_post_metaboxes_callback() {
 	?>
+		<script type="text/javascript">
+		/*
+		* Mostly reusing the word-count.dev.js script from wp-admin
+		*/
+		jQuery(document).ready( function($) {
+			wpSocialWordCount = {
+
+				settings : wpWordCount.settings,
+
+				block : wpWordCount.block,
+
+				wc : function(tx, selector) {
+					var t = this, tc = 0;
+					var w = $(selector);
+
+					var type = wordCountL10n.type;
+
+					if ( t.block )
+						return;
+
+					t.block = 1;
+
+					setTimeout( function() {
+						if ( tx ) {
+							tx = tx.replace( t.settings.strip, ' ' ).replace( /&nbsp;|&#160;/gi, ' ' );
+							tx = tx.replace( t.settings.clean, '' );
+							tx.replace( t.settings[type], function(){tc++;} );
+						}
+						w.html(tc.toString());
+
+						setTimeout( function() { t.block = 0; }, 2000 );
+					}, 1 );
+				}
+			}
+
+			$(document).bind( 'plsFbCountWords', function(e) {
+				var txt = $('#pl_facebook_message').val();
+				wpSocialWordCount.wc(txt, '#pl_facebook_word_count');
+			});
+			$(document).bind( 'plsTwitterCountWords', function(e) {
+				var txt = $('#pl_twitter_message').val();
+				wpSocialWordCount.wc(txt, '#pl_twitter_word_count');
+			});
+
+			$('#pl_facebook_message').on('change', function() {
+				$(document).triggerHandler('plsFbCountWords');
+			});
+
+			$('#pl_twitter_message').on('change', function() {
+				$(document).triggerHandler('plsTwitterCountWords');
+			});
+		});
+		
+		</script>
 		<h3>Facebook</h3>
-		<p><textarea name="pl_facebook_message" cols="40" rows="5"></textarea></p>
-		<p><span id="pl_facebook_word_count"></span></p>
+		<p><textarea id="pl_facebook_message" name="pl_facebook_message" cols="40" rows="5"></textarea></p>
+		<p><span><?php _e('Words: ', 'pls'); ?></span><span id="pl_facebook_word_count">0</span></p>
 		<h3>Twitter</h3>
-		<p><textarea name="pl_twitter_message" cols="40" rows="5"></textarea></p>
-		<p><span id="pl_facebook_word_count"></span></p>
+		<p><textarea id="pl_twitter_message" name="pl_twitter_message" cols="40" rows="5"></textarea></p>
+		<p><span><?php _e('Words: ', 'pls'); ?></span><span id="pl_twitter_word_count">0</span></p>
 	<?php 
 	}
 
