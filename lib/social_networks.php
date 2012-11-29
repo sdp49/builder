@@ -324,9 +324,11 @@ class PL_Social_Networks_Twitter {
 	public static function add_post_metaboxes_callback() {
 	?>
 		<h3>Facebook</h3>
-		<p><input type="text" name="pl_facebook_message" /></p>
+		<p><textarea name="pl_facebook_message" cols="40" rows="5"></textarea></p>
+		<p><span id="pl_facebook_word_count"></span></p>
 		<h3>Twitter</h3>
-		<p><input type="text" name="pl_twitter_message" /></p>
+		<p><textarea name="pl_twitter_message" cols="40" rows="5"></textarea></p>
+		<p><span id="pl_facebook_word_count"></span></p>
 	<?php 
 	}
 
@@ -340,8 +342,8 @@ class PL_Social_Networks_Twitter {
 		// Verify nonces for ineffective calls
 // 		if( !isset( $_POST['pl_social_nonce'] ) || !wp_verify_nonce( $_POST['pl_social_nonce'], 'pl_social_nonce' ) ) return;
 		
-		// if our current user can't edit this post, bail
-		if( !current_user_can( 'edit_post' ) ) return;
+		// if our current user can't edit this post, bail - notices 
+// 		if( !current_user_can( 'edit_post' ) ) return;
 		
 		$post = get_post( $post_id );
 		
@@ -637,3 +639,4 @@ class PL_Social_Networks_Twitter {
 	}
 
 }
+
