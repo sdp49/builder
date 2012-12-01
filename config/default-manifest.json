@@ -1,0 +1,23 @@
+{
+    "pages": [
+        {
+            "title": "About 13",
+            "content": "[listing-search]"
+        },
+        {
+            "title": "Contact 13",
+            "content": "[listing-search]"
+        }
+    ],
+    "menus": [
+        {
+            "name": "main",
+            "location": "front",
+            "pages": [
+                "Home",
+                "About",
+                "Listings"
+            ]
+        }
+    ]
+}

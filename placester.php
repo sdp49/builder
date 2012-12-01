@@ -79,7 +79,7 @@ define('ADMIN_URL', trailingslashit( admin_url() ) );
 define('ADMIN_MENU_URL', trailingslashit( ADMIN_URL ) . 'admin.php' );
 
 // Demo Account API Key
-define('DEMO_API_KEY', '3eb444f8869cb88bbc349586573aabbb84a316d7');
+define('DEMO_API_KEY', '7e63514ebfad7608bbe7b4469ab470ecef4dc651099ae06fc1df6807717f0deacd38809e3c314ca09c085125f773a4c7');
 
 //config
 include_once('config/toggle_form_sections.php');
@@ -154,6 +154,8 @@ include_once('helpers/membership.php');
 include_once('helpers/snippet.php');
 include_once('helpers/template.php');
 include_once('helpers/customizer.php');
+
+include_once('helpers/bootup.php');
 
 
 //third-party scripts

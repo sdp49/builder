@@ -56,7 +56,7 @@ class PL_Pages {
 		return self::manage($page_details);
 	}
 
-	function create_once ($pages_to_create, $force_template) {
+	function create_once ($pages_to_create, $force_template = true) {
 		foreach ($pages_to_create as $page_info) {
 			$page = get_page_by_title($page_info['title']);
 			if (!isset($page->ID)) {
@@ -65,8 +65,11 @@ class PL_Pages {
 				if (isset($page_info['template'])) {
 					$page_details['post_meta'] = array('_wp_page_template' => $page_info['template']);
 				}
+				if (isset($page_info['content'])) {
+					$page_details['content'] = $page_info['content'];
+				}
 				self::manage($page_details);
-			} else {
+			} elseif ( $force_template ) {
 				if (isset($page_info['template'])) {
 					delete_post_meta( $page->ID, '_wp_page_template' );
     				add_post_meta( $page->ID, '_wp_page_template', $page_info['template']);
