@@ -155,6 +155,8 @@ include_once('helpers/snippet.php');
 include_once('helpers/template.php');
 include_once('helpers/customizer.php');
 
+include_once('helpers/bootup.php');
+
 
 //third-party scripts
 include_once('third-party/tax-meta-class/tax-meta-class.php');
