@@ -63,17 +63,17 @@ class PL_Pages {
 				$page_details = array();
 				$page_details['title'] = $page_info['title'];
 				if (isset($page_info['template'])) {
-					$page_details['post_meta'] = array('_wp_page_template' => $page_info['template']);
+          $page_details['post_meta'] = array('_wp_page_template' => $page_info['template']);
 				}
 				if (isset($page_info['content'])) {
-					$page_details['content'] = $page_info['content'];
+          $page_details['content'] = $page_info['content'];
 				}
-				self::manage($page_details);
+        self::manage($page_details);
 			} elseif ( $force_template ) {
-				if (isset($page_info['template'])) {
-					delete_post_meta( $page->ID, '_wp_page_template' );
-    				add_post_meta( $page->ID, '_wp_page_template', $page_info['template']);
-				}
+        if (isset($page_info['template'])) {
+         delete_post_meta( $page->ID, '_wp_page_template' );
+         add_post_meta( $page->ID, '_wp_page_template', get_template_directory_uri().'/'.$page_info['template']);
+        }
 			}
 		}
 	}
@@ -89,21 +89,22 @@ class PL_Pages {
                  'post_status' => $status,
                  'post_author' => 1,
                  'post_content'=> $content,
-                 'filter'      => 'db'
+                 'filter'      => 'db',
+                 'guid'        => 'something'
              );
-
+             
             if ($post_id <= 0) {
-            	$post_id = wp_insert_post($post);
-            	if (!empty($post_meta)) {
-            		foreach ($post_meta as $key => $value) {
-            			add_post_meta($post_id, $key, $value, TRUE);
-            		}
-            	}
-            	if (!empty($taxonomies)) {
-	            	foreach ($taxonomies as $taxonomy => $term) {
-	            		wp_set_object_terms($post_id, $term, $taxonomy);
-	            	}
-            	}
+              $post_id = wp_insert_post($post);
+              if (!empty($post_meta)) {
+               foreach ($post_meta as $key => $value) {
+                 add_post_meta($post_id, $key, $value, TRUE);
+               }
+              }
+              if (!empty($taxonomies)) {
+                foreach ($taxonomies as $taxonomy => $term) {
+                  wp_set_object_terms($post_id, $term, $taxonomy);
+                }
+              }
             } else {	
                 $post['ID'] = $post_id;
                 $post_id = wp_update_post($post);

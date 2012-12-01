@@ -7,20 +7,20 @@ class PL_Bootup {
 
 	public function init () {
 		// add_action('switch_theme', array( __CLASS__, 'create_pages' ));
-  //   	add_action('after_setup_theme', array( __CLASS__, 'create_pages' ));
+    // add_action('after_setup_theme', array( __CLASS__, 'create_pages' ));
 		self::theme_switch();
 	}
 
 	public function theme_switch () {
 		$manifest = wp_parse_args( self::parse_manifest_to_array(), self::$items_that_can_be_created );
 		extract($manifest);
-		
+
 		if ( !empty($pages) )  {
-			self::create_pages( $pages );
+      self::create_pages( $pages );
 		}
 
 		if ( !empty($menu) ) {
-			self::create_pages( $menus );
+      // self::create_pages( $menus );
 		}
 		
 		return true;
@@ -30,7 +30,7 @@ class PL_Bootup {
 		PL_Pages::create_once( $pages, $force_template = false );
 	}
 
-	private function create_menues () {
+	private function create_menus () {
 
 	}
 
@@ -44,7 +44,6 @@ class PL_Bootup {
 			return $template . 'manifest.json';
 		}
 		return trailingslashit( PL_PARENT_URL ) . 'config/default-manifest.json';
-		
 	}
 
 	private function is_placester_theme () {
