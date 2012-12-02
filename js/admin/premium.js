@@ -12,6 +12,7 @@ jQuery(document).ready(function($) {
 	// Intercept any theme activation link click to handle premium theme logic... 
 	$('a.activatelink').on('click', function (event) {
 		event.preventDefault();
+		
 
 		// Get params from activation link's href...
 		var queryStr = this.href.slice( this.href.indexOf('?') + 1 );
@@ -24,10 +25,15 @@ jQuery(document).ready(function($) {
 		}
 
 		if ( argMap['template'] && isPremiumTheme(argMap['template']) ) {
-			console.log('Trying to activate premium theme...');
-
+			// console.log('Trying to activate premium theme...');
 			var success_callback = function () { window.location.href = this.href; }
-			var failure_callback = function () { console.log('not eligible...'); }
+			var failure_callback = function () {
+				// Construct error message...
+				var msg = '<h3>Sorry, your account isn\'t eligible to use Premium themes.</h3>';
+			  	msg += '<h3>Please <a href="https://placester.com/subscription">Upgrade Your Account</a> or call us with any questions at (800) 728-8391.</h3>';
+
+				// container.prepend('<div id="message" class="error">' + msg + '</div>');
+			}
 
 			// Check user's subscription status and act accordingly...
 			$.post(ajaxurl, {action: 'subscriptions'}, function (response) {
