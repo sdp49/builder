@@ -12,7 +12,9 @@ jQuery(document).ready(function($) {
 	// Intercept any theme activation link click to handle premium theme logic... 
 	$('a.activatelink').on('click', function (event) {
 		event.preventDefault();
-		
+
+		// Remove any latent error messages...
+		$('#message.error').remove();
 
 		// Get params from activation link's href...
 		var queryStr = this.href.slice( this.href.indexOf('?') + 1 );
@@ -32,7 +34,7 @@ jQuery(document).ready(function($) {
 				var msg = '<h3>Sorry, your account isn\'t eligible to use Premium themes.</h3>';
 			  	msg += '<h3>Please <a href="https://placester.com/subscription">Upgrade Your Account</a> or call us with any questions at (800) 728-8391.</h3>';
 
-				// container.prepend('<div id="message" class="error">' + msg + '</div>');
+				$('#current-theme').after('<div id="message" class="error">' + msg + '</div>');
 			}
 
 			// Check user's subscription status and act accordingly...
