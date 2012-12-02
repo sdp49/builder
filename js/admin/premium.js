@@ -17,7 +17,8 @@ jQuery(document).ready(function($) {
 		$('#message.error').remove();
 
 		// Get params from activation link's href...
-		var queryStr = this.href.slice( this.href.indexOf('?') + 1 );
+		var actHref = this.href; 
+		var queryStr = actHref.slice( actHref.indexOf('?') + 1 );
 		var rawArgs = queryStr.split('&');
 
 		var argMap = [];
@@ -28,7 +29,7 @@ jQuery(document).ready(function($) {
 
 		if ( argMap['template'] && isPremiumTheme(argMap['template']) ) {
 			// console.log('Trying to activate premium theme...');
-			var success_callback = function () { window.location.href = this.href; }
+			var success_callback = function () { window.location.href = actHref; }
 			var failure_callback = function () {
 				// Construct error message...
 				var msg = '<h3>Sorry, your account isn\'t eligible to use Premium themes.</h3>';
@@ -54,7 +55,7 @@ jQuery(document).ready(function($) {
 		}
 		else {
 			// Follow the activation link as was originally intended...
-			window.location.href = this.href;
+			window.location.href = actHref;
 		}
 	});
 
