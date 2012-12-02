@@ -1,0 +1,53 @@
+/* 
+ * Script for handling activation of premium themes from themes admin panel (on hosted env)
+ */
+
+jQuery(document).ready(function($) {
+
+	function isPremiumTheme(template) {
+		isPrem = ( pl_premThemes && pl_premThemes.indexOf(template) != -1 );
+		return isPrem;
+	}
+
+	// Intercept any theme activation link click to handle premium theme logic... 
+	$('a.activatelink').on('click', function (event) {
+		event.preventDefault();
+
+		// Get params from activation link's href...
+		var queryStr = this.href.slice( this.href.indexOf('?') + 1 );
+		var rawArgs = queryStr.split('&');
+
+		var argMap = [];
+		for (var i = 0; i < rawArgs.length; ++i) {
+			var param = rawArgs[i].split('=');
+			argMap[param[0]] = param[1];
+		}
+
+		if ( argMap['template'] && isPremiumTheme(argMap['template']) ) {
+			console.log('Trying to activate premium theme...');
+
+			var success_callback = function () { window.location.href = this.href; }
+			var failure_callback = function () { console.log('not eligible...'); }
+
+			// Check user's subscription status and act accordingly...
+			$.post(ajaxurl, {action: 'subscriptions'}, function (response) {
+				// console.log(response);
+				if (response && response.plan && response.plan == 'pro') {
+					success_callback();
+				} 
+				else if (response && response.eligible_for_trial) {
+					// console.log('prompt free trial');
+					prompt_free_trial('Start your 15 day free trial to activate a Premium theme', success_callback, failure_callback);
+				} 
+				else {
+					failure_callback();
+				};
+			},'json');	
+		}
+		else {
+			// Follow the activation link as was originally intended...
+			window.location.href = this.href;
+		}
+	});
+
+});
