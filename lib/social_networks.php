@@ -41,7 +41,7 @@ class PL_Social_Networks_Twitter {
 	public static $fb = NULL;
 	public static $fb_token = NULL;
 	public static $fb_profile = NULL;
-	public static $fb_default_proxy_url = 'http://plsbridge.dxdemos.eu/';
+	public static $fb_default_proxy_url = 'http://placester.com/bridge/';
 	
 	public static function init() {
 		// init for Twitter
@@ -57,7 +57,7 @@ class PL_Social_Networks_Twitter {
 		
 		// add_action( 'publish_post', array( __CLASS__, 'publish_post_test' ) );
 		//add_action( 'publish_future_post', array( __CLASS__, 'publish_post_test' ) );
-		add_action( 'pls_add_future_post', array( __CLASS__, 'publish_post_test' ), 10, 2 );
+		add_action( 'pls_add_future_post', array( __CLASS__, 'publish_post_scheduled_delay' ), 10, 2 );
 		
 		// Facebook init
 		add_action( 'init', array( __CLASS__, 'fb_login_callback' ) );
@@ -65,7 +65,7 @@ class PL_Social_Networks_Twitter {
 		add_action( 'pl_facebook_display', array( __CLASS__, 'facebook_handler' ) );
 	}
 	
-	public static function publish_post_test( $current_user_id, $post_id ) {
+	public static function publish_post_scheduled_delay( $current_user_id, $post_id ) {
 		$facebook = self::get_facebook_object( $current_user_id );
 		
 		pls_log_socials('sn_saver.txt', 'The future has come! ' );
@@ -86,7 +86,7 @@ class PL_Social_Networks_Twitter {
 			pls_log_socials('sn_saver.txt', 'Facebook object not empty. Progress - here we come.' );
 
 			$facebook->api("/me/feed", "post", array(
-					'message' => $pl_twitter_message,
+					'message' => $pl_facebook_message,
 					'link' => $slug,
 			));
 			pls_log_socials('sn_saver.txt', 'FB API seems to post' );
