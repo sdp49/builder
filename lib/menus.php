@@ -6,59 +6,60 @@ class PL_Menus {
   function init () {
     
   }
-  
-  // get current nav menus
-  function get_current () {
-    global $wpdb;
-    $sql = $wpdb->prepare('SELECT * ' . 'FROM ' . $wpdb->prefix . 'posts ' . "WHERE post_type = 'nav_menu_item'");
-    $rows = $wpdb->get_results($sql, ARRAY_A);
-    return $rows;
-  }
 
-  function dynamic ($menus) {
+  function create( $menus, $theme_locations ) {
+    
+    // get currently enabled "theme locations" (default is "primary" and "subsidiary")
+    $current_theme_locations = array_keys(get_theme_mod( 'nav_menu_locations' ));
 
-    $current_menus = self::get_current();
-    // wp_create_nav_menu('vinter');
+    // Make plans for theme locations if they aren't standard
+    if ($theme_locations != $current_theme_locations ) {
+      // $current_theme_locations....
+    }
+
+    // Get All current menus
+    $all_menus = wp_get_nav_menus();
+    
     foreach ($menus as $menu) {
-      // self::create_menu( $menu['name'] );
-      var_dump( "IN" );
-      if (function_exists('wp_get_nav_menu_object')) {
-        var_dump( "yep - it exists" );
+
+      // check if $menu exists
+      $menu_check = wp_get_nav_menu_object( $menu['name'] );
+
+      // If menu doesn't exist, create it
+      if ( empty($menu_check) ) {
+        wp_update_nav_menu_object( 0, array(
+          'menu-name' => $menu['name'])
+        );
       }
-      wp_get_nav_menu_object('hellow', false);
       
-
-
-
-    //   wp_update_nav_menu_item($menu['name'], 0, array(
-    //           'menu-item-title' =>  __($menu['name']),
-    //           'menu-item-classes' => $menu['name'],
-    //           'menu-item-url' => home_url( '/' ), 
-    //           'menu-item-status' => 'publish'));
-    //   
+      // if it already exists, ask user if we can delete
+      
+        // if user says Go, then Go
+      
+      
+      
+      // once menu is create, add_pages_to_menu_by_name()
+      
+      // assign_menu_to_theme_location ()
+      
     }
 
   }
 
-  // $defaults = array('name' => '', 'location' => '', 'pages' => array() );
-  // extract(wp_parse_args($menus, $defaults));
+  function add_pages_to_menu_by_name ($menu) {
+    
+    // if page already exists, skip
+    
+  }
 
-
-  // create
-  // function create_menu ( $menu_name ) {
-  //   var_dump($menu_name);
-  //   $menu = wp_get_nav_menu_object( $menu_name );
-  //   var_dump($menu);
-  // }
-  
-  // update
-
-// delete
+  function assign_menu_to_theme_location ($menu) {
+    
+    // Returns boolean Whether a registered nav menu location has a menu assigned(true) or not(false).
+    // if ( has_nav_menu( $location ) ) {
+         //Do something
+    // }
+    
+  }
 
 
 }
-
-// Returns boolean Whether a registered nav menu location has a menu assigned(true) or not(false).
-// if ( has_nav_menu( $location ) ) {
-     //Do something
-// }

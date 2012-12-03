@@ -6,7 +6,7 @@ class PL_Bootup {
 	static $items_that_can_be_created = array('pages' => array(), 'menus' => array());
 
 	public function init () {
-    add_action('switch_theme', array( __CLASS__, 'create_pages' ));
+    add_action('init', array( __CLASS__, 'theme_switch' ));
     // add_action('after_setup_theme', array( __CLASS__, 'create_pages' ));
     // add_action('switch_theme', array( __CLASS__, 'create_menus' ));
     // self::theme_switch();
@@ -31,8 +31,8 @@ class PL_Bootup {
 		PL_Pages::create_once( $pages, $force_template = false );
 	}
 
-	private function create_menus ( $menus ) {
-    PL_Menus::dynamic( $menus );
+	private function create_menus ( $menus, $theme_locations = array('primary','subsidiary') ) {
+    PL_Menus::create( $menus, $theme_locations );
 	}
 
 	private function parse_manifest_to_array () {
