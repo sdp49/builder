@@ -36,11 +36,12 @@ class PL_Menus {
           );
           
           self::add_pages_to_menu_by_name($menu);
-          
+          self::assign_menu_to_theme_location($menu, $theme_locations);
           
       } else {
           // if it already exists, add to array to ask user if we can delete them
           $conflicting_menus .= $menu;
+          self::add_pages_to_menu_by_name($menu, true);
       }
       
     }
@@ -55,46 +56,72 @@ class PL_Menus {
     
     // once menu is create, add_pages_to_menu_by_name()
     
-    // assign_menu_to_theme_location ()
+    
     
   }
 
-  function add_pages_to_menu_by_name ($menu) {
-    
-    foreach ($menu['pages'] as $page) {
-    
-    var_dump("add_pages_to_menu is firing");
+  function add_pages_to_menu_by_name ($menu, $menu_exist = false ) {
 
-      wp_update_nav_menu_item($menu_id, 0, array(
-              'menu-item-title' =>  __($menu['pages']),
-              // 'menu-item-classes' => 'forums',
-              // 'menu-item-url' => home_url( '/forums/' ), 
-              'menu-item-status' => 'publish'));
+    // get menu object
+    $the_menu = wp_get_nav_menu_object($menu['name']);
+    $menu_id = (int) $the_menu->term_id;
+    
+    if ($menu_exist == true) {
+      
+      $main_nav = wp_update_nav_menu_item($menu['name']);
+      // var_dump($main_nav);
+      
+      
+      
+    } else {
+    
+        foreach ($menu['pages'] as $page) {
 
+        
+            $the_page = get_page_by_title($page);
+
+            $args =  array(
+                'menu-item-object-id' => $the_page->ID,
+                // 'menu-item-parent-id' => 0,
+                // 'menu-item-position'  => 2,
+                // 'menu-item-object'    => 'page',
+                // 'menu-item-type'      => 'post_type',
+                'menu-item-title'     => $the_page->post_title,
+                'menu-item-classes'   => $the_page->post_title,
+                'menu-item-url'       => $the_page->guid,
+                'menu-item-status'    => 'publish'
+              );
+
+            wp_update_nav_menu_item( $menu_id, 0, $args );
+
+        }
+    
+    }
+  }
+
+  function assign_menu_to_theme_location ($menu, $theme_locations ) {
+    
+    // end process if requested location doesn't exists
+    $location_check = in_array($menu['location'], $theme_locations);
+    if ($location_check == false) {
+      return false;
     }
     
-    // Insert new page 
-    // $page = wp_insert_post(array(
-    //   'post_title' => 'Blog', 
-    //   'post_content' => '', 
-    //   'post_status' => 'publish', 
-    //   'post_type' => 'page')); 
-
-    // Insert new nav_menu_item 
-    // $nav_item = wp_insert_post(array(
-    //   'post_title' => 'News', 
-    //   'post_content' => '', 
-    //   'post_status' => 'publish', 
-    //   'post_type' => 'nav_menu_item'));
-  }
-
-  function assign_menu_to_theme_location ($menu) {
-    
-    // Returns boolean Whether a registered nav menu location has a menu assigned(true) or not(false).
-    // if ( has_nav_menu( $location ) ) {
-         //Do something
-    // }
-    
+    // Theme Locations for menus that are in theme
+    $locations = get_nav_menu_locations();
+    $final_them_locations = array();
+    foreach ($locations as $name => $location_id) {
+      // check for locations having menus set to them
+      $location = has_nav_menu($name);
+      if ($location == false) {
+        
+      } else {
+        
+      }
+      
+    }
+    // HERE! SO CLOSE!
+    // set_theme_mod( 'nav_menu_locations', $final_theme_locations );
   }
 
 
