@@ -31,7 +31,7 @@ class PL_Bootup {
 		PL_Pages::create_once( $pages, $force_template = false );
 	}
 
-	private function create_menus ( $menus, $theme_locations = array('primary','subsidiary') ) {
+	private function create_menus ( $menus ) {
     PL_Menus::create( $menus, $theme_locations );
 	}
 
