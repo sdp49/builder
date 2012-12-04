@@ -7,10 +7,10 @@ class PL_Menus {
     
   }
 
-  function create( $menus, $theme_locations ) {
+  function create( $menus, $theme_locations, $menu_overides = false ) {
     
     // get currently enabled "theme locations" (default is "primary" and "subsidiary")
-    $current_theme_locations = array_keys(get_theme_mod( 'nav_menu_locations' ));
+    // $current_theme_locations = array_keys(get_theme_mod( 'nav_menu_locations' ));
 
     // Make plans for theme locations if they aren't standard
     if ($theme_locations != $current_theme_locations ) {
@@ -42,6 +42,10 @@ class PL_Menus {
           // if it already exists, add to array to ask user if we can delete them
           $conflicting_menus .= $menu;
           self::add_pages_to_menu_by_name($menu, true);
+          // add override menu data
+          if ($menu_overrides != false) {
+            self::assign_menu_to_theme_location($menu, $theme_locations, $menu_overrides);
+          }
       }
       
     }
@@ -60,7 +64,7 @@ class PL_Menus {
     
   }
 
-  function add_pages_to_menu_by_name ($menu, $menu_exist = false ) {
+  function add_pages_to_menu_by_name ($menu, $menu_exist = false, $menu_overrides = false ) {
 
     // get menu object
     $the_menu = wp_get_nav_menu_object($menu['name']);
@@ -99,7 +103,7 @@ class PL_Menus {
     }
   }
 
-  function assign_menu_to_theme_location ($menu, $theme_locations ) {
+  function assign_menu_to_theme_location ($menu, $theme_locations, $menu_overrides = false ) {
     
     // end process if requested location doesn't exists
     $location_check = in_array($menu['location'], $theme_locations);
@@ -110,17 +114,29 @@ class PL_Menus {
     // Theme Locations for menus that are in theme
     $locations = get_nav_menu_locations();
     $final_them_locations = array();
-    foreach ($locations as $name => $location_id) {
+    foreach ($locations as $location => $location_id) {
       // check for locations having menus set to them
-      $location = has_nav_menu($name);
-      if ($location == false) {
-        
+      $location_has_nav_menu = has_nav_menu($name);
+
+      if ($location_has_nav_menu == false) {
+        // if menu location is empty, set it from manifest
+        if ($menu['location'] == $location) {
+          
+        }
       } else {
         
       }
       
     }
+    // $menu_slug = 'top-menu';
+    // $locations = get_nav_menu_locations();
+    // 
+    // if (isset($locations[$args->theme_location])) {
+    //     $menu_id = $locations[$args->theme_location];
+    // }
+    var_dump($menu);
     // HERE! SO CLOSE!
+    // set_theme_mod( 'nav_menu_locations', array_map( 'absint', $_POST['menu-locations'] ) );
     // set_theme_mod( 'nav_menu_locations', $final_theme_locations );
   }
 
