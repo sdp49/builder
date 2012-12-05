@@ -199,7 +199,7 @@ class PL_Shortcodes
 
 
 	public static function search_listings_shortcode_handler( $atts, $content )
-	{
+	{		
 		add_filter('pl_filter_wrap_filter', array( __CLASS__, 'pl_filter_wrap_default_filters' ));
 		$filters = '';
 		
@@ -208,6 +208,7 @@ class PL_Shortcodes
 		if( ! empty( $content ) ) {
 			$filters = do_shortcode( strip_tags( $content ) );
 		}
+		
 		$filters = str_replace('&nbsp;', '', $filters);
 		
 		// Handle attributes using shortcode_atts...
@@ -335,6 +336,11 @@ class PL_Shortcodes
 		// assign a template as a shortcode arg
 		if( ! empty( $template_name ) ) {
 			$snippet_name = $template_name;
+			if( isset( self::$defaults[$shortcode] ) && in_array( $template_name, self::$defaults[$shortcode] ) ) {
+				$type = 'default';
+			} else {
+				$type = 'custom';
+			}
 		}
 		$snippet_body = PL_Router::load_snippet($shortcode, $snippet_name, $type);
 		return $snippet_body;

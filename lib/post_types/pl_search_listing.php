@@ -135,8 +135,8 @@ class PL_Search_Listing_CPT extends PL_Post_Base {
 		if( !current_user_can( 'edit_post' ) ) return;
 	
 		foreach( $this->fields as $field => $values ) {
-			if( !empty( $_POST[$field] ) ) {
-				if( ! empty( $_POST[$field] ) ) {
+			if( !empty( $_POST ) ) {
+				if( !empty( $_POST[$field] ) ) {
 					update_post_meta( $post_id, $field, $_POST[$field] );
 				}	
 			}
@@ -193,7 +193,7 @@ class PL_Search_Listing_CPT extends PL_Post_Base {
 		
 			foreach( $meta as $key => $value ) {
 				if( $key === 'pl_cpt_template' ) {
-					$args .= "context='{$value[0]}' ";
+					$args .= "context='static_listings_{$value[0]}' ";
 				}
 			}
 

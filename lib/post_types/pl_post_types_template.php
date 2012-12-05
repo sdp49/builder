@@ -5,19 +5,11 @@
 	<body>
 	<?php
 		add_filter('show_admin_bar', '__return_false');
-	
-		if( isset( $drop_modernizr )) {
-			add_action('wp_enqueue_scripts', 'pl_template_drop_modernizr');
-		} else {
-			add_action('wp_enqueue_scripts', 'pl_template_add_modernizr');
-		}
+		add_action('wp_enqueue_scripts', isset( $drop_modernizr ) ? 'pl_template_drop_modernizr': 'pl_template_add_modernizr' );
 
 		global $post;
-		if( isset( $shortcode ) ) {
-			echo do_shortcode( $shortcode );
-		} else {
-			echo do_shortcode( $post->post_content );
-		}
+		
+		echo do_shortcode( isset( $shortcode ) ? $shortcode : $post->post_content );
 	
 		wp_footer();
 		

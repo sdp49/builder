@@ -2,6 +2,7 @@ widget_autosave = function() {
 	
 	var post_id = jQuery("#post_ID").val();
 	var post_type = jQuery('#pl_post_type').val() || "";
+	var shortcode_type = pls_get_shortcode_by_post_type( post_type );
 	
 	//autosave();
 	var featured = {};
@@ -20,7 +21,8 @@ widget_autosave = function() {
 	static_listings.metadata = {};
 	
 	// manage static listings form params
-	if( post_type === 'static_listings' || post_type === 'search_listings' ) {
+	if( post_type === 'static_listings' || post_type === 'search_listings'
+		|| post_type === 'pl_static_listings' || post_type === 'pl_search_listings' ) {
 		jQuery('#pl_static_listing_block .form_group input, #pl_static_listing_block .form_group select').each(function() {
 			// omit blank values and not filled ones
 			var value = jQuery(this).val();
@@ -54,10 +56,14 @@ widget_autosave = function() {
 	var neighborhood_type = 'nb-id-select-' + radio_type; 
 	var neighborhood_value = jQuery('#' + neighborhood_type).val();
 
+	// the selector to fetch the template from
+	var tpl_selector =  '#' + shortcode_type + '_template_block input.shortcode[value="' + shortcode_type + '"]';
+	
 	var post_data = {
 					'post_id': post_id,
 	                'action': 'autosave_widget',
 	                'pl_post_type': post_type,
+	                'pl_cpt_template': jQuery(tpl_selector).parent().find('option:selected').val(),
 	                'width': jQuery('#widget-meta-wrapper input#width').val() || "250",
 	                'height': jQuery('#widget-meta-wrapper input#height').val() || "250",
 	                'pl_featured_listing_meta': JSON.stringify(featured),
@@ -87,10 +93,24 @@ widget_autosave = function() {
 				var post_id = jQuery("#post_ID").val();
 				// jQuery('#preview-meta-widget').html("<script src='" + placester_plugin_path + "js/fetch-widget.js?id=" + post_id +
 				// "&preview=true' width='" + frame_width + "px' height='" + post_data['height'] + "px'></script>");
+				
 				jQuery('#preview-meta-widget').html("<iframe src='" + siteurl + "/?p=" + post_id + "&preview=true' width='" + frame_width + "px' height='" + post_data['height'] + "px'></iframe>");
 				jQuery('#preview-meta-widget').css('height', post_data['height']);
-			}, 2000);
+			}, 800);
 			// alert(response);
 		}
 	});
 };
+
+function pls_get_shortcode_by_post_type( post_type ) {
+	switch( post_type ) {
+		case 'pl_search_listings':		return 'search_listings';
+		case 'pl_map':					return 'search_map';
+		case 'pl_form':					return 'search_form';
+		case 'pl_listing_slideshow':	return 'listing_slideshow';
+		case 'pl_static_listings':		return 'static_listings';
+			
+		default:
+			return post_type;
+	}	
+}

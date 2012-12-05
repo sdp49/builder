@@ -44,7 +44,7 @@ class PL_Component_Entity {
 			add_filter( 'pls_listings_list_ajax_item_html_' . $template, array(__CLASS__,'featured_listings_ajax_templates'), 10, 3 );	
 		}
 		
-		$search_form_templates = self::get_shortcode_snippet_list( 'search_form', self::$defaults );
+		$search_form_templates = self::get_shortcode_snippet_list( 'search_form', self::$defaults );		
 		foreach ($search_form_templates as $template => $type) {
 			add_filter( 'pls_listings_search_form_outer_' . $template, array(__CLASS__,'search_form_templates'), 10, 6 );
 		}
@@ -56,7 +56,7 @@ class PL_Component_Entity {
 		
 		$search_listings_templates = self::get_shortcode_snippet_list( 'search_listings', self::$defaults );
 		foreach ($search_listings_templates as $template => $type) {
-			add_filter( 'pls_listings_list_ajax_item_html_' . $template, array(__CLASS__,'search_listings_templates'), 10, 3 );
+			add_filter( 'pls_listings_list_ajax_item_html_search_listings_' . $template, array(__CLASS__,'search_listings_templates'), 10, 3 );
 		}
 		
 		$static_listings_templates = self::get_shortcode_snippet_list( 'static_listings', self::$defaults );
@@ -638,13 +638,14 @@ class PL_Component_Entity {
 		// Provide template layout for featured listings
 		public static function featured_listings_ajax_templates( $item_html, $listing, $context_var ) {
 			//PL_Shortcodes::get_active_snippet_body('listings', self::$featured_context);			
+			$shortcode = 'featured_listings';
 			self::$listing = $listing;
 
 			// get the template attached as a context arg, 33 is the length of the filter prefix
 			$template = substr(current_filter(), 33);
 			
-			$template_body = self::get_active_snippet_body( 'featured_listings', $template );
-			
+			//$template_body = self::get_active_snippet_body( 'featured_listings', $template );
+			$template_body = PL_Shortcodes::get_active_snippet_body($shortcode);
 			return do_shortcode( $template_body );
 		}
 		
@@ -656,8 +657,8 @@ class PL_Component_Entity {
 			// get the template attached as a context arg, 33 is the length of the filter prefix
 			$template = substr(current_filter(), 31);
 		
-			$snippet_body = self::get_active_snippet_body($shortcode, $template);
-			
+			//$snippet_body = self::get_active_snippet_body($shortcode, $template);
+			$snippet_body = PL_Shortcodes::get_active_snippet_body( $shortcode, $template );
 			return do_shortcode($snippet_body);
 		}
 		
@@ -668,10 +669,14 @@ class PL_Component_Entity {
 			// get the template attached as a context arg, 33 is the length of the filter prefix
 			$template = $context;
 				
-			$snippet_body = self::get_active_snippet_body($shortcode, $template);
+			//$snippet_body = self::get_active_snippet_body($shortcode, $template);
+			$snippet_body = PL_Shortcodes::get_active_snippet_body($shortcode);
 			return do_shortcode($snippet_body);
 		}
 		
+		/**
+		 * Search, static and featured listings move on with this
+		 */
 		public static function search_listings_templates( $item_html, $listing, $context_var ) {
 			$shortcode = 'search_listings';
 			self::$listing = $listing;
@@ -682,9 +687,12 @@ class PL_Component_Entity {
 			if( false !== strpos($template, 'static_listings_' ) ) {
 				$template = substr( $template, 16 );
 				$shortcode = 'static_listings';
+			} else if( false !== strpos( $template, 'search_listings_' ) ) {
+				$template = substr( $template, 16 );
 			}
 			
-			$snippet_body = self::get_active_snippet_body($shortcode, $template);
+			//$snippet_body = self::get_active_snippet_body($shortcode, $template);
+			$snippet_body = PL_Shortcodes::get_active_snippet_body($shortcode, $template);
 			return do_shortcode($snippet_body);
 		}
 		

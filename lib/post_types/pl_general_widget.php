@@ -388,7 +388,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				<?php }	?>
 				
 				//$('#pl_post_type_<?php // echo $pl_post_type; ?>').trigger('click');
-
+				
 				$('#pl_post_type').trigger('change');
 				$('#preview_load_spinner').remove();
 				$('#preview-meta-widget').html('<?php echo isset($iframe) ? $iframe : '' ?>');
@@ -454,6 +454,8 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		
 		if( isset( $_POST['pl_template_' . $context_template ] ) ) {
 			update_post_meta( $post_id, 'pl_cpt_template', $_POST['pl_template_' . $context_template] );
+		} else if( isset( $_POST['pl_cpt_template'] ) && ! empty( $_POST['pl_cpt_template'] ) ) {
+			update_post_meta( $post_id, 'pl_cpt_template', $_POST['pl_cpt_template'] );
 		}
 		
 		if( $pl_post_type === 'featured_listings' ||  $pl_post_type === 'static_listings') {
@@ -490,10 +492,11 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	public function post_type_templating( $single ) {
 		global $post;
 		
-		// map the post type from the meta key (as we use a single widget here)
-		$post_type = get_post_meta($post->ID, 'pl_post_type', true);
-		$post->post_type = $post_type;
-
+		if( ! empty( $post ) ) {
+			// map the post type from the meta key (as we use a single widget here)
+			$post_type = get_post_meta($post->ID, 'pl_post_type', true);
+			$post->post_type = $post_type;
+		}
 		$skipdb = false;
 		// if( !empty ( $_GET['skipdb'] ) && $_GET['skipdb'] == 'true' ) {
 		if( isset( $_GET['action'] ) && isset( $_GET['id'] ) && count( $_GET ) > 3 ) {
@@ -528,7 +531,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			global $post;
 			if( ! empty( $post ) && $post->post_type === 'pl_general_widget' ) {
 				wp_enqueue_style( 'placester-widget', trailingslashit( PL_CSS_ADMIN_URL ) . 'placester-widget.css' );
-				wp_enqueue_script( 'placester-widget-script', trailingslashit( PL_JS_URL ) . 'admin/widget-handler.js', array( 'jquery' ), '1.1.2' );
+				wp_enqueue_script( 'placester-widget-script', trailingslashit( PL_JS_URL ) . 'admin/widget-handler.js', array( 'jquery' ), '1.1.7' );
 			}
 		}
 	}
@@ -636,18 +639,19 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	// Autosave function when any of the input fields is called
 	public function autosave_save_post_for_iframe( ) {
 		if( ! empty ($_POST['post_id'] ) ) {
-			$post_id = $_POST['post_id'];
+			$post_id = (int) $_POST['post_id'];
 			$pl_post_type = ! empty( $_POST['pl_post_type'] ) ? $_POST['pl_post_type'] : $this->default_post_type;
 
-			if( $pl_post_type === 'featured_listings' ||  $pl_post_type === 'static_listings') {			
+			if( $pl_post_type === 'featured_listings' ||  $pl_post_type === 'static_listings' || 
+					$pl_post_type === 'pl_static_listings' || $pl_post_type === 'pl_search_listings') {			
 				pl_featured_listings_meta_box_save( $post_id );
 			}
-			if( $pl_post_type === 'pl_neighborhood' ) {
+// 			if( $pl_post_type === 'pl_neighborhood' ) {
 				$this->meta_box_save( $post_id );
-			}
+// 			}
 
 			update_post_meta( $post_id, 'pl_post_type', $pl_post_type );
-		}		
+		}
 
 		die();
 	}
@@ -669,16 +673,12 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	
 	public static function get_context_template( $post_type ) {
 		switch( $post_type ) {
-			case "pl_search_listings":
-				return "search_listings";
-			case "pl_map":
-				return "search_map";
-			case "pl_form":
-				return "search_form";
-			case "pl_listing_slideshow":
-				return "listing_slideshow";
-			case "pl_static_listings":
-				return "static_listings";
+			case 'pl_search_listings':		return 'search_listings';
+			case 'pl_map':					return 'search_map';
+			case 'pl_form':					return 'search_form';
+			case 'pl_listing_slideshow':	return 'listing_slideshow';
+			case 'pl_static_listings':		return 'static_listings';
+				
 			default:
 				return $post_type;
 		}	

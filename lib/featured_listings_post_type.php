@@ -253,6 +253,10 @@ function pl_featured_listings_meta_box_save( $post_id ) {
 		update_post_meta( $post_id, 'pl_template_static_listings',  $_POST['pl_template_static_listings'] );
 	}
 	
+	if( isset( $_POST['pl_cpt_template'] ) && ! empty( $_POST['pl_cpt_template'] ) ) {
+		update_post_meta( $post_id, 'pl_cpt_template', $_POST['pl_cpt_template'] );
+	}
+	
 	// if our current user can't edit this post, bail
 	if( !current_user_can( 'edit_post' ) ) return;
 	
