@@ -136,7 +136,9 @@ class PL_Search_Listing_CPT extends PL_Post_Base {
 	
 		foreach( $this->fields as $field => $values ) {
 			if( !empty( $_POST[$field] ) ) {
-				update_post_meta( $post_id, $field, $_POST[$field] );
+				if( ! empty( $_POST[$field] ) ) {
+					update_post_meta( $post_id, $field, $_POST[$field] );
+				}	
 			}
 		}
 		

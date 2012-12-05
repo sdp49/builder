@@ -29,12 +29,17 @@ widget_autosave = function() {
 
 				if( id.indexOf('location-') !== -1 ) {
 					// get the part after location
-					var field = id.substring( 9 );
-					static_listings.location[field] = value;
+					if( this.value != 'false' ) {
+						var field = id.substring( 9 );
+						static_listings.location[field] = value;
+					}
 				} else if( id.indexOf('metadata-') !== -1 ) {
-					// get the part after metadata
-					var field = id.substring( 9 );
-					static_listings.metadata[field] = value;
+						// don't mark checkboxes as true in filters
+						if( this.type == 'checkbox' && this.checked ) {
+						// get the part after metadata
+						var field = id.substring( 9 );
+						static_listings.metadata[field] = value;
+					}
 				} else {
 					static_listings[id] = value;
 				}

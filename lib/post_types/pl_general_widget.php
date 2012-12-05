@@ -44,7 +44,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			'pauseOnHover' => array( 'type' => 'checkbox', 'label' => 'Pause on hover', 'css' => 'pl_slideshow' ),
 			
 	);
-
+	
 	public function register_post_type() {
 		$args = array(
 				'labels' => array(
@@ -75,7 +75,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	
 	public function __construct() {
 		parent::__construct();
-		
+		add_action( 'save_post', array( $this, 'meta_box_save' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_styles' ) );
 		add_action( 'admin_head', array( $this, 'admin_head_plugin_path' ) );
 		add_filter( 'manage_edit-pl_general_widget_columns' , array( $this, 'widget_edit_columns' ) );
@@ -148,7 +148,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		$pl_post_type = isset( $values['pl_post_type'] ) ? $values['pl_post_type'][0] : '';
 		
 		// manage featured and static listing form values
-		$pl_featured_listing_meta = isset( $values['pl_featured_listing_meta'] ) ? unserialize($values['pl_featured_listing_meta'][0]) : '';
+// 		$pl_featured_listing_meta = ! empty( $values['pl_featured_listing_meta'] ) && is_array( $values['pl_featured_listing_meta'] ) ? unserialize($values['pl_featured_listing_meta'][0]) : '';
 		$pl_featured_meta_value = empty( $pl_featured_listing_meta ) ? '' : $pl_featured_listing_meta['featured-listings-type'];
 		
 		$pl_static_listings_option = isset( $values['pl_static_listings_option'] ) ? unserialize($values['pl_static_listings_option'][0]) : '';
@@ -391,7 +391,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 
 				$('#pl_post_type').trigger('change');
 				$('#preview_load_spinner').remove();
-				$('#preview-meta-widget').html('<?php echo $iframe; ?>');
+				$('#preview-meta-widget').html('<?php echo isset($iframe) ? $iframe : '' ?>');
 			});
 			</script>	
 				
@@ -450,6 +450,12 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			return;
 		}
 		
+		$context_template = self::get_context_template( $pl_post_type );
+		
+		if( isset( $_POST['pl_template_' . $context_template ] ) ) {
+			update_post_meta( $post_id, 'pl_cpt_template', $_POST['pl_template_' . $context_template] );
+		}
+		
 		if( $pl_post_type === 'featured_listings' ||  $pl_post_type === 'static_listings') {
 			pl_featured_listings_meta_box_save( $post_id );
 		}
@@ -460,7 +466,9 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			if( $values['type'] === 'checkbox' && ! isset( $_POST[$field] ) ) {
 				update_post_meta( $post_id, $field, false );
 			} else if( isset( $_POST[$field] ) ) {
-				update_post_meta( $post_id, $field, $_POST[$field] );
+				if( $field != 'pl_cpt_template' ) {
+					update_post_meta( $post_id, $field, $_POST[$field] );
+				}
 			}
 		}
 		
@@ -611,8 +619,14 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		global $post;
 
 		if( ! empty( $post ) && $post->post_type === 'static_listings' ) {
+
+			$meta = get_post_meta( $post->ID );
+			$template = '';
+			if( ! empty( $meta['pl_template_static_listings'] ) ) {
+				$template = 'template="static_listings_' . $meta['pl_template_static_listings'][0] . '"';
+			}
 			
-			$shortcode = '[static_listings id="' . $post->ID . '"]';
+			$shortcode = '[static_listings id="' . $post->ID . '" ' . $template . ']';
 			include PL_LIB_DIR . '/post_types/pl_post_types_template.php';
 		
 			die();
@@ -651,6 +665,23 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	</style>	
 	<?php 
 		echo ob_get_clean();
+	}
+	
+	public static function get_context_template( $post_type ) {
+		switch( $post_type ) {
+			case "pl_search_listings":
+				return "search_listings";
+			case "pl_map":
+				return "search_map";
+			case "pl_form":
+				return "search_form";
+			case "pl_listing_slideshow":
+				return "listing_slideshow";
+			case "pl_static_listings":
+				return "static_listings";
+			default:
+				return $post_type;
+		}	
 	}
 }
 

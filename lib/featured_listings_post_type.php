@@ -235,13 +235,17 @@ function pl_featured_listings_meta_box_save( $post_id ) {
 	}
 	
 	update_post_meta( $post_id, 'pl_static_listings_option', $static_listings_option );
-	update_post_meta( $post_id, 'pl_listing_type', $_POST['pl_listing_type'] );
+	if( isset( $_POST['pl_listing_type'] ) ) {
+		update_post_meta( $post_id, 'pl_listing_type', $_POST['pl_listing_type'] );
+	}
 	
 	$pl_post_type = ! empty( $_POST['pl_post_type'] ) ? $_POST['pl_post_type'] : 'pl_general_widget';
 	
 	if( $pl_post_type === 'pl_general_widget' ) {
 		return;
 	}
+	
+	update_post_meta( $post_id, 'pl_post_type', $pl_post_type );
 	
 	if( $pl_post_type === 'featured_listings' && ! empty( $_POST['pl_template_featured_listings'] ) ) {
 		update_post_meta( $post_id, 'pl_template_featured_listings',  $_POST['pl_template_featured_listings'] );

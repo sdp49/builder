@@ -155,6 +155,9 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 		// Verify nonces for ineffective calls
 		if( !isset( $_POST['meta_box_nonce'] ) || !wp_verify_nonce( $_POST['meta_box_nonce'], 'pl_cpt_meta_box_nonce' ) ) return;
 		
+		if( $_POST['post_type'] != 'pl_neighborhood' ) {
+			return;
+		}
 		// if our current user can't edit this post, bail
 		if( !current_user_can( 'edit_post' ) ) return;
 		

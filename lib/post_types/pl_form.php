@@ -120,7 +120,7 @@ class PL_Form_CPT extends PL_Post_Base {
 
 	public static function post_type_templating( $single, $skipdb = false ) {
 		global $post;
-
+		
 		unset( $_GET['skipdb'] );
 		$meta = $_GET;
 		

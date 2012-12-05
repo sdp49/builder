@@ -32,7 +32,8 @@ class PL_Component_Entity {
 // 			'search_map' => '',
 // 			'pl_neighborhood' => '',
 			'listing_slideshow' => 'pls_slideshow_html_',
-			'search_listings' => 'pls_listings_list_ajax_item_html_'
+			'search_listings' => 'pls_listings_list_ajax_item_html_',
+			'static_listings' => 'pls_listings_list_ajax_item_html_'
 				
 		);
 		
@@ -48,7 +49,7 @@ class PL_Component_Entity {
 			add_filter( 'pls_listings_search_form_outer_' . $template, array(__CLASS__,'search_form_templates'), 10, 6 );
 		}
 
-		$listing_slideshow_templates = self::get_shortcode_snippet_list( 'search_form', self::$defaults );
+		$listing_slideshow_templates = self::get_shortcode_snippet_list( 'listing_slideshow', self::$defaults );
 		foreach ($listing_slideshow_templates as $template => $type) {
 			add_filter( 'pls_slideshow_html_' . $template, array(__CLASS__,'listing_slideshow_templates'), 10, 6 );
 		}
@@ -56,6 +57,11 @@ class PL_Component_Entity {
 		$search_listings_templates = self::get_shortcode_snippet_list( 'search_listings', self::$defaults );
 		foreach ($search_listings_templates as $template => $type) {
 			add_filter( 'pls_listings_list_ajax_item_html_' . $template, array(__CLASS__,'search_listings_templates'), 10, 3 );
+		}
+		
+		$static_listings_templates = self::get_shortcode_snippet_list( 'static_listings', self::$defaults );
+		foreach ($static_listings_templates as $template => $type) {
+			add_filter( 'pls_listings_list_ajax_item_html_static_listings_' . $template, array(__CLASS__, 'search_listings_templates'), 10, 3 );
 		}
 
 	}
@@ -80,7 +86,7 @@ class PL_Component_Entity {
 		// Print property_ids as argument to the listings
 		global $property_ids;
 		$property_ids = self::get_property_ids( $atts['id'] );
-		var_dump($property_ids); die();
+		//var_dump($property_ids); die();
 		$property_ids = array_flip($property_ids);
 		
 		add_action('featured_filters_featured_ids', array( __CLASS__, 'print_property_listing_args') );
@@ -650,14 +656,14 @@ class PL_Component_Entity {
 			// get the template attached as a context arg, 33 is the length of the filter prefix
 			$template = substr(current_filter(), 31);
 		
-			$snippet_body = self::get_active_snippet_body($shortcode);
+			$snippet_body = self::get_active_snippet_body($shortcode, $template);
 			
 			return do_shortcode($snippet_body);
 		}
 		
 		public static function listing_slideshow_templates( $html, $data, $context, $context_var, $args ) {
 			$shortcode = 'listing_slideshow';
-			self::$listing = $listing;
+			self::$listing = $data['listing']; 
 				
 			// get the template attached as a context arg, 33 is the length of the filter prefix
 			$template = $context;
@@ -672,6 +678,11 @@ class PL_Component_Entity {
 			
 			// get the template attached as a context arg, 33 is the length of the filter prefix
 			$template = substr(current_filter(), 33);
+			
+			if( false !== strpos($template, 'static_listings_' ) ) {
+				$template = substr( $template, 16 );
+				$shortcode = 'static_listings';
+			}
 			
 			$snippet_body = self::get_active_snippet_body($shortcode, $template);
 			return do_shortcode($snippet_body);
