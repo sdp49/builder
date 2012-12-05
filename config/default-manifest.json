@@ -1,23 +1,41 @@
 {
     "pages": [
         {
-            "title": "About 13",
-            "content": "[listing-search]"
+            "title": "Contact Us",
+            "template": "page-template-contact.php",
+            "content": "Lorem ipsum",
+            "slug": "pls-contact-us"
         },
         {
-            "title": "Contact 13",
-            "content": "[listing-search]"
+            "title": "About",
+            "template": "page-template-about.php"
+            "content": "Lorem ipsum",
+            "slug": "pls-about"
+        },
+        {
+            "title": "Listings",
+            "template": "page-template-listings.php"
+            "slug": "pls-listings"
         }
     ],
     "menus": [
         {
-            "name": "main",
-            "location": "front",
+            "name": "Default Header",
+            "location": "primary",
             "pages": [
-                "Home",
+                "About",
+                "Listings",
+                "Contact Us"
+            ]
+        },
+        {
+            "name": "Default Footer",
+            "location": "subsidiary",
+            "pages": [
                 "About",
                 "Listings"
             ]
         }
+        
     ]
 }

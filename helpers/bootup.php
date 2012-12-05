@@ -6,9 +6,9 @@ class PL_Bootup {
 	static $items_that_can_be_created = array('pages' => array(), 'menus' => array());
 
 	public function init () {
-    add_action('init', array( __CLASS__, 'theme_switch' ));
     // add_action('after_setup_theme', array( __CLASS__, 'create_pages' ));
-    // add_action('switch_theme', array( __CLASS__, 'create_menus' ));
+    // add_action('after_setup_theme', array( __CLASS__, 'create_menus' ));
+    add_action('switch_theme', array( __CLASS__, 'theme_switch' ));
     // self::theme_switch();
 	}
 
@@ -23,7 +23,9 @@ class PL_Bootup {
 		if ( !empty($menus) ) {
       self::create_menus( $menus );
 		}
-		
+
+    self::theme_switch_user_prompt ( $manifest );
+
 		return true;
 	}
 
@@ -32,8 +34,12 @@ class PL_Bootup {
 	}
 
 	private function create_menus ( $menus ) {
-    PL_Menus::create( $menus, $theme_locations );
+    PL_Menus::create( $menus );
 	}
+
+  private function theme_switch_user_prompt ( $manifest ) {
+    
+  }
 
 	private function parse_manifest_to_array () {
 		return json_decode( file_get_contents( self::get_current_theme_manifest_location() ), true );
