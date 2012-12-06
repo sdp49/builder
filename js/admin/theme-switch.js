@@ -1,7 +1,5 @@
 jQuery(document).ready(function($) {
 
-  console.log("changing theme");
-
   theme_switch_notifier();
   
   function theme_switch_notifier () {

@@ -8,13 +8,13 @@
         },
         {
             "title": "About",
-            "template": "page-template-about.php"
+            "template": "page-template-about.php",
             "content": "Lorem ipsum",
             "slug": "pls-about"
         },
         {
             "title": "Listings",
-            "template": "page-template-listings.php"
+            "template": "page-template-listings.php",
             "slug": "pls-listings"
         }
     ],
