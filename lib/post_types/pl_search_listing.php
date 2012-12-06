@@ -193,7 +193,7 @@ class PL_Search_Listing_CPT extends PL_Post_Base {
 		
 			foreach( $meta as $key => $value ) {
 				if( $key === 'pl_cpt_template' ) {
-					$args .= "context='static_listings_{$value[0]}' ";
+					$args .= "context='search_listings_{$value[0]}' ";
 				}
 			}
 

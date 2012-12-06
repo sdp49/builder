@@ -39,30 +39,30 @@ class PL_Component_Entity {
 		
 		// TODO: make dynamic function control over templates
 		// currently they have different logic and diff input parameters 
-		$featured_templates = self::get_shortcode_snippet_list( 'featured_listings', self::$defaults );
-		foreach ($featured_templates as $template => $type) {
-			add_filter( 'pls_listings_list_ajax_item_html_' . $template, array(__CLASS__,'featured_listings_ajax_templates'), 10, 3 );	
-		}
+// 		$featured_templates = self::get_shortcode_snippet_list( 'featured_listings', self::$defaults );
+// 		foreach ($featured_templates as $template => $type) {
+// 			add_filter( 'pls_listings_list_ajax_item_html_' . $template, array(__CLASS__,'featured_listings_ajax_templates'), 10, 3 );	
+// 		}
 		
-		$search_form_templates = self::get_shortcode_snippet_list( 'search_form', self::$defaults );		
-		foreach ($search_form_templates as $template => $type) {
-			add_filter( 'pls_listings_search_form_outer_' . $template, array(__CLASS__,'search_form_templates'), 10, 6 );
-		}
+// 		$search_form_templates = self::get_shortcode_snippet_list( 'search_form', self::$defaults );		
+// 		foreach ($search_form_templates as $template => $type) {
+// 			add_filter( 'pls_listings_search_form_outer_' . $template, array(__CLASS__,'search_form_templates'), 10, 6 );
+// 		}
 
-		$listing_slideshow_templates = self::get_shortcode_snippet_list( 'listing_slideshow', self::$defaults );
-		foreach ($listing_slideshow_templates as $template => $type) {
-			add_filter( 'pls_slideshow_html_' . $template, array(__CLASS__,'listing_slideshow_templates'), 10, 6 );
-		}
+// 		$listing_slideshow_templates = self::get_shortcode_snippet_list( 'listing_slideshow', self::$defaults );
+// 		foreach ($listing_slideshow_templates as $template => $type) {
+// 			add_filter( 'pls_slideshow_html_' . $template, array(__CLASS__,'listing_slideshow_templates'), 10, 6 );
+// 		}
 		
-		$search_listings_templates = self::get_shortcode_snippet_list( 'search_listings', self::$defaults );
-		foreach ($search_listings_templates as $template => $type) {
-			add_filter( 'pls_listings_list_ajax_item_html_search_listings_' . $template, array(__CLASS__,'search_listings_templates'), 10, 3 );
-		}
+// 		$search_listings_templates = self::get_shortcode_snippet_list( 'search_listings', self::$defaults );
+// 		foreach ($search_listings_templates as $template => $type) {
+// 			add_filter( 'pls_listings_list_ajax_item_html_search_listings_' . $template, array(__CLASS__,'search_listings_templates'), 10, 3 );
+// 		}
 		
-		$static_listings_templates = self::get_shortcode_snippet_list( 'static_listings', self::$defaults );
-		foreach ($static_listings_templates as $template => $type) {
-			add_filter( 'pls_listings_list_ajax_item_html_static_listings_' . $template, array(__CLASS__, 'search_listings_templates'), 10, 3 );
-		}
+// 		$static_listings_templates = self::get_shortcode_snippet_list( 'static_listings', self::$defaults );
+// 		foreach ($static_listings_templates as $template => $type) {
+// 			add_filter( 'pls_listings_list_ajax_item_html_static_listings_' . $template, array(__CLASS__, 'search_listings_templates'), 10, 3 );
+// 		}
 
 	}
 	
@@ -147,8 +147,8 @@ class PL_Component_Entity {
 		$map_id = $atts['map_id'];
 		
 		$values = get_post_meta( $map_id );
-		$pl_featured_listing_meta = isset( $values['pl_featured_listing_meta'] ) ? unserialize($values['pl_featured_listing_meta'][0]) : '';
-		$pl_featured_meta_value = empty( $pl_featured_listing_meta ) ? array() : $pl_featured_listing_meta['featured-listings-type'];
+		$pl_featured_listing_meta = isset( $values['pl_featured_listing_meta'] ) && is_array( $values['pl_featured_listing_meta'] ) ? @unserialize($values['pl_featured_listing_meta'][0]) : '';
+		$pl_featured_meta_value = empty( $pl_featured_listing_meta ) && ! isset( $pl_featured_listing_meta['featured-listings-type'] ) ? array() : $pl_featured_listing_meta['featured-listings-type'];
 		
 		$property_ids = array_flip( $pl_featured_meta_value );
 		

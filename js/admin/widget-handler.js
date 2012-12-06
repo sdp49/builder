@@ -37,11 +37,15 @@ widget_autosave = function() {
 					}
 				} else if( id.indexOf('metadata-') !== -1 ) {
 						// don't mark checkboxes as true in filters
-						if( this.type == 'checkbox' && this.checked ) {
-						// get the part after metadata
-						var field = id.substring( 9 );
-						static_listings.metadata[field] = value;
-					}
+						if( ( this.type == 'checkbox' && this.checked ) ) {
+							// get the part after metadata
+							var field = id.substring( 9 );
+							static_listings.metadata[field] = value;
+							// input checkbox is with value true in the search filters
+						} else if( this.type != 'checkbox' && this.value != 'false' && this.value != "0" ) {
+							var field = id.substring( 9 );
+							static_listings.metadata[field] = value;
+						}
 				} else {
 					static_listings[id] = value;
 				}
