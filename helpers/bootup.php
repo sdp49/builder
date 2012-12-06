@@ -3,7 +3,14 @@
 PL_Bootup::init();
 class PL_Bootup {
 
-	static $items_that_can_be_created = array('pages' => array(), 'menus' => array());
+  static $items_that_can_be_created = array(
+      'pages' => array(),
+      'menus' => array(),
+      'posts' => array(),
+      'agents' => array(),
+      'testimonials' => array(),
+      'settings' => array()
+  );
 
 	public function init () {
     add_action('switch_theme', array( __CLASS__, 'theme_switch' ));
@@ -23,16 +30,32 @@ class PL_Bootup {
       self::create_menus( $menus );
     }
 
+    if ( !empty($posts) ) {
+      self::create_posts( $posts, $settings );
+    }
+
+    if ( !empty($agents) ) {
+      self::create_posts( $agents, $settings );
+    }
+
+    if ( !empty($testimonials) ) {
+      self::create_posts( $testimonials, $settings );
+    }
+
 		return true;
 	}
 
-	private function create_pages ( $pages ) {
-		PL_Pages::create_once( $pages, $force_template = false );
-	}
+  private function create_pages ( $pages ) {
+    PL_Pages::create_once( $pages, $force_template = false );
+  }
 
-	private function create_menus ( $menus ) {
+  private function create_menus ( $menus ) {
     PL_Menus::create( $menus );
-	}
+  }
+
+  private function create_posts ( $posts, $post_type, $settings ) {
+    PL_Posts::create( $posts, $post_type, $settings );
+  }
 
   public function theme_switch_user_prompt () {
     PL_Js_Helper::theme_switch();
