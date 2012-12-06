@@ -6,7 +6,7 @@ class PL_Js_Helper {
 
 	public function init() {
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin' ));
-		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'all_admin' ));
+    add_action( 'admin_enqueue_scripts', array( __CLASS__, 'all_admin' ));
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'frontend' ));
 		add_action('admin_head', array(__CLASS__, 'admin_menu_url'));
 		add_action('customize_controls_enqueue_scripts', array(__CLASS__, 'customizer'));
@@ -15,7 +15,10 @@ class PL_Js_Helper {
   public function all_admin () {
     wp_enqueue_style('jquery-ui-dialog', OPTIONS_FRAMEWORK_DIRECTORY.'css/jquery-ui-1.8.22.custom.css');
     self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/js/jquery-ui-1.8.17.custom.min.js', array( 'jquery'));
-    self::register_enqueue_if_not('theme-switch', trailingslashit(PL_JS_URL) .  'admin/theme-switch.js', array( 'jquery-ui'));
+  }
+
+  public function theme_switch () {
+    self::register_enqueue_if_not('theme-switch', trailingslashit(PL_JS_URL) .  'admin/theme-switch.js', array( 'jquery-ui'));  
   }
 
 	public function admin ($hook) {

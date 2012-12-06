@@ -6,25 +6,22 @@ class PL_Bootup {
 	static $items_that_can_be_created = array('pages' => array(), 'menus' => array());
 
 	public function init () {
-    // add_action('after_setup_theme', array( __CLASS__, 'create_pages' ));
-    // add_action('after_setup_theme', array( __CLASS__, 'create_menus' ));
     add_action('switch_theme', array( __CLASS__, 'theme_switch' ));
-    // self::theme_switch();
-	}
+    add_action('after_switch_theme', array( __CLASS__, 'theme_switch_user_prompt' ));
+  }
 
-	public function theme_switch () {
-		$manifest = wp_parse_args( self::parse_manifest_to_array(), self::$items_that_can_be_created );
-		extract($manifest);
+  public function theme_switch () {
+    
+    $manifest = wp_parse_args( self::parse_manifest_to_array(), self::$items_that_can_be_created );
+    extract($manifest);
 
-		if ( !empty($pages) )  {
+    if ( !empty($pages) )  {
       self::create_pages( $pages );
-		}
+    }
 
-		if ( !empty($menus) ) {
+    if ( !empty($menus) ) {
       self::create_menus( $menus );
-		}
-
-    self::theme_switch_user_prompt ( $manifest );
+    }
 
 		return true;
 	}
@@ -37,8 +34,8 @@ class PL_Bootup {
     PL_Menus::create( $menus );
 	}
 
-  private function theme_switch_user_prompt ( $manifest ) {
-    
+  public function theme_switch_user_prompt () {
+    PL_Js_Helper::theme_switch();
   }
 
 	private function parse_manifest_to_array () {
@@ -60,6 +57,5 @@ class PL_Bootup {
 		}
 		return false;
 	}
-
 
 }

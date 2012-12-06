@@ -7,8 +7,13 @@ class PL_Css_Helper {
 	function init () {		
 		// add_action( 'admin_init', array( __CLASS__, 'admin' ));
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin' ));
+		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'all_admin' ));
 		add_action('customize_controls_enqueue_scripts', array(__CLASS__, 'customizer'));
 	}
+
+  function all_admin () {
+    self::register_enqueue_if_not('global-css', trailingslashit(PL_CSS_URL) .  'global.css');
+  }
 
 	function admin ($hook) {
 		$pages = array('placester_page_placester_properties', 
