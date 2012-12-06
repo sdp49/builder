@@ -31,15 +31,15 @@ class PL_Bootup {
     }
 
     if ( !empty($posts) ) {
-      self::create_posts( $posts, $settings );
+      self::create_posts( $posts, 'post', $settings );
     }
 
     if ( !empty($agents) ) {
-      self::create_posts( $agents, $settings );
+      self::create_posts( $agents, 'agent', $settings );
     }
 
     if ( !empty($testimonials) ) {
-      self::create_posts( $testimonials, $settings );
+      self::create_posts( $testimonials, 'testimonial', $settings );
     }
 
 		return true;
