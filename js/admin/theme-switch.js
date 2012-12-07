@@ -3,7 +3,7 @@ function ask_user_about_dummy_data () {
 }
 
 function theme_switch_notifier () {
-  jQuery("theme_change_dialog_box").dialog("open");
+  jQuery("#theme_change_dialog_box").dialog("open");
 }
 
 jQuery(window).load(function () { ask_user_about_dummy_data(); });
@@ -32,9 +32,9 @@ jQuery(document).ready(function($) {
         text: "Yes",
         class: "green-btn right-btn",
         click: function() {
-          $(".ui-dialog-buttonpane .green-btn").before('<div id="loading-spinner" style="z-index:9999999;margin:0 0 0 350px;"><div class="bar1"></div><div class="bar2"></div><div class="bar3"></div><div class="bar4"></div><div class="bar5"></div><div class="bar6"></div><div class="bar7"></div><div class="bar8"></div></div>');
+          $(".theme_change_dummy_data_box .ui-dialog-buttonpane .green-btn").before('<div id="loading-spinner" style="z-index:9999999;margin:0 0 0 350px;"><div class="bar1"></div><div class="bar2"></div><div class="bar3"></div><div class="bar4"></div><div class="bar5"></div><div class="bar6"></div><div class="bar7"></div><div class="bar8"></div></div>');
           $.post(ajaxurl, {action: "add_dummy_data"}, function(data, textStatus, xhr) {
-            $("#theme_change_dummy_data_box").dialog("option", "hide", "fade").dialog("close");
+            $("#theme_change_dummy_data_box").dialog("close");
             theme_switch_notifier();
           }, "json");
         }
@@ -73,7 +73,6 @@ jQuery(document).ready(function($) {
         class: "green-btn right-btn",
         click: function() {
           $(this).dialog("close");
-          window.open( window.location.origin + "/wp-admin/nav-menus.php" );
         }
       }
       

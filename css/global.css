@@ -67,11 +67,31 @@ h3.hndle {
   margin: 5px 0 !important; }
 
 .ui-widget-overlay {
-	opacity: 0.6 !important;
-	-moz-opacity: 0.6 !important;
-	filter:alpha(opacity=0.6);
-}
-/*    end     */
+  opacity: 0.6 !important;
+  -moz-opacity: 0.6 !important;
+  filter: alpha(opacity=0.6); }
+
+/*    end */
+.ui-dialog.ui-widget-content {
+  border: 10px solid #343434;
+  padding: 0;
+  border-radius: 0;
+  -webkit-border-radius: 0;
+  -moz-border-radius: 0; }
+  .ui-dialog.ui-widget-content .ui-dialog-titlebar {
+    background-color: #343434 !important;
+    border-radius: 0;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0; }
+    .ui-dialog.ui-widget-content .ui-dialog-titlebar span.ui-dialog-title {
+      color: white; }
+    .ui-dialog.ui-widget-content .ui-dialog-titlebar .ui-dialog-titlebar-close .ui-icon {
+      background: url("../images/close-icon.png") no-repeat; }
+      .ui-dialog.ui-widget-content .ui-dialog-titlebar .ui-dialog-titlebar-close .ui-icon:hover {
+        box-shadow: none;
+        -webkit-box-shadow: none;
+        -moz-box-shadow: none;
+        background: url("../images/close-icon.png") no-repeat; }
 
 /* Plugin specific styles */
 .ui-dialog .ui-dialog-titlebar {

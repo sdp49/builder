@@ -1,3 +1,9 @@
+$light-black: #565656
+@mixin no-border-raidus
+  border-radius: 0
+  -webkit-border-radius: 0
+  -moz-border-radius: 0
+
 .left
   float: left
 
@@ -76,6 +82,25 @@ h3.hndle
   filter: alpha(opacity = 0.6)
 
 /*    end
+
+// Modal Dialog Boxes
+.ui-dialog.ui-widget-content
+  border: 10px solid #343434
+  padding: 0
+  @include no-border-raidus
+  .ui-dialog-titlebar
+    background-color: #343434 !important
+    @include no-border-raidus
+    span.ui-dialog-title
+      color: #fff
+    .ui-dialog-titlebar-close
+      .ui-icon
+        background: url('../images/close-icon.png') no-repeat
+        &:hover
+          box-shadow: none
+          -webkit-box-shadow: none
+          -moz-box-shadow: none
+          background: url('../images/close-icon.png') no-repeat
 
 /* Plugin specific styles
 
