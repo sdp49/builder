@@ -470,8 +470,8 @@ class PL_Component_Entity {
 					'width' => 629,
 					'height' => 303,
 					'zoom' => 16,
-					'polygon_search' => $taxonomy->taxonomy,
-					'polygon' => $taxonomy->slug,
+					'polygon_search' => $taxonomy->name,
+					'polygon' => $taxonomy->rewrite['slug'],
 					'loading_overlay' => '<div id="spinner"><div class="bar1"></div><div class="bar2"></div><div class="bar3"></div><div class="bar4"></div><div class="bar5"></div><div class="bar6"></div><div class="bar7"></div><div class="bar8"></div></div>',
 					'class' => 'polygon_search') 
 				);
@@ -535,8 +535,8 @@ class PL_Component_Entity {
 		private static function get_property_ids( $featured_listing_id ) {
 			// if( ! is_int( $featured_listing_id ) ) { }
 			$values = get_post_custom( $featured_listing_id );
-			$property_ids = isset( $values['keatingbrokerage_meta'] ) ? unserialize($values['keatingbrokerage_meta'][0]) : '';
-			$pl_featured_listing_meta = isset( $values['pl_featured_listing_meta'] ) ? unserialize($values['pl_featured_listing_meta'][0]) : '';
+			$property_ids = isset( $values['keatingbrokerage_meta'] ) ? @unserialize($values['keatingbrokerage_meta'][0]) : '';
+			$pl_featured_listing_meta = isset( $values['pl_featured_listing_meta'] ) ? @unserialize($values['pl_featured_listing_meta'][0]) : '';
 			$pl_featured_meta_value = empty( $pl_featured_listing_meta ) ? array('listings' => array()) : $pl_featured_listing_meta['featured-listings-type'];
 		
 			return $pl_featured_meta_value;
