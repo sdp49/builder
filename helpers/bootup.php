@@ -13,37 +13,37 @@ class PL_Bootup {
   );
 
 	public function init () {
-    add_action('switch_theme', array( __CLASS__, 'theme_switch' ));
+    // add_action('switch_theme', array( __CLASS__, 'add_dummy_data' ));
     add_action('after_switch_theme', array( __CLASS__, 'theme_switch_user_prompt' ));
+    add_action('wp_ajax_add_dummy_data', array( __CLASS__, 'add_dummy_data') );
   }
 
-  public function theme_switch () {
+  public function add_dummy_data () {
     
+    // Retrieve default and theme manifests
     $manifest = wp_parse_args( self::parse_manifest_to_array(), self::$items_that_can_be_created );
     extract($manifest);
-
+    
+    // Start creating dummy data here...
     if ( !empty($pages) )  {
       self::create_pages( $pages );
     }
-
     if ( !empty($menus) ) {
       self::create_menus( $menus );
     }
-
     if ( !empty($posts) ) {
       self::create_posts( $posts, 'post', $settings );
     }
-
     if ( !empty($agents) ) {
       self::create_posts( $agents, 'agent', $settings );
     }
-
     if ( !empty($testimonials) ) {
       self::create_posts( $testimonials, 'testimonial', $settings );
     }
+    echo json_encode(true);
+    die();
+  }
 
-		return true;
-	}
 
   private function create_pages ( $pages ) {
     PL_Pages::create_once( $pages, $force_template = false );
