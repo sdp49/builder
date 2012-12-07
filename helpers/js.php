@@ -9,11 +9,6 @@ class PL_Js_Helper {
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'frontend') );
 		add_action( 'admin_head', array(__CLASS__, 'admin_menu_url') );
 		add_action( 'customize_controls_enqueue_scripts', array(__CLASS__, 'customizer') );
-	}	
-
-	public function all_admin () {
-		wp_enqueue_style('jquery-ui-dialog', OPTIONS_FRAMEWORK_DIRECTORY.'css/jquery-ui-1.8.22.custom.css');
-		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/js/jquery-ui-1.8.17.custom.min.js', array( 'jquery'));
 	}
 
 	public function admin ($hook) {
@@ -39,6 +34,12 @@ class PL_Js_Helper {
 			// Need this for trial activation...
 			PL_Router::load_builder_partial('free-trial.php');
 
+			// Launch dialog after theme is switched...
+			if ( PL_Bootup::is_theme_switched() ) {
+	    		self::register_enqueue_if_not('theme-switch', trailingslashit(PL_JS_URL) .  'admin/theme-switch.js', array( 'jquery-ui'));  
+	    	}
+
+	    	// Don't load any other scripts...
 			return;
 		} 
 

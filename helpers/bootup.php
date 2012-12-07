@@ -63,6 +63,7 @@ class PL_Bootup {
 
   public function theme_switch_user_prompt () {
     self::$switching = true;
+    
     PL_Router::load_builder_partial('theme-switch.php');
     PL_Router::load_builder_partial('dummy-data-confirmation.php');
   }
