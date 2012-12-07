@@ -6,21 +6,16 @@ class PL_Js_Helper {
 
 	public function init() {
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin' ));
-    add_action( 'admin_enqueue_scripts', array( __CLASS__, 'all_admin' ));
+    	add_action( 'admin_enqueue_scripts', array( __CLASS__, 'all_admin' ));
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'frontend' ));
 		add_action('admin_head', array(__CLASS__, 'admin_menu_url'));
 		add_action('customize_controls_enqueue_scripts', array(__CLASS__, 'customizer'));
 	}	
 
-  public function all_admin () {
-    wp_enqueue_style('jquery-ui-dialog', OPTIONS_FRAMEWORK_DIRECTORY.'css/jquery-ui-1.8.22.custom.css');
-    self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/js/jquery-ui-1.8.17.custom.min.js', array( 'jquery'));
-  }
-
-  public function theme_switch () {
-    error_log('Trying to register the theme-switch.js');
-    self::register_enqueue_if_not('theme-switch', trailingslashit(PL_JS_URL) .  'admin/theme-switch.js', array( 'jquery-ui'));
-  }
+	public function all_admin () {
+		wp_enqueue_style('jquery-ui-dialog', OPTIONS_FRAMEWORK_DIRECTORY.'css/jquery-ui-1.8.22.custom.css');
+		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/js/jquery-ui-1.8.17.custom.min.js', array( 'jquery'));
+	}
 
 	public function admin ($hook) {
 		$pages = array('placester_page_placester_properties', 
@@ -144,9 +139,9 @@ class PL_Js_Helper {
 		self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) .  'admin/free-trial.js', array( 'jquery-ui'));
 		self::register_enqueue_if_not('integration', trailingslashit(PL_JS_URL) .  'admin/integration.js', array( 'jquery-ui'));
 
-    if ( PL_Bootup::is_theme_switched() ) {
-      self::register_enqueue_if_not('theme-switch', trailingslashit(PL_JS_URL) .  'admin/theme-switch.js', array( 'jquery-ui'));  
-    }
+	    if ( PL_Bootup::is_theme_switched() ) {
+	    	self::register_enqueue_if_not('theme-switch', trailingslashit(PL_JS_URL) .  'admin/theme-switch.js', array( 'jquery-ui'));  
+	    }
 	}
 
 	public static function register_enqueue_if_not($name, $path, $dependencies = array(), $version = null, $in_footer = false) {

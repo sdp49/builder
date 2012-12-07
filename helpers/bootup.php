@@ -65,7 +65,6 @@ class PL_Bootup {
     self::$switching = true;
     PL_Router::load_builder_partial('theme-switch.php');
     PL_Router::load_builder_partial('dummy-data-confirmation.php');
-    //PL_Js_Helper::theme_switch();
   }
 
 	private function parse_manifest_to_array () {
