@@ -98,8 +98,7 @@ class PL_Css_Helper {
 		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');
 
 		if ( PL_Bootup::is_theme_switched() ) {
-
-	    	self::register_enqueue_if_not('theme-switch', trailingslashit(PL_JS_URL) .  'admin/theme-switch.js', array( 'jquery-ui'));  
+			self::register_enqueue_if_not('global-css', trailingslashit(PL_CSS_URL) .  'global.css');
 	    }
 	}
 
