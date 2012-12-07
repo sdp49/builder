@@ -80,18 +80,64 @@ h3.hndle {
   -moz-border-radius: 0; }
   .ui-dialog.ui-widget-content .ui-dialog-titlebar {
     background-color: #343434 !important;
+    padding: 5px 5px 15px 5px;
     border-radius: 0;
     -webkit-border-radius: 0;
     -moz-border-radius: 0; }
     .ui-dialog.ui-widget-content .ui-dialog-titlebar span.ui-dialog-title {
-      color: white; }
-    .ui-dialog.ui-widget-content .ui-dialog-titlebar .ui-dialog-titlebar-close .ui-icon {
-      background: url("../images/close-icon.png") no-repeat; }
-      .ui-dialog.ui-widget-content .ui-dialog-titlebar .ui-dialog-titlebar-close .ui-icon:hover {
-        box-shadow: none;
-        -webkit-box-shadow: none;
-        -moz-box-shadow: none;
-        background: url("../images/close-icon.png") no-repeat; }
+      color: white;
+      font-weight: 400;
+      font-size: 20px; }
+    .ui-dialog.ui-widget-content .ui-dialog-titlebar .ui-dialog-titlebar-close {
+      top: 40% !important; }
+      .ui-dialog.ui-widget-content .ui-dialog-titlebar .ui-dialog-titlebar-close .ui-icon, .ui-dialog.ui-widget-content .ui-dialog-titlebar .ui-dialog-titlebar-close .ui-state-hover {
+        background: transparent url("../images/close-icon.png") no-repeat !important; }
+        .ui-dialog.ui-widget-content .ui-dialog-titlebar .ui-dialog-titlebar-close .ui-icon:hover, .ui-dialog.ui-widget-content .ui-dialog-titlebar .ui-dialog-titlebar-close .ui-state-hover:hover {
+          box-shadow: none;
+          -webkit-box-shadow: none;
+          -moz-box-shadow: none;
+          background: url("../images/close-icon.png") no-repeat !important;
+          background-color: transparent; }
+  .ui-dialog.ui-widget-content .ui-dialog-content {
+    margin-top: 5px;
+    padding: 10px 15px;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box; }
+    .ui-dialog.ui-widget-content .ui-dialog-content h1, .ui-dialog.ui-widget-content .ui-dialog-content h2, .ui-dialog.ui-widget-content .ui-dialog-content h3, .ui-dialog.ui-widget-content .ui-dialog-content h4 {
+      float: left;
+      line-height: 22px;
+      margin: 10px 0;
+      font-weight: 400; }
+    .ui-dialog.ui-widget-content .ui-dialog-content h1, .ui-dialog.ui-widget-content .ui-dialog-content h2 {
+      font-weight: 600; }
+    .ui-dialog.ui-widget-content .ui-dialog-content h1 {
+      font-size: 20; }
+    .ui-dialog.ui-widget-content .ui-dialog-content h2 {
+      font-size: 18; }
+    .ui-dialog.ui-widget-content .ui-dialog-content h3 {
+      font-size: 16; }
+    .ui-dialog.ui-widget-content .ui-dialog-content h4 {
+      font-size: 14; }
+    .ui-dialog.ui-widget-content .ui-dialog-content p {
+      font-size: 12px;
+      color: #565656;
+      float: left;
+      margin: 10px 0; }
+      .ui-dialog.ui-widget-content .ui-dialog-content p.red {
+        color: #df161a; }
+      .ui-dialog.ui-widget-content .ui-dialog-content p.center {
+        text-align: center; }
+    .ui-dialog.ui-widget-content .ui-dialog-content a, .ui-dialog.ui-widget-content .ui-dialog-content a:visited {
+      color: #1a53a1; }
+      .ui-dialog.ui-widget-content .ui-dialog-content a:hover, .ui-dialog.ui-widget-content .ui-dialog-content a:visited:hover {
+        color: black; }
+  .ui-dialog.ui-widget-content .ui-dialog-buttonpane {
+    background: #f0f0f0;
+    border: 0;
+    padding: 10px; }
+    .ui-dialog.ui-widget-content .ui-dialog-buttonpane button {
+      margin: 5px; }
 
 /* Plugin specific styles */
 .ui-dialog .ui-dialog-titlebar {
