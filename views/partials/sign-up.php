@@ -5,7 +5,6 @@
 	<div id="api_key_validation"></div>
 	<div id="api_key_success"></div>
 	<div id="confirm_email">
-		<?php PL_Form::generate_form( PL_Config::PL_API_USERS('setup', 'args'), array('method'=>'POST', 'include_submit' => false, 'wrap_form' => true) ); ?>		
+		<?php PL_Form::generate_form( PL_Config::PL_API_USERS('setup', 'args'), array('method'=>'POST', 'include_submit' => false, 'wrap_form' => true) ); ?>
 	</div>
-	
 </div>

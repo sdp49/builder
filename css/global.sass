@@ -3,6 +3,7 @@ $blue: #0c60a7
 $red: #eb0e0e
 $green: #6E9910
 $gray: #f0f0f0
+$helvetica: "HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue", Helvetica
 
 @mixin box-sizing
   box-sizing: border-box
@@ -41,19 +42,18 @@ $gray: #f0f0f0
   background-color: #FFEBE8
   border-color: #C00 #C00 white
 
+// Premium Wizard Sign Up Form
 .prem_form
-  width: 320px
+  width: 220px
   float: left
-  clear: both
-  margin-top: 5px
+  margin: 15px 0 10px
   label
     float: left
     width: 100px
-    text-align: right
     margin-right: 10px
+    color: $light-black
   input
     width: 200px
-    float: right
 
 /*ajax messages
 
@@ -63,7 +63,7 @@ $gray: #f0f0f0
   color: green
   font-weight: bold
   &.red
-    color: red
+    color: $red
 
 .placester_icon
   background: url('../images/logo_30.png') no-repeat
@@ -139,6 +139,7 @@ h3.hndle
       line-height: 22px
       margin: 10px 0
       color: $light-black
+      width: 100%
       font:
         family: Arial
         weight: 400
@@ -160,15 +161,18 @@ h3.hndle
       color: $light-black
       float: left
       margin: 10px 0
+      width: 100%
       &.red
-        color: #DF161A
+        color: $red
       &.center
         text-align: center
       &.after-note
         margin: -5px 0 0
         font:
           size: 11px
-          
+      &.modal-subtitle
+        margin: -10px 0 0
+
     a, a:visited
       color: $blue
       &:hover
@@ -204,7 +208,7 @@ h3.hndle
 // API Key Modal
 .ui-dialog.ui-widget-content
   .ui-dialog-content
-    #api_key_form
+    #api_key_form, #signup_wizard
       float: left
       width: 100%
       margin: 10px 0
@@ -227,16 +231,15 @@ h3.hndle
       input[type="text"]
         border-color: #b0b0b0
         color: $light-black !important
-        &#existing_placester_modal_api_key
-          float: left
-          margin: 0 15px
-          width: 420px
-          height: 32px
-          padding: 0 5px
-          font:
-            weight: 400
-            size: 13px
-            family: Arial
+        float: left
+        margin: 0 15px
+        width: 420px
+        height: 32px
+        padding: 0 5px
+        font:
+          weight: 400
+          size: 13px
+          family: Arial
       #api-key-message-icon
         margin-top: 2px
         float: left
@@ -246,7 +249,36 @@ h3.hndle
         margin: 0
         &.green
           background: url(../images/icons/green-chk.png) no-repeat 0 5px
-        &.red
+        // &.red
+
+#api_key_validation, #api_key_success
+  position: absolute
+  padding: 0
+  margin-top: 63px
+  text-indent: 190px
+  font:
+    size: 15px
+    family: Arial
+    weight: 400
+
+// Premium sign up button modal
+#premium_wizard
+  #premium-wizard-message
+    font:
+      size: 14px
+      family: $helvetica
+    line-height: 18px
+  #premium_wizard_start
+    padding: 10px 45px
+    margin: 10px auto
+    display: block
+    position: relative
+
+#signup_wizard
+  #confirm_email
+    float: left
+    margin: 10px 0
+
 
 
 
@@ -272,18 +304,18 @@ h3.hndle
 
   .ui-dialog-content
     p
+      line-height: 17px
+      font-size: 13px
+      margin: 15px 0px
       &.message
         background-color: #FFFBCC
         border: 1px solid #E6DB55
         color: #555
         line-height: 19px
-        padding: 5px 0
-        text-align: center
+        padding: 5px 10px
         font-size: 12px
         margin: 3px 0px
-      line-height: 17px
-      font-size: 13px
-      margin: 15px 0px
+        @include box-sizing
     a
       text-decoration: none
       color: #21759B
@@ -309,11 +341,22 @@ h3.hndle
         font-size: 11px
         font-weight: normal
     .red
-      color: red
-      font-weight: bold
+      color: $red
+      padding: 0
+      font:
+        weight: normal
+        size: 15px
     .green
-      color: green
-      font-weight: bold
+      color: $green
+      padding: 0
+      font:
+        weight: normal
+        size: 15px
+    #no-cc-required
+      text-align: center
+      font:
+        family: $helvetica
+        size: 13px
   .ui-dialog-buttonpane
     button
       padding: 10px 15px
@@ -327,6 +370,8 @@ h3.hndle
       text-decoration: none
     .ui-dialog-buttonset
       width: 100%
+
+
 
 .settings_sub_nav
   float: left
@@ -350,8 +395,8 @@ h3.hndle
   clear: both
   width: 100%
 
-.ui-dialog .ui-dialog-buttonpane button
-  &.green-btn
+.ui-dialog
+  .green-btn
     color: #fff
     background: #86B229
     background: -moz-linear-gradient(top, #a0cc42 0%, #86b229 50%, #6e9910)
@@ -359,9 +404,18 @@ h3.hndle
     border-radius: 5px
     -moz-border-radius: 5px
     -webkit-border-radius: 5px
-    border: 1px solid #6F961C
+    border-top: 2px solid #C6E21D
+    border-left: 1px solid #6F961C
+    border-bottom: 1px solid #6F961C
+    border-right: 1px solid #6F961C
+    text-shadow: 1px 1px #6a8d1d
+    box-shadow: 0px -1px 0 #6F961C
+    font:
+      size: 17px
+      family: Arial
     /*  text-shadow: 0px 2px 1px rgba(0, 0, 0, 0.4), 0px 1px 0px rgba(255, 255, 255, 0.3);
-  &.gray-btn
+
+  .gray-btn
     background: #eeeeee
     background: -moz-linear-gradient(top, #eeeeee 0%, #cccccc 100%)
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #eeeeee), color-stop(100%, #cccccc))
@@ -375,9 +429,11 @@ h3.hndle
     -webkit-border-radius: 5px
     border: 1px solid #909090
     /*  text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.4), 0px 1px 0px rgba(255, 255, 255, 0.3);
-  &.right-btn
-    float: right
-    
+  .right-btn
+    float: right !important
+
+
+
 
 // Spinner
 .bar1

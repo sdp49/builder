@@ -11,7 +11,7 @@
 				<h2 id="settings-page-email-title">This plugin is linked to <span id="settings-page-email-in-title"><?php echo $email ?></span> <span class="check-icon"></span></h2>	
 				<a class="button-secondary" href='https://placester.com/user/login'>Login to Placester.com</a>
 				<a class="button-secondary" href='https://placester.com/user/password/new'>Forgot Password?</a>	
-				<a class="button-secondary" id="new_email" >Change to a New Email Address</a>	
+				<a class="button-secondary" id="new_email" >Create a New Placester Account</a>
 				<a class="button-secondary" id="existing_placester" href="#">Change to an Existing Placester Account</a>	
 			</div>
 			<div class="clear"></div>

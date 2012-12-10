@@ -34,15 +34,20 @@ function prompt_free_trial (title, success_callback, cancel_callback) {
 					needed_fields += '<div class="prem_form"><label for="phone">Phone Number</label><input id="phone" type="text" name="phone" value="' + entered_phone + '"></div>';
 				};
 				if (needed_fields != '') {
-					$("#premium_wizard").dialog('option', 'buttons', { "Save & Get Started": function () { check_info_for_prem_trial(this, success_callback, cancel_callback); } });
-					collect_info_form = '<div><h4>Almost done!</h4><p>Before we get started we need to collect the following information:</p><div id="prem_form_messages"></div><form id="premium_name_phone">' + needed_fields + '</form></div>';
-					$(content_div).html(collect_info_form);
-				} else {
-					$(content_div).html('<div class="ajax_message">Name and Phone confirmed. Starting 15 day free trial...</div>');
-					
-					start_free_trial(success_callback, cancel_callback);
-					// console.log("Would have started free trial!!! #1");
-					// cancel_callback();
+            $("#premium_wizard").dialog(
+              'option',
+              'buttons', 
+              { "Save & Get Started": function () { check_info_for_prem_trial(this, success_callback, cancel_callback); } 
+            });
+            collect_info_form += '<h2>Almost done!</h2>';
+            collect_info_form += '<p class="modal-subtitle">Before we get started we need to collect the following information:</p>';
+            collect_info_form += '<div id="prem_form_messages"></div><form id="premium_name_phone">' + needed_fields + '</form>';
+            $(content_div).html(collect_info_form);
+        } else {
+          $(content_div).html('<div class="ajax_message">Name and Phone confirmed. Starting 15 day free trial...</div>');
+          start_free_trial(success_callback, cancel_callback);
+          // console.log("Would have started free trial!!! #1");
+          // cancel_callback();
 				};
 			} else {
 				$(content_div).html('<div><p>There was an error. That stinks because we\'re excited to work together. Give us a ring at (800) 728-8391 or shoot us an email at <a mailto="support@placester.com">support@placester.com</a> and we\'ll get you set up.</p></div>');

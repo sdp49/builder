@@ -26,18 +26,16 @@
   border-color: #cc0000 #cc0000 white; }
 
 .prem_form {
-  width: 320px;
+  width: 220px;
   float: left;
-  clear: both;
-  margin-top: 5px; }
+  margin: 15px 0 10px; }
   .prem_form label {
     float: left;
     width: 100px;
-    text-align: right;
-    margin-right: 10px; }
+    margin-right: 10px;
+    color: dimgrey; }
   .prem_form input {
-    width: 200px;
-    float: right; }
+    width: 200px; }
 
 /*ajax messages */
 .ajax_message {
@@ -46,7 +44,7 @@
   color: green;
   font-weight: bold; }
   .ajax_message.red {
-    color: red; }
+    color: #eb0e0e; }
 
 .placester_icon {
   background: url("../images/logo_30.png") no-repeat; }
@@ -119,6 +117,7 @@ h3.hndle {
       line-height: 22px;
       margin: 10px 0;
       color: dimgrey;
+      width: 100%;
       font-family: Arial;
       font-weight: 400; }
     .ui-dialog.ui-widget-content .ui-dialog-content h1, .ui-dialog.ui-widget-content .ui-dialog-content h2 {
@@ -136,14 +135,17 @@ h3.hndle {
       font-size: 12px;
       color: dimgrey;
       float: left;
-      margin: 10px 0; }
+      margin: 10px 0;
+      width: 100%; }
       .ui-dialog.ui-widget-content .ui-dialog-content p.red {
-        color: #df161a; }
+        color: #eb0e0e; }
       .ui-dialog.ui-widget-content .ui-dialog-content p.center {
         text-align: center; }
       .ui-dialog.ui-widget-content .ui-dialog-content p.after-note {
         margin: -5px 0 0;
         font-size: 11px; }
+      .ui-dialog.ui-widget-content .ui-dialog-content p.modal-subtitle {
+        margin: -10px 0 0; }
     .ui-dialog.ui-widget-content .ui-dialog-content a, .ui-dialog.ui-widget-content .ui-dialog-content a:visited {
       color: #0c60a7; }
       .ui-dialog.ui-widget-content .ui-dialog-content a:hover, .ui-dialog.ui-widget-content .ui-dialog-content a:visited:hover {
@@ -168,11 +170,11 @@ h3.hndle {
 .ui-dialog.ui-widget-content .ui-dialog-content input[type="text"].green, .ui-dialog.ui-widget-content .ui-dialog-content input[type="email"].green {
   border-color: #6e9910 !important; }
 
-.ui-dialog.ui-widget-content .ui-dialog-content #api_key_form {
+.ui-dialog.ui-widget-content .ui-dialog-content #api_key_form, .ui-dialog.ui-widget-content .ui-dialog-content #signup_wizard {
   float: left;
   width: 100%;
   margin: 10px 0; }
-  .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form #api_key_message {
+  .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form #api_key_message, .ui-dialog.ui-widget-content .ui-dialog-content #signup_wizard #api_key_message {
     position: absolute;
     padding: 0;
     margin-top: -20px;
@@ -180,33 +182,55 @@ h3.hndle {
     font-size: 15px;
     font-family: Arial;
     font-weight: 400; }
-  .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form label {
+  .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form label, .ui-dialog.ui-widget-content .ui-dialog-content #signup_wizard label {
     float: left;
     color: dimgrey;
     padding-top: 8px;
     font-family: Arial;
     font-size: 17px; }
-  .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form input[type="text"] {
+  .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form input[type="text"], .ui-dialog.ui-widget-content .ui-dialog-content #signup_wizard input[type="text"] {
     border-color: #b0b0b0;
-    color: dimgrey !important; }
-    .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form input[type="text"]#existing_placester_modal_api_key {
-      float: left;
-      margin: 0 15px;
-      width: 420px;
-      height: 32px;
-      padding: 0 5px;
-      font-weight: 400;
-      font-size: 13px;
-      font-family: Arial; }
-  .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form #api-key-message-icon {
+    color: dimgrey !important;
+    float: left;
+    margin: 0 15px;
+    width: 420px;
+    height: 32px;
+    padding: 0 5px;
+    font-weight: 400;
+    font-size: 13px;
+    font-family: Arial; }
+  .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form #api-key-message-icon, .ui-dialog.ui-widget-content .ui-dialog-content #signup_wizard #api-key-message-icon {
     margin-top: 2px;
     float: left;
     height: 30px;
     width: 30px;
     padding: 0;
     margin: 0; }
-    .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form #api-key-message-icon.green {
+    .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form #api-key-message-icon.green, .ui-dialog.ui-widget-content .ui-dialog-content #signup_wizard #api-key-message-icon.green {
       background: url(../images/icons/green-chk.png) no-repeat 0 5px; }
+
+#api_key_validation, #api_key_success {
+  position: absolute;
+  padding: 0;
+  margin-top: 63px;
+  text-indent: 190px;
+  font-size: 15px;
+  font-family: Arial;
+  font-weight: 400; }
+
+#premium_wizard #premium-wizard-message {
+  font-size: 14px;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica;
+  line-height: 18px; }
+#premium_wizard #premium_wizard_start {
+  padding: 10px 45px;
+  margin: 10px auto;
+  display: block;
+  position: relative; }
+
+#signup_wizard #confirm_email {
+  float: left;
+  margin: 10px 0; }
 
 /* Plugin specific styles */
 .ui-dialog .ui-dialog-titlebar {
@@ -233,10 +257,12 @@ h3.hndle {
     border: 1px solid #e6db55;
     color: #555555;
     line-height: 19px;
-    padding: 5px 0;
-    text-align: center;
+    padding: 5px 10px;
     font-size: 12px;
-    margin: 3px 0px; }
+    margin: 3px 0px;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box; }
 .ui-dialog .ui-dialog-content a {
   text-decoration: none;
   color: #21759b; }
@@ -262,11 +288,19 @@ h3.hndle {
     font-size: 11px;
     font-weight: normal; }
 .ui-dialog .ui-dialog-content .red {
-  color: red;
-  font-weight: bold; }
+  color: #eb0e0e;
+  padding: 0;
+  font-weight: normal;
+  font-size: 15px; }
 .ui-dialog .ui-dialog-content .green {
-  color: green;
-  font-weight: bold; }
+  color: #6e9910;
+  padding: 0;
+  font-weight: normal;
+  font-size: 15px; }
+.ui-dialog .ui-dialog-content #no-cc-required {
+  text-align: center;
+  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica;
+  font-size: 13px; }
 .ui-dialog .ui-dialog-buttonpane button {
   padding: 10px 15px;
   float: left;
@@ -302,7 +336,7 @@ h3.hndle {
   clear: both;
   width: 100%; }
 
-.ui-dialog .ui-dialog-buttonpane button.green-btn {
+.ui-dialog .green-btn {
   color: white;
   background: #86b229;
   background: -moz-linear-gradient(top, #a0cc42 0%, #86b229 50%, #6e9910);
@@ -310,9 +344,16 @@ h3.hndle {
   border-radius: 5px;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
-  border: 1px solid #6f961c;
+  border-top: 2px solid #c6e21d;
+  border-left: 1px solid #6f961c;
+  border-bottom: 1px solid #6f961c;
+  border-right: 1px solid #6f961c;
+  text-shadow: 1px 1px #6a8d1d;
+  box-shadow: 0px -1px 0 #6f961c;
+  font-size: 17px;
+  font-family: Arial;
   /*  text-shadow: 0px 2px 1px rgba(0, 0, 0, 0.4), 0px 1px 0px rgba(255, 255, 255, 0.3); */ }
-.ui-dialog .ui-dialog-buttonpane button.gray-btn {
+.ui-dialog .gray-btn {
   background: #eeeeee;
   background: -moz-linear-gradient(top, #eeeeee 0%, #cccccc 100%);
   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #eeeeee), color-stop(100%, #cccccc));
@@ -326,8 +367,8 @@ h3.hndle {
   -webkit-border-radius: 5px;
   border: 1px solid #909090;
   /*  text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.4), 0px 1px 0px rgba(255, 255, 255, 0.3); */ }
-.ui-dialog .ui-dialog-buttonpane button.right-btn {
-  float: right; }
+.ui-dialog .right-btn {
+  float: right !important; }
 
 .bar1 {
   -moz-transform: rotate(0deg) translate(0, -20px);
