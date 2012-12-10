@@ -42,7 +42,7 @@ function check_api_key (api_key) {
 	var data = {action : "set_placester_api_key",api_key: api_key};
 	$('#api_key_message').removeClass('red');
 	$('#api_key_message').html('Checking....').show().addClass('green');
-	
+
 	$.ajax({
 		url: ajaxurl, //wordpress thing
 		type: "POST",
@@ -51,12 +51,17 @@ function check_api_key (api_key) {
 		success: function (response) {
 			if (response && response.message) {
 				if (response.result) {
-					$('#api_key_message').html(response.message).show().removeClass('red').addClass('green');			
-					setTimeout(function () {
-						window.location.href = window.location.href;
-					}, 1000);
+				  console.log(response.message);
+					$('#api_key_message').html("You've successfully changed your Placester API Key.").show().removeClass('red').addClass('green');
+					$('#api-key-message-icon').show().addClass('green');
+          $('#api_key_form #existing_placester_modal_api_key').addClass('green');
+          setTimeout(function () {
+           window.location.href = window.location.href;
+          }, 1000);
 				} else {
-					$('#api_key_message').html(response.message).show().removeClass('green').addClass('red');			
+					$('#api_key_message').html(response.message).show().removeClass('green').addClass('red');
+					$('#api-key-message-icon').show().removeClass('green').addClass('red');
+          $('#existing_placester_modal_api_key').removeClass('green').addClass('red');
 				};
 			};		
 		}
@@ -71,9 +76,9 @@ function new_sign_up(success_callback) {
 
 	$.post(ajaxurl, {action: 'create_account', email: email}, function(data, textStatus, xhr) {
 		if (data) {	
-			console.log(data);
+      // console.log(data);
 			if (data['validations']) {
-				mixpanel.track("SignUp: Validation issue on signup");			
+				mixpanel.track("SignUp: Validation issue on signup");
 				var message = parse_validation(data);
 				$('#api_key_success').html('');
 				$('#api_key_validation').html(message.join(', ')).show();

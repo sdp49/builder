@@ -35,7 +35,6 @@ class PL_Css_Helper {
 		if (!in_array($hook, $pages)) { return; }
 
 		//always load these
-		self::register_enqueue_if_not('sign-up-css', trailingslashit(PL_CSS_ADMIN_URL) .  'sign-up.css');		
 		self::register_enqueue_if_not('global-css', trailingslashit(PL_CSS_URL) .  'global.css');		
 		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');
 		self::register_enqueue_if_not('integrations', trailingslashit(PL_CSS_ADMIN_URL) .  'integration.css');		

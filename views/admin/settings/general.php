@@ -7,8 +7,8 @@
 	<div class="wrap">
 		<?php echo PL_Helper_Header::pl_settings_subpages(); ?>
 		<?php if (PL_Option_Helper::api_key() && isset($email)): ?>
-			<div class="header-wrapper">
-				<h2>This plugin is linked to <?php echo $email ?> <span class="check-icon"></span></h2>	
+			<div class="header-wrapper" id="settings-header-wrapper">
+				<h2 id="settings-page-email-title">This plugin is linked to <span id="settings-page-email-in-title"><?php echo $email ?></span> <span class="check-icon"></span></h2>	
 				<a class="button-secondary" href='https://placester.com/user/login'>Login to Placester.com</a>
 				<a class="button-secondary" href='https://placester.com/user/password/new'>Forgot Password?</a>	
 				<a class="button-secondary" id="new_email" >Change to a New Email Address</a>	

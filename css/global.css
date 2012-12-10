@@ -10,6 +10,14 @@
     margin: 13px 0 0 10px; }
   .header-wrapper h2 {
     float: left; }
+    .header-wrapper h2#settings-page-email-title {
+      width: 100%; }
+      .header-wrapper h2#settings-page-email-title #settings-page-email-in-title {
+        color: #0c60a7; }
+  .header-wrapper#settings-header-wrapper {
+    padding-bottom: 20px; }
+    .header-wrapper#settings-header-wrapper a.button-secondary {
+      margin: 13px 20px 0 0px; }
 
 #MLS_Integration {
   margin-left: 10px;
@@ -50,7 +58,7 @@
 
 h3.hndle {
   font-size: 15px;
-  font-family: Georgia, "Times New Roman", "Bitstream Charter", Times, serif;
+  font-family: Arial;
   font-weight: normal;
   padding: 7px 10px; }
 
@@ -84,23 +92,25 @@ h3.hndle {
     border-radius: 0;
     -webkit-border-radius: 0;
     -moz-border-radius: 0; }
+    .ui-dialog.ui-widget-content .ui-dialog-titlebar h1, .ui-dialog.ui-widget-content .ui-dialog-titlebar h2, .ui-dialog.ui-widget-content .ui-dialog-titlebar h3 {
+      font-weight: 400; }
     .ui-dialog.ui-widget-content .ui-dialog-titlebar span.ui-dialog-title {
       color: white;
       font-weight: 400;
       font-size: 20px; }
     .ui-dialog.ui-widget-content .ui-dialog-titlebar .ui-dialog-titlebar-close {
-      top: 40% !important; }
-      .ui-dialog.ui-widget-content .ui-dialog-titlebar .ui-dialog-titlebar-close .ui-icon, .ui-dialog.ui-widget-content .ui-dialog-titlebar .ui-dialog-titlebar-close .ui-state-hover {
-        background: transparent url("../images/close-icon.png") no-repeat !important; }
-        .ui-dialog.ui-widget-content .ui-dialog-titlebar .ui-dialog-titlebar-close .ui-icon:hover, .ui-dialog.ui-widget-content .ui-dialog-titlebar .ui-dialog-titlebar-close .ui-state-hover:hover {
-          box-shadow: none;
-          -webkit-box-shadow: none;
-          -moz-box-shadow: none;
-          background: url("../images/close-icon.png") no-repeat !important;
-          background-color: transparent; }
+      top: 40% !important;
+      background: transparent url("../images/icons/close-icon.png") no-repeat !important;
+      border: none !important;
+      box-shadow: none;
+      -webkit-box-shadow: none;
+      -moz-box-shadow: none;
+      padding: 0; }
+      .ui-dialog.ui-widget-content .ui-dialog-titlebar .ui-dialog-titlebar-close .ui-icon {
+        display: none; }
   .ui-dialog.ui-widget-content .ui-dialog-content {
     margin-top: 5px;
-    padding: 10px 15px;
+    padding: 10px 20px;
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box; }
@@ -108,30 +118,44 @@ h3.hndle {
       float: left;
       line-height: 22px;
       margin: 10px 0;
+      color: dimgrey;
+      font-family: Arial;
       font-weight: 400; }
     .ui-dialog.ui-widget-content .ui-dialog-content h1, .ui-dialog.ui-widget-content .ui-dialog-content h2 {
       font-weight: 600; }
     .ui-dialog.ui-widget-content .ui-dialog-content h1 {
-      font-size: 20; }
+      font-size: 20px; }
     .ui-dialog.ui-widget-content .ui-dialog-content h2 {
-      font-size: 18; }
+      font-size: 18px; }
     .ui-dialog.ui-widget-content .ui-dialog-content h3 {
-      font-size: 16; }
+      font-size: 16px; }
     .ui-dialog.ui-widget-content .ui-dialog-content h4 {
-      font-size: 14; }
+      font-size: 14px; }
     .ui-dialog.ui-widget-content .ui-dialog-content p {
+      font-family: Arial;
       font-size: 12px;
-      color: #565656;
+      color: dimgrey;
       float: left;
       margin: 10px 0; }
       .ui-dialog.ui-widget-content .ui-dialog-content p.red {
         color: #df161a; }
       .ui-dialog.ui-widget-content .ui-dialog-content p.center {
         text-align: center; }
+      .ui-dialog.ui-widget-content .ui-dialog-content p.after-note {
+        margin: -5px 0 0;
+        font-size: 11px; }
     .ui-dialog.ui-widget-content .ui-dialog-content a, .ui-dialog.ui-widget-content .ui-dialog-content a:visited {
-      color: #1a53a1; }
+      color: #0c60a7; }
       .ui-dialog.ui-widget-content .ui-dialog-content a:hover, .ui-dialog.ui-widget-content .ui-dialog-content a:visited:hover {
         color: black; }
+    .ui-dialog.ui-widget-content .ui-dialog-content ul {
+      width: 100%;
+      float: left;
+      margin: 5px 0; }
+      .ui-dialog.ui-widget-content .ui-dialog-content ul li {
+        color: dimgrey;
+        font-size: 12px;
+        font-family: Arial; }
   .ui-dialog.ui-widget-content .ui-dialog-buttonpane {
     background: #f0f0f0;
     border: 0;
@@ -139,13 +163,57 @@ h3.hndle {
     .ui-dialog.ui-widget-content .ui-dialog-buttonpane button {
       margin: 5px; }
 
+.ui-dialog.ui-widget-content .ui-dialog-content input[type="text"].red, .ui-dialog.ui-widget-content .ui-dialog-content input[type="email"].red {
+  border-color: #eb0e0e !important; }
+.ui-dialog.ui-widget-content .ui-dialog-content input[type="text"].green, .ui-dialog.ui-widget-content .ui-dialog-content input[type="email"].green {
+  border-color: #6e9910 !important; }
+
+.ui-dialog.ui-widget-content .ui-dialog-content #api_key_form {
+  float: left;
+  width: 100%;
+  margin: 10px 0; }
+  .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form #api_key_message {
+    position: absolute;
+    padding: 0;
+    margin-top: -20px;
+    text-indent: 190px;
+    font-size: 15px;
+    font-family: Arial;
+    font-weight: 400; }
+  .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form label {
+    float: left;
+    color: dimgrey;
+    padding-top: 8px;
+    font-family: Arial;
+    font-size: 17px; }
+  .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form input[type="text"] {
+    border-color: #b0b0b0;
+    color: dimgrey !important; }
+    .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form input[type="text"]#existing_placester_modal_api_key {
+      float: left;
+      margin: 0 15px;
+      width: 420px;
+      height: 32px;
+      padding: 0 5px;
+      font-weight: 400;
+      font-size: 13px;
+      font-family: Arial; }
+  .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form #api-key-message-icon {
+    margin-top: 2px;
+    float: left;
+    height: 30px;
+    width: 30px;
+    padding: 0;
+    margin: 0; }
+    .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form #api-key-message-icon.green {
+      background: url(../images/icons/green-chk.png) no-repeat 0 5px; }
+
 /* Plugin specific styles */
 .ui-dialog .ui-dialog-titlebar {
   font-size: 21px;
   padding: 12px; }
   .ui-dialog .ui-dialog-titlebar h1, .ui-dialog .ui-dialog-titlebar h2, .ui-dialog .ui-dialog-titlebar h3, .ui-dialog .ui-dialog-titlebar h4 {
-    font-weight: bold;
-    font-family: Helvetica, Arial;
+    font-family: Arial;
     padding: 0px 0px;
     margin: 10px 0; }
   .ui-dialog .ui-dialog-titlebar h1 {
@@ -202,7 +270,7 @@ h3.hndle {
 .ui-dialog .ui-dialog-buttonpane button {
   padding: 10px 15px;
   float: left;
-  font-family: Helvetica, Arial;
+  font-family: Arial;
   font-size: 13px;
   font-weight: normal;
   text-transform: uppercase;
