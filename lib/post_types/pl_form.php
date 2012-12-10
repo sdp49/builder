@@ -124,6 +124,8 @@ class PL_Form_CPT extends PL_Post_Base {
 		unset( $_GET['skipdb'] );
 		$meta = $_GET;
 		
+		$ignore_keys = array( 'context', 'pl_static_listings_option', 'pl_featured_listing_meta' );
+		
 		if( ! empty( $post ) && $post->post_type === 'pl_form' ) {
 			$args = '';
 			
@@ -138,7 +140,7 @@ class PL_Form_CPT extends PL_Post_Base {
 				if( $key === 'pl_cpt_template' ) {
 					$args .= "context='{$value[0]}' ";
 				}
-				else if( strpos( $key, '_', 0 ) !== 0 && ! empty( $value[0] ) && ( $key !== 'context' ) ) {
+				else if( strpos( $key, '_', 0 ) !== 0 && ! empty( $value[0] ) && ( ! in_array( $key, $ignore_keys ) ) ) {
 					if( is_array( $value ) ) {
 						// handle meta values as arrays
 						$args .= "$key = '{$value[0]}' ";
