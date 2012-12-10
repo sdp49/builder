@@ -241,26 +241,35 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 							wp_enqueue_script('featured-listing', OPTIONS_FRAMEWORK_DIRECTORY.'js/featured-listing.js', array('jquery'));
 					
 							// Generate the popup dialog with featured			
-							echo pls_generate_featured_listings_ui(array(
-												'name' => 'Featured Meta',
-												'desc' => '',
-												'id' => 'featured-listings-type',
-												'type' => 'featured_listing'
-												) ,$pl_featured_meta_value
-												, 'pl_featured_listing_meta');
+// 							echo pls_generate_featured_listings_ui(array(
+// 												'name' => 'Featured Meta',
+// 												'desc' => '',
+// 												'id' => 'featured-listings-type',
+// 												'type' => 'featured_listing'
+// 												) ,$pl_featured_meta_value
+// 												, 'pl_featured_listing_meta');
 						?>
 						</div><!-- end of #pl_featured_listing_block -->
 						<div id="pl_static_listing_block" class="static_listings pl_search_listings">
 								<?php 
 								// generate static listings
-								echo PL_Form::generate_form(
-											PL_Config::PL_API_LISTINGS('get', 'args'),
-											array('method' => "POST", 
-													'title' => true,
-													'wrap_form' => false, 
-											 		'echo_form' => false, 
-													'include_submit' => false, 
-													'id' => 'pls_admin_my_listings')); ?>
+								$cache = new PL_Cache('pl_general_widget');
+								if( $static_form = $cache->get('static_listing_form') ) {
+									echo $static_form;
+								} else {
+									$static_list_form = PL_Form::generate_form(
+												PL_Config::PL_API_LISTINGS('get', 'args'),
+												array('method' => "POST", 
+														'title' => true,
+														'wrap_form' => false, 
+												 		'echo_form' => false, 
+														'include_submit' => false, 
+														'id' => 'pls_admin_my_listings'));
+	
+									$cache->save( $static_list_form );
+									echo $static_list_form;
+								}
+							 ?>
 						</div><!-- end of #pl_static_listing_block -->
 					</div>
 				</div>
@@ -627,6 +636,8 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			$template = '';
 			if( ! empty( $meta['pl_template_static_listings'] ) ) {
 				$template = 'template="static_listings_' . $meta['pl_template_static_listings'][0] . '"';
+			} else if( ! empty( $meta['pl_cpt_template'] ) ) {
+				$template = 'template="static_listings_' . $meta['pl_cpt_template'][0] . '"';
 			}
 			
 			$shortcode = '[static_listings id="' . $post->ID . '" ' . $template . ']';
