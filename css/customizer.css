@@ -75,7 +75,7 @@
 
 #pls_integration_form select {
 	margin-bottom: 18px;
-	height: 30px;
+	height: 36px;
 	width: 100%;
 }
 
@@ -146,9 +146,9 @@ textarea.invalid {
 	margin: 5px 0 !important;
 }
 .ui-widget-overlay {
-	opacity: 0.1 !important;
-	-moz-opacity: 0.1 !important;
-	filter:alpha(opacity=0.1);
+	opacity: 0.6 !important;
+	-moz-opacity: 0.6 !important;
+	filter:alpha(opacity=0.6);
 }
 
 /* Preview load indicator */
@@ -158,7 +158,7 @@ textarea.invalid {
    -moz-opacity:0.3;    /* Mozilla extension */
    -khtml-opacity:0.3;  /* Safari/Conqueror extension */
    opacity:0.3; /* CSS3 */
-   background-color: lightgrey;
+/*   background-color: lightgrey;*/
    margin-left: 56px;
 }
 
