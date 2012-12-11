@@ -56,7 +56,7 @@ widget_autosave = function() {
 	
 	// debugger;
 	
-	var radio_type = jQuery("input[name='radio-type']").val();
+	var radio_type = jQuery("input[name='radio-type']:checked").val();
 	var neighborhood_type = 'nb-id-select-' + radio_type; 
 	var neighborhood_value = jQuery('#' + neighborhood_type).val();
 

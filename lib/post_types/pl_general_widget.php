@@ -19,7 +19,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				'pl_search_listings' => 'Search Listings',
 				'pl_slideshow' => 'Slideshow',
 				'pl_neighborhood' => 'Neighborhood',
-// 				'featured_listings' => 'Featured Listings',
+//  				'featured_listings' => 'Featured Listings',
 				'static_listings' => 'Static Listings'
 	);
 	
@@ -241,13 +241,13 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 							wp_enqueue_script('featured-listing', OPTIONS_FRAMEWORK_DIRECTORY.'js/featured-listing.js', array('jquery'));
 					
 							// Generate the popup dialog with featured			
-// 							echo pls_generate_featured_listings_ui(array(
-// 												'name' => 'Featured Meta',
-// 												'desc' => '',
-// 												'id' => 'featured-listings-type',
-// 												'type' => 'featured_listing'
-// 												) ,$pl_featured_meta_value
-// 												, 'pl_featured_listing_meta');
+							echo pls_generate_featured_listings_ui(array(
+												'name' => 'Featured Meta',
+												'desc' => '',
+												'id' => 'featured-listings-type',
+												'type' => 'featured_listing'
+												) ,$pl_featured_meta_value
+												, 'pl_featured_listing_meta');
 						?>
 						</div><!-- end of #pl_featured_listing_block -->
 						<div id="pl_static_listing_block" class="static_listings pl_search_listings">
@@ -540,7 +540,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			global $post;
 			if( ! empty( $post ) && $post->post_type === 'pl_general_widget' ) {
 				wp_enqueue_style( 'placester-widget', trailingslashit( PL_CSS_ADMIN_URL ) . 'placester-widget.css' );
-				wp_enqueue_script( 'placester-widget-script', trailingslashit( PL_JS_URL ) . 'admin/widget-handler.js', array( 'jquery' ), '1.1.5' );
+				wp_enqueue_script( 'placester-widget-script', trailingslashit( PL_JS_URL ) . 'admin/widget-handler.js', array( 'jquery' ), '1.1.7' );
 			}
 		}
 	}
@@ -617,8 +617,14 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		global $post;
 		
 		if( ! empty( $post ) && $post->post_type === 'featured_listings' ) {
+			$meta = get_post_meta( $post->ID );
+			$template = '';
 			
-			$shortcode = '[featured_listings id="' . $post->ID . '"]';
+			if( ! empty( $meta['pl_cpt_template'] ) ) {
+				$template = 'template="' . $meta['pl_cpt_template'][0] . '"';
+			}
+			
+			$shortcode = '[featured_listings id="' . $post->ID . '" '. $template . ']';
 			include PL_LIB_DIR . '/post_types/pl_post_types_template.php';
 		
 			die();

@@ -86,7 +86,10 @@ class PL_Component_Entity {
 		// Print property_ids as argument to the listings
 		global $property_ids;
 		$property_ids = self::get_property_ids( $atts['id'] );
-		//var_dump($property_ids); die();
+
+		if( empty( $property_ids ) ) {
+			return;
+		}
 		$property_ids = array_flip($property_ids);
 		
 		add_action('featured_filters_featured_ids', array( __CLASS__, 'print_property_listing_args') );
@@ -422,6 +425,7 @@ class PL_Component_Entity {
 				return;
 			}
 			
+			$taxonomy_maps_type = self::translate_taxonomy_type( $taxonomy_type );
 // 			$polygons_by_type = PL_Taxonomy_Helper::get_polygons_by_type( $taxonomy_type );
 			
 			$args = wp_parse_args($atts, array('state' => false, 'city' => false, 'neighborhood' => false, 'zip' => false, 'street' => false, 'image_limit' => 20, 'width' => 400, 'height' => 400, 'zoom' => 16));
@@ -445,23 +449,23 @@ class PL_Component_Entity {
 
 					var neighborhood = new Neighborhood({
 						map: map,
-			            type: taxonomy.name,
-			            name: '<?php echo $term_name; ?>',
+			            type: '<?php echo $taxonomy_maps_type; ?>',
+			            //name: '<?php // echo $term_name; ?>',
 			            slug: '<?php echo $term_slug; ?>'
 					});
 
 					map.init({
-						type: 'neighborhood',
+						type: '<?php echo $taxonomy_type; ?>',
 						neighborhood: neighborhood,
 						listings: listings
 					});
 
-				  	if (typeof bootloader !== 'object') {
+				  	/* if (typeof bootloader !== 'object') {
 				  		bootloader = new SearchLoader();
 				  		bootloader.add_param({map: map});
 				  	} else {
 				  		bootloader.add_param({map: map});
-				  	}
+				  	} */
 
 				  	listings.init();
 				  	
@@ -539,10 +543,15 @@ class PL_Component_Entity {
 			// if( ! is_int( $featured_listing_id ) ) { }
 			$values = get_post_custom( $featured_listing_id );
 			$property_ids = isset( $values['keatingbrokerage_meta'] ) ? @unserialize($values['keatingbrokerage_meta'][0]) : '';
-			$pl_featured_listing_meta = isset( $values['pl_featured_listing_meta'] ) ? @unserialize($values['pl_featured_listing_meta'][0]) : '';
-			$pl_featured_meta_value = empty( $pl_featured_listing_meta ) ? array('listings' => array()) : $pl_featured_listing_meta['featured-listings-type'];
+			$pl_featured_listing_meta = isset( $values['pl_featured_listing_meta'] ) ? @json_decode($values['pl_featured_listing_meta'][0], true) : '';
+			// $pl_featured_meta_value = empty( $pl_featured_listing_meta ) ? array('listings' => array()) : $pl_featured_listing_meta['featured-listings-type'];
+// 			$pl_featured_meta_value = empty( $pl_featured_listing_meta ) ? array('listings' => array()) : @json_decode($pl_featured_listing_meta[0], true);
 		
-			return $pl_featured_meta_value;
+			if( empty( $pl_featured_listing_meta ) ) {
+				return array( );
+			}
+			
+			return $pl_featured_listing_meta;
 		}
 		
 		private static function get_filters_by_listing( $static_listing_id ) {
@@ -740,5 +749,18 @@ class PL_Component_Entity {
 			}
 			$snippet_body = PL_Router::load_snippet($shortcode, $snippet_name, $type);
 			return $snippet_body;
+		}
+		
+		/**
+		 * Convert the Neighborhood taxonomy type to a Maps-accepted one
+		 * @param string $taxonomy_type
+		 */
+		public static function translate_taxonomy_type( $taxonomy_type ) {
+			switch( $taxonomy_type ) {
+				case 'city': return 'locality';
+				case 'zip': return 'postal';
+				case 'state': return 'region';
+				default: return $taxonomy_type;
+			}
 		}
 }
