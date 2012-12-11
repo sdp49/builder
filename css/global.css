@@ -165,10 +165,20 @@ h3.hndle {
     .ui-dialog.ui-widget-content .ui-dialog-buttonpane button {
       margin: 5px; }
 
-.ui-dialog.ui-widget-content .ui-dialog-content input[type="text"].red, .ui-dialog.ui-widget-content .ui-dialog-content input[type="email"].red {
-  border-color: #eb0e0e !important; }
-.ui-dialog.ui-widget-content .ui-dialog-content input[type="text"].green, .ui-dialog.ui-widget-content .ui-dialog-content input[type="email"].green {
-  border-color: #6e9910 !important; }
+.ui-dialog.ui-widget-content .ui-dialog-content input[type="text"], .ui-dialog.ui-widget-content .ui-dialog-content input[type="email"] {
+  height: 32px;
+  padding: 0 5px;
+  border-color: #b0b0b0;
+  color: dimgrey !important;
+  font-weight: 400;
+  font-size: 13px;
+  font-family: Arial; }
+  .ui-dialog.ui-widget-content .ui-dialog-content input[type="text"].red, .ui-dialog.ui-widget-content .ui-dialog-content input[type="email"].red {
+    border-color: #eb0e0e !important;
+    color: dimgrey !important; }
+  .ui-dialog.ui-widget-content .ui-dialog-content input[type="text"].green, .ui-dialog.ui-widget-content .ui-dialog-content input[type="email"].green {
+    border-color: #6e9910 !important;
+    color: dimgrey !important; }
 
 .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form, .ui-dialog.ui-widget-content .ui-dialog-content #signup_wizard {
   float: left;
@@ -189,16 +199,9 @@ h3.hndle {
     font-family: Arial;
     font-size: 17px; }
   .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form input[type="text"], .ui-dialog.ui-widget-content .ui-dialog-content #signup_wizard input[type="text"] {
-    border-color: #b0b0b0;
-    color: dimgrey !important;
     float: left;
     margin: 0 15px;
-    width: 420px;
-    height: 32px;
-    padding: 0 5px;
-    font-weight: 400;
-    font-size: 13px;
-    font-family: Arial; }
+    width: 420px; }
   .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form #api-key-message-icon, .ui-dialog.ui-widget-content .ui-dialog-content #signup_wizard #api-key-message-icon {
     margin-top: 2px;
     float: left;
@@ -231,6 +234,15 @@ h3.hndle {
 #signup_wizard #confirm_email {
   float: left;
   margin: 10px 0; }
+
+#prem_form_messages ul#error-messages {
+  margin: 10px 0 0; }
+  #prem_form_messages ul#error-messages li {
+    list-style-image: url(../images/icons/error-icon-sm.png);
+    margin-left: 20px;
+    float: left;
+    width: 100%;
+    color: #eb0e0e; }
 
 /* Plugin specific styles */
 .ui-dialog .ui-dialog-titlebar {

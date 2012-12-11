@@ -34,10 +34,14 @@ function prompt_free_trial (title, success_callback, cancel_callback) {
 					needed_fields += '<div class="prem_form"><label for="phone">Phone Number</label><input id="phone" type="text" name="phone" value="' + entered_phone + '"></div>';
 				};
 				if (needed_fields != '') {
-            $("#premium_wizard").dialog(
-              'option',
-              'buttons', 
-              { "Save & Get Started": function () { check_info_for_prem_trial(this, success_callback, cancel_callback); } 
+            $("#premium_wizard").dialog({
+              buttons: [
+                {
+                  text: "Save & Get Started",
+                  class: "green-btn right-btn",
+                  click: function () { check_info_for_prem_trial(this, success_callback, cancel_callback); }
+                }
+              ]
             });
             collect_info_form += '<h2>Almost done!</h2>';
             collect_info_form += '<p class="modal-subtitle">Before we get started we need to collect the following information:</p>';
@@ -57,43 +61,50 @@ function prompt_free_trial (title, success_callback, cancel_callback) {
 }
 
 function check_info_for_prem_trial(that, success_callback, cancel_callback) {
-	$ = jQuery;
-	var form_values = {};
-	$.each($('#premium_name_phone').serializeArray(), function(i, field) {
-		form_values[field.name] = field.value;
-    });
+  $ = jQuery;
+  var form_values = {};
+  $.each($('#premium_name_phone').serializeArray(), function(i, field) {
+    form_values[field.name] = field.value;
+  });
     
     $('#prem_form_messages').html('Updating account....');
-   	$('#prem_form_messages').removeClass('red');
+    $('#prem_form_messages').removeClass('red');
+    $("#premium_name_phone").children("input").removeClass("red");
 
-    var error_messages = '';
-   	if (form_values['first_name'] == '' ) {
-   		error_messages += '<li>First Name must be set.</li>';
-   	} else if (form_values['first_name'] && form_values['first_name'].length < 3) {
-   		error_messages += '<li>First Name must be longer then 3 characters.</li>';
-   	};
+    var error_messages = '<ul id="error-messages">';
 
-   	if (form_values['last_name'] == '' ) {
-   		error_messages += '<li>Last Name must be set!</li>';
-   	} else if (form_values['last_name'] && form_values['last_name'].length < 3) {
-		error_messages += '<li>Last Name must be longer then 3 characters.</li>';
-   	};
-   	
-   	if (form_values['phone'] == '' ) {
-   		error_messages += '<li>Phone must be set!</li>';
-   	} else if (form_values['phone'] && form_values['phone'].length < 6) {
-		error_messages += '<li>Phone must be 7 or more characters.</li>';
-   	};
+    if (form_values['first_name'] == '' ) {
+      error_messages += '<li class="first-name">First Name must be set.</li>';
+      $("#premium_name_phone input#first_name").addClass("red");
+    } else if (form_values['first_name'] && form_values['first_name'].length < 3) {
+      $("#premium_name_phone input#first_name").addClass("red");
+      error_messages += '<li class="first-name">First Name must be longer then 3 characters.</li>';
+    };
 
-   	if (error_messages != '') {
-   		$('#prem_form_messages').html(error_messages);
-   		$('#prem_form_messages').addClass('red');
-   	} else {
+    if (form_values['last_name'] == '' ) {
+      error_messages += '<li class="last-name">Last Name must be set!</li>';
+      $("#premium_name_phone input#last_name").addClass("red");
+    } else if (form_values['last_name'] && form_values['last_name'].length < 3) {
+      error_messages += '<li class="last-name">Last Name must be longer then 3 characters.</li>';
+    };
+
+    if (form_values['phone'] == '' ) {
+      error_messages += '<li class="phone">Phone must be set!</li>';
+      $("#premium_name_phone input#phone").addClass("red");
+    } else if (form_values['phone'] && form_values['phone'].length < 6) {
+      error_messages += '<li class="phone">Phone must be 7 or more characters.</li>';
+    };
+
+    if (error_messages != '') {
+      error_messages += '</ul>';
+      $('#prem_form_messages').html(error_messages);
+      $('#prem_form_messages').addClass('red');
+    } else {
    		form_values['action'] = 'update_user';
    		$.post(ajaxurl, form_values, function(data, textStatus, xhr) {
    			if (data && data.result) {
    				// console.log(data);
-   				$('#prem_form_messages').html(data.message);		
+   				$('#prem_form_messages').html(data.message);
   				
 				start_free_trial(success_callback, cancel_callback);
 				// console.log("Would have started free trial!!! #2");

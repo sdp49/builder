@@ -200,11 +200,22 @@ h3.hndle
 .ui-dialog.ui-widget-content
   .ui-dialog-content
     input[type="text"], input[type="email"]
+      height: 32px
+      padding: 0 5px
+      border-color: #b0b0b0
+      color: $light-black !important
+      font:
+        weight: 400
+        size: 13px
+        family: Arial
+      
       &.red
         border-color: $red !important
+        color: $light-black !important
       &.green
         border-color: $green !important
-
+        color: $light-black !important
+        
 // API Key Modal
 .ui-dialog.ui-widget-content
   .ui-dialog-content
@@ -229,17 +240,9 @@ h3.hndle
           family: Arial
           size: 17px
       input[type="text"]
-        border-color: #b0b0b0
-        color: $light-black !important
         float: left
         margin: 0 15px
         width: 420px
-        height: 32px
-        padding: 0 5px
-        font:
-          weight: 400
-          size: 13px
-          family: Arial
       #api-key-message-icon
         margin-top: 2px
         float: left
@@ -279,7 +282,17 @@ h3.hndle
     float: left
     margin: 10px 0
 
-
+// Premium Form - update name/number
+#prem_form_messages
+  ul#error-messages
+    margin: 10px 0 0
+    li
+      list-style-image: url(../images/icons/error-icon-sm.png)
+      margin-left: 20px
+      float: left
+      width: 100%
+      color: $red
+      
 
 
 /* Plugin specific styles

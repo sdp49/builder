@@ -56,7 +56,7 @@ function check_api_key (api_key) {
           $('#api_key_form #existing_placester_modal_api_key').addClass('green');
           setTimeout(function () {
            window.location.href = window.location.href;
-          }, 1000);
+          }, 2000);
 				} else {
 					$('#api_key_message').html(response.message).show().removeClass('green').addClass('red');
 					$('#api-key-message-icon').show().removeClass('green').addClass('red');
@@ -89,12 +89,21 @@ function new_sign_up(success_callback) {
 				mixpanel.track("SignUp: Successful Signup");
 				$('#confirm_email input#email').removeClass('red').addClass('green');
         $.post(ajaxurl, {action: 'set_placester_api_key', api_key: data['api_key']}, function(response, textStatus, xhr) {
-         if (response['result']) {
-           $('#api_key_success').html(response['message']).show();
-           mixpanel.track("SignUp: API key installed");
-        
+          if (response['result']) {
+            var standard_success_message = "You've successfully changed your Placester API Key. This page will reload in momentarily.";
+            if (response['message'] == standard_success_message) {
+              $('#api_key_success').html("You've successfully changed your Placester API Key.").show();
+            } else {
+              $('#api_key_success').html(response['message']).show();
+            }
+            mixpanel.track("SignUp: API key installed");
+            // reload screen
+            setTimeout(function () {
+             window.location.href = window.location.href;
+            }, 2000);
+            
            // API key was successfully created AND set, ok to move-on to the integration dialog...
-           if (success_callback) { success_callback(); }
+           // if (success_callback) { success_callback(); }
          }
         },'json');
 			};
