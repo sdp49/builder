@@ -540,7 +540,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			global $post;
 			if( ! empty( $post ) && $post->post_type === 'pl_general_widget' ) {
 				wp_enqueue_style( 'placester-widget', trailingslashit( PL_CSS_ADMIN_URL ) . 'placester-widget.css' );
-				wp_enqueue_script( 'placester-widget-script', trailingslashit( PL_JS_URL ) . 'admin/widget-handler.js', array( 'jquery' ), '1.1.6' );
+				wp_enqueue_script( 'placester-widget-script', trailingslashit( PL_JS_URL ) . 'admin/widget-handler.js', array( 'jquery' ), '1.1.5' );
 			}
 		}
 	}

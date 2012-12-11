@@ -672,8 +672,8 @@ class PL_Component_Entity {
 			// get the template attached as a context arg, 33 is the length of the filter prefix
 			$template = $context;
 				
-			//$snippet_body = self::get_active_snippet_body($shortcode, $template);
-			$snippet_body = PL_Shortcodes::get_active_snippet_body($shortcode);
+			$snippet_body = PL_Shortcodes::get_active_snippet_body($shortcode, $template);
+// 			$snippet_body = PL_Shortcodes::get_active_snippet_body($shortcode);
 			return do_shortcode($snippet_body);
 		}
 		

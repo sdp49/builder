@@ -111,7 +111,7 @@ function pls_get_shortcode_by_post_type( post_type ) {
 		case 'pl_search_listings':		return 'search_listings';
 		case 'pl_map':					return 'search_map';
 		case 'pl_form':					return 'search_form';
-		case 'pl_listing_slideshow':	return 'listing_slideshow';
+		case 'pl_slideshow':			return 'listing_slideshow';
 		case 'pl_static_listings':		return 'static_listings';
 			
 		default:
