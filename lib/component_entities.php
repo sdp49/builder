@@ -52,6 +52,7 @@ class PL_Component_Entity {
 		$listing_slideshow_templates = self::get_shortcode_snippet_list( 'listing_slideshow', self::$defaults );
 		foreach ($listing_slideshow_templates as $template => $type) {
 			add_filter( 'pls_slideshow_html_' . $template, array(__CLASS__,'listing_slideshow_templates'), 10, 6 );
+			// add_filter( 'pls_slideshow_data_' . $template, array(__CLASS__,'listing_slideshow_templates'), 10, 3 );
 		}
 		
 		$search_listings_templates = self::get_shortcode_snippet_list( 'search_listings', self::$defaults );
@@ -450,7 +451,7 @@ class PL_Component_Entity {
 					var neighborhood = new Neighborhood({
 						map: map,
 			            type: '<?php echo $taxonomy_maps_type; ?>',
-			            //name: '<?php // echo $term_name; ?>',
+			            name: '<?php echo $term_name; ?>',
 			            slug: '<?php echo $term_slug; ?>'
 					});
 
@@ -467,6 +468,7 @@ class PL_Component_Entity {
 				  		bootloader.add_param({map: map});
 				  	} */
 
+				  	debugger;
 				  	listings.init();
 				  	
 				  });
@@ -677,13 +679,13 @@ class PL_Component_Entity {
 		public static function listing_slideshow_templates( $html, $data, $context, $context_var, $args ) {
 			$shortcode = 'listing_slideshow';
 			self::$listing = $data['listing']; 
-				
+			
 			// get the template attached as a context arg, 33 is the length of the filter prefix
 			$template = $context;
 				
 			$snippet_body = PL_Shortcodes::get_active_snippet_body($shortcode, $template);
 // 			$snippet_body = PL_Shortcodes::get_active_snippet_body($shortcode);
-			return do_shortcode($snippet_body);
+			return do_shortcode($snippet_body . $html);
 		}
 		
 		/**

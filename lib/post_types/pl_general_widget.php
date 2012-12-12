@@ -451,7 +451,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		if( !isset( $_POST['meta_box_nonce'] ) || !wp_verify_nonce( $_POST['meta_box_nonce'], 'pl_cpt_meta_box_nonce' ) ) return;
 	
 		// if our current user can't edit this post, bail
-		if( !current_user_can( 'edit_post' ) ) return;
+		// if( !current_user_can( 'edit_post' ) ) return;
 	
 		$pl_post_type = $_POST['pl_post_type'];
 		
@@ -539,6 +539,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			|| ( $hook === 'post-new.php' && ! empty( $_GET['post_type'] ) && $_GET['post_type'] == 'pl_general_widget' ) ) {
 			global $post;
 			if( ! empty( $post ) && $post->post_type === 'pl_general_widget' ) {
+				wp_enqueue_script('settings-template', trailingslashit(PL_JS_URL) .  'admin/settings/template.js', array( 'jquery'));
 				wp_enqueue_style( 'placester-widget', trailingslashit( PL_CSS_ADMIN_URL ) . 'placester-widget.css' );
 				wp_enqueue_script( 'placester-widget-script', trailingslashit( PL_JS_URL ) . 'admin/widget-handler.js', array( 'jquery' ), '1.1.7' );
 			}
@@ -670,7 +671,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			update_post_meta( $post_id, 'pl_post_type', $pl_post_type );
 		}
 
-		die();
+ 		die();
 	}
 	
 	public function update_template_block_styles( ) {
