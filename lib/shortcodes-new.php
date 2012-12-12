@@ -86,7 +86,13 @@ class PL_Shortcodes
             												'listing_type',
             												'img_gallery',
             												'amenities',
-            												'compliance')
+            												'compliance'),
+									'neighborhood' => array('nb_title',
+															'nb_title',
+															'nb_featured_image',
+															'nb_description',
+															'nb_link',
+															'nb_map'),
             						);
 
 	// TODO: These are a temporary solution, come up with a better convention...
@@ -285,6 +291,12 @@ class PL_Shortcodes
 		$content = PL_Component_Entity::listing_sub_entity( $atts, $content, $tag );
 		
 		return PL_Shortcode_Wrapper::create( 'listing_sub', $content );
+	}
+	
+	public static function neighborhood_sub_shortcode_handler ($atts, $content, $tag) {
+		$content = PL_Component_Entity::neighborhood_sub_entity( $atts, $content, $tag );
+	
+		return PL_Shortcode_Wrapper::create( 'neighborhood_sub', $content );
 	}
 	
 	/** Helpcode shortcode handler **/

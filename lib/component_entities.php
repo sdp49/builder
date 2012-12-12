@@ -64,7 +64,12 @@ class PL_Component_Entity {
 		foreach ($static_listings_templates as $template => $type) {
 			add_filter( 'pls_listings_list_ajax_item_html_static_listings_' . $template, array(__CLASS__, 'search_listings_templates'), 10, 3 );
 		}
-
+		
+		$neighborhood_templates = self::get_shortcode_snippet_list( 'neighborhood', self::$defaults );
+		foreach ($static_listings_templates as $template => $type) {
+			add_filter( 'pls_neighborhood_html_' . $template, array(__CLASS__, 'neighborhood_templates'), 10, 3 );
+		}
+		
 	}
 	
 	public static function featured_listings_entity( $atts, $filters = '' ) {
@@ -295,6 +300,15 @@ class PL_Component_Entity {
 			return ob_get_clean();
 		}
 		
+		public static function neighborhood_sub_entity( $atts, $content, $tag ) {
+			var_dump($atts);
+			echo "asssa";
+			var_dump($content);
+			echo "saaas";
+			var_dump($tag);
+			die();
+		}
+		
 		public static function listing_sub_entity( $atts, $content, $tag ) {
 			$val = '';
 			
@@ -407,6 +421,7 @@ class PL_Component_Entity {
 			$taxonomy = null;
 			$term_slug = '';
 			$term_name = '';
+			$neighborhood_term = '';
 			
 			// API searches for neighborhood by slug
 			foreach( $atts as $key => $value ) {
@@ -418,6 +433,7 @@ class PL_Component_Entity {
 						$atts[$key] = $term->slug;
 						$term_slug = $term->slug;
 						$term_name = $term->name;
+						$neighborhood_term = $term;
 					}
 				}
 			}
@@ -427,9 +443,10 @@ class PL_Component_Entity {
 			}
 			
 			$taxonomy_maps_type = self::translate_taxonomy_type( $taxonomy_type );
-// 			$polygons_by_type = PL_Taxonomy_Helper::get_polygons_by_type( $taxonomy_type );
 			
-			$args = wp_parse_args($atts, array('state' => false, 'city' => false, 'neighborhood' => false, 'zip' => false, 'street' => false, 'image_limit' => 20, 'width' => 400, 'height' => 400, 'zoom' => 16));
+			$args = wp_parse_args($atts, array('state' => false, 'city' => false, 
+				'neighborhood' => false, 'zip' => false, 'street' => false, 'image_limit' => 20,
+				 'width' => 400, 'height' => 400, 'zoom' => 14, 'context' => false, 'context_var' => '' ));
 			
 		?>
 			 <script type="text/javascript">
@@ -441,9 +458,7 @@ class PL_Component_Entity {
 				  jQuery(document).ready(function( $ ) {
 					var taxonomy = jQuery.parseJSON(' <?php echo json_encode( $taxonomy ); ?> ');
 					var map = new Map();
-					//var list = new List();
 					var listings = new Listings({
-					//	list: list,
 						map: map
 					});
 					debugger;
@@ -456,19 +471,18 @@ class PL_Component_Entity {
 					});
 
 					map.init({
-						type: '<?php echo $taxonomy_type; ?>',
+						type: 'neighborhood',
 						neighborhood: neighborhood,
 						listings: listings
 					});
 
-				  	/* if (typeof bootloader !== 'object') {
+				  	if (typeof bootloader !== 'object') {
 				  		bootloader = new SearchLoader();
 				  		bootloader.add_param({map: map});
 				  	} else {
 				  		bootloader.add_param({map: map});
-				  	} */
-
-				  	debugger;
+				  	}
+				 
 				  	listings.init();
 				  	
 				  });
@@ -484,7 +498,13 @@ class PL_Component_Entity {
 					'loading_overlay' => '<div id="spinner"><div class="bar1"></div><div class="bar2"></div><div class="bar3"></div><div class="bar4"></div><div class="bar5"></div><div class="bar6"></div><div class="bar7"></div><div class="bar8"></div></div>',
 					'class' => 'polygon_search') 
 				);
-			  	return ob_get_clean();  
+			  	$neighborhood_html = ob_get_clean();  
+			  	
+ 			  	$neighborhood_html = apply_filters( pls_get_merged_strings( 
+								array( 'pls_neighborhood_html', $args['context'] ), '_', 'pre', false ),
+								 $neighborhood_html, $neighborhood_term, $args['context'], $args['context_var'] );
+			  	
+			  	return $neighborhood_html;
 		}		
 		
 		public static function search_form_entity( $atts ) {
@@ -705,6 +725,23 @@ class PL_Component_Entity {
 				$template = substr( $template, 16 );
 			}
 			
+			//$snippet_body = self::get_active_snippet_body($shortcode, $template);
+			$snippet_body = PL_Shortcodes::get_active_snippet_body($shortcode, $template);
+			return do_shortcode($snippet_body);
+		}
+		
+		/**
+		 * Neighborhoods and their templates
+		 */
+		public static function neighborhood_templates( $neighborhood, $term, $context, $context_var ) {
+			$shortcode = 'neighborhood';
+			self::$neighborhood_term = $term;
+				
+			
+			var_dump('saddsadsadsadsa'); die();
+			// get the template attached as a context arg, 33 is the length of the filter prefix
+			$template = $context;
+				
 			//$snippet_body = self::get_active_snippet_body($shortcode, $template);
 			$snippet_body = PL_Shortcodes::get_active_snippet_body($shortcode, $template);
 			return do_shortcode($snippet_body);
