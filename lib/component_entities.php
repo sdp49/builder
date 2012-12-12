@@ -16,6 +16,8 @@ class PL_Component_Entity {
 	public static $listing;
 	
 	public static $form_html;
+	
+	public static $neighborhood_term;
 	/**
 	 * Featured listings logic
 	 * @param array $atts id or future arguments
@@ -65,9 +67,9 @@ class PL_Component_Entity {
 			add_filter( 'pls_listings_list_ajax_item_html_static_listings_' . $template, array(__CLASS__, 'search_listings_templates'), 10, 3 );
 		}
 		
-		$neighborhood_templates = self::get_shortcode_snippet_list( 'neighborhood', self::$defaults );
-		foreach ($static_listings_templates as $template => $type) {
-			add_filter( 'pls_neighborhood_html_' . $template, array(__CLASS__, 'neighborhood_templates'), 10, 3 );
+		$neighborhood_templates = self::get_shortcode_snippet_list( 'pl_neighborhood', self::$defaults );
+		foreach ($neighborhood_templates as $template => $type) {
+			add_filter( 'pls_neighborhood_html_' . $template, array(__CLASS__, 'neighborhood_templates'), 10, 4 );
 		}
 		
 	}
@@ -301,12 +303,84 @@ class PL_Component_Entity {
 		}
 		
 		public static function neighborhood_sub_entity( $atts, $content, $tag ) {
-			var_dump($atts);
-			echo "asssa";
-			var_dump($content);
-			echo "saaas";
-			var_dump($tag);
-			die();
+			$val = '';
+			
+			// blank term - shouldn't happen
+			if( empty( self::$neighborhood_term ) ) {
+				return '';
+			}
+			
+			$term = self::$neighborhood_term;
+			$taxonomy_name = $term->taxonomy;
+			
+			if( $tag === 'nb_title' ) {
+				$val = apply_filters( 'pls_neighborhood_title', $term->name );
+			} else if( $tag === 'nb_description' ) {
+				$val = apply_filters( 'pls_neighborhood_description', $term->description );
+			} else if( $tag === 'nb_featured_image' ) {
+				// take the first off the listing, otherwise - default	
+			} else if( $tag === 'nb_link' ) {
+				$term_link = get_term_link( $term );
+				if( ! is_wp_error( $term_link ) ) {
+					$val = $term_link;
+				}
+			} else if( $tag === 'nb_map' ) {
+				ob_start();
+				$taxonomy_maps_name = self::translate_taxonomy_type( $taxonomy_name );
+				
+			?>
+			
+			<script type="text/javascript">
+				 if (typeof bootloader !== 'object') {
+					var bootloader;
+				 }
+
+				  jQuery(document).ready(function( $ ) {
+					var map = new Map();
+					var listings = new Listings({
+						map: map
+					});
+					debugger;
+
+					var neighborhood = new Neighborhood({
+						map: map,
+			            type: '<?php echo $taxonomy_maps_name; ?>',
+			            name: '<?php echo $term->name; ?>',
+			            slug: '<?php echo $term->slug; ?>'
+					});
+
+					map.init({
+						type: 'neighborhood',
+						neighborhood: neighborhood,
+						listings: listings
+					});
+
+				  	if (typeof bootloader !== 'object') {
+				  		bootloader = new SearchLoader();
+				  		bootloader.add_param({map: map});
+				  	} else {
+				  		bootloader.add_param({map: map});
+				  	}
+				 
+				  	listings.init();
+				  	
+				  });
+		    </script>
+		
+			<?php
+			    echo PLS_Map::polygon( null, array(
+					'width' => 629,
+					'height' => 303,
+					'zoom' => 16,
+					'polygon_search' => $taxonomy_name,
+					'polygon' => $term->slug,
+					'loading_overlay' => '<div id="spinner"><div class="bar1"></div><div class="bar2"></div><div class="bar3"></div><div class="bar4"></div><div class="bar5"></div><div class="bar6"></div><div class="bar7"></div><div class="bar8"></div></div>',
+					'class' => 'polygon_search') 
+				);
+			  	$val = ob_get_clean();  
+			}
+			
+			return $val;
 		}
 		
 		public static function listing_sub_entity( $atts, $content, $tag ) {
@@ -733,12 +807,10 @@ class PL_Component_Entity {
 		/**
 		 * Neighborhoods and their templates
 		 */
-		public static function neighborhood_templates( $neighborhood, $term, $context, $context_var ) {
-			$shortcode = 'neighborhood';
+		public static function neighborhood_templates( $neighborhood_html, $term, $context, $context_var ) {
+			$shortcode = 'pl_neighborhood';
 			self::$neighborhood_term = $term;
 				
-			
-			var_dump('saddsadsadsadsa'); die();
 			// get the template attached as a context arg, 33 is the length of the filter prefix
 			$template = $context;
 				
@@ -801,5 +873,6 @@ class PL_Component_Entity {
 				case 'state': return 'region';
 				default: return $taxonomy_type;
 			}
+			return $taxonomy_type;
 		}
 }

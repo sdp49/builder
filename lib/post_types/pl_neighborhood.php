@@ -230,6 +230,10 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 				}
 			}
 			
+			if( ! empty( $meta['pl_cpt_template'] ) ) {
+				$args .= "context = '{$meta['pl_cpt_template'][0]}' ";
+			}
+			
 			// Workaround for autosave with incorrect post type
 			// update_post_meta( $post->ID, 'pl_post_type', 'pl_neighborhood' );
 		

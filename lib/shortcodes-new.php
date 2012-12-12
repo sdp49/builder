@@ -88,7 +88,6 @@ class PL_Shortcodes
             												'amenities',
             												'compliance'),
 									'neighborhood' => array('nb_title',
-															'nb_title',
 															'nb_featured_image',
 															'nb_description',
 															'nb_link',
