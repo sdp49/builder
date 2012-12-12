@@ -2,12 +2,14 @@
 
 class PL_Listing {
 	
+	/* A wrapper for PL_Option_Helper::api_key() for class functions that need to be aware of demo data */
 	private function api_key() {
 		// The default value to use--the user's own key...
 		$api_key = PL_Option_Helper::api_key();
 
 		// If the user chose to use demo data, make requests using API key that corresponds to the demo listing account...
-		if ( PL_Option_Helper::get_demo_data_flag() && defined('DEMO_API_KEY') ) {
+		// NOTE: If being called from an admin page, ALWAYS use the user's API key!
+		if ( PL_Option_Helper::get_demo_data_flag() && defined('DEMO_API_KEY') && !is_admin() ) {
 			$api_key = DEMO_API_KEY;
 		}
 
