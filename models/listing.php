@@ -6,10 +6,14 @@ class PL_Listing {
 	private function api_key() {
 		// The default value to use--the user's own key...
 		$api_key = PL_Option_Helper::api_key();
-
-		// If the user chose to use demo data, make requests using API key that corresponds to the demo listing account...
-		// NOTE: If being called from an admin page, ALWAYS use the user's API key!
-		if ( PL_Option_Helper::get_demo_data_flag() && defined('DEMO_API_KEY') && !is_admin() ) {
+	
+		// Check to see whether or not the request being processed is a listing AJAX call from the front-end
+		// (i.e., if it is NOT the single action we know is used by the "listings" admin page...)
+		$front_listing_ajax = ( defined('DOING_AJAX') && isset($_POST['action']) && ($_POST['action'] !== 'datatable_ajax') );
+		
+		// If the user chose to use demo data, make requests using API key that corresponds to the demo listing account
+		// NOTE: Check for any calls from admin pages, as they should NEVER use demo data...
+		if ( PL_Option_Helper::get_demo_data_flag() && defined('DEMO_API_KEY') && (!is_admin() || $front_listing_ajax) ) {
 			$api_key = DEMO_API_KEY;
 		}
 
@@ -96,7 +100,7 @@ class PL_Listing {
 	public function types() {
 		$args = array( 'keys' => array( 'property_type') );
 		$config = PL_Config::PL_API_LISTINGS('get.types');
-		$request = array_merge(array("api_key" => PL_Option_Helper::api_key()), PL_Validate::request($args, $config['args']));
+		$request = array_merge(array("api_key" => self::api_key()), PL_Validate::request($args, $config['args']));
 		if ( defined('HOSTED_PLUGIN_KEY') ) {
 			$request['hosted_key'] = HOSTED_PLUGIN_KEY;
 		}
