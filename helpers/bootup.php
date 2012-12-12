@@ -23,11 +23,10 @@ class PL_Bootup {
   }
 
   public function add_dummy_data () {
-    
     // Retrieve default and theme manifests
     $manifest = wp_parse_args( self::parse_manifest_to_array(), self::$items_that_can_be_created );
     extract($manifest);
-    
+
     // Start creating dummy data here...
     if ( !empty($pages) )  {
       self::create_pages( $pages );
@@ -38,12 +37,21 @@ class PL_Bootup {
     if ( !empty($posts) ) {
       self::create_posts( $posts, 'post', $settings );
     }
-    if ( !empty($agents) ) {
-      self::create_posts( $agents, 'agent', $settings );
+
+    // Add CPTs here
+    $all_cpts = array(
+      'agent' => $agents,
+      'testimonial' => $testimonials,
+      'service' => $services
+    );
+
+    // create CPT posts
+    foreach ($all_cpts as $post_type => $custom_posts) {
+      if (post_type_exists($post_type)) {
+        self::create_posts( $custom_posts, $post_type, $settings );
+      }
     }
-    if ( !empty($testimonials) ) {
-      self::create_posts( $testimonials, 'testimonial', $settings );
-    }
+
     echo json_encode(true);
     die();
   }

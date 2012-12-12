@@ -10,6 +10,9 @@ class PL_Posts {
 
   public function create ( $manifest_posts, $post_type, $settings ) {
 
+    global $_wp_additional_image_sizes;
+    global $wpdb;
+
     // get existing posts... get_existing_posts() function
     $posts = get_posts( array(
         'showposts' => 50,
@@ -27,27 +30,84 @@ class PL_Posts {
       $use_manifest = true;
       // append special mark of posts to show their custom
         // function => register_dummy_data_post_status();
-        
     }
 
     // Add new posts if they don't already exist
     foreach ($posts as $post) {
+
       $post_array = (array) $post;
+      $found_post = @get_page_by_title($post_array['post_title'], ARRAY_A, $post_type);
       
-      $found_post = get_page_by_title($post['post_title'], ARRAY_A, $post_type);
+      // THIS WORKS IF WE PASS IN AN EXPLICIT ATTACHMENT ID
+      // $post_id = 1711;
+      // $post_thumbnail_id = 1696;
+      // add_post_meta($post_id, '_thumbnail_id', $post_thumbnail_id);
+      // load the image
+      // $result = media_sideload_image($post_thumbnail_id, $post_id);
+      // $attachments = get_posts(array('numberposts' => '1', 'post_parent' => $post_id, 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => 'ASC'));
+      // if(sizeof($attachments) > 0){
+      //     // set image as the post thumbnail
+      //     set_post_thumbnail($post_id, $attachments[0]->ID);
+      // }
+      
+      // If post doesn't already exist, create it.
       if (empty($found_post)) {
+
+        // create post
         wp_insert_post($post_array);
+
+        // add featured image to post
+        if (!empty($post_array['featured_image'])) {
+        
+            // Get post ID
+            $post_with_id = get_page_by_title($post_array['post_title'], ARRAY_A, $post_type);
+            $post_id = $post_with_id['ID'];
+            
+            // load the image
+            // Add image to media gallery
+            ob_start();
+              var_dump($post_array['featured_image']);
+            error_log(ob_get_clean());
+
+            media_sideload_image($post_array['featured_image'], $post_id);
+            
+            // Attach image to post
+            // add_post_meta($post_id, '_thumbnail_id', $post_thumbnail_id);
+            
+            
+            // $post_thumbnail_id = 1696;
+            //         
+            // add_post_meta($post_id, '_thumbnail_id', $post_thumbnail_id);
+            // 
+            // // load the image
+            // $result = media_sideload_image($post_thumbnail_id, $post_id);
+            // $attachments = get_posts(array('numberposts' => '1', 'post_parent' => $post_id, 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => 'ASC'));
+            // if(sizeof($attachments) > 0){
+            //     // set image as the post thumbnail
+            //     set_post_thumbnail($post_id, $attachments[0]->ID);
+            // }
+
+
+                // $_wp_additional_image_sizes
+        }
+
+
+        // add meta data to posts - only good for new posts because we wouldnt want to override existing posts
+        if (!empty($post_array['meta'])) {
+            // find post again in case it was just created and it didn't have an ID
+            $post_with_id = @get_page_by_title($post_array['post_title'], ARRAY_A, $post_type);
+            // add meta data to post
+            foreach ($post['meta'] as $key => $value) {
+              $values = add_post_meta( $post_with_id["ID"], $key, $value );
+            }
+        }
+        
       }
     }
-    // var_dump($posts);
     
+    // NEED TO ADD FEATURED IMAGES
     // NEED TO ADD POST ATTRIBUTES (IE. CATEGORIES, TAGS, ETC)
-    
-    // NEED TO ADD META DATA (IE. AGENT EMAIL/PHONE, TESTIMONIAL LOCATION)
   }
-
-
-
 
 
 
