@@ -15,7 +15,7 @@ class PL_Pages {
 	//return many page urls
 	function get () {
 		global $wpdb;
-		$sql = $wpdb->prepare('SELECT * ' . 'FROM ' . $wpdb->prefix . 'posts ' . "WHERE post_type = '" . self::$property_post_type . "'");
+		$sql = $wpdb->prepare('SELECT * FROM ' . $wpdb->posts .' WHERE post_type = %s', self::$property_post_type );
 	    $rows = $wpdb->get_results($sql, ARRAY_A);
 		return $rows;
 	}
@@ -23,8 +23,9 @@ class PL_Pages {
 	//return a page url
 	function details ($placester_id) {
 		global $wpdb;
-		$sql = $wpdb->prepare('SELECT ID, post_modified ' . 'FROM ' . $wpdb->prefix . 'posts ' . "WHERE post_type = '" . self::$property_post_type . "' AND post_name = %s " .'LIMIT 0, 1', $placester_id);
+		$sql = $wpdb->prepare("SELECT ID, post_modified FROM " . $wpdb->posts . " WHERE post_type = %s AND post_name = %s LIMIT 0, 1", self::$property_post_type, $placester_id);
 	    $row = $wpdb->get_row($sql, OBJECT, 0);
+
 	    if (isset($row->ID)) {
 	        $post_id = $row->ID;
 	        $cache[$placester_id] = $post_id;
