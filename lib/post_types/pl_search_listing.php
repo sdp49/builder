@@ -37,93 +37,6 @@ class PL_Search_Listing_CPT extends PL_Post_Base {
 		register_post_type('pl_search_listing', $args );
 	}
 	
-	
-	public function meta_box() {
-		add_meta_box( 'my-meta-box-id', 'Page Subtitle', array( $this, 'pl_search_listings_meta_box_cb' ), 'pl_search_listing', 'normal', 'high' );
-	}
-	
-	// add meta box for featured listings- adding custom fields
-	public function pl_search_listings_meta_box_cb( $post ) {
-		$values = get_post_custom( $post->ID );
-		
-		// get link for iframe
-		$permalink = '';
-		if( isset( $_GET['post'] ) ) {
-			$permalink = get_permalink($post->ID);
-		}
-		
-		$pl_static_listings_option = isset( $values['pl_static_listings_option'] ) ? unserialize($values['pl_static_listings_option'][0]) : '';
-		if( is_array( $pl_static_listings_option ) ) {
-			foreach( $pl_static_listings_option as $key => $value ) {
-				$_POST[$key] = $value;
-			}
-		}
-		
-		$width =  isset( $values['width'] ) && ! empty( $values['width'][0] ) ? $values['width'][0] : '300';
-		$height = isset( $values['height'] ) && ! empty( $values['height'][0] ) ? $values['height'][0] : '300';
-		$style = ' style="width: ' . $width . 'px; height: ' . $height . 'px" ';
-		
-		if( ! empty( $permalink ) ):
-		$iframe = '<iframe src="' . $permalink . '"'. $style . '></iframe>';
-		
-		?>		<div id="iframe_code">
-					<h2>Search Listing Frame code</h2>
-					<p>Use this code snippet inside of a page: <strong><?php echo esc_html( $iframe ); ?></strong></p>
-					<em>By copying this code and pasting it into a page you display your view.</em>
-				</div>
-				
-		<?php endif; ?>
-		<script type="text/javascript">
-		jQuery(document).ready(function($) {
-			$('#pl_static_listing_block #advanced').css('display', 'none');
-			$('#pl_static_listing_block #amenities').css('display', 'none');
-			$('#pl_static_listing_block #custom').css('display', 'none');
-			$('<a href="#basic" id="pl_show_advanced" style="line-height: 50px;">Show Advanced filters</a>').insertBefore('#pl_static_listing_block #advanced');
-
-			$('#pl_show_advanced').click(function() {
-				$(this).css('display', 'none');
-				$('#pl_static_listing_block #advanced').css('display', 'block');
-				$('#pl_static_listing_block #amenities').css('display', 'block');
-				$('#pl_static_listing_block #custom').css('display', 'block');
-			});
-		});
-		</script>
-			<div id="pl_static_listing_block">
-				<?php echo PL_Form::generate_form(
-							PL_Config::PL_API_LISTINGS('get', 'args'),
-							array('method' => "POST", 
-									'title' => true,
-									'wrap_form' => false, 
-							 		'echo_form' => false, 
-									'include_submit' => false, 
-									'id' => 'pls_admin_my_listings')); ?>
-				</div><!-- end of #pl_static_listing_block -->
-		<?php
-		// get meta values from custom fields
-		foreach( $this->fields as $field => $arguments ) {
-			$value = isset( $values[$field] ) ? $values[$field][0] : '';
-		
-			if( !empty( $value ) && empty( $_POST[$field] ) ) {
-				$_POST[$field] = $value;
-			}
-				
-			echo PL_Form::item($field, $arguments, 'POST');
-		}
-		
-		wp_nonce_field( 'pl_cpt_meta_box_nonce', 'meta_box_nonce' );
-		
-		PL_Snippet_Template::prepare_template(
-			array(
-				'codes' => array( 'search_listings' ),
-				'p_codes' => array(
-					'search_listings' => 'Search Listings'
-				),
-				'select_name' => 'pl_cpt_template',
-				'value' => isset( $values['pl_cpt_template'] ) ? $values['pl_cpt_template'][0] : ''
-			)
-		);
-	}
-	
 	public function meta_box_save( $post_id ) {
 		// Avoid autosaves
 		if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
@@ -217,7 +130,6 @@ class PL_Search_Listing_CPT extends PL_Post_Base {
 			}
 			
 			$shortcode .= '[/search_listings]';
-			
 			
 			include PL_LIB_DIR . '/post_types/pl_post_types_template.php';
 		

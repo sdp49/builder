@@ -148,7 +148,6 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		$pl_post_type = isset( $values['pl_post_type'] ) ? $values['pl_post_type'][0] : '';
 		
 		// manage featured and static listing form values
-// 		$pl_featured_listing_meta = ! empty( $values['pl_featured_listing_meta'] ) && is_array( $values['pl_featured_listing_meta'] ) ? unserialize($values['pl_featured_listing_meta'][0]) : '';
 		$pl_featured_meta_value = empty( $pl_featured_listing_meta ) ? '' : $pl_featured_listing_meta['featured-listings-type'];
 		
 		$pl_static_listings_option = isset( $values['pl_static_listings_option'] ) ? unserialize($values['pl_static_listings_option'][0]) : '';
@@ -396,8 +395,6 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 					$('#pl_post_type_<?php echo $pl_post_type; ?>').trigger('click');
 				<?php }	?>
 				
-				//$('#pl_post_type_<?php // echo $pl_post_type; ?>').trigger('click');
-				
 				$('#pl_post_type').trigger('change');
 				$('#preview_load_spinner').remove();
 				$('#preview-meta-widget').html('<?php echo isset($iframe) ? $iframe : '' ?>');
@@ -609,7 +606,6 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			
 		    add_action( 'pl_template_extra_styles', array( $this, 'update_template_block_styles' ) );
 		}
-		
 	}
 	
 	// Helper function for featured listings
@@ -697,6 +693,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			case 'pl_listing_slideshow':	return 'listing_slideshow';
 			case 'pl_static_listings':		return 'static_listings';
 				
+			// for all the others with the same name
 			default:
 				return $post_type;
 		}	
