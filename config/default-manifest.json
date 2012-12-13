@@ -22,7 +22,7 @@
     ],
     "menus": [
         {
-            "name": "Ontario Header",
+            "name": "Default Header",
             "location": "primary",
             "pages": [
                 "Search",
@@ -32,7 +32,7 @@
             ]
         },
         {
-            "name": "Ontario Footer",
+            "name": "Default Footer",
             "location": "subsidiary",
             "pages": [
                 "Blog",
