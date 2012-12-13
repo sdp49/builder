@@ -318,7 +318,23 @@ class PL_Component_Entity {
 			} else if( $tag === 'nb_description' ) {
 				$val = apply_filters( 'pls_neighborhood_description', $term->description );
 			} else if( $tag === 'nb_featured_image' ) {
-				// take the first off the listing, otherwise - default	
+				// take the first off the listing, otherwise - default
+				$taxonomy_maps_name = self::translate_taxonomy_type( $term->taxonomy );
+				$term_name = $term->name;
+
+				$api_response = PLS_Plugin_API::get_listings_list(
+							array( 'location[' . $taxonomy_maps_name . ']' => $term_name, 'limit' => 1 ) );
+				
+				$featured_image_src = PLS_IMG_URL . '/null/listing-300x180.jpg';
+				
+				if( ! empty( $api_response['listings'] ) &&
+					! empty( $api_response['listings'][0] ) &&
+					! empty( $api_response['listings'][0]['images'] )
+				  ) {
+					$featured_image_src = $api_response['listings'][0]['images'][0]['url'];		
+				}
+
+				$val = "<img src='$featured_image_src'></img>";
 			} else if( $tag === 'nb_link' ) {
 				$term_link = get_term_link( $term );
 				if( ! is_wp_error( $term_link ) ) {
