@@ -71,7 +71,7 @@ function check_info_for_prem_trial(that, success_callback, cancel_callback) {
     $('#prem_form_messages').removeClass('red');
     $("#premium_name_phone").children("input").removeClass("red");
 
-    var error_messages = '<ul id="error-messages">';
+    var error_messages = '';
 
     if (form_values['first_name'] == '' ) {
       error_messages += '<li class="first-name">First Name must be set.</li>';
@@ -85,6 +85,7 @@ function check_info_for_prem_trial(that, success_callback, cancel_callback) {
       error_messages += '<li class="last-name">Last Name must be set!</li>';
       $("#premium_name_phone input#last_name").addClass("red");
     } else if (form_values['last_name'] && form_values['last_name'].length < 3) {
+      $("#premium_name_phone input#last_name").addClass("red");
       error_messages += '<li class="last-name">Last Name must be longer then 3 characters.</li>';
     };
 
@@ -95,45 +96,46 @@ function check_info_for_prem_trial(that, success_callback, cancel_callback) {
       error_messages += '<li class="phone">Phone must be 7 or more characters.</li>';
     };
 
+    
     if (error_messages != '') {
-      error_messages += '</ul>';
-      $('#prem_form_messages').html(error_messages);
-      $('#prem_form_messages').addClass('red');
+        error_messages = '<ul id="error-messages">' + error_messages;
+        error_messages += '</ul>';
+        $('#prem_form_messages').html(error_messages);
+        $('#prem_form_messages').addClass('red');
     } else {
-   		form_values['action'] = 'update_user';
-   		$.post(ajaxurl, form_values, function(data, textStatus, xhr) {
-   			if (data && data.result) {
-   				// console.log(data);
-   				$('#prem_form_messages').html(data.message);
-  				
-				start_free_trial(success_callback, cancel_callback);
-				// console.log("Would have started free trial!!! #2");
-				// cancel_callback();
-   			} else {
-				var item_messages = [];
-				for(var key in data['validations']) {
-					var item = data['validations'][key];
-					if (typeof item == 'object') {
-						for( var k in item) {
-							if (typeof item[k] == 'string') {
-								var message = '<li class="red">' + data['human_names'][key] + ' ' + item[k] + '</li>';
-							} else {
-								var message = '<li class="red">' + data['human_names'][k] + ' ' + item[k].join(',') + '</li>';
-							}
-							$("#" + key + '-' + k).prepend(message);
-							item_messages.push(message);
-						}
-					} else {
-						var message = '<li class="red">'+item[key].join(',') + '</li>';
-						$("#" + key).prepend(message);
-						item_messages.push(message);
-					}
-				} 
-				$('#prem_form_messages').html('<div id="message" class="error"><h3>'+ data['message'] + '</h3><ul>' + item_messages.join(' ') + '</ul></div>');	
-   			};
-   		}, 'json');
-   		
-   	};
+        form_values['action'] = 'update_user';
+        $.post(ajaxurl, form_values, function(data, textStatus, xhr) {
+          if (data && data.result) {
+            // console.log(data);
+            $('#prem_form_messages').html(data.message);
+            start_free_trial(success_callback, cancel_callback);
+            // console.log("Would have started free trial!!! #2");
+            // cancel_callback();
+          } else {
+            var item_messages = [];
+            for(var key in data['validations']) {
+              var item = data['validations'][key];
+              if (typeof item == 'object') {
+                  for( var k in item) {
+                    if (typeof item[k] == 'string') {
+                      var message = '<li class="red">' + data['human_names'][key] + ' ' + item[k] + '</li>';
+                    } else {
+                      var message = '<li class="red">' + data['human_names'][k] + ' ' + item[k].join(',') + '</li>';
+                    }
+                    $("#" + key + '-' + k).prepend(message);
+                    item_messages.push(message);
+                  }
+              } else {
+                  var message = '<li class="red">'+item[key].join(',') + '</li>';
+                  $("#" + key).prepend(message);
+                  item_messages.push(message);
+              }
+            }
+            $('#prem_form_messages').html('<div id="message" class="error"><h3>'+ data['message'] + '</h3><ul>' + item_messages.join(' ') + '</ul></div>');	
+          };
+        }, 'json');
+
+    };
 
 }
 

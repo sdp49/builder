@@ -10,14 +10,14 @@ class PL_Posts {
 
   public function create ( $manifest_posts, $post_type, $settings ) {
 
-    global $_wp_additional_image_sizes;
-    global $wpdb;
+    // global $_wp_additional_image_sizes;
 
     // get existing posts... get_existing_posts() function
     $posts = get_posts( array(
         'showposts' => 50,
         'post_type' => $post_type,
-        ));
+        )
+    );
     
     $existing_post_count = count($posts);
 
@@ -38,59 +38,28 @@ class PL_Posts {
       $post_array = (array) $post;
       $found_post = @get_page_by_title($post_array['post_title'], ARRAY_A, $post_type);
       
-      // THIS WORKS IF WE PASS IN AN EXPLICIT ATTACHMENT ID
-      // $post_id = 1711;
-      // $post_thumbnail_id = 1696;
-      // add_post_meta($post_id, '_thumbnail_id', $post_thumbnail_id);
-      // load the image
-      // $result = media_sideload_image($post_thumbnail_id, $post_id);
-      // $attachments = get_posts(array('numberposts' => '1', 'post_parent' => $post_id, 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => 'ASC'));
-      // if(sizeof($attachments) > 0){
-      //     // set image as the post thumbnail
-      //     set_post_thumbnail($post_id, $attachments[0]->ID);
-      // }
-      
       // If post doesn't already exist, create it.
       if (empty($found_post)) {
 
         // create post
         wp_insert_post($post_array);
 
-        // add featured image to post
-        if (!empty($post_array['featured_image'])) {
         
-            // Get post ID
-            $post_with_id = get_page_by_title($post_array['post_title'], ARRAY_A, $post_type);
-            $post_id = $post_with_id['ID'];
-            
-            // load the image
-            // Add image to media gallery
-            ob_start();
-              var_dump($post_array['featured_image']);
-            error_log(ob_get_clean());
-
-            media_sideload_image($post_array['featured_image'], $post_id);
-            
-            // Attach image to post
-            // add_post_meta($post_id, '_thumbnail_id', $post_thumbnail_id);
-            
-            
-            // $post_thumbnail_id = 1696;
-            //         
-            // add_post_meta($post_id, '_thumbnail_id', $post_thumbnail_id);
-            // 
-            // // load the image
-            // $result = media_sideload_image($post_thumbnail_id, $post_id);
-            // $attachments = get_posts(array('numberposts' => '1', 'post_parent' => $post_id, 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => 'ASC'));
-            // if(sizeof($attachments) > 0){
-            //     // set image as the post thumbnail
-            //     set_post_thumbnail($post_id, $attachments[0]->ID);
-            // }
-
-
-                // $_wp_additional_image_sizes
+        if (!empty($post_array['featured_image'])) {
+          // add featured image to post
+          // THIS WORKS IF WE PASS IN AN EXPLICIT ATTACHMENT ID
+          // $post_id = 1720;
+          // $post_thumbnail_id = 1719;
+          // add_post_meta($post_id, '_thumbnail_id', $post_thumbnail_id);
+          // // load the image
+          // // $result = media_sideload_image($post_thumbnail_id, $post_id);
+          // $attachments = get_posts(array('numberposts' => '1', 'post_parent' => $post_id, 'post_type' => 'attachment', 'post_mime_type' => 'image', 'order' => 'ASC'));
+          // if(sizeof($attachments) > 0){
+          //     // set image as the post thumbnail
+          //     error_log($attachments[0]->ID);
+          //     set_post_thumbnail($post_id, $attachments[0]->ID);
+          // }
         }
-
 
         // add meta data to posts - only good for new posts because we wouldnt want to override existing posts
         if (!empty($post_array['meta'])) {
@@ -99,13 +68,13 @@ class PL_Posts {
             // add meta data to post
             foreach ($post['meta'] as $key => $value) {
               $values = add_post_meta( $post_with_id["ID"], $key, $value );
+              
             }
         }
         
       }
     }
     
-    // NEED TO ADD FEATURED IMAGES
     // NEED TO ADD POST ATTRIBUTES (IE. CATEGORIES, TAGS, ETC)
   }
 

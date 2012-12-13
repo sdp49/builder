@@ -219,21 +219,28 @@ h3.hndle
 // API Key Modal
 .ui-dialog.ui-widget-content
   .ui-dialog-content
-    #api_key_form, #signup_wizard
+    #confirm_email
+      height: 60px
+      .pls_search_form
+        width: 660px
+    #api_key_form
+      height: 50px
+    #api_key_form, #signup_wizard, #confirm_email
       float: left
       width: 100%
-      margin: 10px 0
+      margin: 5px 0
       #api_key_message
         position: absolute
         padding: 0
         margin-top: -20px
-        text-indent: 190px
+        text-indent: 200px
         font:
           size: 15px
           family: Arial
           weight: 400
       label
         float: left
+        width: 185px
         color: $light-black
         padding-top: 8px
         font:
@@ -242,7 +249,7 @@ h3.hndle
       input[type="text"]
         float: left
         margin: 0 15px
-        width: 420px
+        width: 410px
       #api-key-message-icon
         margin-top: 2px
         float: left
@@ -252,13 +259,12 @@ h3.hndle
         margin: 0
         &.green
           background: url(../images/icons/green-chk.png) no-repeat 0 5px
-        // &.red
 
 #api_key_validation, #api_key_success
   position: absolute
   padding: 0
-  margin-top: 63px
-  text-indent: 190px
+  margin-top: -18px
+  text-indent: 200px
   font:
     size: 15px
     family: Arial
@@ -280,7 +286,7 @@ h3.hndle
 #signup_wizard
   #confirm_email
     float: left
-    margin: 10px 0
+    margin: 5px 0
 
 // Premium Form - update name/number
 #prem_form_messages

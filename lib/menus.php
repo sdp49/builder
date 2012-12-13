@@ -71,41 +71,24 @@ class PL_Menus {
 
   }
 
+
   function assign_menu_to_theme_location ( $manifest_menus ) {
     
     // Get Menu Locations
-    $menu_theme_locations = get_nav_menu_locations();
-    // var_dump($menu_theme_locations);
+    $locations = array();
     // Get Current Menus
     $all_current_menus = wp_get_nav_menus();
     
     // Try to respect each manifest menu
     foreach ($manifest_menus as $manifest_menu) {
       // this manifest menu's real ID if it already exists
-      $menu_id = get_term_by( 'name', $manifest_menu['name'], 'nav_menu' );
-      // var_dump("menu id:",$menu_id);
-      // loop through theme's menu locations to find matching $manifest_menu's location
-      foreach ($menu_theme_locations as $menu_theme_location => $value) {
-        // var_dump("menu theme location:",$menu_theme_location);
-        // when matching location is found in manifest, set existing menu's term_id to the theme location
-        if ($manifest_menu['location'] == $menu_theme_location) {
-          $menu_theme_locations[$menu_theme_location] = $menu_id->term_id;
-        }
-      }
+      $menu = get_term_by( 'name', $manifest_menu['name'], 'nav_menu' );
+      // add menu id to location array (this assumes that the menu location exists)
+      $locations[$manifest_menu['location']] = $menu->term_id;
     }
     
-    $new_locations = array();
+    set_theme_mod( 'nav_menu_locations', $locations );
     
-    foreach ($menu_theme_locations as $location => $value) {
-      if (is_numeric($value)) {
-        $new_locations[$location] = $value;
-      } else {
-        $new_locations[$location] = 0;
-      }
-    }
-    
-    // Set menus to theme locations
-    set_theme_mod( 'nav_menu_locations', $new_locations );
-
   }
+
 }

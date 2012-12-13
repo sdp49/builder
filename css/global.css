@@ -180,43 +180,50 @@ h3.hndle {
     border-color: #6e9910 !important;
     color: dimgrey !important; }
 
-.ui-dialog.ui-widget-content .ui-dialog-content #api_key_form, .ui-dialog.ui-widget-content .ui-dialog-content #signup_wizard {
+.ui-dialog.ui-widget-content .ui-dialog-content #confirm_email {
+  height: 60px; }
+  .ui-dialog.ui-widget-content .ui-dialog-content #confirm_email .pls_search_form {
+    width: 660px; }
+.ui-dialog.ui-widget-content .ui-dialog-content #api_key_form {
+  height: 50px; }
+.ui-dialog.ui-widget-content .ui-dialog-content #api_key_form, .ui-dialog.ui-widget-content .ui-dialog-content #signup_wizard, .ui-dialog.ui-widget-content .ui-dialog-content #confirm_email {
   float: left;
   width: 100%;
-  margin: 10px 0; }
-  .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form #api_key_message, .ui-dialog.ui-widget-content .ui-dialog-content #signup_wizard #api_key_message {
+  margin: 5px 0; }
+  .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form #api_key_message, .ui-dialog.ui-widget-content .ui-dialog-content #signup_wizard #api_key_message, .ui-dialog.ui-widget-content .ui-dialog-content #confirm_email #api_key_message {
     position: absolute;
     padding: 0;
     margin-top: -20px;
-    text-indent: 190px;
+    text-indent: 200px;
     font-size: 15px;
     font-family: Arial;
     font-weight: 400; }
-  .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form label, .ui-dialog.ui-widget-content .ui-dialog-content #signup_wizard label {
+  .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form label, .ui-dialog.ui-widget-content .ui-dialog-content #signup_wizard label, .ui-dialog.ui-widget-content .ui-dialog-content #confirm_email label {
     float: left;
+    width: 185px;
     color: dimgrey;
     padding-top: 8px;
     font-family: Arial;
     font-size: 17px; }
-  .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form input[type="text"], .ui-dialog.ui-widget-content .ui-dialog-content #signup_wizard input[type="text"] {
+  .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form input[type="text"], .ui-dialog.ui-widget-content .ui-dialog-content #signup_wizard input[type="text"], .ui-dialog.ui-widget-content .ui-dialog-content #confirm_email input[type="text"] {
     float: left;
     margin: 0 15px;
-    width: 420px; }
-  .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form #api-key-message-icon, .ui-dialog.ui-widget-content .ui-dialog-content #signup_wizard #api-key-message-icon {
+    width: 410px; }
+  .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form #api-key-message-icon, .ui-dialog.ui-widget-content .ui-dialog-content #signup_wizard #api-key-message-icon, .ui-dialog.ui-widget-content .ui-dialog-content #confirm_email #api-key-message-icon {
     margin-top: 2px;
     float: left;
     height: 30px;
     width: 30px;
     padding: 0;
     margin: 0; }
-    .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form #api-key-message-icon.green, .ui-dialog.ui-widget-content .ui-dialog-content #signup_wizard #api-key-message-icon.green {
+    .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form #api-key-message-icon.green, .ui-dialog.ui-widget-content .ui-dialog-content #signup_wizard #api-key-message-icon.green, .ui-dialog.ui-widget-content .ui-dialog-content #confirm_email #api-key-message-icon.green {
       background: url(../images/icons/green-chk.png) no-repeat 0 5px; }
 
 #api_key_validation, #api_key_success {
   position: absolute;
   padding: 0;
-  margin-top: 63px;
-  text-indent: 190px;
+  margin-top: -18px;
+  text-indent: 200px;
   font-size: 15px;
   font-family: Arial;
   font-weight: 400; }
@@ -233,7 +240,7 @@ h3.hndle {
 
 #signup_wizard #confirm_email {
   float: left;
-  margin: 10px 0; }
+  margin: 5px 0; }
 
 #prem_form_messages ul#error-messages {
   margin: 10px 0 0; }
