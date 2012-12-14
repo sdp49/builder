@@ -17,6 +17,7 @@
         },
         {
             "title": "Blog",
+            "template": "page-blog.php",
             "slug": "blog"
         }
     ],
