@@ -15,6 +15,7 @@ class PL_Css_Helper {
 		if ($hook == 'themes.php' && defined('HOSTED_PLUGIN_KEY')) {		
 			self::register_enqueue_if_not('global-css', trailingslashit(PL_CSS_URL) .  'global.css');
 			self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');
+			// self::register_enqueue_if_not('jquery-ui-dialog', OPTIONS_FRAMEWORK_DIRECTORY.'css/jquery-ui-1.8.22.custom.css');
 		}
 
 		$pages = array('placester_page_placester_properties', 
@@ -34,7 +35,6 @@ class PL_Css_Helper {
 		if (!in_array($hook, $pages)) { return; }
 
 		//always load these
-		self::register_enqueue_if_not('sign-up-css', trailingslashit(PL_CSS_ADMIN_URL) .  'sign-up.css');		
 		self::register_enqueue_if_not('global-css', trailingslashit(PL_CSS_URL) .  'global.css');		
 		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');
 		self::register_enqueue_if_not('integrations', trailingslashit(PL_CSS_ADMIN_URL) .  'integration.css');		
@@ -95,6 +95,10 @@ class PL_Css_Helper {
 		self::register_enqueue_if_not('customizer-css', trailingslashit(PL_CSS_URL) . 'customizer.css');
 		self::register_enqueue_if_not('onboard-css', trailingslashit(PL_CSS_URL) . 'onboard.css');
 		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');
+
+		if ( PL_Bootup::is_theme_switched() ) {
+			self::register_enqueue_if_not('global-css', trailingslashit(PL_CSS_URL) .  'global.css');
+	    }
 	}
 
 	private function register_enqueue_if_not($name, $path, $dependencies = array()) {

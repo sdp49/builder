@@ -101,6 +101,8 @@ include_once('lib/debug.php');
 include_once('lib/form.php');
 include_once('lib/validation.php');
 include_once('lib/pages.php');
+include_once('lib/menus.php');
+include_once('lib/posts.php');
 include_once('lib/membership.php');
 include_once('lib/caching.php');
 // include_once('lib/shortcodes.php');
@@ -155,6 +157,8 @@ include_once('helpers/snippet.php');
 include_once('helpers/template.php');
 include_once('helpers/customizer.php');
 
+include_once('helpers/bootup.php');
+
 
 //third-party scripts
 include_once('third-party/tax-meta-class/tax-meta-class.php');
@@ -193,7 +197,7 @@ function placester_admin_menu() {
     $menu['3a'] = array( '', 'read', 'separator1', '', 'wp-menu-separator' );
 
     // Add Placester Menu
-    add_menu_page('Placester','Placester','edit_pages','placester',array('PL_Router','my_listings'), plugins_url('/placester/images/logo_16.png'), '3b' /* position between 3 and 4 */ );
+    add_menu_page('Placester','Placester','edit_pages','placester',array('PL_Router','my_listings'), plugins_url('/placester/images/icons/logo_16.png'), '3b' /* position between 3 and 4 */ );
 
     // Avoid submenu to start with menu function
     global $submenu;
