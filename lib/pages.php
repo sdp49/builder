@@ -15,7 +15,7 @@ class PL_Pages {
 	//return many page urls
 	function get () {
 		global $wpdb;
-		$sql = $wpdb->prepare('SELECT * ' . 'FROM ' . $wpdb->prefix . 'posts ' . "WHERE post_type = '" . self::$property_post_type . "'");
+		$sql = $wpdb->prepare('SELECT * FROM ' . $wpdb->posts .' WHERE post_type = %s', self::$property_post_type );
 	    $rows = $wpdb->get_results($sql, ARRAY_A);
 		return $rows;
 	}
@@ -23,8 +23,9 @@ class PL_Pages {
 	//return a page url
 	function details ($placester_id) {
 		global $wpdb;
-		$sql = $wpdb->prepare('SELECT ID, post_modified ' . 'FROM ' . $wpdb->prefix . 'posts ' . "WHERE post_type = '" . self::$property_post_type . "' AND post_name = %s " .'LIMIT 0, 1', $placester_id);
+		$sql = $wpdb->prepare("SELECT ID, post_modified FROM " . $wpdb->posts . " WHERE post_type = %s AND post_name = %s LIMIT 0, 1", self::$property_post_type, $placester_id);
 	    $row = $wpdb->get_row($sql, OBJECT, 0);
+
 	    if (isset($row->ID)) {
 	        $post_id = $row->ID;
 	        $cache[$placester_id] = $post_id;
@@ -56,21 +57,24 @@ class PL_Pages {
 		return self::manage($page_details);
 	}
 
-	function create_once ($pages_to_create, $force_template) {
+	function create_once ($pages_to_create, $force_template = true) {
 		foreach ($pages_to_create as $page_info) {
 			$page = get_page_by_title($page_info['title']);
 			if (!isset($page->ID)) {
 				$page_details = array();
 				$page_details['title'] = $page_info['title'];
 				if (isset($page_info['template'])) {
-					$page_details['post_meta'] = array('_wp_page_template' => $page_info['template']);
+          $page_details['post_meta'] = array('_wp_page_template' => $page_info['template']);
 				}
-				self::manage($page_details);
-			} else {
-				if (isset($page_info['template'])) {
-					delete_post_meta( $page->ID, '_wp_page_template' );
-    				add_post_meta( $page->ID, '_wp_page_template', $page_info['template']);
+				if (isset($page_info['content'])) {
+          $page_details['content'] = $page_info['content'];
 				}
+        self::manage($page_details);
+			} elseif ( $force_template ) {
+        if (isset($page_info['template'])) {
+         delete_post_meta( $page->ID, '_wp_page_template' );
+         add_post_meta( $page->ID, '_wp_page_template', get_template_directory_uri().'/'.$page_info['template']);
+        }
 			}
 		}
 	}
@@ -86,21 +90,22 @@ class PL_Pages {
                  'post_status' => $status,
                  'post_author' => 1,
                  'post_content'=> $content,
-                 'filter'      => 'db'
+                 'filter'      => 'db',
+                 'guid'        => $guid
              );
-
+             
             if ($post_id <= 0) {
-            	$post_id = wp_insert_post($post);
-            	if (!empty($post_meta)) {
-            		foreach ($post_meta as $key => $value) {
-            			add_post_meta($post_id, $key, $value, TRUE);
-            		}
-            	}
-            	if (!empty($taxonomies)) {
-	            	foreach ($taxonomies as $taxonomy => $term) {
-	            		wp_set_object_terms($post_id, $term, $taxonomy);
-	            	}
-            	}
+              $post_id = wp_insert_post($post);
+              if (!empty($post_meta)) {
+               foreach ($post_meta as $key => $value) {
+                 add_post_meta($post_id, $key, $value, TRUE);
+               }
+              }
+              if (!empty($taxonomies)) {
+                foreach ($taxonomies as $taxonomy => $term) {
+                  wp_set_object_terms($post_id, $term, $taxonomy);
+                }
+              }
             } else {	
                 $post['ID'] = $post_id;
                 $post_id = wp_update_post($post);
