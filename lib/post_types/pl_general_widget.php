@@ -13,7 +13,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				'static_listings' => 'Static Listings'
 			);
 	
-	public $post_types =  array(
+	public static $post_types =  array(
 				'pl_map' => 'Map',
 				'pl_form' => 'Search Form',
 				'pl_search_listings' => 'Search Listings',
@@ -58,7 +58,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 						'search_items' => __('Search Placester Widgets', 'pls'),
 						'not_found' =>  __('No widgets found', 'pls'),
 						'not_found_in_trash' => __('No widgets found in Trash', 'pls')),
-				'menu_icon' => trailingslashit(PL_IMG_URL) . 'featured.png',
+				'menu_icon' => trailingslashit(PL_IMG_URL) . 'logo_16.png',
 				'public' => true,
 				'publicly_queryable' => true,
 				'show_ui' => true,
@@ -69,12 +69,13 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				'menu_position' => null,
 				'supports' => array('title'),
 		);
-	
+
 		register_post_type('pl_general_widget', $args );
 	}
 	
 	public function __construct() {
 		parent::__construct();
+		
 		add_action( 'save_post', array( $this, 'meta_box_save' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_styles' ) );
 		add_action( 'admin_head', array( $this, 'admin_head_plugin_path' ) );
@@ -84,6 +85,9 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		add_action( 'wp_ajax_autosave_widget', array( $this, 'autosave_save_post_for_iframe' ) );
 		add_action( 'wp_ajax_handle_widget_script', array( $this, 'handle_iframe_cross_domain' ) );
 		add_filter( 'pl_form_section_after', array( $this, 'filter_form_section_after' ), 10, 3 );
+		add_filter('post_row_actions', array( $this, 'remove_quick_edit_view'), 10, 1 );
+		add_action( 'restrict_manage_posts', array( $this, 'listing_posts_add_filter_widget_type' ) );
+		add_filter( 'parse_query', array( $this, 'widget_type_posts_filter' ) );
 	}
 	
 	/**
@@ -173,11 +177,12 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				<h2>Widget Preview</h2>
 			</div>
 			<div id='preview-meta-widget'>
-				<img id="preview_load_spinner" src="<?php echo PL_PARENT_URL . 'images/preview_load_spin.gif'; ?>" alt="Widget options are Loading..." width="30px" height="30px" />
+				<img id="preview_load_spinner" src="<?php echo PL_PARENT_URL . 'images/preview_load_spin.gif'; ?>" alt="Widget options are Loading..." width="30px" height="30px" style="margin-left: 120px; margin-top: 120px;" />
 			</div>
 		</div>
+	
 		<?php 
-		echo '<div id="widget-meta-wrapper">';
+		echo '<div id="widget-meta-wrapper" style="min-height: 370px">';
 		
 		// read width/height and slideshow values
 		$width =  isset( $values['width'] ) && ! empty( $values['width'][0] ) ? $values['width'][0] : '300';
@@ -196,18 +201,20 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		endif; ?>
 		<div class="pl_widget_block">
 			<div id="post_types_list">
-			<h2>Select Type: </h2>
-			<?php foreach( $this->post_types as $post_type => $label ):
-					$link_class = ''; 
-					if( $post_type == $pl_post_type ) {
-						$link_class = 'selected_type';
-					}
-			?>			
-				<a id="pl_post_type_<?php echo $post_type; ?>" href="#" class="<?php echo $link_class; ?>"><?php echo $label; ?></a>
-			<?php endforeach; ?>
+				<div class="post_types_list_wrapper">
+					<span>Select Type: </span>
+					<?php foreach( self::$post_types as $post_type => $label ):
+							$link_class = ''; 
+							if( $post_type == $pl_post_type ) {
+								$link_class = 'selected_type';
+							}
+					?>			
+						<a id="pl_post_type_<?php echo $post_type; ?>" href="#" class="<?php echo $link_class; ?>"><?php echo $label; ?></a>
+					<?php endforeach; ?>
+				</div>
 			</div>
-		<h2>Attributes</h2>
-		<?php // get meta values from custom fields
+			<h2>Attributes</h2>
+			<?php // get meta values from custom fields
 			// fill POST array for the forms (required after new widget is created)
 		foreach( $this->fields as $field => $arguments ) {
 			$value = isset( $values[$field] ) ? $values[$field][0] : '';
@@ -216,16 +223,17 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				$_POST[$field] = $value;
 			}
 				
-			echo PL_Form::item($field, $arguments, 'POST');
+			echo PL_Form::item($field, $arguments, 'POST', false, 'general_widget_');
 		}
 		?>
 		</div>
 		
 		<h2>Pick a Listing</h2>
 				<div id="pl-fl-meta">
-					<div style="width: 400px; min-height: 200px">
-						<div id="pl_featured_listing_block" class="featured_listings pl_slideshow">
+					<div style="width: 400px;">
+						<div id="pl_featured_listing_block" class="featured_listings pl_slideshow" style="min-height: 40px;">
 						<?php 
+							
 							include PLS_OPTRM_DIR . '/views/featured-listings.php';
 							// Enqueue all required stylings and scripts
 							wp_enqueue_style('featured-listings', OPTIONS_FRAMEWORK_DIRECTORY.'css/featured-listings.css');
@@ -251,25 +259,18 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 						?>
 						</div><!-- end of #pl_featured_listing_block -->
 						<div id="pl_static_listing_block" class="static_listings pl_search_listings">
-								<?php 
-								// generate static listings
-								// count( PL_Config::PL_API_LISTINGS('get', 'args') ); 
-								$cache = new PL_Cache('pl_general_widget');
-								if( $static_form = $cache->get('static_listing_form') ) {
-									echo $static_form;
-								} else {
-									$static_list_form = PL_Form::generate_form(
-												PL_Config::PL_API_LISTINGS('get', 'args'),
-												array('method' => "POST", 
-														'title' => true,
-														'wrap_form' => false, 
-												 		'echo_form' => false, 
-														'include_submit' => false, 
-														'id' => 'pls_admin_my_listings'));
-	
-									$cache->save( $static_list_form );
-									echo $static_list_form;
-								}
+							<?php 
+								$static_list_form = PL_Form::generate_form(
+											PL_Config::PL_API_LISTINGS('get', 'args'),
+											array('method' => "POST", 
+													'title' => true,
+													'wrap_form' => false, 
+											 		'echo_form' => false, 
+													'include_submit' => false, 
+													'id' => 'pls_admin_my_listings'),
+											'general_widget_');
+
+								echo $static_list_form;
 							 ?>
 						</div><!-- end of #pl_static_listing_block -->
 					</div>
@@ -688,6 +689,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	<style type="text/css">
 		.snippet_container {
 			width: 400px;
+			margin-top: 0px;
 		}
 		.shortcode_container {
 			width: 100%;
@@ -717,6 +719,58 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		}
 		return $form;
 	}
+	
+	/**
+	 * Remove quick edit and view 
+	 */
+	public function remove_quick_edit_view( $actions ) {
+		unset( $actions['inline hide-if-no-js'] );
+		unset( $actions['view'] );
+		return $actions;
+	}
+	
+	/**
+	 * Display widget types filter
+	 */
+	public function listing_posts_add_filter_widget_type() {
+		$type = 'pl_general_widget';
+		if ( ! isset( $_GET['post_type'] ) || $_GET['post_type'] != 'pl_general_widget' ) {
+			return;
+		}
+	
+		$values = array_flip( self::$post_types ); 
+		?>
+        <select name="pl_widget_type">
+        <option value="">All widget types</option>
+        <?php
+            $current_v = isset($_GET['pl_widget_type'])? $_GET['pl_widget_type']:'';
+            foreach ($values as $label => $value) {
+                printf
+                    (
+                        '<option value="%s"%s>%s</option>',
+                        $value,
+                        $value == $current_v? ' selected="selected"':'',
+                        $label
+                    );
+                }
+        ?>
+        </select>
+        <?php
+	}
+	
+	/**
+	 * Filter by widget types
+	 */
+	public function widget_type_posts_filter( $query ) {
+		global $pagenow;
+		$type = 'pl_general_widget';
+		
+		if ( is_admin() && $pagenow=='edit.php' && ! empty( $_GET['pl_widget_type'] ) ) {
+			$query->query_vars['meta_key'] = 'pl_post_type';
+			$query->query_vars['meta_value'] = $_GET['pl_widget_type'];
+		}
+	}
+	
 }
 
 

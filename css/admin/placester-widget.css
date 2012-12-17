@@ -10,6 +10,9 @@
 .pl_template_block {
   width: 400px; }
 
+#pl_location_tax {
+  clear: both; }
+
 #widget-meta-wrapper .shortcode_container input.save_snippet {
   font-weight: normal;
   color: #464646;
@@ -37,6 +40,9 @@ div.wrap a.add-new-h2,
   margin: 15px 3px; }
   #post_types_list a {
     margin: 0px 5px; }
+  #post_types_list .post_types_list_wrapper span {
+    font-size: 1.5em;
+    color: #464646; }
 
 .selected_type {
   font-weight: bold; }
