@@ -83,6 +83,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		add_action( 'wp_ajax_autosave', array( $this, 'autosave_refresh_iframe' ), 1 );
 		add_action( 'wp_ajax_autosave_widget', array( $this, 'autosave_save_post_for_iframe' ) );
 		add_action( 'wp_ajax_handle_widget_script', array( $this, 'handle_iframe_cross_domain' ) );
+		add_filter( 'pl_form_section_after', array( $this, 'filter_form_section_after' ), 10, 3 );
 	}
 	
 	/**
@@ -205,7 +206,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				<a id="pl_post_type_<?php echo $post_type; ?>" href="#" class="<?php echo $link_class; ?>"><?php echo $label; ?></a>
 			<?php endforeach; ?>
 			</div>
-		<h2>Parameters</h2>
+		<h2>Attributes</h2>
 		<?php // get meta values from custom fields
 			// fill POST array for the forms (required after new widget is created)
 		foreach( $this->fields as $field => $arguments ) {
@@ -252,6 +253,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 						<div id="pl_static_listing_block" class="static_listings pl_search_listings">
 								<?php 
 								// generate static listings
+								// count( PL_Config::PL_API_LISTINGS('get', 'args') ); 
 								$cache = new PL_Cache('pl_general_widget');
 								if( $static_form = $cache->get('static_listing_form') ) {
 									echo $static_form;
@@ -381,12 +383,22 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				$('#pl_static_listing_block #amenities').css('display', 'none');
 				$('#pl_static_listing_block #custom').css('display', 'none');
 				$('<a href="#basic" id="pl_show_advanced" style="line-height: 50px;">Show Advanced filters</a>').insertBefore('#pl_static_listing_block #advanced');
+				$('<a href="#basic" id="pl_hide_advanced" style="line-height: 50px; display: none;">Hide Advanced filters</a>').insertAfter('#pl_static_listing_block #custom');
 
-				$('#pl_show_advanced').click(function() {
-					$(this).css('display', 'none');
+				$('#pl_show_advanced').on('click', function() {
+					$(this).hide();
 					$('#pl_static_listing_block #advanced').css('display', 'block');
 					$('#pl_static_listing_block #amenities').css('display', 'block');
 					$('#pl_static_listing_block #custom').css('display', 'block');
+					$('#pl_hide_advanced').show();
+				});
+
+				$('#pl_hide_advanced').on('click', function() {
+					$(this).hide();
+					$('#pl_static_listing_block #advanced').css('display', 'none');
+					$('#pl_static_listing_block #amenities').css('display', 'none');
+					$('#pl_static_listing_block #custom').css('display', 'none');
+					$('#pl_show_advanced').show();
 				});
 
 				// populate slug box for the edit screen
@@ -697,6 +709,13 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			default:
 				return $post_type;
 		}	
+	}
+	
+	public function filter_form_section_after( $form, $index, $count ) {
+		if( $index < $count ) {
+			return $form . '<div style="border-bottom: 1px solid white;"></div>';
+		}
+		return $form;
 	}
 }
 

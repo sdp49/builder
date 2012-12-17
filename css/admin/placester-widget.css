@@ -16,6 +16,10 @@
   background: #21759b url(../images/button-grad.png) repeat-x scroll left top;
   text-shadow: none; }
 
+#widget-meta-wrapper section h3 {
+  font-size: 14px;
+  padding-left: 0; }
+
 #minor-publishing-actions,
 #edit-slug-box,
 div.wrap a.add-new-h2,

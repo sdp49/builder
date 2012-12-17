@@ -29,14 +29,18 @@ class PL_Form {
 				}
 			}
 		}	
+		$section_index = 1;
+		$section_count = count( $form_group );
 		foreach ($form_group as $group => $elements) {
 			if (empty($group)) { $section_id = 'custom'; } else {$section_id = $group; }
+			$form = apply_filters( 'pl_form_section_before', $form, $section_index, $section_count );
 			$form .= "<section class='form_group' id='".str_replace(" ","_",$section_id)."'>";
 			if (!empty($group)) {
 				$form .= $title ? "<h3>" . ucwords($group) . "</h3>" : '';
 			}
 			$form .= implode($elements, '');
 			$form .= "</section>";
+			$form = apply_filters( 'pl_form_section_after', $form, $section_index, $section_count );
 		}
 		$form .= '<section class="clear"></section>';
 		if ($include_submit) {
@@ -74,8 +78,8 @@ class PL_Form {
 		} elseif ($type == 'select') {
 			?>
 				<section id="<?php echo $id ?>" class="pls_search_form <?php echo $css ?>" >
-					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
-					<select name="<?php echo $name ?>" id="<?php echo $id ?>" <?php echo ($type == 'multiselect' ? 'multiple="multiple"' : '') ?> >
+					<label for="sss<?php echo $id ?>"><?php echo $text ?></label>	
+					<select name="sss<?php echo $name ?>" id="<?php echo $id ?>" <?php echo ($type == 'multiselect' ? 'multiple="multiple"' : '') ?> >
 						<?php foreach ($options as $key => $text): ?>
 							<option id="<?php echo $key ?>" value="<?php echo $key ?>" <?php echo ($key == $value ? 'selected' : '' ) ?>><?php echo $text ?></option>
 						<?php endforeach ?>
