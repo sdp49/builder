@@ -94,12 +94,14 @@ widget_autosave = function() {
 				// breaks the overall layout
 				// var frame_width = post_data['width'];
 				var frame_width = '300';
+				var frame_height = '300';
 				var post_id = jQuery("#post_ID").val();
 				// jQuery('#preview-meta-widget').html("<script src='" + placester_plugin_path + "js/fetch-widget.js?id=" + post_id +
 				// "&preview=true' width='" + frame_width + "px' height='" + post_data['height'] + "px'></script>");
 				
-				jQuery('#preview-meta-widget').html("<iframe src='" + siteurl + "/?p=" + post_id + "&preview=true' width='" + frame_width + "px' height='" + post_data['height'] + "px'></iframe>");
+				jQuery('#preview-meta-widget').html("<iframe src='" + siteurl + "/?p=" + post_id + "&preview=true' width='" + frame_width + "px' height='" + frame_height + "px'></iframe>");
 				jQuery('#preview-meta-widget').css('height', post_data['height']);
+				jQuery('#pl-review-link').show();
 			}, 800);
 			// alert(response);
 		}

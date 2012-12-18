@@ -50,6 +50,10 @@ div.wrap a.add-new-h2,
 #message a {
   display: none; }
 
+#pl-review-wrapper {
+  text-align: center;
+  padding-top: 10px; }
+
 @media screen and (max-width: 1500px) {
   #preview-wrapper {
     position: static;

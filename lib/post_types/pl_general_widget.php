@@ -179,6 +179,10 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			<div id='preview-meta-widget'>
 				<img id="preview_load_spinner" src="<?php echo PL_PARENT_URL . 'images/preview_load_spin.gif'; ?>" alt="Widget options are Loading..." width="30px" height="30px" style="margin-left: 120px; margin-top: 120px;" />
 			</div>
+			<div id="pl-review-wrapper">
+				<a id="pl-review-link" href="" style="display:none;">Open Preview in a popup</a>
+				<div id="pl-review-popup" class="dialog" style="display: none;">Loading preview...</div>
+			</div>
 		</div>
 	
 		<?php 
@@ -377,6 +381,21 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				// call the custom autosave for every changed input and select
 				$('#widget-meta-wrapper section input, #widget-meta-wrapper section select').on('change', function() {
 					widget_autosave();				
+				});
+
+				$('#pl-review-link').on('click', function(e) {
+					e.preventDefault();
+
+					var iframe_content = $('#preview-meta-widget').html();
+
+					$('#pl-review-popup').html( iframe_content );
+					$('#pl-review-popup iframe').css('width', '750px');
+					$('#pl-review-popup iframe').css('height', '500px');
+
+					$('#pl-review-popup').dialog({
+							width: 800,
+							height: 600
+						});
 				});
 
 				// hide advanced values for static listings area

@@ -388,7 +388,9 @@ class PL_Listing_Helper {
 		}
     // we need to return the array with keys == values for proper form creation
     // (keys will be the option values, values will be the option's human-readable)
-    $range = array_combine( $range, $range );
+    if( ! empty( $range ) ) {
+    	$range = array_combine( $range, $range );
+    }
     // let's format the human-readable; do not use money_format() because its dependencies are not guaranteed
     array_walk( $range, create_function( '&$value,$key', '$value = "$" . number_format($value,2);'));
 		return $range;
