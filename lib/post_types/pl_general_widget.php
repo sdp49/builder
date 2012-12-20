@@ -205,7 +205,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		endif; ?>
 		<div class="pl_widget_block">
 			<div id="post_types_list">
-				<div class="post_types_list_wrapper">
+				<div class="post_types_list_wrapper" style="clear: both; padding-top: 10px;">
 					<span>Select Type: </span>
 					<?php foreach( self::$post_types as $post_type => $label ):
 							$link_class = ''; 
