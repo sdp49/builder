@@ -171,7 +171,14 @@ class PL_Form {
 
 		// get options, if there are any.
 		if (isset($attributes['bound']) && is_array(($attributes['bound']))) {
-			$options = call_user_func(array($attributes['bound']['class'], $attributes['bound']['method']), (isset($attributes['bound']['params']) ? $attributes['bound']['params'] : null));
+			// Deal with params...
+			$params = ( isset($attributes['bound']['params']) ? $attributes['bound']['params'] : array() ) ;
+			// If "params" is a single element, encapsulate in an array...
+			if ( isset($params) && !is_array($params) ) {
+				$params = array($params);
+			}
+
+			$options = call_user_func_array(array($attributes['bound']['class'], $attributes['bound']['method']), $params);
 		} elseif (isset($attributes['options'])) {
 			$options = $attributes['options'];
 		} else {

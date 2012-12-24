@@ -62,7 +62,7 @@ class PL_Listing_Helper {
 			$args['address_mode'] = 'polygon';
 		}
 
-		/* TODO.... */
+		/* TODO: Deal with sold status... */
 		// if ( isset($args['sold_status']) ) {
 		// 	$args['sold_status'] = false;
 		// }
@@ -325,13 +325,13 @@ class PL_Listing_Helper {
 		return $options;	
 	}
 	
-	public function locations_for_options($return_only = false) {
+	public function locations_for_options($return_only = false, $allow_globals = true) {
 		$options = array();
 		$response = null;
 		
 		// If global filters related to location are set, incorporate those and use aggregates API...
 		$global_filters = PL_Helper_User::get_global_filters();
-		if ( !empty($global_filters) && !empty($global_filters['location']) ) {
+		if ( $allow_globals && !empty($global_filters) && !empty($global_filters['location']) ) {
 			// TODO: Move these to a global var or constant...
 			$global_filters['keys'] = array( 'location.locality', 'location.region', 'location.postal', 'location.neighborhood', 'location.county' );
 			$response = PL_Listing::aggregates($global_filters);

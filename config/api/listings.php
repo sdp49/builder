@@ -202,7 +202,7 @@ $PL_API_LISTINGS = array(
 					'bound' => array(
 						'class' => 'PL_Listing_Helper',
 						'method' => 'locations_for_options',
-						'params' => 'postal'
+						'params' => array('postal', false)
 					)
 				),
 				'region'  => array(
@@ -212,7 +212,7 @@ $PL_API_LISTINGS = array(
 					'bound' => array(
 						'class' => 'PL_Listing_Helper',
 						'method' => 'locations_for_options',
-						'params' => 'region'
+						'params' => array('region', false)
 					)
 				),
 				'locality'  => array(
@@ -222,7 +222,7 @@ $PL_API_LISTINGS = array(
 					'bound' => array(
 						'class' => 'PL_Listing_Helper',
 						'method' => 'locations_for_options',
-						'params' => 'locality'
+						'params' => array('locality', false)
 					)
 				),
 				'neighborhood'  => array(
@@ -232,7 +232,7 @@ $PL_API_LISTINGS = array(
 					'bound' => array(
 						'class' => 'PL_Listing_Helper',
 						'method' => 'locations_for_options',
-						'params' => 'neighborhood'
+						'params' => array('neighborhood', false)
 					)
 				),
 				'county'  => array(
@@ -242,7 +242,7 @@ $PL_API_LISTINGS = array(
 					'bound' => array(
 						'class' => 'PL_Listing_Helper',
 						'method' => 'locations_for_options',
-						'params' => 'county'
+						'params' => array('county', false)
 					)
 				)
 				
