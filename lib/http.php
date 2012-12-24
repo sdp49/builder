@@ -29,8 +29,7 @@ Class PL_HTTP {
 		foreach ($request as $key => $value) {
 			/* Value is an array... */
 	        if (is_array($value)) {
-	        	
-	        	/* Value-array has no values... */
+	        	/* Value-array has is empty... */
 	            if ( empty($value) && $allow_empty_values ) {
 	                $str .= self::add_amp($str) . urlencode($key) . '[]=';
 	            }
@@ -109,12 +108,14 @@ Class PL_HTTP {
 				} else {
 	        		// pls_dump($url . '?' . $request_string);
 	        		// error_log($url . '?' . $request_string);
+	            	
 	            	$response = wp_remote_get($url . '?' . $request_string, array('timeout' => self::$timeout));
 					PL_Debug::add_msg('------- NO CACHE FOUND --------');    	    		
 	        		PL_Debug::add_msg($url . '?' . $request_string);    	
 
 	        		// error_log(serialize($response));
 	        		// pls_dump($response);
+					
 					if ( (is_array($response) && isset($response['headers']) && isset($response['headers']['status']) && $response['headers']['status'] == 200) || $force_return) {
 						if (!empty($response['body'])) {
 							$body = json_decode($response['body'], TRUE);
@@ -153,7 +154,6 @@ Class PL_HTTP {
 		// pls_dump($file_location);
 		move_uploaded_file($file_tmpname, $file_location);
 
-
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_HEADER, 0);
 		curl_setopt($ch, CURLOPT_VERBOSE, 0);
@@ -177,17 +177,18 @@ Class PL_HTTP {
 	    $o = json_decode($response, true);
 	    return $o;
 
-	    if (!isset($o['code'])){
-	    	return false;	
-	    } else if ($o['code'] == '201') {
-	    	return false;
-	    } else if ($o['code'] == '300') {
-	    	return false;
-	    } else {
-	    	return false;
-	    }
+	    /** TODO: This code is never called...clean it up! **/
+	    // if (!isset($o['code'])){
+	    // 	return false;	
+	    // } else if ($o['code'] == '201') {
+	    // 	return false;
+	    // } else if ($o['code'] == '300') {
+	    // 	return false;
+	    // } else {
+	    // 	return false;
+	    // }
 
-	    return $o; 
+	    // return $o; 
 
 	}
 

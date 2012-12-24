@@ -771,15 +771,13 @@ $PL_API_LISTINGS = array(
 			'neighborhood_polygons' => array()
 		)
 	),
-	'get.types' => array(
+	'get.aggregate' => array(
 		'request' => array(
 			'url' => 'https://api.placester.com/v2.1/listings/aggregate/',
 			'type' => 'GET'
 		),
 		'args' => array(
-			'keys' => array(
-				'property_type'
-			)
+			'keys' => array()
 		),
 		'returns' => array()
 	)
