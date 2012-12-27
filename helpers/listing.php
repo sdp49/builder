@@ -398,6 +398,7 @@ class PL_Listing_Helper {
     HOWEVER: That will all come later, as I'm just trying to solve the initial problem of the filter not working. -pek
   */
 	public function pricing_min_options($type = 'min') {
+
 		$api_response = PL_Listing::get();
 		$prices = array();
 		foreach ($api_response['listings'] as $key => $listing) {
@@ -420,7 +421,7 @@ class PL_Listing_Helper {
 				$range = range($prices[0], end($prices), $range);
 			}
 		} else {
-		  $range = array();		  
+		  $range = array('');		  
 		}
     // we need to return the array with keys == values for proper form creation
     // (keys will be the option values, values will be the option's human-readable)
