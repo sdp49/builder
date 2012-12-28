@@ -50,6 +50,8 @@ class PL_Bootup {
       if (post_type_exists($post_type)) {
         self::create_posts( $custom_posts, $post_type, $settings );
       }
+      // delete Hello World post
+      wp_delete_post( 1, true );
     }
 
     echo json_encode(true);
