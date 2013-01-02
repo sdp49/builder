@@ -81,7 +81,7 @@ define('ADMIN_MENU_URL', trailingslashit( ADMIN_URL ) . 'admin.php' );
 // Demo Account API Key
 define('DEMO_API_KEY', '7e63514ebfad7608bbe7b4469ab470ecef4dc651099ae06fc1df6807717f0deacd38809e3c314ca09c085125f773a4c7');
 
-//config
+/* config */
 include_once('config/toggle_form_sections.php');
 include_once('config/api/custom_attributes.php');
 include_once('config/api/listings.php');
@@ -93,7 +93,7 @@ include_once('config/api/wordpress.php');
 include_once('config/customizer/onboard_settings.php');
 include_once('config/customizer/theme_choices.php');
 
-//lib
+/* lib */
 include_once('lib/config.php');
 include_once('lib/routes.php');
 include_once('lib/http.php');
@@ -118,7 +118,7 @@ include_once('lib/demo_data.php');
 include_once('lib/customizer.php');
 include_once('lib/customizer_entities.php');
 
-//models
+/* models */
 include_once('models/listing.php');
 include_once('models/custom_attribute.php');
 include_once('models/options.php');
@@ -131,7 +131,7 @@ include_once('models/wordpress.php');
 include_once('models/walkscore.php');
 include_once('models/education-com.php');
 
-//helpers
+/* helpers */
 include_once('helpers/listing.php');
 include_once('helpers/add-listing.php');
 include_once('helpers/option.php');
@@ -156,25 +156,29 @@ include_once('helpers/membership.php');
 include_once('helpers/snippet.php');
 include_once('helpers/template.php');
 include_once('helpers/customizer.php');
-
 include_once('helpers/bootup.php');
 
-
-//third-party scripts
+/* third-party scripts */
 include_once('third-party/tax-meta-class/tax-meta-class.php');
 include_once('third-party/convex-hull/convex-hull.php');
 include_once('third-party/mixpanel/mixpanel.php');
+
+/* pl-admin */
+include_once('config/pl-admin/header.php');
+include_once('config/pl-admin/sidebar.php');
+include_once('lib/pl-admin/entities.php');
+// include_once('lib/pl-admin/header.php');
+include_once('lib/pl-admin/sidebar.php');
 
 
 // Register hook to load blueprint from plugin if no theme has yet to do so...
 add_action( 'after_setup_theme', 'load_blueprint_from_plugin', 18 );
 function load_blueprint_from_plugin() 
 {
-    if (!class_exists('Placester_Blueprint')) {
+    if ( !class_exists('Placester_Blueprint') ) {
         require_once('blueprint/blueprint.php');
         new Placester_Blueprint('2.1', 'plugin');
-        add_action('init', 'blueprint_settings');
-        
+        add_action('init', 'blueprint_settings'); 
     }
 }
 
@@ -197,7 +201,7 @@ function placester_admin_menu() {
     $menu['3a'] = array( '', 'read', 'separator1', '', 'wp-menu-separator' );
 
     // Add Placester Menu
-    add_menu_page('Placester','Placester','edit_pages','placester',array('PL_Router','my_listings'), plugins_url('/placester/images/icons/logo_16.png'), '3b' /* position between 3 and 4 */ );
+    add_menu_page('Placester','Placester','edit_pages','placester', array('PL_Router','my_listings'), plugins_url('/placester/images/icons/logo_16.png'), '3b' /* position between 3 and 4 */ );
 
     // Avoid submenu to start with menu function
     global $submenu;

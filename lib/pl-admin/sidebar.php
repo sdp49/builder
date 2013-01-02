@@ -20,7 +20,7 @@ class PL_Admin_Sidebar {
 		foreach ( $config as $section => $args ) {
 			$entity = self::CLASS_PREFIX . $section;
 			if ( class_exists($entity) ) {
-				$nav_entities[] = new $entity();
+				$nav_entities[] = new $entity($args);
 			}
 		}
 	}
