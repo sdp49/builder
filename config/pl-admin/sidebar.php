@@ -6,47 +6,58 @@ $PL_ADMIN_NAVS = array(
 	'utilities' => array(
 		'home' => array(
 			'title' => 'Home',
-			'css-class' => 'home'
+			'css_class' => 'home',
+			'priority' => 10
 		),
 		'listings' => array(
 			'title' => 'Listings',
-			'css-class' => 'listings'
+			'css_class' => 'listings',
+			'priority' => 20
 		),
 		'agents' => array(
 			'title' => 'Agents',
-			'css-class' => 'agents'
+			'css_class' => 'agents',
+			'priority' => 30
 		),
 		'about' => array(
 			'title' => 'About',
-			'css-class' => 'about'
+			'css_class' => 'about',
+			'priority' => 40
 		),
 		'contact' => array(
 			'title' => 'Contact',
-			'css-class' => 'contact'
+			'css_class' => 'contact',
+			'priority' => 50
 		),
 		'custom' => array(
 			'title' => 'Custom Search',
-			'css-class' => 'custom'
+			'css_class' => 'custom',
+			'priority' => 60
 		),
 		'mls' => array(
 			'title' => 'MLS Search',
-			'css-class' => 'mls'
+			'css_class' => 'mls',
+			'priority' => 70
 		),
 		'blog' => array(
 			'title' => 'Blog',
-			'css-class' => 'blog'
+			'css_class' => 'blog',
+			'priority' => 80
 		),
 		'services' => array(
 			'title' => 'Services',
-			'css-class' => 'services'
+			'css_class' => 'services',
+			'priority' => 90
 		),
 		'testimonials' => array(
 			'title' => 'Testimonials',
-			'css-class' => 'testimonials'
+			'css_class' => 'testimonials',
+			'priority' => 100
 		),
 		'neighborhoods' => array(
 			'title' => 'Neighborhoods',
-			'css-class' => 'neighborhoods'
+			'css_class' => 'neighborhoods',
+			'priority' => 110
 		)
 	),
 
@@ -58,19 +69,23 @@ $PL_ADMIN_NAVS = array(
 	'settings' => array(
 		'theme' => array(
 			'title' => 'Theme & Skin',
-			'css-class' => 'theme'
+			'css_class' => 'theme',
+			'priority' => 10
 		),
 		'css' => array(
 			'title' => 'CSS Editor',
-			'css-class' => 'css'
+			'css_class' => 'css',
+			'priority' => 20
 		),
 		'menus' => array(
 			'title' => 'Menus',
-			'css-class' => 'menus'
+			'css_class' => 'menus',
+			'priority' => 30
 		),
 		'settings' => array(
 			'title' => 'Settings',
-			'css-class' => 'settings'
+			'css_class' => 'settings',
+			'priority' => 40
 		)
 	),
 );
