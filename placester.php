@@ -167,8 +167,7 @@ include_once('third-party/mixpanel/mixpanel.php');
 include_once('config/pl-admin/header.php');
 include_once('config/pl-admin/sidebar.php');
 include_once('lib/pl-admin/entities.php');
-// include_once('lib/pl-admin/header.php');
-include_once('lib/pl-admin/sidebar.php');
+include_once('lib/pl-admin/util.php');
 
 
 // Register hook to load blueprint from plugin if no theme has yet to do so...

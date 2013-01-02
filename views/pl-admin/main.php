@@ -13,6 +13,8 @@
 // Load styles & scripts
 do_action( 'pl_admin_enqueue_scripts',  );
 
+
+
 ?>
 
 <section id="pls-header">
@@ -60,11 +62,12 @@ do_action( 'pl_admin_enqueue_scripts',  );
           </form>
         </div><!--pls-search-->
         <div id="pls-buttons">
-          <a class="button deactive" href="#">Create</a>
+          <?php // Construct buttons ?>
+          <!-- <a class="button deactive" href="#">Create</a>
           <a class="button deactive" href="#">Edit</a>
           <a class="button deactive" href="#">Upgrade</a>
           <a class="button deactive" href="#">Leads</a>
-          <a class="button deactive" href="#">Help</a>                              
+          <a class="button deactive" href="#">Help</a>  -->                             
         </div><!--pls-buttons-->
       </div><!--pls-inner-top-->
       <div id="pls-inner-bot">
