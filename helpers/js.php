@@ -9,6 +9,7 @@ class PL_Js_Helper {
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'frontend') );
 		add_action( 'admin_head', array(__CLASS__, 'admin_menu_url') );
 		add_action( 'customize_controls_enqueue_scripts', array(__CLASS__, 'customizer') );
+		add_action( 'pl_admin_enqueue_scripts', array( __CLASS__, 'pl_admin') );
 	}
 
 	public function admin ($hook) {
@@ -175,6 +176,14 @@ class PL_Js_Helper {
 	    if ( PL_Bootup::is_theme_switched() ) {
 	    	self::register_enqueue_if_not('theme-switch', trailingslashit(PL_JS_URL) .  'admin/theme-switch.js', array( 'jquery-ui'));  
 	    }
+	}
+
+	/* 
+	 * Load scripts that power Placester's custom admin panel. 
+	 */
+	function pl_admin () {
+		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/js/jquery-ui-1.8.17.custom.min.js', array( 'jquery'));
+	
 	}
 
 	public static function register_enqueue_if_not($name, $path, $dependencies = array(), $version = null, $in_footer = false) {

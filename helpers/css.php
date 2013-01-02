@@ -8,6 +8,7 @@ class PL_Css_Helper {
 		// add_action( 'admin_init', array( __CLASS__, 'admin' ));
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin' ) );
 		add_action( 'customize_controls_enqueue_scripts', array( __CLASS__, 'customizer' ) );
+		add_action( 'pl_admin_enqueue_scripts', array( __CLASS__, 'pl_admin') );
 	}
 
 	function admin ($hook) {
@@ -91,7 +92,7 @@ class PL_Css_Helper {
 		}
 	}
 
-	function customizer() {
+	function customizer () {
 		self::register_enqueue_if_not('customizer-css', trailingslashit(PL_CSS_URL) . 'customizer.css');
 		self::register_enqueue_if_not('onboard-css', trailingslashit(PL_CSS_URL) . 'onboard.css');
 		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');
@@ -99,6 +100,13 @@ class PL_Css_Helper {
 		if ( PL_Bootup::is_theme_switched() ) {
 			self::register_enqueue_if_not('global-css', trailingslashit(PL_CSS_URL) .  'global.css');
 	    }
+	}
+
+	/* 
+	 * Load CSS that styles Placester's custom admin panel. 
+	 */
+	function pl_admin () {
+
 	}
 
 	private function register_enqueue_if_not($name, $path, $dependencies = array()) {
