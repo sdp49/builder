@@ -10,20 +10,28 @@
 
 <?php
 
+// Catch variables related to request/template...
+
 // Load styles & scripts
 do_action( 'pl_admin_enqueue_scripts' );
-
 
 ?>
 
 <html>
 
   <head>
-  	
+  	<title></title>
+  	<?php
+  		// WP call to load scripts enqueued for the head section...
+  		print_head_scripts();
+
+  		// WP call to load styles enqueued for the footer section and/or register too late for the head...
+  	  	print_admin_styles();
+  	?>
   </head>
 
   <body>
-
+  	<!-- Header Admin Bar -->
 	<section id="pls-header">
 	  <div id="pls-top">
 	    <div id="pls-meta">
@@ -92,12 +100,15 @@ do_action( 'pl_admin_enqueue_scripts' );
 	  </div><!--pls-header-bot-->
 	</section>
 
+	<!-- Side Bar -->
 	<section id="pls-aside" class="pls-undocked">
 	  <?php
 	  	$navList = array('utilities', 'settings'); 
 	  	PL_Admin_Util::renderNavs($navList); 
 	  ?>
 	</section>
+
+
 
   </body>
 
