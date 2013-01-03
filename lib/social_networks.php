@@ -488,7 +488,13 @@ class PL_Social_Networks_Twitter {
 
 		if ( isset( $_GET[ self::$fb_token_name ] ) ) {
 			update_user_meta( get_current_user_id(), self::$fb_user_meta_key_token, $_GET[ self::$fb_token_name ] );
-			$redirect = self::fb_get_clean_url( get_bloginfo('url') . $_SERVER['REQUEST_URI'] );
+			
+			$request_uri = $_SERVER['REQUEST_URI'];
+			if( strpos( $request_uri, '/wp-admin' ) !== false ) {
+				$request_uri = substr( $request_uri, strpos( $request_uri, '/wp-admin' ) );
+			}
+			
+			$redirect = self::fb_get_clean_url( get_bloginfo('url') . $request_uri );
 	
  			die( '<script type="text/javascript">top.location.href = "' .  $redirect . '";</script>' );
 		}
