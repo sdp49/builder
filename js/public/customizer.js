@@ -204,39 +204,33 @@ jQuery(document).ready(function($) {
   * Handles theme selection...
   */
 
-	$('#theme_choices').on('change', function (event) {
-		// If theme selected is set to current one, set the submit button to disabled, otherwise enable it
-		var submitElem = $('#submit_theme');
-		if ( _wpCustomizeSettings && _wpCustomizeSettings.theme.stylesheet == $(this).val() ) {
-			submitElem.attr('disabled', 'disabled');
-			submitElem.addClass('bt-disabled');
-		}
-		else {
-		// Might not be necessary--done to handle all cases properly
-			submitElem.removeAttr('disabled');
-			submitElem.removeClass('bt-disabled');
-		}
-
-		var infoElem = $('#theme_info');
-		infoElem.prepend(newSpinner());
-		infoElem.css('opacity', '0.7');
-
-		data = { action: 'load_theme_info', theme: $(this).val() };
+  	// Logic to determine whether to hide or show pagination buttons based on change...
+	function paginationHideShow(oldIdx, newIdx, maxIdx) {
+		var prev = $('#pagination a.prev');
+		var next = $('#pagination a.next');
 		
-		// console.log(data);
-		// return;
+		// Handle previous...
+		if ( oldIdx == 0) { prev.css('visibility', 'visible'); } 
+		else if ( newIdx == 0 ) { prev.css('visibility', 'hidden'); }
+		else { /* No action necessary...*/ }
 
-		$.post(ajaxurl, data, function (response) {
-	        if ( response && response.theme_info ) {
-	            // Populate theme info with new html...
-	            infoElem.html(response.theme_info);
-	            infoElem.css('opacity', '1');
-	        }
-	    },'json');
-	});
+		// Handle next...
+		if ( oldIdx == maxIdx ) { next.css('visibility', 'visible'); }
+		else if ( newIdx == maxIdx ) { next.css('visibility', 'hidden'); }
+		else { /* No action necessary...*/ }				
+	}
 
-	$('#submit_theme').on('click', function (event) {
-		data = { action: 'change_theme', new_theme: $('#theme_choices').val() };
+	function initPagination() {
+		var themeSelect = $('#theme_choices');
+		if ( themeSelect.length > 0 ) {
+			var newInd = themeSelect.get(0).selectedIndex; // Current index is "new" index when initially setting this...
+			var maxInd = ( themeSelect.get(0).options.length - 1 );
+			paginationHideShow( -1, newInd, maxInd ); // "old" index is set to -1 so it's value won't cause any changes...
+		}
+	}
+
+	function activateTheme() {
+		var data = { action: 'change_theme', new_theme: $('#theme_choices').val() };
 		
 		// console.log(data);
 		// return;
@@ -264,38 +258,118 @@ jQuery(document).ready(function($) {
 	        }
 	        else {
 	        	// If theme switch fails, hide progress so user can try again...
-	        	infoElem.remove('#theme_info #spinner');
+	        	var infoElem = $('#theme_info');
+	        	infoElem.find('#spinner').remove();
 	        	infoElem.css('opacity', '1');
 
 				submitElem.removeAttr('disabled');
 				submitElem.removeClass('bt-disabled');	        	
 	        }
 	    },'json');
-	});
+	}
 
-	// Logic to determine whether to hide or show pagination buttons based on change...
-	function paginationHideShow(oldIdx, newIdx, maxIdx) {
-		var prev = $('#pagination a.prev');
-		var next = $('#pagination a.next');
-		
-		// Handle previous...
-		if ( oldIdx == 0) { prev.css('visibility', 'visible'); } 
-		else if ( newIdx == 0 ) { prev.css('visibility', 'hidden'); }
-		else { /* No action necessary...*/ }
+	function valPremTheme(container) {
+		// Show spinner to indicate theme premium theme validation is in progress...
+		var infoElem = $('#theme_info');
+		infoElem.prepend(newSpinner());
+		infoElem.css('opacity', '0.7');
 
-		// Handle next...
-		if ( oldIdx == maxIdx ) { next.css('visibility', 'visible'); }
-		else if ( newIdx == maxIdx ) { next.css('visibility', 'hidden'); }
-		else { /* No action necessary...*/ }				
+		// Set success and failure callbacks...
+		var success_callback = function () { activateTheme(); }
+		var failure_callback = function () {
+			// Construct error message...
+			var msg = '<h3>Sorry, your account isn\'t eligible to use Premium themes.</h3>';
+		  	msg += '<h3>Please <a href="https://placester.com/subscription">Upgrade Your Account</a> or call us with any questions at (800) 728-8391.</h3>';
+
+			container.prepend('<div id="message" class="error">' + msg + '</div>');
+		}
+
+		// Check user's subscription status and act accordingly...
+		$.post(ajaxurl, {action: 'subscriptions'}, function (response) {
+		  // console.log(response);
+
+		  // Regardless of the response, remove loading bar...
+		  var infoElem = $('#theme_info');
+    	  infoElem.find('#spinner').remove();
+	      infoElem.css('opacity', '1');
+
+		  if (response && response.plan && response.plan == 'pro') {
+		  	success_callback();
+		  } 
+		  else if (response && response.eligible_for_trial) {
+		  	// console.log('prompt free trial');
+		  	prompt_free_trial('Start your 15 day Free Trial to Activate a Premium Theme', success_callback, failure_callback);
+		  } 
+		  else {
+		  	failure_callback();
+		  };
+		},'json');	
 	}
 
 	// On initial page load, hide/show the pagination buttons accordingly...
-	var newInd = $('#theme_choices').get(0).selectedIndex; // Current index is "new" index when initially setting this...
-	var maxInd = ( $('#theme_choices').get(0).options.length - 1 );
-	paginationHideShow( -1, newInd, maxInd ); // "old" index is set to -1 so it's value won't cause any changes...
+	initPagination();
+
+	$('#theme_choices').on('change', function (event) {
+		// Remove any latent error messages if they exist...
+		$('#theme_content ul.control-list').find('#message.error').remove();
+
+		// If theme selected is set to current one, set the submit button to disabled, otherwise enable it
+		var submitElem = $('#submit_theme');
+		if ( _wpCustomizeSettings && _wpCustomizeSettings.theme.stylesheet == $(this).val() ) {
+			submitElem.attr('disabled', 'disabled');
+			submitElem.addClass('bt-disabled');
+		}
+		else {
+		// Might not be necessary--done to handle all cases properly
+			submitElem.removeAttr('disabled');
+			submitElem.removeClass('bt-disabled');
+		}
+
+		var infoElem = $('#theme_info');
+		infoElem.prepend(newSpinner());
+		infoElem.css('opacity', '0.7');
+
+		data = { action: 'load_theme_info', theme: $(this).val() };
+		
+		// console.log(data);
+		// return;
+
+		$.post(ajaxurl, data, function (response) {
+	        if ( response && response.theme_info ) {
+	            // Populate theme info with new html...
+	            infoElem.html(response.theme_info);
+	            infoElem.css('opacity', '1');
+	        
+	            // Reset pagination button(s) to match newly selected theme...
+			    $('#pagination a').css('visibility', 'visible');
+			    initPagination();
+	        }
+	    },'json');
+
+	});
+
+	$('#submit_theme').on('click', function (event) {
+		var container = $('#theme_content ul.control-list');
+
+		// Remove any latent error messages if they exist...
+		container.find('#message.error').remove();
+
+
+
+		// Check if user is trying to activate a Premium theme, and act accordingly...
+		var type = $('option:selected').parent().attr('label');
+		if ( type === 'Premium' ) { 
+			valPremTheme(container); 
+		}
+		else {
+			activateTheme();
+		}
+	});
 
 	// Handles "Previous" and "Next" pagination buttons...
 	$('#pagination a').on('click', function (event) {
+		event.preventDefault();
+
 		var type = $(this).attr('class');
 		var selectElem = $('#theme_choices').get(0);
 		var maxIndex = (selectElem.options.length - 1);
@@ -320,9 +394,6 @@ jQuery(document).ready(function($) {
 			return;
 		}
 
-		// Call logic to hide and/or show pagination buttons based on old & new index...
-		paginationHideShow(currIndex, newIndex, maxIndex);
-
 		// Set selected theme to new index... 
 		selectElem.selectedIndex = newIndex;
 		$('#theme_choices').trigger('change');
@@ -339,7 +410,7 @@ jQuery(document).ready(function($) {
   * Handle custom controls...
   */	
 
-  	// --- Blog Post ---
+  	/* --- Blog Post --- */
 
 	function toggleInvalid (item, invalid) {
         if (invalid) {
@@ -397,7 +468,7 @@ jQuery(document).ready(function($) {
   	});
 
 	
-	// --- Create a Listing ---
+	/* --- Create a Listing --- */
 
   	$('#submit_listing').on('click', function (event) {
 		// $('#loading_overlay').show();
@@ -458,10 +529,20 @@ jQuery(document).ready(function($) {
     });
 
 
-	// -- Custom CSS --
+	/* -- Custom CSS -- */
 
-	// Hide the theme customizer control that actually connects to theme option...
-	$('#customize-control-pls-custom-css_ctrl').hide();
+	function initCustomCSS () {
+		var ctrl = $('#customize-control-pls-custom-css_ctrl'); 
+
+		// Hide the theme customizer control that actually connects to theme option...
+		ctrl.hide();
+
+		// Copy the initial custom css to the viewable "Edit Custom CSS" textarea...
+		var css = ctrl.find('textarea').val();
+		$('#custom_css').val(css);
+	}
+	// Call on initial customizer load...
+	initCustomCSS();
 
 	function updateCustomCSS (css) {
 		var custom_css = $('#customize-control-pls-custom-css_ctrl textarea');
@@ -490,6 +571,9 @@ jQuery(document).ready(function($) {
 
 		// Just in case...
 		$('#color_message.error').hide();
+
+		// Check for "none"...
+		if ($(this).val() == 'none') { return; }	
 
 		// Let the user know there's work being done...
 		setPreviewLoading();
