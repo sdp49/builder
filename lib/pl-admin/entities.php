@@ -12,12 +12,9 @@ class PL_Admin_Nav {
  		$this->id = $id;
  	}
 
- 	public function add_section ( $id, $args = array() ) {
- 		$this->settings[$id] = new PL_Admin_Section( $id, $args );
- 	}
-
- 	public function add_custom_section ( $id, $section_obj ) {
- 		// Make sure the custom section we're trying to add extends the standard section class...
+ 	public function add_section ( $id, $section_obj ) {
+ 		// Make sure the section we're trying to add is an either an instance of,
+ 		// or extends the standard section class...
  		if ( is_a($section_obj, 'PL_Admin_Section') ) {
  			$this->settings[$id] = $section_obj;
  		}
@@ -28,7 +25,7 @@ class PL_Admin_Nav {
  		$html_id = $this->id . 'Nav';
  		
  		// Sort sections by priority...
- 		
+
 
  		// Loop through sections and call their render functions...
  		?>

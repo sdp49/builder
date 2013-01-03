@@ -11,19 +11,22 @@ class PL_Admin_Util {
 
 	}
 
-	public static function constructNav ( $type ) {
+	public static function constructNav ( $id ) {
 		global $PL_ADMIN_NAVS;
 		// Make sure nav config exists...
-		$config = $PL_ADMIN_NAVS[$type]
+		$config = $PL_ADMIN_NAVS[$id]
 		if ( empty($config) ) { return null; }
+
+		// Constuct an empty Nav...
+		$nav = new PL_Admin_Nav($id);
 
 		foreach ( $config as $section => $args ) {
 			// Check for custom entity, otherwise use generic class...
 			$entity = self::SECTION_BASE . $section;
-			$sections[] = ( class_exists($entity) ? new $entity($args) : new PL_Admin_Section($args) );
+			$new_section = ( class_exists($entity) ? new $entity($args) : new PL_Admin_Section($args) );
+			$nav->add_section($new_section);
 		}
 
-		$nav = new PL_Admin_Nav( array('sections' => $sections );
 		return $nav;
 	}
 
