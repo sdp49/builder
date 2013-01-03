@@ -32,7 +32,6 @@ define('PL_PLUGIN_VERSION','1.0.6');
 define( 'PL_PARENT_DIR', dirname(__FILE__) );
 define( 'PL_PARENT_URL', trailingslashit(plugins_url()) . 'placester/'  );
 
-
 define( 'PL_VIEWS_DIR', trailingslashit(PL_PARENT_DIR) . 'views/' );
 define( 'PL_VIEWS_URL', trailingslashit(PL_PARENT_URL) . 'views/' );
 
@@ -75,11 +74,14 @@ define( 'PL_CSS_CLIENT_URL', trailingslashit(PL_CSS_URL) . 'client/' );
 define( 'PL_THIRD_PARTY_DIR', trailingslashit(PL_PARENT_DIR) . 'third-party/' );
 define( 'PL_THIRD_PARTY_URL', trailingslashit(PL_PARENT_URL) . 'third-party/' );
 
-define('ADMIN_URL', trailingslashit( admin_url() ) );
-define('ADMIN_MENU_URL', trailingslashit( ADMIN_URL ) . 'admin.php' );
+define( 'ADMIN_URL', trailingslashit( admin_url() ) );
+define( 'ADMIN_MENU_URL', trailingslashit( ADMIN_URL ) . 'admin.php' );
 
 // Demo Account API Key
-define('DEMO_API_KEY', '7e63514ebfad7608bbe7b4469ab470ecef4dc651099ae06fc1df6807717f0deacd38809e3c314ca09c085125f773a4c7');
+define( 'DEMO_API_KEY', '7e63514ebfad7608bbe7b4469ab470ecef4dc651099ae06fc1df6807717f0deacd38809e3c314ca09c085125f773a4c7' );
+
+// Theme skin directory
+define( 'PL_THEME_SKIN_DIR', trailingslashit(PL_PARENT_DIR) . 'config/customizer/theme-skins/' );
 
 /* config */
 include_once('config/toggle_form_sections.php');
