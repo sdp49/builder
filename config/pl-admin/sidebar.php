@@ -7,32 +7,38 @@ $PL_ADMIN_NAVS = array(
 		'home' => array(
 			'title' => 'Home',
 			'css_class' => 'home',
-			'priority' => 10
+			'priority' => 10,
+			'iframe_target' => ''
 		),
 		'listings' => array(
 			'title' => 'Listings',
 			'css_class' => 'listings',
-			'priority' => 20
+			'priority' => 20,
+			'iframe_target' => '/listings'
 		),
 		'agents' => array(
 			'title' => 'Agents',
 			'css_class' => 'agents',
-			'priority' => 30
+			'priority' => 30,
+			'iframe_target' => '/agents'
 		),
 		'about' => array(
 			'title' => 'About',
 			'css_class' => 'about',
-			'priority' => 40
+			'priority' => 40,
+			'iframe_target' => '/about'
 		),
 		'contact' => array(
 			'title' => 'Contact',
 			'css_class' => 'contact',
-			'priority' => 50
+			'priority' => 50,
+			'iframe_target' => '/contact'
 		),
 		'custom' => array(
 			'title' => 'Custom Search',
 			'css_class' => 'custom',
-			'priority' => 60
+			'priority' => 60,
+			'iframe_target' => ''
 		),
 		'mls' => array(
 			'title' => 'MLS Search',
@@ -42,22 +48,26 @@ $PL_ADMIN_NAVS = array(
 		'blog' => array(
 			'title' => 'Blog',
 			'css_class' => 'blog',
-			'priority' => 80
+			'priority' => 80,
+			'iframe_target' => '/blog'
 		),
 		'services' => array(
 			'title' => 'Services',
 			'css_class' => 'services',
-			'priority' => 90
+			'priority' => 90,
+			'iframe_target' => '/services'
 		),
 		'testimonials' => array(
 			'title' => 'Testimonials',
 			'css_class' => 'testimonials',
-			'priority' => 100
+			'priority' => 100,
+			'iframe_target' => '/testimonials'
 		),
 		'neighborhoods' => array(
 			'title' => 'Neighborhoods',
 			'css_class' => 'neighborhoods',
-			'priority' => 110
+			'priority' => 110,
+			'iframe_target' => '/neighborhoods'
 		)
 	),
 

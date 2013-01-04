@@ -114,9 +114,9 @@ class PL_Router {
 
 	public function theme_gallery() {
 		if (isset($_GET['theme_url'])) {
-			self:: router('install-theme.php', array('test'=>'donkey'), false);	
+			self:: router('install-theme.php', array(), false);	
 		} else {
-			self:: router('theme-gallery.php', array('test'=>'donkey'), false);	
+			self:: router('theme-gallery.php', array(), false);	
 		}
 	}
 

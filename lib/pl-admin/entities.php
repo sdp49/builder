@@ -65,6 +65,9 @@ class PL_Admin_Pane {
 	// Instance Vars
 	public $id;
 	public $priority;
+	public $cards = array();
+
+	
 
 }
 
