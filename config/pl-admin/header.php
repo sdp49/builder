@@ -2,7 +2,7 @@
 
 global $PL_ADMIN_HEADER;
 $PL_ADMIN_HEADER = array(
-	'admin-links' => array();
+	'admin-links' => array(),
 	'buttons' => array(
 		'Create' => '',
 		'Edit' => '',
@@ -10,7 +10,7 @@ $PL_ADMIN_HEADER = array(
 		'Leads' => '',
 		'Help' => ''
 	),
-	'user-links' => array();
+	'user-links' => array()
 );
 
 ?>

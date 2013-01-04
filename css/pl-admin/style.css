@@ -423,7 +423,7 @@ section#pls-header {
         padding: 0;
         float: left; }
         section#pls-header #pls-top #pls-meta h1 a {
-          background: url(../img/icons.png) -6px -6px;
+          background: url(../../images/icons/pl-admin_icons.png) -6px -6px;
           width: 68px;
           height: 12px;
           display: block; }
@@ -469,12 +469,12 @@ section#pls-header {
         section#pls-header #pls-top #pls-meta #pls-switch a.active:hover {
           background: #409ae6 !important; }
         section#pls-header #pls-top #pls-meta #pls-switch a.active span.ico-developer {
-          background: url(../img/icons.png) -2px -110px no-repeat;
+          background: url(../../images/icons/pl-admin_icons.png) -2px -110px no-repeat;
           padding: 10px 0 10px 20px;
           height: 10px;
           width: 10px; }
         section#pls-header #pls-top #pls-meta #pls-switch a.active span.ico-agent {
-          background: url(../img/icons.png) -2px -21px no-repeat;
+          background: url(../../images/icons/pl-admin_icons.png) -2px -21px no-repeat;
           padding: 10px 10px 10px 20px;
           height: 10px;
           width: 10px; }
@@ -485,12 +485,12 @@ section#pls-header {
         -webkit-box-shadow: inset 0 1px 1px #767676;
         box-shadow: inset 0 1px 1px #767676; }
         section#pls-header #pls-top #pls-meta #pls-switch a.off span.ico-developer {
-          background: url(../img/icons.png) -2px -80px no-repeat;
+          background: url(../../images/icons/pl-admin_icons.png) -2px -80px no-repeat;
           padding: 10px 0 10px 20px;
           height: 10px;
           width: 10px; }
         section#pls-header #pls-top #pls-meta #pls-switch a.off span.ico-agent {
-          background: url(../img/icons.png) -2px -51px no-repeat;
+          background: url(../../images/icons/pl-admin_icons.png) -2px -51px no-repeat;
           padding: 10px 10px 10px 20px;
           height: 10px;
           width: 10px; }
@@ -573,7 +573,7 @@ section#pls-header {
           padding: 2px;
           margin: -4px 5px 0 0; }
           section#pls-header div#pls-header-bot #pls-inner div#pls-inner-bot a.pls-refresh-ico span {
-            background: url(../img/icons.png) -107px -2px;
+            background: url(../../images/icons/pl-admin_icons.png) -107px -2px;
             height: 20px;
             width: 20px;
             display: block; }
@@ -583,7 +583,7 @@ section#pls-header {
           section#pls-header div#pls-header-bot #pls-inner div#pls-inner-bot a.pls-fb-ico:hover {
             text-decoration: none; }
           section#pls-header div#pls-header-bot #pls-inner div#pls-inner-bot a.pls-fb-ico span {
-            background: url(../img/icons.png) -86px -4px;
+            background: url(../../images/icons/pl-admin_icons.png) -86px -4px;
             height: 18px;
             width: 18px;
             display: block;
@@ -728,77 +728,77 @@ section#pls-aside {
     -moz-box-shadow: 0 -1px 0 #5ba8e8 inset;
     box-shadow: 0 -1px 0 black; }
   section#pls-aside a.home-active {
-    background: url(../img/icons.png) 6px -652px no-repeat !important; }
+    background: url(../../images/icons/pl-admin_icons.png) 6px -652px no-repeat !important; }
   section#pls-aside a.listings-active {
-    background: url(../img/icons.png) 6px -688px no-repeat !important; }
+    background: url(../../images/icons/pl-admin_icons.png) 6px -688px no-repeat !important; }
   section#pls-aside a.agents-active {
-    background: url(../img/icons.png) 6px -722px no-repeat !important; }
+    background: url(../../images/icons/pl-admin_icons.png) 6px -722px no-repeat !important; }
   section#pls-aside a.about-active {
-    background: url(../img/icons.png) 6px -756px no-repeat !important; }
+    background: url(../../images/icons/pl-admin_icons.png) 6px -756px no-repeat !important; }
   section#pls-aside a.contact-active {
-    background: url(../img/icons.png) 6px -790px no-repeat !important; }
+    background: url(../../images/icons/pl-admin_icons.png) 6px -790px no-repeat !important; }
   section#pls-aside a.custom-active {
-    background: url(../img/icons.png) 6px -824px no-repeat !important; }
+    background: url(../../images/icons/pl-admin_icons.png) 6px -824px no-repeat !important; }
   section#pls-aside a.mls-active {
-    background: url(../img/icons.png) 6px -858px no-repeat !important; }
+    background: url(../../images/icons/pl-admin_icons.png) 6px -858px no-repeat !important; }
   section#pls-aside a.blog-active {
-    background: url(../img/icons.png) 6px -892px no-repeat !important; }
+    background: url(../../images/icons/pl-admin_icons.png) 6px -892px no-repeat !important; }
   section#pls-aside a.services-active {
-    background: url(../img/icons.png) 6px -926px no-repeat !important; }
+    background: url(../../images/icons/pl-admin_icons.png) 6px -926px no-repeat !important; }
   section#pls-aside a.testimonials-active {
-    background: url(../img/icons.png) 6px -960px no-repeat !important; }
+    background: url(../../images/icons/pl-admin_icons.png) 6px -960px no-repeat !important; }
   section#pls-aside a.neighborhoods-active {
-    background: url(../img/icons.png) 6px -994px no-repeat !important; }
+    background: url(../../images/icons/pl-admin_icons.png) 6px -994px no-repeat !important; }
   section#pls-aside a.title-active {
-    background: url(../img/icons.png) 5px -1919px no-repeat !important; }
+    background: url(../../images/icons/pl-admin_icons.png) 5px -1919px no-repeat !important; }
   section#pls-aside a.color-active {
-    background: url(../img/icons.png) 5px -1954px no-repeat !important; }
+    background: url(../../images/icons/pl-admin_icons.png) 5px -1954px no-repeat !important; }
   section#pls-aside a.mls-int-active {
-    background: url(../img/icons.png) 5px -1989px no-repeat !important; }
+    background: url(../../images/icons/pl-admin_icons.png) 5px -1989px no-repeat !important; }
   section#pls-aside a.social-active {
-    background: url(../img/icons.png) 5px -2023px no-repeat !important; }
+    background: url(../../images/icons/pl-admin_icons.png) 5px -2023px no-repeat !important; }
   section#pls-aside a.demo-active {
-    background: url(../img/icons.png) 5px -2057px no-repeat !important; }
+    background: url(../../images/icons/pl-admin_icons.png) 5px -2057px no-repeat !important; }
   section#pls-aside a.theme-active {
-    background: url(../img/icons.png) 6px -1028px no-repeat !important; }
+    background: url(../../images/icons/pl-admin_icons.png) 6px -1028px no-repeat !important; }
   section#pls-aside a.css-active {
-    background: url(../img/icons.png) 6px -1062px no-repeat !important; }
+    background: url(../../images/icons/pl-admin_icons.png) 6px -1062px no-repeat !important; }
   section#pls-aside a.menus-active {
-    background: url(../img/icons.png) 6px -1096px no-repeat !important; }
+    background: url(../../images/icons/pl-admin_icons.png) 6px -1096px no-repeat !important; }
   section#pls-aside a.settings-active {
-    background: url(../img/icons.png) 6px -1130px no-repeat !important; }
+    background: url(../../images/icons/pl-admin_icons.png) 6px -1130px no-repeat !important; }
   section#pls-aside .disabled li {
     background: #353535; }
     section#pls-aside .disabled li a.home {
-      background: url(../img/icons.png) 6px -141px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -141px no-repeat !important; }
     section#pls-aside .disabled li a.listings {
-      background: url(../img/icons.png) 6px -176px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -176px no-repeat !important; }
     section#pls-aside .disabled li a.agents {
-      background: url(../img/icons.png) 6px -210px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -210px no-repeat !important; }
     section#pls-aside .disabled li a.about {
-      background: url(../img/icons.png) 6px -244px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -244px no-repeat !important; }
     section#pls-aside .disabled li a.contact {
-      background: url(../img/icons.png) 6px -278px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -278px no-repeat !important; }
     section#pls-aside .disabled li a.custom {
-      background: url(../img/icons.png) 6px -311px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -311px no-repeat !important; }
     section#pls-aside .disabled li a.mls {
-      background: url(../img/icons.png) 6px -347px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -347px no-repeat !important; }
     section#pls-aside .disabled li a.blog {
-      background: url(../img/icons.png) 6px -380px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -380px no-repeat !important; }
     section#pls-aside .disabled li a.services {
-      background: url(../img/icons.png) 6px -414px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -414px no-repeat !important; }
     section#pls-aside .disabled li a.testimonials {
-      background: url(../img/icons.png) 6px -449px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -449px no-repeat !important; }
     section#pls-aside .disabled li a.neighborhoods {
-      background: url(../img/icons.png) 6px -483px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -483px no-repeat !important; }
     section#pls-aside .disabled li a.theme {
-      background: url(../img/icons.png) 6px -516px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -516px no-repeat !important; }
     section#pls-aside .disabled li a.css {
-      background: url(../img/icons.png) 6px -551px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -551px no-repeat !important; }
     section#pls-aside .disabled li a.menus {
-      background: url(../img/icons.png) 6px -584px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -584px no-repeat !important; }
     section#pls-aside .disabled li a.settings {
-      background: url(../img/icons.png) 6px -618px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -618px no-repeat !important; }
   section#pls-aside .disabled a {
     font-size: 12px;
     font-weight: bold;
@@ -814,45 +814,45 @@ section#pls-aside {
     section#pls-aside .enabled li:hover {
       background: #6f6f6f; }
     section#pls-aside .enabled li a.home {
-      background: url(../img/icons.png) 6px -1160px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -1160px no-repeat !important; }
     section#pls-aside .enabled li a.listings {
-      background: url(../img/icons.png) 6px -1195px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -1195px no-repeat !important; }
     section#pls-aside .enabled li a.agents {
-      background: url(../img/icons.png) 6px -1229px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -1229px no-repeat !important; }
     section#pls-aside .enabled li a.about {
-      background: url(../img/icons.png) 6px -1264px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -1264px no-repeat !important; }
     section#pls-aside .enabled li a.contact {
-      background: url(../img/icons.png) 6px -1298px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -1298px no-repeat !important; }
     section#pls-aside .enabled li a.custom {
-      background: url(../img/icons.png) 6px -1331px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -1331px no-repeat !important; }
     section#pls-aside .enabled li a.mls {
-      background: url(../img/icons.png) 6px -1366px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -1366px no-repeat !important; }
     section#pls-aside .enabled li a.blog {
-      background: url(../img/icons.png) 6px -1400px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -1400px no-repeat !important; }
     section#pls-aside .enabled li a.services {
-      background: url(../img/icons.png) 6px -1433px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -1433px no-repeat !important; }
     section#pls-aside .enabled li a.testimonials {
-      background: url(../img/icons.png) 6px -1468px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -1468px no-repeat !important; }
     section#pls-aside .enabled li a.neighborhoods {
-      background: url(../img/icons.png) 6px -1502px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -1502px no-repeat !important; }
     section#pls-aside .enabled li a.title {
-      background: url(../img/icons.png) 5px -1750px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 5px -1750px no-repeat !important; }
     section#pls-aside .enabled li a.color {
-      background: url(../img/icons.png) 5px -1785px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 5px -1785px no-repeat !important; }
     section#pls-aside .enabled li a.mls-int {
-      background: url(../img/icons.png) 5px -1820px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 5px -1820px no-repeat !important; }
     section#pls-aside .enabled li a.social {
-      background: url(../img/icons.png) 5px -1855px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 5px -1855px no-repeat !important; }
     section#pls-aside .enabled li a.demo {
-      background: url(../img/icons.png) 5px -1888px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 5px -1888px no-repeat !important; }
     section#pls-aside .enabled li a.theme {
-      background: url(../img/icons.png) 6px -1536px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -1536px no-repeat !important; }
     section#pls-aside .enabled li a.css {
-      background: url(../img/icons.png) 6px -1570px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -1570px no-repeat !important; }
     section#pls-aside .enabled li a.menus {
-      background: url(../img/icons.png) 6px -1604px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -1604px no-repeat !important; }
     section#pls-aside .enabled li a.settings {
-      background: url(../img/icons.png) 6px -1636px no-repeat !important; }
+      background: url(../../images/icons/pl-admin_icons.png) 6px -1636px no-repeat !important; }
   section#pls-aside .enabled a {
     font-size: 12px;
     font-weight: bold;
@@ -866,7 +866,7 @@ section#pls-aside {
 
 /* Sections  */
 section.welcome {
-  background: url(../img/body-bg.png) repeat;
+  background: url(../../images/icons/pl-admin_icons.png/body-bg.png) repeat;
   width: 100%;
   height: 100%; }
   section.welcome .inner {
@@ -931,39 +931,39 @@ section.welcome {
     font-size: 22px;
     font-weight: lighter; }
   #pls-pane div.pls-ico-inactive {
-    background: url(../img/icons.png) -228px -470px;
+    background: url(../../images/icons/pl-admin_icons.png) -228px -470px;
     width: 32px;
     height: 32px;
     float: left;
     margin: -6px 8px 0 0; }
   #pls-pane div.pls-ico-active {
-    background: url(../img/icons.png) -228px -507px;
+    background: url(../../images/icons/pl-admin_icons.png) -228px -507px;
     width: 32px;
     height: 32px;
     float: left;
     margin: -6px 8px 0 0; }
   #pls-pane .pls-ico-home {
-    background: url(../img/icons.png) -228px -2px; }
+    background: url(../../images/icons/pl-admin_icons.png) -228px -2px; }
   #pls-pane .pls-ico-listings {
-    background: url(../img/icons.png) -228px -42px; }
+    background: url(../../images/icons/pl-admin_icons.png) -228px -42px; }
   #pls-pane .pls-ico-agents {
-    background: url(../img/icons.png) -229px -82px; }
+    background: url(../../images/icons/pl-admin_icons.png) -229px -82px; }
   #pls-pane .pls-ico-about {
-    background: url(../img/icons.png) -228px -120px; }
+    background: url(../../images/icons/pl-admin_icons.png) -228px -120px; }
   #pls-pane .pls-ico-contact {
-    background: url(../img/icons.png) -228px -160px; }
+    background: url(../../images/icons/pl-admin_icons.png) -228px -160px; }
   #pls-pane .pls-ico-custom {
-    background: url(../img/icons.png) -229px -200px; }
+    background: url(../../images/icons/pl-admin_icons.png) -229px -200px; }
   #pls-pane .pls-ico-mls {
-    background: url(../img/icons.png) -228px -237px; }
+    background: url(../../images/icons/pl-admin_icons.png) -228px -237px; }
   #pls-pane .pls-ico-blog {
-    background: url(../img/icons.png) -229px -317px; }
+    background: url(../../images/icons/pl-admin_icons.png) -229px -317px; }
   #pls-pane .pls-ico-services {
-    background: url(../img/icons.png) -228px -354px; }
+    background: url(../../images/icons/pl-admin_icons.png) -228px -354px; }
   #pls-pane .pls-ico-testimonials {
-    background: url(../img/icons.png) -229px -394px; }
+    background: url(../../images/icons/pl-admin_icons.png) -229px -394px; }
   #pls-pane .pls-ico-neighborhoods {
-    background: url(../img/icons.png) -229px -431px; }
+    background: url(../../images/icons/pl-admin_icons.png) -229px -431px; }
   #pls-pane .pls-tips ul.pls-legend {
     list-style: none;
     margin: 20px 0 0 0;
@@ -1031,7 +1031,7 @@ section.welcome {
         background: #f1f1f1;
         color: #4c4c4c; }
       #pls-pane .pls-right a.pls-close span {
-        background: url(../img/icons.png) -3px -1677px no-repeat !important;
+        background: url(../../images/icons/pl-admin_icons.png) -3px -1677px no-repeat !important;
         height: 16px;
         width: 16px;
         display: block; }
@@ -1084,7 +1084,7 @@ section.welcome {
           font-weight: lighter;
           width: 88%; }
         .pls-max .pls-frames ul li .pls-frames-title .checkmark-ico {
-          background: url(../img/icons.png) -145px -29px;
+          background: url(../../images/icons/pl-admin_icons.png) -145px -29px;
           height: 32px;
           width: 32px;
           position: absolute;
@@ -1111,7 +1111,7 @@ section.welcome {
       .pls-max .pls-frames ul li .pls-frame {
         position: relative; }
         .pls-max .pls-frames ul li .pls-frame .pls-frame-ico {
-          background: url(../img/icons.png) -228px -470px;
+          background: url(../../images/icons/pl-admin_icons.png) -228px -470px;
           height: 32px;
           width: 32px;
           position: absolute;
@@ -1147,16 +1147,16 @@ section.welcome {
       .pls-full ul#featureslist li .featureicon {
         height: 24px;
         width: 24px;
-        background: url(../img/icons.png) -2px -1727px;
+        background: url(../../images/icons/pl-admin_icons.png) -2px -1727px;
         float: left;
         margin: 2px 8px 10px 0; }
         .pls-full ul#featureslist li .featureicon:hover {
-          background: url(../img/icons.png) -2px -1703px; }
+          background: url(../../images/icons/pl-admin_icons.png) -2px -1703px; }
       .pls-full ul#featureslist li a.ico-responsive {
         height: 24px;
         width: 24px;
         display: block;
-        background: url(../img/icons.png) -2px -1756px; }
+        background: url(../../images/icons/pl-admin_icons.png) -2px -1756px; }
 
 a.v-handle span {
   border-style: dashed;
@@ -1347,21 +1347,21 @@ div#pls-numbers {
     width: 190px;
     height: 42px; }
   #pls-cards .pls-card .pls-social a#fb {
-    background: url(../img/icons.png) -4px -2260px no-repeat; }
+    background: url(../../images/icons/pl-admin_icons.png) -4px -2260px no-repeat; }
     #pls-cards .pls-card .pls-social a#fb:hover {
-      background: url(../img/icons.png) -4px -2093px no-repeat; }
+      background: url(../../images/icons/pl-admin_icons.png) -4px -2093px no-repeat; }
   #pls-cards .pls-card .pls-social a#go {
-    background: url(../img/icons.png) -4px -2302px no-repeat; }
+    background: url(../../images/icons/pl-admin_icons.png) -4px -2302px no-repeat; }
     #pls-cards .pls-card .pls-social a#go:hover {
-      background: url(../img/icons.png) -4px -2135px no-repeat; }
+      background: url(../../images/icons/pl-admin_icons.png) -4px -2135px no-repeat; }
   #pls-cards .pls-card .pls-social a#tw {
-    background: url(../img/icons.png) -4px -2343px no-repeat; }
+    background: url(../../images/icons/pl-admin_icons.png) -4px -2343px no-repeat; }
     #pls-cards .pls-card .pls-social a#tw:hover {
-      background: url(../img/icons.png) -4px -2176px no-repeat; }
+      background: url(../../images/icons/pl-admin_icons.png) -4px -2176px no-repeat; }
   #pls-cards .pls-card .pls-social a#yh {
-    background: url(../img/icons.png) -4px -2385px no-repeat; }
+    background: url(../../images/icons/pl-admin_icons.png) -4px -2385px no-repeat; }
     #pls-cards .pls-card .pls-social a#yh:hover {
-      background: url(../img/icons.png) -4px -2218px no-repeat; }
+      background: url(../../images/icons/pl-admin_icons.png) -4px -2218px no-repeat; }
 #pls-cards .pls-c01 {
   top: 70px;
   z-index: 50; }
@@ -1593,7 +1593,7 @@ div#growl {
     top: 0.25em;
     top: 2px; }
   div#growl .pls-lead {
-    background: url(../img/icons.png) -110px -77px;
+    background: url(../../images/icons/pl-admin_icons.png) -110px -77px;
     padding: 2px 4px 8px 14px;
     margin: -12px 0 0 0; }
 
@@ -1815,7 +1815,7 @@ section#widget-expanded-pane .pls-widget-container {
     width: 175px;
     margin-right: 10px; }
   section#widget-expanded-pane .pls-widget-container .pls-move-handle {
-    background: url(../img/icons.png) -153px -2px;
+    background: url(../../images/icons/pl-admin_icons.png) -153px -2px;
     height: 26px;
     width: 26px;
     float: left;
@@ -2030,7 +2030,7 @@ section#pls-map-pane table.table a.active {
       padding-left: 15px;
       padding-right: 15px; }
       #pls-listings-overlay .pls-listings-search a.pls-search-ico span {
-        background: url(../img/icons.png) -107px -27px;
+        background: url(../../images/icons/pl-admin_icons.png) -107px -27px;
         height: 20px;
         width: 20px;
         display: block; }
@@ -2055,12 +2055,12 @@ section#pls-map-pane table.table a.active {
     padding-right: 15px;
     float: left; }
     #pls-menus-overlay a.pls-remove-ico span {
-      background: url(../img/icons.png) -107px -52px;
+      background: url(../../images/icons/pl-admin_icons.png) -107px -52px;
       height: 20px;
       width: 20px;
       display: block; }
   #pls-menus-overlay span.pls-lead {
-    background: url(../img/icons.png) -107px -52px;
+    background: url(../../images/icons/pl-admin_icons.png) -107px -52px;
     height: 20px;
     width: 20px;
     display: block; }
@@ -2148,7 +2148,7 @@ section#pls-map-pane table.table a.active {
     margin-left: -16px; }
 
 .pls-checkmark-ico {
-  background: url(../img/icons.png) -145px -29px;
+  background: url(../../images/icons/pl-admin_icons.png) -145px -29px;
   height: 32px;
   width: 32px;
   position: absolute;
@@ -2156,7 +2156,7 @@ section#pls-map-pane table.table a.active {
   top: 30px; }
 
 .pls-cross-ico {
-  background: url(../img/icons.png) -143px -67px;
+  background: url(../../images/icons/pl-admin_icons.png) -143px -67px;
   height: 32px;
   width: 32px;
   position: absolute;
@@ -2237,7 +2237,7 @@ section#pls-map-pane table.table a.active {
   color: #fff;
   font-weight: bold; }
   .pls-pointer span {
-    background: url(../img/icons.png) -143px -99px;
+    background: url(../../images/icons/pl-admin_icons.png) -143px -99px;
     height: 32px;
     width: 32px;
     display: block;

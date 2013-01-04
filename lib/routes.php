@@ -44,17 +44,17 @@ class PL_Router {
 		include_once(trailingslashit($directory) . $template);
 	}
 
-	private static function load_builder_view($template, $directory = PL_VIEWS_ADMIN_DIR, $params = array()) {
+	public static function load_builder_view($template, $directory = PL_VIEWS_ADMIN_DIR, $params = array()) {
 		ob_start();
 			if (!empty($params)) {
 				extract($params);
 			}
 			include_once(trailingslashit($directory) . $template);
-			echo ob_get_clean();	
+		echo ob_get_clean();	
 	}
 	
 	public function my_listings() {
-		self:: router('my-listings.php', array('test'=>'donkey'), false);
+		self:: router('my-listings.php', array(), false);
 	}
 
 	public function add_listings() {
