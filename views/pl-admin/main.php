@@ -28,6 +28,11 @@ do_action( 'pl_admin_enqueue_scripts' );
   		// WP call to load styles enqueued for the footer section and/or register too late for the head...
   	  	print_admin_styles();
   	?>
+
+  	<!-- Temporary Solution... -->
+  	<script type="text/javascript">
+  	  pl_admin_global = {};
+  	</script>
   </head>
 
   <body>
@@ -54,7 +59,7 @@ do_action( 'pl_admin_enqueue_scripts' );
 	    <div id="pls-user">
 	      <ul id="user-dropdown" class="pls-dropdown">
 	        <li>
-	          <img alt="" src="img/user.png">
+	          <img alt="" src="">
 	          <a href="#" class="pls-link">Welcome Home Matt, Premium User!<span class="a-down"></span></a>
 	          <ul>
 	            <li><a href="#">Real Estate Support Academy</a></li>
@@ -86,15 +91,7 @@ do_action( 'pl_admin_enqueue_scripts' );
 	        </div><!--pls-buttons-->
 	      </div><!--pls-inner-top-->
 	      <div id="pls-inner-bot">
-	    	<ul id="pls-breadcrumbs" class="disabled">
-	      	  <li><a href="#">LiveEastie.com<span class="a-down"></span></a></li>
-	          <li>/</li>           
-	       	  <li><a href="#">Home</a></li>
-	          <li>/</li>            
-	       	  <li><a href="#">Listings</a></li>
-	          <li>/</li>            
-	       	  <li><a href="#">01 Prescott Street</a></li>                                    
-	        </ul>
+	    	<?php echo PL_Admin_Util::getBreadcrumbs(); ?>
 	      </div><!--pls-inner-bot-->
 	    </div><!--pls-inner-->
 	  </div><!--pls-header-bot-->
@@ -170,7 +167,8 @@ do_action( 'pl_admin_enqueue_scripts' );
       </div>
 	</section>
 
-	<iframe id="main-iframe" src=""></iframe>
+	<!-- Site Content Container -->
+	<iframe id="main-iframe" src="<?php echo PL_Admin_Util::getContentURI(); ?>"></iframe>
 
   </body>
 

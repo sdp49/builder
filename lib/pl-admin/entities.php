@@ -57,6 +57,10 @@ class PL_Admin_Section {
 
  	}
 
+ 	public function render () {
+ 		
+ 	}
+
 }
 
 class PL_Admin_Pane {
@@ -67,7 +71,7 @@ class PL_Admin_Pane {
 	public $priority;
 	public $cards = array();
 
-	
+
 
 }
 
