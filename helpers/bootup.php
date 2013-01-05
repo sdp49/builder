@@ -55,6 +55,33 @@ class PL_Bootup {
     }
 
     echo json_encode(true);
+    
+    // Regenerate Featured Images
+    
+    // Get posts and CPT posts
+    $posts = get_posts( array( 'post_type' => 'post' ) );
+    $services = get_posts( array( 'post_type' => 'service' ) );
+    $testimonials = get_posts( array( 'post_type' => 'testimonial' ) );
+    $agents = get_posts( array( 'post_type' => 'agent' ) );
+    // merge them into 1 array so we can grab all of their featured images
+    $all_posts = array_merge($posts, $services, $testimonials, $agents);
+
+    $featured_images = array();
+    foreach ($all_posts as $post) {
+      if ( !empty(get_post_thumbnail_id($post->ID)) ) {
+        $featured_images[] = get_post_thumbnail_id($post->ID);
+      }
+      
+    }
+    
+    if ( !empty($featured_images) ) {
+      // Call to image util class 
+      $image_util = new PLS_Image();
+      if (method_exists($image_util, 'regenerate_images')) {
+        PLS_Image::regenerate_images($featured_images);
+      }
+    }
+    
     die();
   }
 
