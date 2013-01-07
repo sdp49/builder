@@ -58,14 +58,19 @@ class PL_Admin_Util {
 		$host = $_SERVER['HTTP_HOST'];
 		$uri_parts = explode('/', $_SERVER['REQUEST_URI']);
 
+		// Re-build the full URL as breadcrumbs are printed...
+		$runningURL = 'http://' . trailingslashit($host);
+
 		ob_start();
 		?>
 		  <ul id="pls-breadcrumbs" class="<?php echo ( $enabled ? 'enabled' : 'disabled' ); ?>">
-	      	  <li><a href="#"><?php echo $host; ?><span class="a-down"></span></a></li>
+	      	  <li><a href="<?php echo $runningURL; ?>"><?php echo $host; ?><span class="a-down"></span></a></li>
 	        <?php foreach ( $uri_parts as $part ): ?>
-	          <?php if ( empty($part) ) { continue; } ?>
+	          <?php if ( empty($part) ) { continue; } 
+	          		else { $runningURL .=  trailingslashit($part); }
+	          ?>
 	          <li>/</li>           
-	       	  <li><a href="#"><?php echo esc_html( ucfirst($part) ); ?></a></li>
+	       	  <li><a href="<?php echo esc_url( $runningURL ); ?>"><?php echo esc_html( ucfirst($part) ); ?></a></li>
 	       	<?php endforeach; ?>                                    
 	      </ul>
 		<?php
@@ -74,8 +79,42 @@ class PL_Admin_Util {
 		return $breadcrumbs;
 	}
 
-	public static function constuctButtons () {
-		
+	public static function getAnchorList ( $type = 'admin' ) {
+		global $PL_ADMIN_HEADER;
+		// Make sure anchor list exists...
+		$id = "{$type}-links";
+		$links = $PL_ADMIN_HEADER[$id];
+		if ( empty($links) ) { return null; }
+
+		ob_start();
+		?>
+		  <ul>
+            <?php foreach ( $links as $text => $url ): ?>	      
+	       	  <li><a href="<?php echo esc_url( $url ); ?>"><?php echo esc_html( ucfirst($text) ); ?></a></li>
+	       	<?php endforeach; ?> 	
+          </ul>
+		<?php
+		$anchorList = ob_get_clean();
+
+		return $anchorList;
+	}
+
+	public static function constructButtons () {
+		global $PL_ADMIN_HEADER;
+		// Make sure button config exists...
+		$id = 'buttons';
+		$config = $PL_ADMIN_HEADER[$id];
+		if ( empty($config) ) { return null; }
+
+		ob_start();
+		?>
+		  <?php foreach ( $config as $key => $buttonObj ): extract($buttonObj) ?>
+		    <a class="button <?php echo esc_attr( $class ); ?>" href="<?php echo esc_attr( $action ); ?>"><?php echo esc_html( ucfirst($text) ); ?></a>
+		  <?php endforeach; ?>
+		<?php
+		$buttons = ob_get_clean();
+
+		return $buttons;	
 	}
 
 }

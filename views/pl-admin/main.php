@@ -49,11 +49,7 @@ do_action( 'pl_admin_enqueue_scripts' );
 		  <a class="pls-toggle" href="#">Customizer</a>
 		  <ul id="admin-dropdown" class="pls-dropdown">
 	        <li><a href="#">Admin<span class="a-down"></span></a>
-	          <ul>
-	            <li><a href="#">Real Estate Support Academy</a></li>
-	            <li><a href="#">Getting Started Guide</a></li>
-	            <li><a href="#">Free 15 Day Trial</a></li>
-	          </ul>
+	          <?php echo PL_Admin_Util::getAnchorList('admin'); ?>
 	        </li>
 	      </ul>
 	      <div id="pls-switch">
@@ -66,11 +62,7 @@ do_action( 'pl_admin_enqueue_scripts' );
 	        <li>
 	          <img alt="" src="">
 	          <a href="#" class="pls-link">Welcome Home Matt, Premium User!<span class="a-down"></span></a>
-	          <ul>
-	            <li><a href="#">Real Estate Support Academy</a></li>
-	            <li><a href="#">Getting Started Guide</a></li>
-	            <li><a href="#">Free 15 Day Trial</a></li>
-	          </ul>
+	            <?php echo PL_Admin_Util::getAnchorList('user'); ?>
 	        </li>
 	      </ul>
 	      <a href="<?php echo esc_url( wp_logout_url( site_url() ) ); ?>" class="pls-logout">Logout</a>
@@ -87,12 +79,7 @@ do_action( 'pl_admin_enqueue_scripts' );
 	          </form>
 	        </div><!--pls-search-->
 	        <div id="pls-buttons">
-	          <?php // Construct buttons ?>
-	          <!-- <a class="button deactive" href="#">Create</a>
-	          <a class="button deactive" href="#">Edit</a>
-	          <a class="button deactive" href="#">Upgrade</a>
-	          <a class="button deactive" href="#">Leads</a>
-	          <a class="button deactive" href="#">Help</a>  -->                             
+	          <?php echo PL_Admin_Util::constructButtons(); ?>                            
 	        </div><!--pls-buttons-->
 	      </div><!--pls-inner-top-->
 	      <div id="pls-inner-bot">

@@ -43,7 +43,8 @@ $PL_ADMIN_NAVS = array(
 		'mls' => array(
 			'title' => 'MLS Search',
 			'css_class' => 'mls',
-			'priority' => 70
+			'priority' => 70,
+			'iframe_target' => ''
 		),
 		'blog' => array(
 			'title' => 'Blog',
