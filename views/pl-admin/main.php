@@ -12,32 +12,34 @@
 
 // Catch variables related to request/template...
 
+// Clear out any enqueued scripts and styles before adding those for PL Admin...
+global $wp_styles, $wp_scripts;
+$wp_styles->queue = array();
+$wp_scripts->queue = array();
+
+// ob_start();
+//   var_dump($wp_styles->queue);
+//   var_dump($wp_scripts->queue);
+// error_log(ob_get_clean());
+
 // Load styles & scripts
 do_action( 'pl_admin_enqueue_scripts' );
-
 ?>
+
+<!DOCTYPE html>
 
 <html>
 
   <head>
-  	<title></title>
+  	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   	<?php
   		// WP call to load scripts enqueued for the head section...
   		print_head_scripts();
 
-  		// If the current theme's stylesheet is enqueued, remove it... (assuming a certain handle format)
-  		$theme_style_handle = wp_get_theme()->Template . '-style';
-  		wp_dequeue_style($theme_style_handle);
-
-  		// global $wp_styles, $wp_scripts;
-  		// ob_start();
-  		  // var_dump($wp_styles);
-  		  // var_dump($wp_scripts);
-  		// error_log(ob_get_clean());
-
   		// WP call to load styles enqueued for the footer section and/or register too late for the head...
 	  	print_admin_styles();
   	?>
+    <title>Placester Admin Panel</title>
   </head>
 
   <body>
@@ -91,7 +93,8 @@ do_action( 'pl_admin_enqueue_scripts' );
 
 	<!-- Side Bar -->
 	<section id="pls-aside" class="pls-undocked">
-	  <?php
+    <a href="#" class="h-handle"><span></span></a>
+    <?php
 	  	$navList = array('utilities', 'settings'); 
 	  	echo PL_Admin_Util::renderNavs($navList); 
 	  ?>

@@ -108,10 +108,10 @@ class PL_Css_Helper {
 	function pl_admin () {
 		$dir_prefix = 'pl-admin/';
 
-		self::register_enqueue_if_not('pl-admin-style', trailingslashit(PL_CSS_URL) . $dir_prefix . 'style.css');
 		self::register_enqueue_if_not('pl-admin-normalize', trailingslashit(PL_CSS_URL) . $dir_prefix .  'normalize.css');
 		self::register_enqueue_if_not('pl-admin-bootstrap', trailingslashit(PL_CSS_URL) . $dir_prefix . 'bootstrap.css');
 		self::register_enqueue_if_not('pl-admin-responsive', trailingslashit(PL_CSS_URL) . $dir_prefix . 'bootstrap-responsive.css');
+		self::register_enqueue_if_not('pl-admin-style', trailingslashit(PL_CSS_URL) . $dir_prefix . 'style.css');
 	}
 
 	private function register_enqueue_if_not($name, $path, $dependencies = array()) {
