@@ -31,7 +31,7 @@ class PL_Admin_Util {
 
 	public static function getContentURI () {
 		$escape_admin = ( '?' . self::ESCAPE_ARG . '=true' );
-		$iframe_url = ( $_SERVER['REQUEST_URI'] . $escape_admin );
+		$iframe_url = ( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . $escape_admin );
 		return $iframe_url;
 	}
 

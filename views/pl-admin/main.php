@@ -25,25 +25,19 @@ do_action( 'pl_admin_enqueue_scripts' );
   		// WP call to load scripts enqueued for the head section...
   		print_head_scripts();
 
-  		// If the current theme's stylesheet is enqueued, remove it... (assuming a certain handle)
+  		// If the current theme's stylesheet is enqueued, remove it... (assuming a certain handle format)
   		$theme_style_handle = wp_get_theme()->Template . '-style';
-  		error_log($theme_style_handle);
   		wp_dequeue_style($theme_style_handle);
 
-  		global $wp_styles, $wp_scripts;
-  		ob_start();
+  		// global $wp_styles, $wp_scripts;
+  		// ob_start();
   		  // var_dump($wp_styles);
   		  // var_dump($wp_scripts);
-  		error_log(ob_get_clean());
+  		// error_log(ob_get_clean());
 
   		// WP call to load styles enqueued for the footer section and/or register too late for the head...
-  	  	print_admin_styles();
+	  	print_admin_styles();
   	?>
-
-  	<!-- Temporary Solution... -->
-  	<script type="text/javascript">
-  	  pl_admin_global = {};
-  	</script>
   </head>
 
   <body>
@@ -79,7 +73,7 @@ do_action( 'pl_admin_enqueue_scripts' );
 	          </ul>
 	        </li>
 	      </ul>
-	      <a href="#" class="pls-logout">Logout</a>
+	      <a href="<?php echo esc_url( wp_logout_url( site_url() ) ); ?>" class="pls-logout">Logout</a>
 	    </div><!--pls-user-->
 	  </div><!--pls-top-->
 	    

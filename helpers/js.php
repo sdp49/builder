@@ -182,8 +182,10 @@ class PL_Js_Helper {
 	 * Load scripts that power Placester's custom admin panel. 
 	 */
 	function pl_admin () {
+		$dir_prefix = 'pl-admin/';
+
 		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/js/jquery-ui-1.8.17.custom.min.js', array( 'jquery'));
-	
+		self::register_enqueue_if_not('pl-admin-main', trailingslashit(PL_JS_URL) . $dir_prefix . 'main.js', array('jquery'));
 	}
 
 	public static function register_enqueue_if_not($name, $path, $dependencies = array(), $version = null, $in_footer = false) {
