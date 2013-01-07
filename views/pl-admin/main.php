@@ -24,6 +24,12 @@ $wp_scripts->queue = array();
 
 // Load styles & scripts
 do_action( 'pl_admin_enqueue_scripts' );
+
+// Get current user info...
+$current_user = wp_get_current_user();
+// ob_start();
+//   var_dump($current_user);
+// error_log(ob_get_clean());
 ?>
 
 <!DOCTYPE html>
@@ -36,8 +42,8 @@ do_action( 'pl_admin_enqueue_scripts' );
   		// WP call to load scripts enqueued for the head section...
   		print_head_scripts();
 
-  		// WP call to load styles enqueued for the footer section and/or register too late for the head...
-	  	print_admin_styles();
+  		// WP call to load styles enqueued for the head section...
+	  	wp_print_styles();
   	?>
     <title>Placester Admin Panel</title>
   </head>
@@ -47,10 +53,10 @@ do_action( 'pl_admin_enqueue_scripts' );
 	<section id="pls-header">
 	  <div id="pls-top">
 	    <div id="pls-meta">
-		  <h1><a id="pls-logo" href="#"></a></h1>
+		  <h1><a id="pls-logo" href="https://placester.com"></a></h1>
 		  <a class="pls-toggle" href="#">Customizer</a>
 		  <ul id="admin-dropdown" class="pls-dropdown">
-	        <li><a href="#">Admin<span class="a-down"></span></a>
+	        <li><a href="<?php echo esc_url( PL_Admin_Util::getAdminURI() ); ?>">Admin<span class="a-down"></span></a>
 	          <?php echo PL_Admin_Util::getAnchorList('admin'); ?>
 	        </li>
 	      </ul>
@@ -63,7 +69,7 @@ do_action( 'pl_admin_enqueue_scripts' );
 	      <ul id="user-dropdown" class="pls-dropdown">
 	        <li>
 	          <img alt="" src="">
-	          <a href="#" class="pls-link">Welcome Home Matt, Premium User!<span class="a-down"></span></a>
+	          <a href="#" class="pls-link">Welcome Home <?php echo esc_html( $current_user->user_firstname ); ?>, Premium User!<span class="a-down"></span></a>
 	            <?php echo PL_Admin_Util::getAnchorList('user'); ?>
 	        </li>
 	      </ul>
@@ -101,6 +107,7 @@ do_action( 'pl_admin_enqueue_scripts' );
 	</section>
 
 	<!-- Side Bar Pane Container -->
+<?php /*  
 	<section id="pls-pane" class="pls-small pls-min">
       <div id="pls-inner">
         <div class="container-fluid">
@@ -161,7 +168,7 @@ do_action( 'pl_admin_enqueue_scripts' );
         </div><!--container-fluid-->
       </div>
 	</section>
-
+*/ ?>
 	<!-- Site Content Container -->
 	<iframe id="main-iframe" src="<?php echo PL_Admin_Util::getContentURI(); ?>"></iframe>
 

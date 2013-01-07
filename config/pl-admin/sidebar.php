@@ -74,6 +74,31 @@ $PL_ADMIN_NAVS = array(
 
 	// Conditionally loading for onboarding process
 	'onboarding' => array(
+		'title' => array(
+			'title' => 'Site Title & Slogan',
+			'css_class' => 'title',
+			'priority' => 10
+		),
+		'color' => array(
+			'title' => 'Color Palette & Styling',
+			'css_class' => 'color',
+			'priority' => 20
+		),
+		'mls' => array(
+			'title' => 'MLS Integration',
+			'css_class' => 'mls-int',
+			'priority' => 30
+		),
+		'social' => array(
+			'title' => 'Social Integration',
+			'css_class' => 'social',
+			'priority' => 40
+		),
+		'demo' => array(
+			'title' => 'Demo Data',
+			'css_class' => 'demo',
+			'priority' => 50
+		)
 	),
 
 	// General settings that apply to most/all areas of the site

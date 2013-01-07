@@ -33,32 +33,8 @@ class PL_Admin_Util {
 		return $iframe_url;
 	}
 
-	public static function constructNav ( $id ) {
-		global $PL_ADMIN_NAVS;
-		// Make sure nav config exists...
-		$config = $PL_ADMIN_NAVS[$id];
-		if ( empty($config) ) { return null; }
-
-		// Constuct an empty Nav...
-		$nav = new PL_Admin_Nav($id);
-
-		foreach ( $config as $section => $args ) {
-			// Check for custom entity, otherwise use generic class...
-			$entity = "PL_Admin_Section_{$section}";
-			$new_section = ( class_exists($entity) ? new $entity($section, $args) : new PL_Admin_Section($section, $args) );
-			$nav->add_section($new_section);
-		}
-
-		return $nav;
-	}
-
-	public static function renderNavs ( $navList = array() ) {
-	  ob_start();	
-		foreach ( $navList as $navID ) {
-			$nav = self::constructNav($navID);
-			$nav->render();
-		}
-	  return ob_get_clean();	
+	public static function getAdminURI () {
+		return ( 'http://' . trailingslashit($_SERVER['HTTP_HOST']) . 'wp-admin/' ); 
 	}
 
 	public static function getBreadcrumbs ( $enabled = true ) {
@@ -122,6 +98,38 @@ class PL_Admin_Util {
 		$buttons = ob_get_clean();
 
 		return $buttons;	
+	}
+
+	/*
+	 * Functions related to the "Nav" groups on the left sidebar
+	 */
+
+	public static function constructNav ( $id ) {
+		global $PL_ADMIN_NAVS;
+		// Make sure nav config exists...
+		$config = $PL_ADMIN_NAVS[$id];
+		if ( empty($config) ) { return null; }
+
+		// Constuct an empty Nav...
+		$nav = new PL_Admin_Nav($id);
+
+		foreach ( $config as $section => $args ) {
+			// Check for custom entity, otherwise use generic class...
+			$entity = "PL_Admin_Section_{$section}";
+			$new_section = ( class_exists($entity) ? new $entity($section, $args) : new PL_Admin_Section($section, $args) );
+			$nav->add_section($new_section);
+		}
+
+		return $nav;
+	}
+
+	public static function renderNavs ( $navList = array() ) {
+	  ob_start();	
+		foreach ( $navList as $navID ) {
+			$nav = self::constructNav($navID);
+			$nav->render();
+		}
+	  return ob_get_clean();	
 	}
 
 }
