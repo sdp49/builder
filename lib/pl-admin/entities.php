@@ -12,11 +12,11 @@ class PL_Admin_Nav {
  		$this->id = $id;
  	}
 
- 	public function add_section ( $id, $section_obj ) {
+ 	public function add_section ( $section_obj ) {
  		// Make sure the section we're trying to add is an either an instance of,
  		// or extends the standard section class...
  		if ( is_a($section_obj, 'PL_Admin_Section') ) {
- 			$this->settings[$id] = $section_obj;
+ 			$this->sections[$section_obj->id] = $section_obj;
  		}
  	}
 
@@ -25,7 +25,7 @@ class PL_Admin_Nav {
  		$html_id = $this->id . 'Nav';
  		
  		// Sort sections by priority...
-
+ 		uasort( $this->sections, array( $this, 'cmp_priority' ) );
 
  		// Loop through sections and call their render functions...
  		?>
@@ -34,15 +34,30 @@ class PL_Admin_Nav {
       	  </ul>
  		<?php
  	}
+
+ 	/* Comparison function by priority (for uasort) */
+ 	protected function cmp_priority ( $a, $b ) {
+		$ap = $a->priority;
+		$bp = $b->priority;
+
+		if ( $ap == $bp ) {
+			return 0;
+		}
+		return ( $ap > $bp ) ? 1 : -1;
+	}
 }
 
 class PL_Admin_Section {
 	// Class vars
 
 	// Instance vars
+	public $id;
 	public $panes = array();
+	
+	public $title;
 	public $css_class;
 	public $priority;
+	public $content_uri = '';
 
  	public function __construct( $id, $args = array() ) {
  		// Set section id...
@@ -58,7 +73,11 @@ class PL_Admin_Section {
  	}
 
  	public function render () {
- 		
+ 		?>
+ 		  <li>
+ 		  	<a class="<?php echo esc_attr( $this->css_class ); ?>" href="<?php echo esc_url( $this->content_uri ) ?>"><?php echo esc_html( $this->title ); ?></a>
+ 		  </li>
+ 		<?php
  	}
 
 }

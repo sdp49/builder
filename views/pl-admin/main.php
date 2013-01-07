@@ -93,7 +93,7 @@ do_action( 'pl_admin_enqueue_scripts' );
 	<section id="pls-aside" class="pls-undocked">
 	  <?php
 	  	$navList = array('utilities', 'settings'); 
-	  	// PL_Admin_Util::renderNavs($navList); 
+	  	echo PL_Admin_Util::renderNavs($navList); 
 	  ?>
 	</section>
 

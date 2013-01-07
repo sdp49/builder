@@ -4,8 +4,6 @@ PL_Admin_Util::init();
 
 class PL_Admin_Util {
 
-	const SECTION_BASE = 'PL_Admin_Section_';
-	const PANE_BASE = 'PL_Admin_Pane_';
 	const ESCAPE_ARG = 'content';
 
 	public static function init () {
@@ -46,12 +44,21 @@ class PL_Admin_Util {
 
 		foreach ( $config as $section => $args ) {
 			// Check for custom entity, otherwise use generic class...
-			$entity = self::SECTION_BASE . $section;
-			$new_section = ( class_exists($entity) ? new $entity($args) : new PL_Admin_Section($args) );
+			$entity = "PL_Admin_Section_{$section}";
+			$new_section = ( class_exists($entity) ? new $entity($section, $args) : new PL_Admin_Section($section, $args) );
 			$nav->add_section($new_section);
 		}
 
 		return $nav;
+	}
+
+	public static function renderNavs ( $navList = array() ) {
+	  ob_start();	
+		foreach ( $navList as $navID ) {
+			$nav = self::constructNav($navID);
+			$nav->render();
+		}
+	  return ob_get_clean();	
 	}
 
 	public static function getBreadcrumbs ( $enabled = true ) {
