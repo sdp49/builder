@@ -21,8 +21,8 @@ jQuery(document).ready(function($) {
 
   	  var newHref = aHref + escapeArg;
 
-  	  console.log(newHref);
-  	  console.log(iframe);
+  	  // console.log(newHref);
+  	  // console.log(iframe);
 
   	  iframe.src = newHref;
     });
