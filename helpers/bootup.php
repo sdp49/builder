@@ -56,31 +56,12 @@ class PL_Bootup {
 
     echo json_encode(true);
     
-    // Regenerate Featured Images
-    
-    // Get posts and CPT posts
-    $posts = get_posts( array( 'post_type' => 'post' ) );
-    $services = get_posts( array( 'post_type' => 'service' ) );
-    $testimonials = get_posts( array( 'post_type' => 'testimonial' ) );
-    $agents = get_posts( array( 'post_type' => 'agent' ) );
-    // merge them into 1 array so we can grab all of their featured images
-    $all_posts = array_merge($posts, $services, $testimonials, $agents);
 
-    $featured_images = array();
-    foreach ($all_posts as $post) {
-      if ( !empty(get_post_thumbnail_id($post->ID)) ) {
-        $featured_images[] = get_post_thumbnail_id($post->ID);
-      }
-      
-    }
-    
-    if ( !empty($featured_images) ) {
-      // Call to image util class 
-      $image_util = new PLS_Image();
-      if (method_exists($image_util, 'regenerate_images')) {
-        PLS_Image::regenerate_images($featured_images);
-      }
-    }
+    // Get posts and CPT posts
+    // $featured_images = self::get_all_post_featured_images();
+
+    // Regenerate featured images
+    // self::regenerate_images($featured_images);
     
     die();
   }
@@ -125,4 +106,44 @@ class PL_Bootup {
 		return false;
 	}
 
+  private function get_all_post_featured_images() {
+    // Get all posts
+    $posts = get_posts( array( 'post_type' => 'post' ) );
+    $services = get_posts( array( 'post_type' => 'service' ) );
+    $testimonials = get_posts( array( 'post_type' => 'testimonial' ) );
+    $agents = get_posts( array( 'post_type' => 'agent' ) );
+    // merge them into 1 array so we can grab all of their featured images
+    $all_posts = array_merge($posts, $services, $testimonials, $agents);
+    
+    // Get thumbs from post IDs
+    $featured_images = array();
+    foreach ($all_posts as $post) {
+      $post_thumb = get_post_thumbnail_id($post->ID);
+      if ( !empty($post_thumb) ) {
+        $featured_images[] = $post_thumb;
+      }
+    }
+    
+    return $featured_images;
+  }
+
+  private function regenerate_images($images) {
+  
+    foreach ($images as $image) {
+      // $fullsizepath = get_attached_file( $image );
+      $thumb = wp_get_attachment_image_src( get_post_thumbnail_id($i), 'post-thumbnails' );
+      // $metadata = wp_generate_attachment_metadata( $image, $fullsizepath );
+  
+      
+      // $thumb_url = $thumb['0'];
+       
+      // wp_update_attachment_metadata( $image, $metadata );
+      
+    }
+    
+    // ob_start();
+    //   pls_dump($images);
+    // error_log(ob_get_clean());
+  }
+  
 }
