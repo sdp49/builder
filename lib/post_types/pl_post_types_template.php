@@ -6,6 +6,10 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 		<style type="text/css">
 			body {
 				margin-top: 0px;
+				overflow: hidden;
+			}
+			.pls_embedded_widget_wrapper {
+				overflow: hidden;
 			}
 		</style>
 		<?php wp_head(); ?>
@@ -17,8 +21,10 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 
 		global $post;
 		
+		echo '<div class="pls_embedded_widget_wrapper">';
 		echo do_shortcode( isset( $shortcode ) ? $shortcode : $post->post_content );
-	
+		echo '<div>';
+		
 		wp_footer();
 		
 	 	function pl_template_drop_modernizr() {
