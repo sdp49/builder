@@ -32,9 +32,9 @@ jQuery(document).ready(function($) {
   });
 
   // Alter breadcrumbs to reflect a change in the iframe content...
-  function alterBreadCrumbs (newURL) {
-  		
-  }
+  // function alterBreadCrumbs (newURL) {
+  // 	var crumbs = 
+  // }
 
 
 });

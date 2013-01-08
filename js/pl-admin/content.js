@@ -20,10 +20,8 @@ jQuery(document).ready(function($) {
   	  escapeArg = ( aHref.indexOf('?') !== -1 ? '&' : '?' ) + 'content=true';
 
   	  var newHref = aHref + escapeArg;
-
   	  // console.log(newHref);
   	  // console.log(iframe);
-
   	  iframe.src = newHref;
     });
   });
