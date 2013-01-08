@@ -42,6 +42,9 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			'animationSpeed' => array( 'type' => 'text', 'label' => 'Animation Speed', 'css' => 'pl_slideshow' ),
 			'timer' => array( 'type' => 'checkbox', 'label' => 'Timer', 'css' => 'pl_slideshow' ),
 			'pauseOnHover' => array( 'type' => 'checkbox', 'label' => 'Pause on hover', 'css' => 'pl_slideshow' ),
+			'hide_sort_by' => array( 'type' => 'checkbox', 'label' => 'Hide Sort By dropdown', 'css' => 'pl_static_listings' ),
+			'hide_sort_direction' => array( 'type' => 'checkbox', 'label' => 'Hide Sort Direction', 'css' => 'pl_static_listings' ),
+			'hide_num_results' => array( 'type' => 'checkbox', 'label' => 'Hide Show Number of Results', 'css' => 'pl_static_listings' ),
 			
 	);
 	
@@ -675,12 +678,42 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				$template = 'template="static_listings_' . $meta['pl_cpt_template'][0] . '"';
 			}
 			
+			add_action('wp_head', array( __CLASS__, 'hide_unnecessary_controls' ) );
+			
 			$shortcode = '[static_listings id="' . $post->ID . '" ' . $template . ']';
 			include PL_LIB_DIR . '/post_types/pl_post_types_template.php';
 		
 			die();
 		}
 	}
+	
+	/**
+	 * Helper, add CSS to template to hide dropdowns
+	 */
+	public function hide_unnecessary_controls( ) { 
+		global $post;
+	
+		$css = '<style type="text/css">';
+		
+		if( ! empty( $post ) && $post->post_type === 'static_listings' ) {
+			$meta = get_post_meta( $post->ID );
+
+			if( ! empty( $meta['hide_sort_by'] ) && $meta['hide_sort_by'][0] == 'true' ) {
+				$css .= '.sort_wrapper .sort_item:first-child { display: none; } ';
+			}
+			if( ! empty( $meta['hide_sort_direction'] ) && $meta['hide_sort_direction'][0] == 'true' ) {
+				$css .= '.sort_wrapper .sort_item:last-child { display: none; } ';
+			}
+			if( ! empty( $meta['hide_num_results'] ) && $meta['hide_num_results'][0] == 'true' ) {
+				$css .= '#placester_listings_list_length { display: none; } ';
+			}
+		}
+		
+		$css .= '</style>';
+		
+		echo $css;
+	}
+
 	
 	// Autosave function when any of the input fields is called
 	public function autosave_save_post_for_iframe( ) {

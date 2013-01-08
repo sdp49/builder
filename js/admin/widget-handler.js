@@ -77,7 +77,10 @@ widget_autosave = function() {
 	                'zoning_types': static_listings['zoning_types'] || 'false',
 	                'purchase_types': static_listings['purchase_types'] || 'false',
 	                'location': JSON.stringify( static_listings.location ),
-	                'metadata': JSON.stringify( static_listings.metadata )
+	                'metadata': JSON.stringify( static_listings.metadata ),
+	                'hide_sort_by': jQuery('#hide_sort_by').is(':checked'),
+	                'hide_sort_direction': jQuery('#hide_sort_direction').is(':checked'),
+	                'hide_num_results': jQuery('#hide_num_results').is(':checked')
 	};
 	
 	debugger;
