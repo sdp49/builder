@@ -126,4 +126,10 @@ $PL_ADMIN_NAVS = array(
 	),
 );
 
+global $PL_ADMIN_CARDS;
+$PL_ADMIN_CARDS = array(
+	// Indexed by section id
+	
+);
+
 ?>

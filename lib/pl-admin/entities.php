@@ -1,15 +1,65 @@
 <?php
 
-class PL_Admin_Nav {
-	// Class vars
+/* 
+ * Base Class for all admin panel components (see classes below...) 
+ */
+abstract class PL_Admin_Component {
+	// Class Vars
 
-	// Instance vars
+	// Instance Vars
 	public $id;
+
+	public $title;
+	public $css_class;
+	public $priority;
+
+	public function __construct( $id, $args = array() ) {
+ 		// Set section id...
+ 		$this->id = $id;
+
+ 		// Take care of the other args, matching instance vars to keys...
+ 		$keys = array_keys( get_object_vars( $this ) );
+		foreach ( $keys as $key ) {
+			if ( isset( $args[ $key ] ) )
+				$this->$key = $args[ $key ];
+		}
+
+ 	}
+
+ 	/* MUST be implemented by any child class... */
+ 	abstract public function render ();
+
+ 	/* MUST be implemented by any child class... */
+ 	abstract public function render_content ();
+
+ 	/* Generic Component-object comparison function by priority (for uasort) */
+ 	protected function cmp_priority ( $a, $b ) {
+		$ap = $a->priority;
+		$bp = $b->priority;
+
+		if ( $ap == $bp ) {
+			return 0;
+		}
+		return ( $ap > $bp ) ? 1 : -1;
+	}
+}
+
+/* 
+ * Concrete implementations of the "Component" class above -- together they form the
+ * basis for the admin panel's class/object model.
+ *
+ * NOTE: There is "Has-A" relationaship betwween these -- A Nav contains Sections,
+ * which in turn contain cards.
+ */
+
+class PL_Admin_Nav extends PL_Admin_Component {
+	// Class Vars
+
+	// Instance Vars
 	public $sections = array();
 
  	public function __construct( $id, $args = array() ) {
- 		// Set nav id...
- 		$this->id = $id;
+ 		parent::__construct( $id, $args );
  	}
 
  	public function add_section ( $section_obj ) {
@@ -35,41 +85,29 @@ class PL_Admin_Nav {
  		<?php
  	}
 
- 	/* Comparison function by priority (for uasort) */
- 	protected function cmp_priority ( $a, $b ) {
-		$ap = $a->priority;
-		$bp = $b->priority;
+ 	public function render_content () {
+ 		// TODO...
+ 	}
 
-		if ( $ap == $bp ) {
-			return 0;
-		}
-		return ( $ap > $bp ) ? 1 : -1;
-	}
 }
 
-class PL_Admin_Section {
+class PL_Admin_Section extends PL_Admin_Component {
 	// Class vars
 
 	// Instance vars
-	public $id;
-	public $panes = array();
-	
-	public $title;
-	public $css_class;
-	public $priority;
+	public $cards = array();
 	public $content_uri = '';
 
  	public function __construct( $id, $args = array() ) {
- 		// Set section id...
- 		$this->id = $id;
+ 		parent::__construct( $id, $args );
+ 	}
 
- 		// Take care of the other args, matching instance vars to keys...
- 		$keys = array_keys( get_object_vars( $this ) );
-		foreach ( $keys as $key ) {
-			if ( isset( $args[ $key ] ) )
-				$this->$key = $args[ $key ];
-		}
-
+ 	public function add_card ( $card_obj ) {
+ 		// Make sure the card we're trying to add is an either an instance of,
+ 		// or extends the standard card class...
+ 		if ( is_a($card_obj, 'PL_Admin_Card') ) {
+ 			$this->cards[$card_obj->id] = $card_obj;
+ 		}
  	}
 
  	public function render () {
@@ -80,18 +118,28 @@ class PL_Admin_Section {
  		<?php
  	}
 
+ 	public function render_content () {
+ 		// TODO...
+ 	}
+
 }
 
-class PL_Admin_Pane {
+class PL_Admin_Card extends PL_Admin_Component {
 	// Class Vars
 
 	// Instance Vars
-	public $id;
-	public $priority;
-	public $cards = array();
 
+	public function __construct( $id, $args = array() ) {
+ 		parent::__construct( $id, $args );
+ 	}
 
+	public function render () {
+		echo 'Implement me!';
+	}
 
+	public function render_content () {
+		echo 'Implement me!';
+	}
 }
 
 
