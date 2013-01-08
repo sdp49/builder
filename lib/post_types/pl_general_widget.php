@@ -10,7 +10,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				'pl_neighborhood' => 'Neighborhood',
 				'listing_slideshow' => 'Listings Slideshow',
 				'featured_listings' => 'Featured Listings',
-				'static_listings' => 'Static Listings'
+				'static_listings' => 'List of Listings'
 			);
 	
 	public static $post_types =  array(
@@ -20,7 +20,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				'pl_slideshow' => 'Slideshow',
 				'pl_neighborhood' => 'Neighborhood',
 //  				'featured_listings' => 'Featured Listings',
-				'static_listings' => 'Static Listings'
+				'static_listings' => 'List of Listings'
 	);
 	
 	public $default_post_type = 'pl_map';
