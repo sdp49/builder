@@ -58,3 +58,8 @@ div.wrap a.add-new-h2,
   #preview-wrapper {
     position: static;
     float: left; } }
+#general_widget_zoning_types {
+  display: none; }
+
+#general_widget_purchase_types {
+  display: none; }

@@ -136,7 +136,6 @@ class PL_Component_Entity {
 		// print filters from the static listing menu
 		$listing_filters = PL_Component_Entity::get_filters_by_listing( $atts['id'] );
 		$filters_string = PL_Component_Entity::convert_filters( $listing_filters );
-
 		// accepts string only due to shortcode evaluation algorithm
 		PL_Component_Entity::print_filters( $filters . $filters_string, $template_context );
 		echo PLS_Partials::get_listings_list_ajax( ( empty( $template_context ) ? '' : 'context=' . $template_context . '&' ). 'table_id=placester_listings_list');
