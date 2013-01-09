@@ -44,7 +44,7 @@ jQuery(document).ready(function($) {
   // }
 
   /*
-   * Bind Events
+   * Bind/Register Events
    */
 
   // Intercept page section clicks and alter content iframe accordingly...
