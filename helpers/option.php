@@ -1,5 +1,4 @@
-..
-0<?php 
+<?php 
 
 class PL_Option_Helper {
 	
