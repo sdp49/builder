@@ -4,14 +4,14 @@ PL_Css_Helper::init();
 
 class PL_Css_Helper {
 	
-	function init () {		
+	public static function init () {		
 		// add_action( 'admin_init', array( __CLASS__, 'admin' ));
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin' ) );
 		add_action( 'customize_controls_enqueue_scripts', array( __CLASS__, 'customizer' ) );
 		add_action( 'pl_admin_enqueue_scripts', array( __CLASS__, 'pl_admin') );
 	}
 
-	function admin ($hook) {
+	public static function admin ($hook) {
 		// Inject premium themes logic into the themes admin page when visiting from any site on the hosted env...
 		if ($hook == 'themes.php' && defined('HOSTED_PLUGIN_KEY')) {		
 			self::register_enqueue_if_not('global-css', trailingslashit(PL_CSS_URL) .  'global.css');
@@ -92,7 +92,7 @@ class PL_Css_Helper {
 		}
 	}
 
-	function customizer () {
+	public static function customizer () {
 		self::register_enqueue_if_not('customizer-css', trailingslashit(PL_CSS_URL) . 'customizer.css');
 		self::register_enqueue_if_not('onboard-css', trailingslashit(PL_CSS_URL) . 'onboard.css');
 		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');
@@ -105,7 +105,7 @@ class PL_Css_Helper {
 	/* 
 	 * Load CSS that styles Placester's custom admin panel. 
 	 */
-	function pl_admin () {
+	public static function pl_admin () {
 		$dir_prefix = 'pl-admin/';
 
 		self::register_enqueue_if_not('pl-admin-normalize', trailingslashit(PL_CSS_URL) . $dir_prefix .  'normalize.css');
@@ -114,7 +114,7 @@ class PL_Css_Helper {
 		self::register_enqueue_if_not('pl-admin-style', trailingslashit(PL_CSS_URL) . $dir_prefix . 'style.css');
 	}
 
-	private function register_enqueue_if_not($name, $path, $dependencies = array()) {
+	private static function register_enqueue_if_not($name, $path, $dependencies = array()) {
 		if (!wp_style_is($name, 'registered')) {
 			wp_register_style($name, $path, $dependencies);		
 		}
@@ -122,6 +122,35 @@ class PL_Css_Helper {
 		if ( !wp_style_is($name, 'queue') ) {
 			wp_enqueue_style($name);		
 		}	
+	}
+
+	/*
+	 * Get CSS skins (i.e., CSS file names) for the any Placester theme.
+	 */
+	public static function get_theme_skins ( $template = null ) {
+		// If no theme template is passed, use current theme...
+		if ( empty($template) ) {
+			$template = wp_get_theme()->Template;
+		}
+		
+		$skins = array();
+
+		// Construct file path to the theme's skins...	
+	  	$skin_dir = ( trailingslashit(PL_THEME_SKIN_DIR) . trailingslashit($template) );
+		
+		// Generate list of available skins by filename...
+		$dir = @opendir($skin_dir);
+		if ( !empty($dir) ) {
+			while ($filename = readdir($dir)) { 
+				// Only look at files with a .css extension...
+				if ( eregi("\.css", $filename) ) {
+			    	$filename = substr( $filename, 0, -strlen('.css') ); // Omit file extension...
+			    	$skins[ucfirst($filename)] = $filename;
+			  	}
+			}
+		}
+
+		return $skins;
 	}
 
 // end of class

@@ -174,7 +174,7 @@ class PL_Admin_Card extends PL_Admin_Component {
 	}
 
 	public function render_content () {
-		echo 'Implement me!';
+		// No need for this in cards -- defining here to satify abstract base requirement so that extending classes don't have to...
 	}
 }
 

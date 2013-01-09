@@ -1,4 +1,5 @@
-<?php 
+..
+0<?php 
 
 class PL_Option_Helper {
 	
@@ -28,7 +29,7 @@ class PL_Option_Helper {
 				return array('result' => false,'message' => 'There was an error. Are you sure that\'s a valid Placester API key?');
 			}
 		} 
-		return array('result' => false,'message' => 'That \'s not a valid Placester API Key.');
+		return array('result' => false,'message' => 'That\'s not a valid Placester API Key.');
 	}
 
 	function set_google_places_key ($new_places_key) {
