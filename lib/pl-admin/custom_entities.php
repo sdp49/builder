@@ -10,7 +10,7 @@
  */
 
 
-class PL_Admin_Theme_Select extends PL_Admin_Card {
+class PL_Admin_Card_Theme_Select extends PL_Admin_Card {
 	// Instance Vars
 
 	public function __construct( $id, $args = array() ) {
@@ -99,7 +99,7 @@ class PL_Admin_Theme_Select extends PL_Admin_Card {
  	}
 }
 
-class PL_Admin_Theme_Skin extends PL_Admin_Card {
+class PL_Admin_Card_Theme_Skin extends PL_Admin_Card {
 	
 	public function __construct( $id, $args = array() ) {
  		parent::__construct( $id, $args );
@@ -112,26 +112,26 @@ class PL_Admin_Theme_Skin extends PL_Admin_Card {
  		?>
  		  <div class="container-fluid <?php echo ('card-' . $this->id); ?>">
  		  	<div class="row-fluid">
-              <div class="span6">
-                <label for="pls-skin-select" class="pls-label">Select a color palette for your website.</label>
-                <select id="pls-skin-select" class="w100">
-                  <option>Default</option>
-                </select>
-              </div>
-            
-              <div class="span6 ml10">
-                <div class="bt-slot">
-                  <a href="#" class="button button-light-grey">Return to Theme Selection</a>
-                  <a href="#" class="button button-green">Select Skin &amp; Apply Changes</a>              
-                </div>
-              </div>
+          <div class="span6">
+            <label for="pls-skin-select" class="pls-label">Select a color palette for your website.</label>
+            <select id="pls-skin-select" class="w100">
+              <option>Default</option>
+            </select>
+          </div>
+        
+          <div class="span6 ml10">
+            <div class="bt-slot">
+              <a href="#" class="button button-light-grey">Return to Theme Selection</a>
+              <a href="#" class="button button-green">Select Skin &amp; Apply Changes</a>              
             </div>
+          </div>
+        </div>
 		  </div>
  		<?php
  	}
 }
 
-class PL_Admin_CSS_Editor extends PL_Admin_Card {
+class PL_Admin_Card_CSS_Editor extends PL_Admin_Card {
 
 	public function __construct( $id, $args = array() ) {
  		parent::__construct( $id, $args );

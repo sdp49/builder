@@ -169,6 +169,7 @@ include_once('third-party/mixpanel/mixpanel.php');
 include_once('config/pl-admin/header.php');
 include_once('config/pl-admin/sidebar.php');
 include_once('lib/pl-admin/entities.php');
+include_once('lib/pl-admin/custom_entities.php');
 include_once('lib/pl-admin/util.php');
 
 

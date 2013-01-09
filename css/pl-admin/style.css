@@ -1036,7 +1036,7 @@ section.welcome {
         width: 16px;
         display: block; }
 
-.pls-max #pls-inner {
+.pls-max .pls-inner-top {
   margin: 20px 0 0 40px; }
 .pls-max .pls-bb {
   border-bottom: 1px solid #dfdfdf; }
@@ -1122,7 +1122,7 @@ section.welcome {
             width: 32px;
             display: block; }
 
-.pls-min #pls-inner {
+.pls-min .pls-inner-top {
   margin: 20px 0 0 240px; }
 
 .pls-full {

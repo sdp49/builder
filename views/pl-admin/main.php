@@ -112,7 +112,7 @@ $current_user = wp_get_current_user();
 
 	<!-- Side Bar Pane Container -->
   <section id="pls-pane" class="pls-small pls-min">
-    <?php // PL_Admin_Util::renderPane(); ?>
+    <?php PL_Admin_Util::renderPane(); ?>
   </section>
 
 	<!-- Site Content Container -->

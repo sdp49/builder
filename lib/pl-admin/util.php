@@ -156,6 +156,7 @@ class PL_Admin_Util {
 		foreach ( $config as $cardID => $args ) {
 			// Check for custom entity, otherwise use generic class... (NOTE: Class names are NOT case-sensitive in PHP)
 			$entity = "PL_Admin_Card_{$cardID}";
+			error_log ("{$entity} exists: " . class_exists($entity));
 			$new_card = ( class_exists($entity) ? new $entity($cardID, $args) : new PL_Admin_Card($cardID, $args) );
 
 			// Add new card to the section...

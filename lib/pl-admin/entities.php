@@ -131,7 +131,7 @@ class PL_Admin_Section extends PL_Admin_Component {
  		uasort( $this->cards, array( $this, 'cmp_priority' ) );
 
  		?>
- 		  <div id="pane-<?php echo $this->id; ?>" class="pls-inner">
+ 		  <div id="card-group-<?php echo $this->id; ?>" class="pls-inner-top" style="display:none">
  		    <?php /* Build Pane Nav */ ?>
  		    <div class="container-fluid card-nav">
  		  	  <div class="row-fluid">
