@@ -139,7 +139,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
  	
 	
 	public  function meta_box() {
-		add_meta_box( 'my-meta-box-id', 'Placester Widgets', array( $this, 'pl_widgets_meta_box_cb'), 'pl_general_widget', 'normal', 'high' );
+		add_meta_box( 'pl-controls-metabox-id', 'Placester Widgets', array( $this, 'pl_widgets_meta_box_cb'), 'pl_general_widget', 'normal', 'high' );
 	}
 	
 	// add meta box for featured listings- adding custom fields
@@ -188,8 +188,21 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			</div>
 		</div>
 	
+		<div id="post_types_list">
+				<div class="post_types_list_wrapper" style="clear: both; padding-top: 10px;">
+					<span>Select Type: </span>
+					<?php foreach( self::$post_types as $post_type => $label ):
+							$link_class = ''; 
+							if( $post_type == $pl_post_type ) {
+								$link_class = 'selected_type';
+							}
+					?>			
+						<a id="pl_post_type_<?php echo $post_type; ?>" href="#" class="<?php echo $link_class; ?>"><?php echo $label; ?></a>
+					<?php endforeach; ?>
+				</div>
+			</div>
 		<?php 
-		echo '<div id="widget-meta-wrapper" style="min-height: 370px">';
+		echo '<div id="widget-meta-wrapper" style="display: none; min-height: 370px">';
 		
 		// read width/height and slideshow values
 		$width =  isset( $values['width'] ) && ! empty( $values['width'][0] ) ? $values['width'][0] : '300';
@@ -207,20 +220,9 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			$iframe_controller = '<script id="plwidget-' . $post->ID . '" src="' . PL_PARENT_URL . 'js/fetch-widget.js?id=' . $_GET['post'] . '"'  . $style . '></script>';
 		endif; ?>
 		<div class="pl_widget_block">
-			<div id="post_types_list">
-				<div class="post_types_list_wrapper" style="clear: both; padding-top: 10px;">
-					<span>Select Type: </span>
-					<?php foreach( self::$post_types as $post_type => $label ):
-							$link_class = ''; 
-							if( $post_type == $pl_post_type ) {
-								$link_class = 'selected_type';
-							}
-					?>			
-						<a id="pl_post_type_<?php echo $post_type; ?>" href="#" class="<?php echo $link_class; ?>"><?php echo $label; ?></a>
-					<?php endforeach; ?>
-				</div>
-			</div>
-			<h2>Attributes</h2>
+			<section class="pl_map pl_form pl_search_listings pl_slideshow pl_neighborhood featured_listings static_listings">
+				<h2>Attributes</h2>
+			</section>
 			<?php // get meta values from custom fields
 			// fill POST array for the forms (required after new widget is created)
 		foreach( $this->fields as $field => $arguments ) {
@@ -235,54 +237,56 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		?>
 		</div>
 		
-		<h2>Pick a Listing</h2>
-				<div id="pl-fl-meta">
-					<div style="width: 400px;">
-						<div id="pl_featured_listing_block" class="featured_listings pl_slideshow" style="min-height: 40px;">
+		<section class="featured_listings">
+			<h2>Pick a Listing</h2>
+		</section>
+			<div id="pl-fl-meta">
+				<div style="width: 400px;">
+					<div id="pl_featured_listing_block" class="featured_listings pl_slideshow" style="min-height: 40px;">
+					<?php 
+						
+						include PLS_OPTRM_DIR . '/views/featured-listings.php';
+						// Enqueue all required stylings and scripts
+						wp_enqueue_style('featured-listings', OPTIONS_FRAMEWORK_DIRECTORY.'css/featured-listings.css');
+						
+						wp_register_script( 'datatable', trailingslashit( PLS_JS_URL ) . 'libs/datatables/jquery.dataTables.js' , array( 'jquery'), NULL, true );
+						wp_enqueue_script('datatable'); 
+						wp_enqueue_script('jquery-ui-core');
+						wp_enqueue_style('jquery-ui-datepicker');
+						wp_enqueue_script('jquery-ui-datepicker');
+						wp_enqueue_style('jquery-ui-dialog', OPTIONS_FRAMEWORK_DIRECTORY.'css/jquery-ui-1.8.22.custom.css');
+						wp_enqueue_script('jquery-ui-dialog');
+						wp_enqueue_script('options-custom', OPTIONS_FRAMEWORK_DIRECTORY.'js/options-custom.js', array('jquery'));
+						wp_enqueue_script('featured-listing', OPTIONS_FRAMEWORK_DIRECTORY.'js/featured-listing.js', array('jquery'));
+				
+						// Generate the popup dialog with featured			
+						echo pls_generate_featured_listings_ui(array(
+											'name' => 'Featured Meta',
+											'desc' => '',
+											'id' => 'featured-listings-type',
+											'type' => 'featured_listing'
+											) ,$pl_featured_meta_value
+											, 'pl_featured_listing_meta');
+					?>
+					</div><!-- end of #pl_featured_listing_block -->
+					<section id="pl_static_listing_block" class="static_listings pl_search_listings">
 						<?php 
-							
-							include PLS_OPTRM_DIR . '/views/featured-listings.php';
-							// Enqueue all required stylings and scripts
-							wp_enqueue_style('featured-listings', OPTIONS_FRAMEWORK_DIRECTORY.'css/featured-listings.css');
-							
-							wp_register_script( 'datatable', trailingslashit( PLS_JS_URL ) . 'libs/datatables/jquery.dataTables.js' , array( 'jquery'), NULL, true );
-							wp_enqueue_script('datatable'); 
-							wp_enqueue_script('jquery-ui-core');
-							wp_enqueue_style('jquery-ui-datepicker');
-							wp_enqueue_script('jquery-ui-datepicker');
-							wp_enqueue_style('jquery-ui-dialog', OPTIONS_FRAMEWORK_DIRECTORY.'css/jquery-ui-1.8.22.custom.css');
-							wp_enqueue_script('jquery-ui-dialog');
-							wp_enqueue_script('options-custom', OPTIONS_FRAMEWORK_DIRECTORY.'js/options-custom.js', array('jquery'));
-							wp_enqueue_script('featured-listing', OPTIONS_FRAMEWORK_DIRECTORY.'js/featured-listing.js', array('jquery'));
-					
-							// Generate the popup dialog with featured			
-							echo pls_generate_featured_listings_ui(array(
-												'name' => 'Featured Meta',
-												'desc' => '',
-												'id' => 'featured-listings-type',
-												'type' => 'featured_listing'
-												) ,$pl_featured_meta_value
-												, 'pl_featured_listing_meta');
-						?>
-						</div><!-- end of #pl_featured_listing_block -->
-						<div id="pl_static_listing_block" class="static_listings pl_search_listings">
-							<?php 
-								$static_list_form = PL_Form::generate_form(
-											PL_Config::PL_API_LISTINGS('get', 'args'),
-											array('method' => "POST", 
-													'title' => true,
-													'wrap_form' => false, 
-											 		'echo_form' => false, 
-													'include_submit' => false, 
-													'id' => 'pls_admin_my_listings'),
-											'general_widget_');
+							$static_list_form = PL_Form::generate_form(
+										PL_Config::PL_API_LISTINGS('get', 'args'),
+										array('method' => "POST", 
+												'title' => true,
+												'wrap_form' => false, 
+										 		'echo_form' => false, 
+												'include_submit' => false, 
+												'id' => 'pls_admin_my_listings'),
+										'general_widget_');
 
-								echo $static_list_form;
-							 ?>
-						</div><!-- end of #pl_static_listing_block -->
-					</div>
+							echo $static_list_form;
+						 ?>
+					</section><!-- end of #pl_static_listing_block -->
 				</div>
-				<input type="hidden" name="pl_post_type" id="pl_post_type" value="pl_map" />
+			</div>
+			<input type="hidden" name="pl_post_type" id="pl_post_type" value="pl_map" />
 		<?php $atts = array();
 		
 		// get radio values for neighborhood
@@ -334,13 +338,25 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 						var section_class = $(this).attr('class');
 						if( section_class !== undefined  ) {
 							if( section_class.indexOf( selected_cpt ) !== -1  ) {
-								$(this).find('input').removeAttr('disabled');
-								$(this).find('select').removeAttr('disabled');
+								$(this).show();
+								// $(this).find('input').removeAttr('disabled');
+								// $(this).find('select').removeAttr('disabled');
 							} else {
-								$(this).find('input, select').attr('disabled', true);
+								$(this).hide();
+								// $(this).find('input, select').attr('disabled', true);
 							}
 						}
 					});
+
+					// fix inner sections for some CPTs
+					if( selected_cpt == 'static_listings' || selected_cpt == 'pl_search_listings' ) {
+						$('.form_group, .form_group section').show();
+						$('#pl_static_listing_block #advanced').hide();
+						$('#pl_static_listing_block #amenities').hide();
+						$('#pl_static_listing_block #custom').hide();
+					} else if( selected_cpt == 'pl_neighborhood' ) {
+						$('.pl_neighborhood.pl_widget_block, .pl_neighborhood section').show();
+					}
 
 					// display template blocks
 					$('.pl_template_block').each(function() {
@@ -427,6 +443,15 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				// populate slug box for the edit screen
 				<?php if( ! $is_post_new ) { ?>
 					$('#edit-slug-box').after('<div class="iframe-link"><?php echo esc_html( $iframe_controller ); ?></div>');
+					$('#pl_post_type_<?php echo $pl_post_type; ?>').trigger('click');
+				<?php }	?>
+
+				// reset before the view, hide everything
+				$('#widget-meta-wrapper section, #pl_featured_listing_block').hide();
+				$('.pl_template_block section').show();
+				$('#widget-meta-wrapper').show();
+
+				<?php if( ! $is_post_new ) { ?>
 					$('#pl_post_type_<?php echo $pl_post_type; ?>').trigger('click');
 				<?php }	?>
 				
