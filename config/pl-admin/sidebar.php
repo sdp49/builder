@@ -34,18 +34,18 @@ $PL_ADMIN_NAVS = array(
 			'priority' => 50,
 			'content_uri' => '/contact'
 		),
-		'custom' => array(
-			'title' => 'Custom Search',
-			'css_class' => 'custom',
-			'priority' => 60,
-			'content_uri' => ''
-		),
-		'mls' => array(
-			'title' => 'MLS Search',
-			'css_class' => 'mls',
-			'priority' => 70,
-			'content_uri' => ''
-		),
+		// 'custom' => array(
+		// 	'title' => 'Custom Search',
+		// 	'css_class' => 'custom',
+		// 	'priority' => 60,
+		// 	'content_uri' => ''
+		// ),
+		// 'mls' => array(
+		// 	'title' => 'MLS Search',
+		// 	'css_class' => 'mls',
+		// 	'priority' => 70,
+		// 	'content_uri' => ''
+		// ),
 		'blog' => array(
 			'title' => 'Blog',
 			'css_class' => 'blog',

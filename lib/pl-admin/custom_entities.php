@@ -1,6 +1,11 @@
 <?php
 
 /*
+ * Custom implementations of PL_Admin_Section
+ */
+
+
+/*
  * Custom implementations of PL_Admin_Card
  */
 

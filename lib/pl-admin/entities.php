@@ -119,8 +119,41 @@ class PL_Admin_Section extends PL_Admin_Component {
  		<?php
  	}
 
+ 	/* Render the container of the cards (the pane) + the cards themselves */
  	public function render_content () {
- 		// TODO...
+ 		// No point in rendering if no cards are present...
+ 		$numCards = count($this->cards);
+ 		if ( $numCards <= 0) { return; }
+
+ 		// Sort cards by priority...
+ 		uasort( $this->cards, array( $this, 'cmp_priority' ) );
+
+ 		?>
+ 		  <div id="pane-<?php echo $this->id; ?>" class="pls-inner">
+ 		    <?php /* Build Pane Nav */ ?>
+ 		    <div class="container-fluid card-nav">
+ 		  	  <div class="row-fluid">
+	            <div class="span12">
+	              <div class="pls-head">
+	                <h1><span class="curr-card-num">1</span>/<?php echo $numCards ?>: Select Skin</h1>
+	                <div class="pls-right">
+	                  <?php for ( $i = 0; $i < $numCards; $i++ ): ?>
+	                    <a href="#" class="bullet <?php echo ( $i == 0 ? 'on' : 'off' ); ?>"></a>
+	              	  <?php endfor; ?>
+	                  <a href="#" class="button button-light-grey pls-close"><span></span></a>        
+	                </div><!--pls-pagination-->      
+	              </div><!--pls-head-->
+	            </div>
+	          </div>
+ 		    </div>
+
+ 		    <div class="container-fluid card-body">
+ 		  	  <?php foreach ( $this->cards as $card ): ?>
+ 		      	<?php $card->render(); ?>
+ 		      <?php endforeach; ?>
+ 		    </div>  
+ 		  </div>
+ 		<?php
  	}
 
 }
