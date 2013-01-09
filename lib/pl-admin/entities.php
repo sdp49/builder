@@ -87,7 +87,9 @@ class PL_Admin_Nav extends PL_Admin_Component {
  	}
 
  	public function render_content () {
- 		// TODO...
+ 		?>
+ 		  <?php foreach ( $this->sections as $section ) { $section->render_content(); } ?>
+ 		<?php
  	}
 
 }
@@ -135,7 +137,7 @@ class PL_Admin_Section extends PL_Admin_Component {
  		  	  <div class="row-fluid">
 	            <div class="span12">
 	              <div class="pls-head">
-	                <h1><span class="curr-card-num">1</span>/<?php echo $numCards ?>: Select Skin</h1>
+	                <h1><span class="curr-card-num">1</span>/<?php echo $numCards; ?>: <?php echo $this->cards[0]->title; ?></h1>
 	                <div class="pls-right">
 	                  <?php for ( $i = 0; $i < $numCards; $i++ ): ?>
 	                    <a href="#" class="bullet <?php echo ( $i == 0 ? 'on' : 'off' ); ?>"></a>

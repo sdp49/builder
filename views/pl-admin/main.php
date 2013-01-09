@@ -111,68 +111,10 @@ $current_user = wp_get_current_user();
 	</section>
 
 	<!-- Side Bar Pane Container -->
-<?php /*  
-	<section id="pls-pane" class="pls-small pls-min">
-      <div id="pls-inner">
-        <div class="container-fluid">
-          <div class="row-fluid">
-            <div class="span12">
-              <div class="pls-head">
-                <h1>1/5: Site Title &amp; Slogan</h1>
-              
-                <!--TOOLTIP START-->
-                  <div class="pls-tooltip">
-                    <p>Social Integration</p>
-                  </div>
-                <!--TOOLTIP END-->
-  
-                <div class="pls-right">
-                  <a href="#" class="bullet on"></a>
-                  <a href="#" class="bullet off"></a>
-                  <a href="#" class="bullet off"></a>
-                  <a href="#" class="bullet off"></a>
-                  <a href="#" class="bullet off"></a>                                 
-                </div><!--pls-right-->      
-              </div><!--pls-head-->        	
-            </div><!--span12-->
-          </div><!--row-fluid-->
-        
-          <div class="row-fluid">
-            <div class="span12">
-              <div id="pls-cards">
-                <div class="pls-card pls-c01 pls-active">
-                  <div class="inp-slot">
-                    <label for="pls-site-title" class="pls-label">Enter Site Title</label>
-                    <input id="pls-site-title" type="text" class="w175">
-                  </div><!--inp-slot-->
-                  <div class="inp-slot">
-                    <label for="pls-site-slogan" class="pls-label">Enter a Slogan</label>
-                    <input id="pls-site-slogan" type="text" class="w175">
-                  </div><!--inp-slot-->  
-                  <div class="inp-slot">
-                    <label for="pls-email-address" class="pls-label">Enter an Email Address</label>
-                    <input id="pls-email-address" type="text" class="w175">
-                  </div><!--inp-slot-->
-                  <div class="inp-slot">
-                    <label for="pls-phone-number" class="pls-label">Enter a Phone Number</label>
-                    <input id="pls-phone-number" type="text" class="w175">
-                  </div><!--inp-slot-->
-                  <div class="bt-slot">
-                    <a href="#" class="button button-green">Next: Color &amp; Palette &amp; Styling</a>
-                    <a href="#" class="button button-blue">Skip</a>            	
-                  </div><!--bt-slot-->
-                </div><!--c01-->
-                <div class="pls-card pls-c02"></div>
-                <div class="pls-card pls-c03"></div>
-                <div class="pls-card pls-c04"></div>
-                <div class="pls-card pls-c05"></div>
-              </div>  
-            </div><!--span12-->      
-          </div><!--row-fluid-->
-        </div><!--container-fluid-->
-      </div>
-	</section>
-*/ ?>
+  <section id="pls-pane" class="pls-small pls-min">
+    <?php // PL_Admin_Util::renderPane(); ?>
+  </section>
+
 	<!-- Site Content Container -->
 	<iframe id="main-iframe" src="<?php echo PL_Admin_Util::getContentURI(); ?>"></iframe>
 

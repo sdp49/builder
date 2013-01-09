@@ -6,6 +6,10 @@ class PL_Admin_Util {
 
 	const ESCAPE_ARG = 'content';
 
+	// Stores nav objects -- basically the object representation of the functionality that will be displayed.
+	// NOTE: Populated by calls to constructNav(), utilized in many places.
+	public static $navs = array();
+
 	public static function init () {
 		add_action( 'template_redirect', array( __CLASS__, 'load_framework') );
 	}
@@ -113,12 +117,20 @@ class PL_Admin_Util {
 		// Constuct an empty Nav...
 		$nav = new PL_Admin_Nav($id);
 
-		foreach ( $config as $section => $args ) {
-			// Check for custom entity, otherwise use generic class...
-			$entity = "PL_Admin_Section_{$section}";
-			$new_section = ( class_exists($entity) ? new $entity($section, $args) : new PL_Admin_Section($section, $args) );
+		foreach ( $config as $sectionID => $args ) {
+			// Check for custom entity, otherwise use generic class... (NOTE: Class names are NOT case-sensitive in PHP)
+			$entity = "PL_Admin_Section_{$sectionID}";
+			$new_section = ( class_exists($entity) ? new $entity($sectionID, $args) : new PL_Admin_Section($sectionID, $args) );
+			
+			// Construct and append the new section's associated cards...
+			self::constructCards($new_section);
+
+			// Add new section to the nav...
 			$nav->add_section($new_section);
 		}
+
+		// Store for use later on by other functions...
+		self::$navs[$id] = $nav;
 
 		return $nav;
 	}
@@ -132,6 +144,33 @@ class PL_Admin_Util {
 	  return ob_get_clean();	
 	}
 
+	/* 
+	 * Given a section object, construct and append the corresponding card objects. 
+	 */
+	private static function constructCards ( $section_obj ) {
+		global $PL_ADMIN_CARDS;
+		// Make sure a card group definition exists for the give section in the config...
+		$config = $PL_ADMIN_CARDS[$section_obj->id];
+		if ( empty($config) ) { return null; }
+
+		foreach ( $config as $cardID => $args ) {
+			// Check for custom entity, otherwise use generic class... (NOTE: Class names are NOT case-sensitive in PHP)
+			$entity = "PL_Admin_Card_{$cardID}";
+			$new_card = ( class_exists($entity) ? new $entity($cardID, $args) : new PL_Admin_Card($cardID, $args) );
+
+			// Add new card to the section...
+			$section_obj->add_card($new_card);
+		}
+	}
+
+	/*
+	 * Render the cards of any previously constructed (and stored) Sections objects (stored in Navs)
+	 */
+	public static function renderPane () {
+		foreach ( self::$navs as $nav) {
+			$nav->render_content();
+		}
+	}
 }
 
 ?>

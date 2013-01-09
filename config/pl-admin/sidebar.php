@@ -128,8 +128,17 @@ $PL_ADMIN_NAVS = array(
 
 global $PL_ADMIN_CARDS;
 $PL_ADMIN_CARDS = array(
-	// Indexed by section id
-	
+	// Indexed by section id (see above...)
+	'theme' => array(
+		'theme_select' => array(
+			'title' => 'Select Theme',
+			'priority' => 10
+		),
+		'theme_skin' => array(
+			'title' => 'Select Skin',
+			'priority' => 20
+		)
+	),
 );
 
 ?>
