@@ -5,6 +5,9 @@
 jQuery(document).ready(function($) {
 
   $('#main-iframe').load(function() {
+    // Call handler to alert the parent that loading is finished...
+    pl_admin_global.contentLoaded();
+
     // Define the iframe document variable...
     var iframe = this;
     var iframeDOM = $(this).contents().contents();

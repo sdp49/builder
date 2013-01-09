@@ -3,6 +3,7 @@
 /* 
  * Base Class for all admin panel components (see classes below...) 
  */
+
 abstract class PL_Admin_Component {
 	// Class Vars
 
@@ -48,7 +49,7 @@ abstract class PL_Admin_Component {
  * Concrete implementations of the "Component" class above -- together they form the
  * basis for the admin panel's class/object model.
  *
- * NOTE: There is "Has-A" relationaship betwween these -- A Nav contains Sections,
+ * NOTE: There is a "Has-A" relationaship betwween these -- A Nav contains Sections,
  * which in turn contain cards.
  */
 

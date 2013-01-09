@@ -92,6 +92,10 @@ $current_user = wp_get_current_user();
 	      </div><!--pls-inner-top-->
 	      <div id="pls-inner-bot">
 	    	  <?php echo PL_Admin_Util::getBreadcrumbs(); ?>
+          <a id="refresh-content" href="#" class="button button-light-grey pls-refresh-ico"><span></span></a>
+          <div class="loader">
+            <img src="wp-content/plugins/placester/images/ajax-loader.gif" alt="">
+          </div>
 	      </div><!--pls-inner-bot-->
 	    </div><!--pls-inner-->
 	  </div><!--pls-header-bot-->

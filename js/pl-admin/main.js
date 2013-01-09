@@ -8,7 +8,16 @@ ajaxurl = origin + '/wp-admin/admin-ajax.php';
 
 // This global variable must be defined in order to conditionally prevent iframes from being
 // automatically "busted" when in the hosted environment... (see hosted-modifications plugin)
-pl_admin_global = {};
+pl_admin_global = {
+  contentLoadedHandlers: [], // Fill with functions you want executed iframe loads...
+  contentLoaded: function () {
+    var handlers = this.contentLoadedHandlers;
+    for ( var i = 0; i < handlers.length; ++i ) {
+      // Call each handler...
+      handlers[i]();
+    }
+  }
+};
 
 /*
  * Main JS
@@ -16,8 +25,27 @@ pl_admin_global = {};
 
 jQuery(document).ready(function($) {
 
+  /*
+   * Define Vars & Functions
+   */
+
   // Define iframe
   var iframe = $('#main-iframe');
+
+  // Trigger content iFrame refresh
+  function refreshContent (boolFromServer) {
+    var id = iframe.attr('id');
+    window.frames[id].location.reload(boolFromServer);
+  } 
+
+  // Alter breadcrumbs to reflect a change in the iframe content...
+  // function alterBreadCrumbs (newURL) {
+  //  var crumbs = 
+  // }
+
+  /*
+   * Bind Events
+   */
 
   // Intercept page section clicks and alter content iframe accordingly...
   $('#utilitiesNav li a').on('click', function (event) {
@@ -31,11 +59,23 @@ jQuery(document).ready(function($) {
     // alterBreadCrumbs(this.href);
   });
 
-  // Alter breadcrumbs to reflect a change in the iframe content...
-  // function alterBreadCrumbs (newURL) {
-  // 	var crumbs = 
+  // First register a function to make the spinner disappear...
+  // var handler = function () {
+  //   $('#pls-inner-bot .loader').hide();
   // }
+  pl_admin_global.contentLoadedHandlers.push(function () {
+    $('#pls-inner-bot .loader').hide();
+  });
 
+  // Bind content refresh button...
+  $('#refresh-content').on('click', function (event) {
+    event.preventDefault();
+
+    // Display loading spinner...
+    $('#pls-inner-bot .loader').show();
+
+    refreshContent(true);
+  });
 
 });
 
