@@ -4,7 +4,7 @@ Plugin Name: Real Estate Website Builder
 Description: Quickly create a lead generating real estate website for your real property.
 Plugin URI: https://placester.com/
 Author: Placester.com
-Version: 1.1.2
+Version: 1.1.3
 Author URI: https://www.placester.com/
 */
 
@@ -31,7 +31,6 @@ define('PL_PLUGIN_VERSION','1.0.6');
 
 define( 'PL_PARENT_DIR', dirname(__FILE__) );
 define( 'PL_PARENT_URL', trailingslashit(plugins_url()) . 'placester/'  );
-
 
 define( 'PL_VIEWS_DIR', trailingslashit(PL_PARENT_DIR) . 'views/' );
 define( 'PL_VIEWS_URL', trailingslashit(PL_PARENT_URL) . 'views/' );
@@ -78,11 +77,14 @@ define( 'PL_CSS_CLIENT_URL', trailingslashit(PL_CSS_URL) . 'client/' );
 define( 'PL_THIRD_PARTY_DIR', trailingslashit(PL_PARENT_DIR) . 'third-party/' );
 define( 'PL_THIRD_PARTY_URL', trailingslashit(PL_PARENT_URL) . 'third-party/' );
 
-define('ADMIN_URL', trailingslashit( admin_url() ) );
-define('ADMIN_MENU_URL', trailingslashit( ADMIN_URL ) . 'admin.php' );
+define( 'ADMIN_URL', trailingslashit( admin_url() ) );
+define( 'ADMIN_MENU_URL', trailingslashit( ADMIN_URL ) . 'admin.php' );
 
 // Demo Account API Key
-define('DEMO_API_KEY', '7e63514ebfad7608bbe7b4469ab470ecef4dc651099ae06fc1df6807717f0deacd38809e3c314ca09c085125f773a4c7');
+define( 'DEMO_API_KEY', '7e63514ebfad7608bbe7b4469ab470ecef4dc651099ae06fc1df6807717f0deacd38809e3c314ca09c085125f773a4c7' );
+
+// Theme skin directory
+define( 'PL_THEME_SKIN_DIR', trailingslashit(PL_PARENT_DIR) . 'config/customizer/theme-skins/' );
 
 //config
 include_once('config/toggle_form_sections.php');
@@ -104,6 +106,8 @@ include_once('lib/debug.php');
 include_once('lib/form.php');
 include_once('lib/validation.php');
 include_once('lib/pages.php');
+include_once('lib/menus.php');
+include_once('lib/posts.php');
 include_once('lib/membership.php');
 include_once('lib/caching.php');
 // include_once('lib/shortcodes.php');
@@ -161,6 +165,8 @@ include_once('helpers/snippet.php');
 include_once('helpers/template.php');
 include_once('helpers/customizer.php');
 
+include_once('helpers/bootup.php');
+
 
 //third-party scripts
 include_once('third-party/tax-meta-class/tax-meta-class.php');
@@ -199,7 +205,7 @@ function placester_admin_menu() {
     $menu['3a'] = array( '', 'read', 'separator1', '', 'wp-menu-separator' );
 
     // Add Placester Menu
-    add_menu_page('Placester','Placester','edit_pages','placester',array('PL_Router','my_listings'), plugins_url('/placester/images/logo_16.png'), '3b' /* position between 3 and 4 */ );
+    add_menu_page('Placester','Placester','edit_pages','placester',array('PL_Router','my_listings'), plugins_url('/placester/images/icons/logo_16.png'), '3b' /* position between 3 and 4 */ );
 
     // Avoid submenu to start with menu function
     global $submenu;

@@ -2,12 +2,18 @@
 
 class PL_Listing {
 	
+	/* A wrapper for PL_Option_Helper::api_key() for class functions that need to be aware of demo data */
 	private function api_key() {
 		// The default value to use--the user's own key...
 		$api_key = PL_Option_Helper::api_key();
-
-		// If the user chose to use demo data, make requests using API key that corresponds to the demo listing account...
-		if ( PL_Option_Helper::get_demo_data_flag() && defined('DEMO_API_KEY') ) {
+	
+		// Check to see whether or not the request being processed is a listing AJAX call from the front-end
+		// (i.e., if it is NOT the single action we know is used by the "listings" admin page...)
+		$front_listing_ajax = ( defined('DOING_AJAX') && isset($_POST['action']) && ($_POST['action'] !== 'datatable_ajax') );
+		
+		// If the user chose to use demo data, make requests using API key that corresponds to the demo listing account
+		// NOTE: Check for any calls from admin pages, as they should NEVER use demo data...
+		if ( PL_Option_Helper::get_demo_data_flag() && defined('DEMO_API_KEY') && (!is_admin() || $front_listing_ajax) ) {
 			$api_key = DEMO_API_KEY;
 		}
 
@@ -76,7 +82,7 @@ class PL_Listing {
 		return $response;	
 	}
 
-	public function temp_image ($args = array(), $file_name, $file_mime_type, $file_tmpname) {
+	public function temp_image($args = array(), $file_name, $file_mime_type, $file_tmpname) {
 		$config = PL_Config::PL_API_LISTINGS('temp_image');
 		$request = array_merge(array("api_key" => self::api_key()), PL_Validate::request($args, $config['args']));
 		$response = PL_HTTP::send_request_multipart($config['request']['url'], $request, $file_name, $file_mime_type, $file_tmpname);
@@ -91,10 +97,9 @@ class PL_Listing {
 		}
 		return PL_Validate::attributes(PL_HTTP::send_request($config['request']['url'], $request), $config['returns']);
 	}
-	public function types() {
-		$args = array( 'keys' => array( 'property_type') );
-		$config = PL_Config::PL_API_LISTINGS('get.types');
-		$request = array_merge(array("api_key" => PL_Option_Helper::api_key()), PL_Validate::request($args, $config['args']));
+	public function aggregates($args = array()) {
+		$config = PL_Config::PL_API_LISTINGS('get.aggregate');
+		$request = array_merge(array("api_key" => self::api_key()), PL_Validate::request($args, $config['args']));
 		if ( defined('HOSTED_PLUGIN_KEY') ) {
 			$request['hosted_key'] = HOSTED_PLUGIN_KEY;
 		}
