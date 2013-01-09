@@ -1,3 +1,11 @@
+.iframe-link {
+  margin-top: 8px;
+  padding: 0 10px; }
+
+.iframe-link strong {
+  color: #777;
+  padding-right: 3px; }
+
 #preview-wrapper {
   position: fixed;
   right: 330px; }
@@ -43,13 +51,19 @@ div.wrap a.add-new-h2,
   width: 400px;
   margin: 15px 3px; }
   #post_types_list a {
+    line-height: 19px;
+    vertical-align: top;
     margin: 0px 5px; }
   #post_types_list .post_types_list_wrapper span {
     font-size: 1.5em;
     color: #464646; }
-
-.selected_type {
-  font-weight: bold; }
+  #post_types_list .post_types_list_wrapper span.pl_type_separator {
+    font-size: 12px;
+    line-height: 19px;
+    vertical-align: top; }
+  #post_types_list .selected_type {
+    line-height: 20px;
+    font-weight: bold; }
 
 #message a {
   display: none; }

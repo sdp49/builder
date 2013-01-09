@@ -191,13 +191,21 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		<div id="post_types_list">
 				<div class="post_types_list_wrapper" style="clear: both; padding-top: 10px;">
 					<span>Select Type: </span>
-					<?php foreach( self::$post_types as $post_type => $label ):
+					<?php 
+					
+					 $num_of_post_types = count( self::$post_types );
+					 $i = 0;
+					 foreach( self::$post_types as $post_type => $label ):
+					 		$i++;
 							$link_class = ''; 
 							if( $post_type == $pl_post_type ) {
 								$link_class = 'selected_type';
 							}
 					?>			
 						<a id="pl_post_type_<?php echo $post_type; ?>" href="#" class="<?php echo $link_class; ?>"><?php echo $label; ?></a>
+						<?php if( $i < $num_of_post_types ):
+							echo '<span class="pl_type_separator"> |</span>';
+						endif; ?>
 					<?php endforeach; ?>
 				</div>
 			</div>
@@ -212,7 +220,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		$animationSpeed = isset( $values['animationSpeed'] ) && ! empty( $values['animationSpeed'][0] ) ? $values['animationSpeed'][0] : '800';
 		$_POST['animationSpeed'] = $animationSpeed;
 		
-		$style = ' style="width: ' . $width . 'px; height: ' . $height . 'px" ';
+		$style = ' style="width: ' . $width . 'px;height: ' . $height . 'px"';
 		
 		// for post edits, prepare the frame related variables (iframe and script)
 		if( ! empty( $permalink ) ):
@@ -442,7 +450,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 
 				// populate slug box for the edit screen
 				<?php if( ! $is_post_new ) { ?>
-					$('#edit-slug-box').after('<div class="iframe-link"><?php echo esc_html( $iframe_controller ); ?></div>');
+					$('#edit-slug-box').after('<div class="iframe-link"><strong>Embed Code:</strong> <?php echo esc_html( $iframe_controller ); ?></div>');
 					$('#pl_post_type_<?php echo $pl_post_type; ?>').trigger('click');
 				<?php }	?>
 
