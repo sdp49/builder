@@ -3,6 +3,8 @@ widget_autosave = function() {
 	var post_id = jQuery("#post_ID").val();
 	var post_type = jQuery('#pl_post_type').val() || "";
 	var shortcode_type = pls_get_shortcode_by_post_type( post_type );
+	var widget_class = jQuery('#widget_class').val() || '';
+	
 	
 	//autosave();
 	var featured = {};
@@ -80,7 +82,8 @@ widget_autosave = function() {
 	                'metadata': JSON.stringify( static_listings.metadata ),
 	                'hide_sort_by': jQuery('#hide_sort_by').is(':checked'),
 	                'hide_sort_direction': jQuery('#hide_sort_direction').is(':checked'),
-	                'hide_num_results': jQuery('#hide_num_results').is(':checked')
+	                'hide_num_results': jQuery('#hide_num_results').is(':checked'),
+	                'widget_class': widget_class
 	};
 	
 	debugger;
@@ -111,7 +114,12 @@ widget_autosave = function() {
 				// jQuery('#preview-meta-widget').html("<script src='" + placester_plugin_path + "js/fetch-widget.js?id=" + post_id +
 				// "&preview=true' width='" + frame_width + "px' height='" + post_data['height'] + "px'></script>");
 				
-				jQuery('#preview-meta-widget').html("<iframe src='" + siteurl + "/?p=" + post_id + "&preview=true' width='" + frame_width + "px' height='" + frame_height + "px'></iframe>");
+				var widget_class = jQuery('#widget_class').val() || '';
+				if( widget_class !== '' ) {
+					widget_class = 'class="' + widget_class + '"';
+				}
+				
+				jQuery('#preview-meta-widget').html("<iframe src='" + siteurl + "/?p=" + post_id + "&preview=true' width='" + frame_width + "px' height='" + frame_height + "px' " + widget_class + "></iframe>");
 				jQuery('#preview-meta-widget').css('height', post_data['height']);
 				jQuery('#pl-review-link').show();
 			}, 800);

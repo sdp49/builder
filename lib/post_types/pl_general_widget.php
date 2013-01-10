@@ -46,6 +46,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			'hide_sort_direction' => array( 'type' => 'checkbox', 'label' => 'Hide Sort Direction', 'css' => 'pl_static_listings' ),
 			'hide_num_results' => array( 'type' => 'checkbox', 'label' => 'Hide Show Number of Results', 'css' => 'pl_static_listings' ),
  			'num_results_shown' => array( 'type' => 'text', 'label' => 'Number of Results Displayed', 'css' => 'pl_static_listings' ),
+			'widget_class' => array( 'type' => 'text', 'label' => 'Widget Class', 'css' => 'pl_map pl_form pl_search_listings pl_slideshow pl_neighborhood featured_listings static_listings' ),
 	);
 	
 	public function register_post_type() {
@@ -219,13 +220,14 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		$_POST['height'] = $height;
 		$animationSpeed = isset( $values['animationSpeed'] ) && ! empty( $values['animationSpeed'][0] ) ? $values['animationSpeed'][0] : '800';
 		$_POST['animationSpeed'] = $animationSpeed;
+		$widget_class = isset( $values['widget_class'] ) && ! empty( $values['widget_class'][0] ) ? 'class="'  . $values['widget_class'][0] . '"' : '';
 		
 		$style = ' style="width: ' . $width . 'px;height: ' . $height . 'px"';
 		
 		// for post edits, prepare the frame related variables (iframe and script)
 		if( ! empty( $permalink ) ):
-			$iframe = '<iframe src="' . $permalink . '"'. $style . '></iframe>';
-			$iframe_controller = '<script id="plwidget-' . $post->ID . '" src="' . PL_PARENT_URL . 'js/fetch-widget.js?id=' . $_GET['post'] . '"'  . $style . '></script>';
+			$iframe = '<iframe src="' . $permalink . '"'. $style . $widget_class .'></iframe>';
+			$iframe_controller = '<script id="plwidget-' . $post->ID . '" src="' . PL_PARENT_URL . 'js/fetch-widget.js?id=' . $_GET['post'] . '"'  . $style . ' ' . $widget_class . '></script>';
 		endif; ?>
 		<div class="pl_widget_block">
 			<section class="pl_map pl_form pl_search_listings pl_slideshow pl_neighborhood featured_listings static_listings">

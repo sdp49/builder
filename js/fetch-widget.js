@@ -35,6 +35,9 @@ function callback( json ) {
 		// create the iframe element
 		var iframe = document.createElement('iframe');
 		iframe.src = json.widget_url;
+		if( script_element.className !== undefined ) {
+			iframe.className = script_element.className;
+		}
 		
 		for( var key in json ) {
 			// skip unnecessary keys

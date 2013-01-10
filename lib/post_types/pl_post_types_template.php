@@ -1,7 +1,17 @@
 <?php 
 header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
 header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
-?><html style="margin-top: 0 !important">
+
+global $post;
+
+$widget_class = get_post_meta( $post->ID, 'widget_class', true);
+
+$html_class = '';
+if( ! empty( $widget_class ) ) {
+	$html_class = 'class="' . $widget_class . '"';
+}
+
+?><html style="margin-top: 0 !important" <?php echo $html_class; ?>>
 	<head>
 		<style type="text/css">
 			body {
@@ -19,8 +29,6 @@ header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 		add_filter('show_admin_bar', '__return_false');
 		add_action('wp_enqueue_scripts', isset( $drop_modernizr ) ? 'pl_template_drop_modernizr': 'pl_template_add_modernizr' );
 
-		global $post;
-		
 		echo '<div class="pls_embedded_widget_wrapper">';
 		echo do_shortcode( isset( $shortcode ) ? $shortcode : $post->post_content );
 		echo '<div>';
