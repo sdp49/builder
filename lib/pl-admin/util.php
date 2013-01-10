@@ -5,9 +5,10 @@ PL_Admin_Util::init();
 class PL_Admin_Util {
 
 	const ESCAPE_ARG = 'content';
+	const PROTOCOL = 'http://';
 
-	// Stores nav objects -- basically the object representation of the functionality that will be displayed.
-	// NOTE: Populated by calls to constructNav(), utilized in many places.
+	/* Stores nav objects -- basically the object representation of the functionality that will be displayed.
+	 * NOTE: Populated by calls to constructNav(), utilized in many places. */
 	public static $navs = array();
 
 	public static function init () {
@@ -33,12 +34,12 @@ class PL_Admin_Util {
 
 	public static function getContentURI () {
 		$escape_admin = ( '?' . self::ESCAPE_ARG . '=true' );
-		$iframe_url = ( 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . $escape_admin );
+		$iframe_url = ( self::PROTOCOL . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . $escape_admin );
 		return $iframe_url;
 	}
 
 	public static function getAdminURI () {
-		return ( 'http://' . trailingslashit($_SERVER['HTTP_HOST']) . 'wp-admin/' ); 
+		return ( self::PROTOCOL . trailingslashit($_SERVER['HTTP_HOST']) . 'wp-admin/' ); 
 	}
 
 	public static function getBreadcrumbs ( $enabled = true ) {
@@ -46,7 +47,7 @@ class PL_Admin_Util {
 		$uri_parts = explode('/', $_SERVER['REQUEST_URI']);
 
 		// Re-build the full URL as breadcrumbs are printed...
-		$runningURL = 'http://' . trailingslashit($host);
+		$runningURL = self::PROTOCOL . trailingslashit($host);
 
 		ob_start();
 		?>

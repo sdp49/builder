@@ -132,7 +132,6 @@ class PL_Admin_Section extends PL_Admin_Component {
 
  		?>
  		  <div id="card-group-<?php echo $this->id; ?>" class="pls-inner-top" style="display:none">
- 		    <?php /* Build Pane Nav */ ?>
  		    <div class="container-fluid card-nav">
  		  	  <div class="row-fluid">
 	            <div class="span12">
@@ -148,7 +147,7 @@ class PL_Admin_Section extends PL_Admin_Component {
 	            </div>
 	          </div>
  		    </div>
-
+ 		    
  		    <div class="container-fluid card-body">
  		  	  <?php foreach ( $this->cards as $card ): ?>
  		      	<?php $card->render(); ?>

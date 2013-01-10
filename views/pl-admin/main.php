@@ -70,7 +70,7 @@ $current_user = wp_get_current_user();
 	        <li>
 	          <img alt="" src="">
 	          <a href="#" class="pls-link">Welcome Home <?php echo esc_html( $current_user->user_firstname ); ?>, Premium User!<span class="a-down"></span></a>
-	            <?php echo PL_Admin_Util::getAnchorList('user'); ?>
+	          <?php echo PL_Admin_Util::getAnchorList('user'); ?>
 	        </li>
 	      </ul>
 	      <a href="<?php echo esc_url( wp_logout_url( site_url() ) ); ?>" class="pls-logout">Logout</a>
@@ -112,6 +112,7 @@ $current_user = wp_get_current_user();
 
 	<!-- Side Bar Pane Container -->
   <section id="pls-pane" class="pls-small pls-min">
+    <a href="#" class="v-handle"><span></span></a>
     <?php PL_Admin_Util::renderPane(); ?>
   </section>
 
