@@ -900,9 +900,8 @@ class PL_Component_Entity {
 		public static function compliance_entity( $atts ) {
 			$content = '';
 			if( ! empty( self::$listing ) ) {
-				ob_start();
 				$listing = self::$listing;
-				
+				ob_start();
 				PLS_Listing_Helper::get_compliance(array(
 						'context' => 'inline_search',
 						'agent_name' => $listing['rets']['aname'],
@@ -916,9 +915,10 @@ class PL_Component_Entity {
 	
 				// No compliance found
 				if( ! isset( $_POST['compliance_message'] ) ) {
-					ob_clean();
 					return $content;
 				}	
+				ob_clean();
+				ob_start();
 				
 				$compliance_message = wp_kses_post($_POST['compliance_message']); 
 				$compliance_message = wp_parse_args($compliance_message, array(
