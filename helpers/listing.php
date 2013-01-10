@@ -423,13 +423,13 @@ class PL_Listing_Helper {
 		} else {
 		  $range = array('');		  
 		}
-    // we need to return the array with keys == values for proper form creation
-    // (keys will be the option values, values will be the option's human-readable)
-    if( ! empty( $range ) ) {
-    	$range = array_combine( $range, $range );
-    }
-    // let's format the human-readable; do not use money_format() because its dependencies are not guaranteed
-    array_walk( $range, create_function( '&$value,$key', '$value = "$" . number_format($value,2);'));
+	    // we need to return the array with keys == values for proper form creation
+	    // (keys will be the option values, values will be the option's human-readable)
+	    if( ! empty( $range ) && $range[0] !== '' ) {
+	    	$range = array_combine( $range, $range );
+	    	// let's format the human-readable; do not use money_format() because its dependencies are not guaranteed
+	    	array_walk( $range, create_function( '&$value,$key', '$value = "$" . number_format($value,2);'));
+	    }
 		return $range;
 	}
 

@@ -138,7 +138,11 @@ class PL_Component_Entity {
 		$filters_string = PL_Component_Entity::convert_filters( $listing_filters );
 		// accepts string only due to shortcode evaluation algorithm
 		PL_Component_Entity::print_filters( $filters . $filters_string, $template_context );
-		echo PLS_Partials::get_listings_list_ajax( ( empty( $template_context ) ? '' : 'context=' . $template_context . '&' ). 'table_id=placester_listings_list');
+		echo PLS_Partials::get_listings_list_ajax( 
+				( empty( $template_context ) ? '' : 'context=' . $template_context . '&' )
+				. 'table_id=placester_listings_list'
+ 				.( empty( $atts['query_limit'] ) ? '' : '&query_limit=' . $atts['query_limit'] ) 
+				);
 	
 		return ob_get_clean();
 	}

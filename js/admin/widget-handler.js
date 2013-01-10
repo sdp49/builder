@@ -86,6 +86,15 @@ widget_autosave = function() {
 	debugger;
 	post_data[neighborhood_type] = neighborhood_value;
 	post_data[radio_type] = neighborhood_value;
+	 
+	var num_results_shown = jQuery('#num_results_shown').val();
+	if( num_results_shown  !== '' ) {
+		if( /^[0-9]+$/.test(num_results_shown)
+			&& num_results_shown >= 0 
+			&& num_results_shown <= 50) {
+			post_data['num_results_shown'] = num_results_shown;
+		}
+	} 
 	
 	jQuery.ajax({
 		data: post_data,

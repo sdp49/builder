@@ -45,7 +45,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			'hide_sort_by' => array( 'type' => 'checkbox', 'label' => 'Hide Sort By dropdown', 'css' => 'pl_static_listings' ),
 			'hide_sort_direction' => array( 'type' => 'checkbox', 'label' => 'Hide Sort Direction', 'css' => 'pl_static_listings' ),
 			'hide_num_results' => array( 'type' => 'checkbox', 'label' => 'Hide Show Number of Results', 'css' => 'pl_static_listings' ),
-			
+ 			'num_results_shown' => array( 'type' => 'text', 'label' => 'Number of Results Displayed', 'css' => 'pl_static_listings' ),
 	);
 	
 	public function register_post_type() {
@@ -289,7 +289,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 												'id' => 'pls_admin_my_listings'),
 										'general_widget_');
 
-							echo $static_list_form;
+// 							echo $static_list_form;
 						 ?>
 					</section><!-- end of #pl_static_listing_block -->
 				</div>
@@ -704,16 +704,20 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		if( ! empty( $post ) && $post->post_type === 'static_listings' ) {
 
 			$meta = get_post_meta( $post->ID );
+			$query_limit = '';
 			$template = '';
 			if( ! empty( $meta['pl_template_static_listings'] ) ) {
 				$template = 'template="static_listings_' . $meta['pl_template_static_listings'][0] . '"';
 			} else if( ! empty( $meta['pl_cpt_template'] ) ) {
 				$template = 'template="static_listings_' . $meta['pl_cpt_template'][0] . '"';
 			}
-			
+			if( ! empty( $meta['num_results_shown'] ) ) {
+				$query_limit = sprintf( ' query_limit="%s"', $meta['num_results_shown'][0] );
+			}
+
 			add_action('wp_head', array( __CLASS__, 'hide_unnecessary_controls' ) );
 			
-			$shortcode = '[static_listings id="' . $post->ID . '" ' . $template . ']';
+			$shortcode = '[static_listings id="' . $post->ID . '" ' . $template . $query_limit . ']';
 			include PL_LIB_DIR . '/post_types/pl_post_types_template.php';
 		
 			die();
