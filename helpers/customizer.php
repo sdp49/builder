@@ -5,16 +5,13 @@
 /*****************************************************/
 
 PL_Customizer_Helper::init();
+
 class PL_Customizer_Helper 
 {
 	public static function init() {
 		add_action ('admin_menu', array(__CLASS__, 'themedemo_admin') );
 		add_action( 'customize_register', array(__CLASS__, 'PL_customize_register'), 1 );
 		add_action( 'customize_controls_print_footer_scripts', array(__CLASS__, 'load_partials') );
-
-		add_action( 'wp_ajax_load_custom_styles', array(__CLASS__, 'load_custom_styles') );
-		add_action( 'wp_ajax_load_theme_info', array(__CLASS__, 'load_theme_info') );
-		add_action( 'wp_ajax_change_theme', array(__CLASS__, 'change_theme') );
 	}
 
 	public static function is_onboarding() 
@@ -121,60 +118,6 @@ class PL_Customizer_Helper
 	  <?php endif; ?>
 
 	  <?php
-	}
-
-	public static function load_custom_styles() {
-		if ( isset($_POST['color']) )  {
-		  	// This needs to be defined (ref'd by the template file we're about to load...)
-		  	$color = $_POST['color'];
-
-		  	$curr_theme = wp_get_theme()->Template;
-		  	$skin_path = ( trailingslashit(PL_THEME_SKIN_DIR) . trailingslashit($curr_theme) . "{$color}.css" );
-
-		  	// Read in CSS file contents as a sting...
-		  	$styles = file_get_contents($skin_path);
-
-			echo json_encode( array( 'styles' => $styles ) );
-		}
-
-		die();
-	}
-
-	public static function load_theme_info() {
-		if ( isset($_POST['theme']) ) {
-			$theme_name = $_POST['theme'];
-			// switch_theme( $theme_name, $theme_name);
-
-			$theme_obj = wp_get_theme( $theme_name );
-
-			ob_start();
-			?>
-	            <div class="theme-screenshot">
-	              <img src="<?php echo esc_url( $theme_obj->get_screenshot() ); ?>" />
-	      	    </div>
-
-	            <h2>Theme Description</h2>
-	            <p><?php echo $theme_obj->display('Description'); ?></p>
-	        <?php
-	        $new_html = ob_get_clean();
-	       	    
-			echo json_encode(array('theme_info' => $new_html));
-		}
-
-		die();
-	}
-
-	public static function change_theme() {
-		if ( isset ($_POST['new_theme']) ) {
-			$new_theme = $_POST['new_theme'];
-
-			// Assume stylesheet and template name are the same for now...
-			switch_theme( $new_theme, $new_theme );
-
-			echo json_encode(array('success' => 'true'));
-		}
-
-		die();
 	}
 
 }

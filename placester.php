@@ -159,6 +159,7 @@ include_once('helpers/snippet.php');
 include_once('helpers/template.php');
 include_once('helpers/customizer.php');
 include_once('helpers/bootup.php');
+include_once('helpers/theme.php');
 
 /* third-party scripts */
 include_once('third-party/tax-meta-class/tax-meta-class.php');
@@ -166,8 +167,10 @@ include_once('third-party/convex-hull/convex-hull.php');
 include_once('third-party/mixpanel/mixpanel.php');
 
 /* pl-admin */
+include_once('config/pl-admin/general.php');
 include_once('config/pl-admin/header.php');
 include_once('config/pl-admin/sidebar.php');
+
 include_once('lib/pl-admin/entities.php');
 include_once('lib/pl-admin/custom_entities.php');
 include_once('lib/pl-admin/util.php');

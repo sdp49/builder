@@ -297,7 +297,7 @@ function define_custom_controls()
    			?>
    			  <div id="color_scheme">
    			  	<?php
-	 				$skins = PL_Css_Helper::get_theme_skins();
+	 				$skins = PL_Theme_Helper::get_theme_skins();
 	 				$preset_colors = array_merge( array('---' => 'none', 'Default' => 'default'), $skins );
    			  	?>
 

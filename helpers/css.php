@@ -124,34 +124,5 @@ class PL_Css_Helper {
 		}	
 	}
 
-	/*
-	 * Get CSS skins (i.e., CSS file names) for the any Placester theme.
-	 */
-	public static function get_theme_skins ( $template = null ) {
-		// If no theme template is passed, use current theme...
-		if ( empty($template) ) {
-			$template = wp_get_theme()->Template;
-		}
-		
-		$skins = array();
-
-		// Construct file path to the theme's skins...	
-	  	$skin_dir = ( trailingslashit(PL_THEME_SKIN_DIR) . trailingslashit($template) );
-		
-		// Generate list of available skins by filename...
-		$dir = @opendir($skin_dir);
-		if ( !empty($dir) ) {
-			while ($filename = readdir($dir)) { 
-				// Only look at files with a .css extension...
-				if ( eregi("\.css", $filename) ) {
-			    	$filename = substr( $filename, 0, -strlen('.css') ); // Omit file extension...
-			    	$skins[ucfirst($filename)] = $filename;
-			  	}
-			}
-		}
-
-		return $skins;
-	}
-
 // end of class
 }
