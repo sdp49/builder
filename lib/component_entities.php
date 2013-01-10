@@ -133,6 +133,14 @@ class PL_Component_Entity {
 			self::$featured_context = $template_context;
 		}
 		
+		if( ! empty( $atts['query_limit'] ) ) {
+			global $pl_listings_query_limit;
+			$pl_listings_query_limit = $atts['query_limit'];
+			
+			add_action( 'static_listings_limit_default', array( __CLASS__, 'add_length_limit_default'  ));
+			unset ( $pl_listings_query_limit );
+		}
+		
 		// print filters from the static listing menu
 		$listing_filters = PL_Component_Entity::get_filters_by_listing( $atts['id'] );
 		$filters_string = PL_Component_Entity::convert_filters( $listing_filters );
@@ -146,6 +154,13 @@ class PL_Component_Entity {
 	
 		return ob_get_clean();
 	}
+	
+	public static function add_length_limit_default() {
+		global $pl_listings_query_limit;
+
+		echo "limit_default: " . $pl_listings_query_limit . ",";
+	}
+	
 	
 	public static function search_listings_entity( $atts, $filters = '' ) {
 		$context = isset( $atts['context'] ) ? $atts['context'] : 'shortcode';
@@ -708,6 +723,7 @@ class PL_Component_Entity {
 					      filter : filter,
 					      class: '.placester_listings_list',
 					      listings: listings,
+					      <?php echo do_action('static_listings_limit_default'); ?>
 					      context: '<?php echo $context; ?>'
 					    });
 
@@ -744,7 +760,7 @@ class PL_Component_Entity {
 		
 		private static function convert_filters( $filters ) {
 			ob_start();
-			if( is_array( $filters) ) {
+			if( is_array( $filters ) ) {
 				foreach( $filters as $top_key => $top_value ) {
 					if( is_array( $top_value ) ) {
 						foreach( $top_value as $key => $value ) {
