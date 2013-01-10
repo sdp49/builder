@@ -289,7 +289,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 												'id' => 'pls_admin_my_listings'),
 										'general_widget_');
 
-// 							echo $static_list_form;
+							echo $static_list_form;
 						 ?>
 					</section><!-- end of #pl_static_listing_block -->
 				</div>
