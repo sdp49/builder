@@ -86,7 +86,9 @@ class PL_Shortcodes
             												'listing_type',
             												'img_gallery',
             												'amenities',
-            												'compliance'),
+            												'price_unit',
+            												//'compliance'
+            												),
 									'neighborhood' => array('nb_title',
 															'nb_featured_image',
 															'nb_description',
@@ -127,6 +129,10 @@ class PL_Shortcodes
 		foreach (self::$codes as $code) {
 			add_option( ('pls_' . $code), self::$defaults[$code][0] );
 		}
+		
+		// Separately register the Compliance shortcode as it's not completely relevant
+		// to the widget types
+		add_shortcode( 'compliance', array( __CLASS__, 'compliance_shortcode_handler' ) );
 
 		// Handle the special case of turning property details functionality on/off...
 		add_option( self::$prop_details_enabled_key, 'false' ); 
@@ -139,6 +145,13 @@ class PL_Shortcodes
 
 
 	/*** Shortcode Handlers ***/	
+	
+	public static function compliance_shortcode_handler( $atts ) {
+		$content = PL_Component_Entity::compliance_entity( $atts );
+		
+		return PL_Shortcode_Wrapper::create( 'compliance', $content );
+		
+	} 
 	
 	public static function search_form_shortcode_handler($atts) {
 		$content = PL_Component_Entity::search_form_entity( $atts );
