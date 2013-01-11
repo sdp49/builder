@@ -365,6 +365,8 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 						$('#pl_static_listing_block #advanced').hide();
 						$('#pl_static_listing_block #amenities').hide();
 						$('#pl_static_listing_block #custom').hide();
+						$('#general_widget_zoning_types').hide();
+						$('#general_widget_purchase_types').hide();
 					} else if( selected_cpt == 'pl_neighborhood' ) {
 						$('.pl_neighborhood.pl_widget_block, .pl_neighborhood section').show();
 					}
@@ -658,13 +660,13 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		if ( ! $id )
 			wp_die( -1 );
 		
-		if( !headers_sent() ):
-			?>
-				<script type="text/javascript">
-					jQuery('#post').trigger('submit');
-				</script>
-			<?php 
-		endif; 
+			if( ! headers_sent() ):
+				?>
+					<script type="text/javascript">
+						jQuery('#post').trigger('submit');
+					</script>
+				<?php 
+			endif; 
 		$this->meta_box_save( $id );
 	}
 	
