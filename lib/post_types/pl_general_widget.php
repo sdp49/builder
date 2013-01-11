@@ -88,6 +88,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		add_action( 'wp_ajax_autosave', array( $this, 'autosave_refresh_iframe' ), 1 );
 		add_action( 'wp_ajax_autosave_widget', array( $this, 'autosave_save_post_for_iframe' ) );
 		add_action( 'wp_ajax_handle_widget_script', array( $this, 'handle_iframe_cross_domain' ) );
+		add_action( 'wp_ajax_nopriv_handle_widget_script', array( $this, 'handle_iframe_cross_domain' ) );
 		add_filter( 'pl_form_section_after', array( $this, 'filter_form_section_after' ), 10, 3 );
 		add_filter('post_row_actions', array( $this, 'remove_quick_edit_view'), 10, 1 );
 		add_action( 'restrict_manage_posts', array( $this, 'listing_posts_add_filter_widget_type' ) );
@@ -425,6 +426,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 							width: 800,
 							height: 600
 						});
+				
 				});
 
 				// hide advanced values for static listings area
