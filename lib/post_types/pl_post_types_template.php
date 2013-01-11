@@ -22,6 +22,9 @@ if( ! empty( $widget_class ) ) {
 				overflow: hidden;
 			}
 		</style>
+		<script type="text/javascript">
+			var pl_general_widget = true;
+		</script>
 		<?php wp_head(); ?>
 	</head>
 	<body>
