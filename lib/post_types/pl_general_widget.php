@@ -658,12 +658,13 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		if ( ! $id )
 			wp_die( -1 );
 		
-		?>
-			<script type="text/javascript">
-				jQuery('#post').trigger('submit');
-			</script>
-		<?php 
-		
+		if( !headers_sent() ):
+			?>
+				<script type="text/javascript">
+					jQuery('#post').trigger('submit');
+				</script>
+			<?php 
+		endif; 
 		$this->meta_box_save( $id );
 	}
 	
