@@ -11,7 +11,7 @@ if( ! empty( $widget_class ) ) {
 	$html_class = 'class="' . $widget_class . '"';
 }
 
-?><html style="margin-top: 0 !important" <?php echo $html_class; ?>>
+?><html style="margin-top: 0 !important; overflow: hidden;" <?php echo $html_class; ?>>
 	<head>
 		<style type="text/css">
 			body {
