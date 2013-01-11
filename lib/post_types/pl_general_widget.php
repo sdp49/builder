@@ -823,8 +823,12 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	 * Remove quick edit and view 
 	 */
 	public function remove_quick_edit_view( $actions ) {
-		unset( $actions['inline hide-if-no-js'] );
-		unset( $actions['view'] );
+		global $post;
+		
+		if( $post->post_type === 'pl_general_widget' ) {
+			unset( $actions['inline hide-if-no-js'] );
+			unset( $actions['view'] );
+		}
 		return $actions;
 	}
 	
