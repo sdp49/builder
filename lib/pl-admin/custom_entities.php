@@ -17,7 +17,7 @@ class PL_Admin_Card_Theme_Select extends PL_Admin_Card {
     global $PL_ADMIN_THEMES;
     
     ?>
- 		  <div class="container-fluid">
+ 		  <div class="container-fluid <?php echo ('card-' . $this->id); ?>">
         <div class="pls-switcher">
 			    <div class="row-fluid">
             <div class="span12">
@@ -48,48 +48,48 @@ class PL_Admin_Card_Theme_Select extends PL_Admin_Card {
           </div>
 			  </div>
 
-		  <div class="row-fluid">
-        <div class="span4">
-          <img class="w100" src="img/img-01.jpg" alt="">
+  		  <div class="row-fluid">
+          <div class="span4">
+            <img class="w100" src="img/img-01.jpg" alt="">
+          </div>
+          <div class="span8">
+            <h2>Theme Description</h2>
+            <p>Ut nec sem metus, at placerat sapien. Vivamus erat leo, tincidunt eu ultricies quis, pellentesque at turpis. Orbi tellus nunc, condimentum eget rhoncus venenatis, dignissim non ligula. Sed nec tortor ipsum. Morbi tellus nunc, condimentum eget rhoncus venenatis, dignissim non ligula.</p>
+            
+            <h2>Features</h2>
+            <ul id="featureslist">
+              <li>
+                <div class="featureicon"><a class="ico-responsive" href="#"></a></div>
+                Responsive Web Design
+              </li>
+              <li>
+                <div class="featureicon"><a class="ico-responsive" href="#"></a></div>
+                Map Search Integrations
+              </li>  
+              <li>
+                <div class="featureicon"><a class="ico-responsive" href="#"></a></div>
+                Featured Listings Slider
+              </li>                   
+            </ul>
+          </div>
         </div>
-        <div class="span8">
-          <h2>Theme Description</h2>
-          <p>Ut nec sem metus, at placerat sapien. Vivamus erat leo, tincidunt eu ultricies quis, pellentesque at turpis. Orbi tellus nunc, condimentum eget rhoncus venenatis, dignissim non ligula. Sed nec tortor ipsum. Morbi tellus nunc, condimentum eget rhoncus venenatis, dignissim non ligula.</p>
-          
-          <h2>Features</h2>
-          <ul id="featureslist">
-            <li>
-              <div class="featureicon"><a class="ico-responsive" href="#"></a></div>
-              Responsive Web Design
-            </li>
-            <li>
-              <div class="featureicon"><a class="ico-responsive" href="#"></a></div>
-              Map Search Integrations
-            </li>  
-            <li>
-              <div class="featureicon"><a class="ico-responsive" href="#"></a></div>
-              Featured Listings Slider
-            </li>                   
-          </ul>
+        
+        <div class="row-fluid">
+        	<div class="span12">
+            <div id="pls-numbers">
+              <a class="first" href="#">Previous</a>          
+              <a class="active" href="#">1</a>
+              <a href="#">2</a>
+              <a href="#">3</a>
+              <span>...</span>
+              <a href="#">9</a>
+              <a href="#">10</a>            
+              <a href="#">11</a>            
+              <a class="last" href="#">Next</a>            
+            </div><!--pls-numbers-->              
+          </div>
         </div>
       </div>
-      
-      <div class="row-fluid">
-      	<div class="span12">
-          <div id="pls-numbers">
-            <a class="first" href="#">Previous</a>          
-            <a class="active" href="#">1</a>
-            <a href="#">2</a>
-            <a href="#">3</a>
-            <span>...</span>
-            <a href="#">9</a>
-            <a href="#">10</a>            
-            <a href="#">11</a>            
-            <a class="last" href="#">Next</a>            
-          </div><!--pls-numbers-->              
-        </div>
-      </div>
-    </div>
  		<?php
  	}
 }
@@ -134,6 +134,7 @@ class PL_Admin_Card_CSS_Editor extends PL_Admin_Card {
 
  	public function render () {
  		?>
+
  		<?php
  	}
 }

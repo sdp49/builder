@@ -132,11 +132,16 @@ class PL_Admin_Section extends PL_Admin_Component {
 
  		?>
  		  <div id="card-group-<?php echo $this->id; ?>" class="pls-inner-top" style="display:none">
- 		    <div class="container-fluid card-nav">
+ 		    <div class="row-fluid card-nav">
  		  	  <div class="row-fluid">
 	            <div class="span12">
 	              <div class="pls-head">
 	                <h1><span class="curr-card-num">1</span>/<?php echo $numCards; ?>: <?php echo $this->cards[0]->title; ?></h1>
+	                <?php
+	                	$card_arr = $this->cards;
+	                	$first_card = $card_arr[0];
+	                	error_log("First card's title: " . $first_card->title);
+	                ?>
 	                <div class="pls-right">
 	                  <?php for ( $i = 0; $i < $numCards; $i++ ): ?>
 	                    <a href="#" class="bullet <?php echo ( $i == 0 ? 'on' : 'off' ); ?>"></a>
@@ -147,8 +152,8 @@ class PL_Admin_Section extends PL_Admin_Component {
 	            </div>
 	          </div>
  		    </div>
- 		    
- 		    <div class="container-fluid card-body">
+
+ 		    <div class="row-fluid card-body">
  		  	  <?php foreach ( $this->cards as $card ): ?>
  		      	<?php $card->render(); ?>
  		      <?php endforeach; ?>
