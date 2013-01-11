@@ -49,7 +49,7 @@ class PL_Map_CPT extends PL_Post_Base {
 		if( !isset( $_POST['meta_box_nonce'] ) || !wp_verify_nonce( $_POST['meta_box_nonce'], 'pl_cpt_meta_box_nonce' ) ) return;
 	
 		// if our current user can't edit this post, bail
-		if( !current_user_can( 'edit_post' ) ) return;
+		// if( !current_user_can( 'edit_post' ) ) return;
 	
 		foreach( $this->fields as $field => $values ) {
 			if( isset( $_POST[$field] ) ) {
