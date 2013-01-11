@@ -11,7 +11,7 @@ if( ! empty( $widget_class ) ) {
 	$html_class = 'class="' . $widget_class . '"';
 }
 
-?><html style="margin-top: 0 !important" <?php echo $html_class; ?>>
+?><html style="margin-top: 0 !important; overflow: hidden;" <?php echo $html_class; ?>>
 	<head>
 		<style type="text/css">
 			body {
@@ -22,6 +22,9 @@ if( ! empty( $widget_class ) ) {
 				overflow: hidden;
 			}
 		</style>
+		<script type="text/javascript">
+			var pl_general_widget = true;
+		</script>
 		<?php wp_head(); ?>
 	</head>
 	<body>
