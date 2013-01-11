@@ -568,6 +568,15 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	public function post_type_templating( $single ) {
 		global $post;
 		
+		if( empty( $post ) ) {
+			return $single;
+		}
+
+		if( ! in_array( $post->post_type, PL_Post_Type_Manager::$post_types )
+				&& 'pl_general_widget' !== $post->post_type ) {
+			return $single;
+		}
+		
 		if( ! empty( $post ) ) {
 			// map the post type from the meta key (as we use a single widget here)
 			$post_type = get_post_meta($post->ID, 'pl_post_type', true);
@@ -595,9 +604,8 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				$this->prepare_featured_template( $single, $skipdb );
 			} else if( $post->post_type == 'static_listings' ) {
 				$this->prepare_static_template( $single, $skipdb );
-			}
-		}
-		
+			} 
+		} 
 		// Silence is gold.
 	}
 	
