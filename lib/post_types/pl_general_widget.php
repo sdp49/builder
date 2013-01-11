@@ -454,7 +454,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 
 				// populate slug box for the edit screen
 				<?php if( ! $is_post_new ) { ?>
-					$('#edit-slug-box').after('<div class="iframe-link"><strong>Embed Code:</strong> <?php echo esc_html( $iframe_controller ); ?></div>');
+					$('#edit-slug-box').after('<div class="iframe-link"><strong>Embed Code:</strong> <?php echo esc_html( $iframe_controller ); ?></div><div class="shortcode-link"></div>');
 					$('#pl_post_type_<?php echo $pl_post_type; ?>').trigger('click');
 				<?php }	?>
 
@@ -730,6 +730,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			add_action('wp_head', array( __CLASS__, 'hide_unnecessary_controls' ) );
 			
 			$shortcode = '[static_listings id="' . $post->ID . '" ' . $template . $query_limit . ']';
+			
 			include PL_LIB_DIR . '/post_types/pl_post_types_template.php';
 		
 			die();
@@ -874,6 +875,17 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			$query->query_vars['meta_key'] = 'pl_post_type';
 			$query->query_vars['meta_value'] = $_GET['pl_widget_type'];
 		}
+	}
+	
+	public function add_shortcode_definition_below_embed( $shortcode ) {
+	?>
+	<script type="text/javascript">
+		jQuery(document).ready(function() {
+			alert('<?php echo str_replace( "'", '\'', $shortcode ); ?>');
+			jQuery('#edit-slug-box').find('.shortcode-link').html('<?php echo str_replace( "'", '\'', $shortcode ); ?>');
+		});
+	</script>
+	<?php	
 	}
 	
 }

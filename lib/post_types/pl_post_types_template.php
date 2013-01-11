@@ -28,7 +28,20 @@ if( ! empty( $widget_class ) ) {
 		<?php wp_head(); ?>
 	</head>
 	<body>
+	
 	<?php
+		if( isset( $shortcode ) ) {
+		?>	
+		<script type="text/javascript">
+			jQuery(document).ready(function() {
+				if (jQuery('.shortcode-link', window.parent.document).length ) {
+					jQuery('.shortcode-link', window.parent.document).html('<?php echo str_replace( "'", "\'", $shortcode ); ?>');
+				};
+			});
+		</script>
+		<?php
+		}
+		
 		add_filter('show_admin_bar', '__return_false');
 		add_action('wp_enqueue_scripts', isset( $drop_modernizr ) ? 'pl_template_drop_modernizr': 'pl_template_add_modernizr' );
 
