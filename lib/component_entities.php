@@ -94,10 +94,11 @@ class PL_Component_Entity {
 		// Print property_ids as argument to the listings
 		global $property_ids;
 		$property_ids = self::get_property_ids( $atts['id'] );
-
+		
 		if( empty( $property_ids ) ) {
 			return;
 		}
+		
 		$property_ids = array_flip($property_ids);
 		
 		add_action('featured_filters_featured_ids', array( __CLASS__, 'print_property_listing_args') );
@@ -672,13 +673,22 @@ class PL_Component_Entity {
 		private static function get_property_ids( $featured_listing_id ) {
 			// if( ! is_int( $featured_listing_id ) ) { }
 			$values = get_post_custom( $featured_listing_id );
+
 			$property_ids = isset( $values['keatingbrokerage_meta'] ) ? @unserialize($values['keatingbrokerage_meta'][0]) : '';
 			$pl_featured_listing_meta = isset( $values['pl_featured_listing_meta'] ) ? @json_decode($values['pl_featured_listing_meta'][0], true) : '';
 			// $pl_featured_meta_value = empty( $pl_featured_listing_meta ) ? array('listings' => array()) : $pl_featured_listing_meta['featured-listings-type'];
 // 			$pl_featured_meta_value = empty( $pl_featured_listing_meta ) ? array('listings' => array()) : @json_decode($pl_featured_listing_meta[0], true);
 		
 			if( empty( $pl_featured_listing_meta ) ) {
-				return array( );
+				$pl_featured_listing_meta = isset( $values['pl_featured_listing_meta'] ) ? @unserialize($values['pl_featured_listing_meta'][0]) : '';
+				if( empty( $pl_featured_listing_meta ) ) {
+					return array( );
+				}
+			}
+			
+			// remove the top array key if any
+			if( isset( $pl_featured_listing_meta['featured-listings-type'] ) ) {
+				$pl_featured_listing_meta = $pl_featured_listing_meta['featured-listings-type'];
 			}
 			
 			return $pl_featured_listing_meta;
