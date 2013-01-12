@@ -1187,7 +1187,7 @@ section.pls-tall {
   box-shadow: 0 -3px 2px black; }
   section.pls-tall a.v-handle {
     right: 100px;
-    bottom: 504px;
+    bottom: 506px;
     position: absolute;
     padding: 1px 14px 1px 14px;
     background: #000;
@@ -1215,7 +1215,7 @@ section.pls-medium {
   box-shadow: 0 -3px 2px black; }
   section.pls-medium a.v-handle {
     right: 100px;
-    bottom: 404px;
+    bottom: 406px;
     position: absolute;
     padding: 1px 14px 1px 14px;
     background: #000;
@@ -1243,7 +1243,7 @@ section.pls-small {
   box-shadow: 0 -3px 2px black; }
   section.pls-small a.v-handle {
     right: 100px;
-    bottom: 244px;
+    bottom: 246px;
     position: absolute;
     padding: 1px 14px 1px 14px;
     background: #000;

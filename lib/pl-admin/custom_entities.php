@@ -70,21 +70,21 @@ class PL_Admin_Card_Theme_Select extends PL_Admin_Card {
         </div>
       </div>
       
-      <!-- <div class="row-fluid">
+      <div class="row-fluid">
       	<div class="span12">
           <div id="pls-numbers">
             <a class="first" href="#">Previous</a>          
-            <a class="active" href="#">1</a>
+            <!-- <a class="active" href="#">1</a>
             <a href="#">2</a>
             <a href="#">3</a>
             <span>...</span>
             <a href="#">9</a>
             <a href="#">10</a>            
-            <a href="#">11</a>            
+            <a href="#">11</a> -->           
             <a class="last" href="#">Next</a>            
-          </div><!-pls-numbers->              
+          </div><!--pls-numbers-->              
         </div>
-      </div> -->
+      </div>
  		<?php
  	}
 }

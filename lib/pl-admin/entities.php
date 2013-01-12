@@ -130,8 +130,9 @@ class PL_Admin_Section extends PL_Admin_Component {
  		// Sort cards by priority...
  		uasort( $this->cards, array( $this, 'cmp_priority' ) );
 
- 		// Isolate first card and set the appropriate property...
- 		list($firstCard) = array_values($this->cards);
+ 		// Get array of card objects + isolate first card and set the appropriate property...
+ 		$cardObjArr = array_values($this->cards);
+ 		list($firstCard) = $cardObjArr;
  		$firstCard->isFirst = true;
  		
  		?>
@@ -143,7 +144,7 @@ class PL_Admin_Section extends PL_Admin_Component {
 	                <h1><span class="curr-card-num">1</span>/<?php echo $numCards; ?>: <?php echo $firstCard->title; ?></h1>
 	                <div class="pls-right">
 	                  <?php for ( $i = 0; $i < $numCards; $i++ ): ?>
-	                    <a href="#" class="bullet <?php echo ( $i == 0 ? 'on' : 'off' ); ?>"></a>
+	                    <a href="<?php echo esc_attr( 'card-' . $cardObjArr[$i]->id ); ?>" class="bullet <?php echo ( $i == 0 ? 'on' : 'off' ); ?>"></a>
 	              	  <?php endfor; ?>
 	                  <a href="#" class="button button-light-grey pls-close"><span></span></a>        
 	                </div><!--pls-pagination-->      

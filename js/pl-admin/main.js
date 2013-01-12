@@ -25,9 +25,9 @@ pl_admin_global = {
 
 jQuery(document).ready(function($) {
 
-  /*
-   * Define Vars & Functions
-   */
+/*
+ * Define Vars & Functions
+ */
 
   // Define iframe
   var iframe = $('#main-iframe');
@@ -43,21 +43,11 @@ jQuery(document).ready(function($) {
   //  var crumbs = 
   // }
 
-  /*
-   * Bind/Register Events
-   */
+  function 
 
-  // Intercept page section clicks and alter content iframe accordingly...
-  $('#utilitiesNav li a').on('click', function (event) {
-    event.preventDefault();
-
-    // Construct and set new content url...
-    var url = this.href + '?content=true';
-    // console.log(url);
-    iframe.attr('src', url);
-
-    // alterBreadCrumbs(this.href);
-  });
+/*
+ * Bind/Register Events
+ */
 
   // First register a function to make the spinner disappear...
   pl_admin_global.contentLoadedHandlers.push(function () {
@@ -74,16 +64,48 @@ jQuery(document).ready(function($) {
     refreshContent(true);
   });
 
+  
+  // --------------- //
+  // Navs & Sections //
+  // --------------- //
+
+  // Intercept page section clicks and alter content iframe accordingly...
+  $('#utilitiesNav li a').on('click', function (event) {
+    event.preventDefault();
+
+    // Construct and set new content url...
+    var url = this.href + '?content=true';
+    // console.log(url);
+    iframe.attr('src', url);
+
+    // alterBreadCrumbs(this.href);
+  });
+
   // Bind "Ubiquitous" (i.e., bottom left) sections...
   $('#settingsNav a').on('click', function (event) {
     event.preventDefault();
 
     // Show related card-group in pane...
     var cardGrpID = '#card-group-' + $(this).attr('class');
-    console.log(cardGrpID);
+    // console.log(cardGrpID);
+    $('#pls-pane').show();
     $(cardGrpID).show()
 
   });
+
+  // Close pane...
+  $('#pls-pane .pls-close').on('click', function (event) {
+    event.preventDefault();
+    $('#pls-pane').hide();
+  });
+
+  
+  // --------------- //
+  // Cards (Generic) //
+  // --------------- //
+
+  // Card Navigation
+  $().on();
 
 });
 
