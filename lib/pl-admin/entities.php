@@ -130,18 +130,17 @@ class PL_Admin_Section extends PL_Admin_Component {
  		// Sort cards by priority...
  		uasort( $this->cards, array( $this, 'cmp_priority' ) );
 
+ 		// Isolate first card and set the appropriate property...
+ 		list($firstCard) = array_values($this->cards);
+ 		$firstCard->isFirst = true;
+ 		
  		?>
  		  <div id="card-group-<?php echo $this->id; ?>" class="pls-inner-top" style="display:none">
- 		    <div class="row-fluid card-nav">
+ 		    <div class="container-fluid card-nav">
  		  	  <div class="row-fluid">
 	            <div class="span12">
 	              <div class="pls-head">
-	                <h1><span class="curr-card-num">1</span>/<?php echo $numCards; ?>: <?php echo $this->cards[0]->title; ?></h1>
-	                <?php
-	                	$card_arr = $this->cards;
-	                	$first_card = $card_arr[0];
-	                	error_log("First card's title: " . $first_card->title);
-	                ?>
+	                <h1><span class="curr-card-num">1</span>/<?php echo $numCards; ?>: <?php echo $firstCard->title; ?></h1>
 	                <div class="pls-right">
 	                  <?php for ( $i = 0; $i < $numCards; $i++ ): ?>
 	                    <a href="#" class="bullet <?php echo ( $i == 0 ? 'on' : 'off' ); ?>"></a>
@@ -153,7 +152,7 @@ class PL_Admin_Section extends PL_Admin_Component {
 	          </div>
  		    </div>
 
- 		    <div class="row-fluid card-body">
+ 		    <div class="container-fluid card-body">
  		  	  <?php foreach ( $this->cards as $card ): ?>
  		      	<?php $card->render(); ?>
  		      <?php endforeach; ?>
@@ -168,17 +167,26 @@ class PL_Admin_Card extends PL_Admin_Component {
 	// Class Vars
 
 	// Instance Vars
+	public $isFirst = false;
 
 	public function __construct( $id, $args = array() ) {
  		parent::__construct( $id, $args );
  	}
 
+ 	// Standard wrapper for all custom card content...
 	public function render () {
-		echo 'Implement me!';
+		// Display the first card in the group (hide the others for now).
+		$displayAttr = ( $this->isFirst ? '' : 'style="display:none"' );
+
+		?>
+		  <div id="<?php echo esc_attr( 'card-' . $this->id ); ?>" class="container-fluid" <?php echo $displayAttr; ?>>
+		  	<?php $this->render_content(); ?>
+		  </div>
+		<?php
 	}
 
 	public function render_content () {
-		// No need for this in cards -- defining here to satify abstract base requirement so that extending classes don't have to...
+		// Defined by implementing classes...
 	}
 }
 

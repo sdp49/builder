@@ -60,9 +60,6 @@ jQuery(document).ready(function($) {
   });
 
   // First register a function to make the spinner disappear...
-  // var handler = function () {
-  //   $('#pls-inner-bot .loader').hide();
-  // }
   pl_admin_global.contentLoadedHandlers.push(function () {
     $('#pls-inner-bot .loader').hide();
   });
@@ -75,6 +72,17 @@ jQuery(document).ready(function($) {
     $('#pls-inner-bot .loader').show();
 
     refreshContent(true);
+  });
+
+  // Bind "Ubiquitous" (i.e., bottom left) sections...
+  $('#settingsNav a').on('click', function (event) {
+    event.preventDefault();
+
+    // Show related card-group in pane...
+    var cardGrpID = '#card-group-' + $(this).attr('class');
+    console.log(cardGrpID);
+    $(cardGrpID).show()
+
   });
 
 });
