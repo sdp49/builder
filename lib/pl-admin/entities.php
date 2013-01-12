@@ -136,7 +136,7 @@ class PL_Admin_Section extends PL_Admin_Component {
  		$firstCard->isFirst = true;
  		
  		?>
- 		  <div id="card-group-<?php echo $this->id; ?>" class="pls-inner-top" style="display:none">
+ 		  <div id="card-group-<?php echo $this->id; ?>" class="pls-inner-top card-group" style="display:none">
  		    <div class="container-fluid card-nav">
  		  	  <div class="row-fluid">
 	            <div class="span12">

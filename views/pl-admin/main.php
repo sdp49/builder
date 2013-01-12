@@ -112,7 +112,7 @@ $current_user = wp_get_current_user();
 
 	<!-- Card Pane -->
   <section id="pls-pane" class="pls-small pls-min" style="display:none">
-    <a href="#" class="v-handle"><span></span></a>
+    <!-- <a href="#" class="v-handle"><span></span></a> -->
     <?php PL_Admin_Util::renderPane(); ?>
   </section>
 

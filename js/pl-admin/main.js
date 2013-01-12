@@ -43,7 +43,17 @@ jQuery(document).ready(function($) {
   //  var crumbs = 
   // }
 
-  function 
+  function displayCard (cardGrpID, cardID) {
+    // Construct DOM selector of the card to display...
+    var cardSelector = '#pls-pane #' + cardGrpID + ' .card-body #' + cardID;
+    console.log(cardSelector);
+    
+    // Hide all other cards...
+    $(cardSelector).siblings().hide();
+
+    // Show this card...
+    $(cardSelector).show();
+  }
 
 /*
  * Bind/Register Events
@@ -89,8 +99,7 @@ jQuery(document).ready(function($) {
     var cardGrpID = '#card-group-' + $(this).attr('class');
     // console.log(cardGrpID);
     $('#pls-pane').show();
-    $(cardGrpID).show()
-
+    $(cardGrpID).show();
   });
 
   // Close pane...
@@ -105,7 +114,23 @@ jQuery(document).ready(function($) {
   // --------------- //
 
   // Card Navigation
-  $().on();
+  $('#pls-pane .pls-right .bullet').on('click', function (event) {
+    event.preventDefault();
+
+    // If already selected, don't bother...
+    if ( $(this).hasClass('on') ) { return; }
+
+    // Turn all other bullets off..
+    $(this).siblings('.bullet').removeClass('on');
+    $(this).siblings('.bullet').addClass('off');
+    
+    // Turn this one on...
+    $(this).removeClass('off');
+    $(this).addClass('on');
+
+    var cardGrpID = $(this).parentsUntil('#pls-pane', '.card-group').attr('id');
+    displayCard(cardGrpID, this.href);
+  });
 
 });
 
