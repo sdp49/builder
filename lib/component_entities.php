@@ -142,6 +142,8 @@ class PL_Component_Entity {
 			unset ( $pl_listings_query_limit );
 		}
 		
+		self::hide_unnecessary_controls( $atts );
+		
 		// print filters from the static listing menu
 		$listing_filters = PL_Component_Entity::get_filters_by_listing( $atts['id'] );
 		$filters_string = PL_Component_Entity::convert_filters( $listing_filters );
@@ -990,5 +992,30 @@ class PL_Component_Entity {
 				default: return $taxonomy_type;
 			}
 			return $taxonomy_type;
+		}
+		
+		/**
+		 * Helper, add CSS to template to hide dropdowns
+		 */
+		public static function hide_unnecessary_controls( $atts ) {
+		
+			$css = '<style type="text/css">';
+		
+			if( ! empty( $atts ) ) {
+		
+				if( ! empty( $atts['hide_sort_by'] ) && $atts['hide_sort_by'] == 'true' ) {
+					$css .= '.sort_wrapper .sort_item:first-child { display: none; } ';
+				}
+				if( ! empty( $atts['hide_sort_direction'] ) && $atts['hide_sort_direction'] == 'true' ) {
+					$css .= '.sort_wrapper .sort_item:last-child { display: none; } ';
+				}
+				if( ! empty( $atts['hide_num_results'] ) && $atts['hide_num_results'] == 'true' ) {
+					$css .= '#placester_listings_list_length { display: none; } ';
+				}
+			}
+		
+			$css .= '</style>';
+		
+			echo $css;
 		}
 }

@@ -715,6 +715,8 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	// They are already available via other UI
 	private function prepare_static_template( $single ) {
 		global $post;
+		
+		$args = '';
 
 		if( ! empty( $post ) && $post->post_type === 'static_listings' ) {
 
@@ -722,51 +724,32 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			$query_limit = '';
 			$template = '';
 			if( ! empty( $meta['pl_template_static_listings'] ) ) {
-				$template = 'template="static_listings_' . $meta['pl_template_static_listings'][0] . '"';
+				$args .= 'template="static_listings_' . $meta['pl_template_static_listings'][0] . '"';
 			} else if( ! empty( $meta['pl_cpt_template'] ) ) {
-				$template = 'template="static_listings_' . $meta['pl_cpt_template'][0] . '"';
-			}
-			if( ! empty( $meta['num_results_shown'] ) ) {
-				$query_limit = sprintf( ' query_limit="%s"', $meta['num_results_shown'][0] );
+				$args .= 'template="static_listings_' . $meta['pl_cpt_template'][0] . '"';
 			}
 
-			add_action('wp_head', array( __CLASS__, 'hide_unnecessary_controls' ) );
+			if( ! empty( $meta['num_results_shown'] ) ) {
+				$args .= sprintf( ' query_limit="%s"', $meta['num_results_shown'][0] );
+			}
+			if( ! empty( $meta['hide_num_results'] ) ) {
+				$args .= sprintf( ' hide_num_results="%s"', $meta['hide_num_results'][0] );
+			}
+			if( ! empty( $meta['hide_sort_by'] ) ) {
+				$args .= sprintf( ' hide_sort_by="%s"', $meta['hide_sort_by'][0] );
+			}
+			if( ! empty( $meta['hide_sort_direction'] ) ) {
+				$args .= sprintf( ' hide_sort_direction="%s"', $meta['hide_sort_direction'][0] );
+			}
 			
-			$shortcode = '[static_listings id="' . $post->ID . '" ' . $template . $query_limit . ']';
+
+			$shortcode = '[static_listings id="' . $post->ID . '" ' . $args . ']';
 			
 			include PL_LIB_DIR . '/post_types/pl_post_types_template.php';
 		
 			die();
 		}
 	}
-	
-	/**
-	 * Helper, add CSS to template to hide dropdowns
-	 */
-	public function hide_unnecessary_controls( ) { 
-		global $post;
-	
-		$css = '<style type="text/css">';
-		
-		if( ! empty( $post ) && $post->post_type === 'static_listings' ) {
-			$meta = get_post_meta( $post->ID );
-
-			if( ! empty( $meta['hide_sort_by'] ) && $meta['hide_sort_by'][0] == 'true' ) {
-				$css .= '.sort_wrapper .sort_item:first-child { display: none; } ';
-			}
-			if( ! empty( $meta['hide_sort_direction'] ) && $meta['hide_sort_direction'][0] == 'true' ) {
-				$css .= '.sort_wrapper .sort_item:last-child { display: none; } ';
-			}
-			if( ! empty( $meta['hide_num_results'] ) && $meta['hide_num_results'][0] == 'true' ) {
-				$css .= '#placester_listings_list_length { display: none; } ';
-			}
-		}
-		
-		$css .= '</style>';
-		
-		echo $css;
-	}
-
 	
 	// Autosave function when any of the input fields is called
 	public function autosave_save_post_for_iframe( ) {
