@@ -133,7 +133,7 @@ $PL_ADMIN_CARDS = array(
 		'theme_select' => array(
 			'title' => 'Select Theme',
 			'priority' => 10,
-			'paneCustom' => 'full'
+			'paneCustom' => 'pls-full'
 		),
 		'theme_skin' => array(
 			'title' => 'Select Skin',

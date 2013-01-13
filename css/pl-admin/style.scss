@@ -3194,5 +3194,13 @@ background:url(../../images/icons/pl-admin_icons.png) -143px -67px;
 	display:inline-block
 }	
 
+.card-body > div {
+	display: none;
+}
+
+.card-body > div.active {
+	display: block;
+}
+
 
 

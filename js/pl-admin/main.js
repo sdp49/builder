@@ -19,9 +19,6 @@ pl_admin_global = {
   }
 };
 
-/*
- * Main JS
- */
 
 jQuery(document).ready(function($) {
 
@@ -31,6 +28,9 @@ jQuery(document).ready(function($) {
 
   // Define iframe
   var iframe = $('#main-iframe');
+
+  // Define pane classes
+  var paneSizes = ['pls-small', 'pls-medium', 'pls-tall', 'pls-full'];
 
   // Trigger content iFrame refresh
   function refreshContent (boolFromServer) {
@@ -43,15 +43,40 @@ jQuery(document).ready(function($) {
   //  var crumbs = 
   // }
 
+  function updatePaneSize (selector, isGrp) {
+    // If selector is for group, find selector of active card...
+    var cardElem = ( isGrp ? $(selector).find('.active') : $(selector) );
+    var newPaneSize = cardElem.attr('pane');
+
+    console.log(selector);
+    console.log(cardElem);
+    console.log(newPaneSize);
+
+    // Check to see if new pane size is defined -- use default value if not...
+    newPaneSize = ( (typeof newPaneSize === 'undefined') ? paneSizes[0] : newPaneSize );
+
+    var paneElem = $('#pls-pane');
+    // Remove any exiting pane sizing classes...
+    for ( var i = 0; i < paneSizes.length; ++i ) {
+      paneElem.removeClass(paneSizes[i]);
+    }
+
+    // Add back paneAttr as new pane size class...
+    paneElem.addClass(newPaneSize); 
+  }
+
   function displayCardGroup (cardGrpID) {
     // Construct card group selector...
     var cardGrpSelector = '#card-group-' + cardGrpID;
-    
+
     // Make sure pane is visible...
     $('#pls-pane').show();
 
-    // Hide any other card groups, then show the one passed...
+    // Hide any other card groups
     $('#pls-pane .card-group').hide();
+
+    // Update pane size (if needed), then show the one passed...
+    updatePaneSize(cardGrpSelector, true);
     $(cardGrpSelector).show();
   }
 
@@ -59,11 +84,12 @@ jQuery(document).ready(function($) {
     // Construct DOM selector of the card to display...
     var cardSelector = '#pls-pane #' + cardGrpID + ' .card-body #' + cardID;
     
-    // Hide all other cards...
-    $(cardSelector).siblings().hide();
+    // Hide all other active cards...
+    $(cardSelector).siblings('.active').removeClass('active');
 
-    // Show this card...
-    $(cardSelector).show();
+    // Update pane size (if needed), then show this card...
+    updatePaneSize(cardSelector, false);
+    $(cardSelector).addClass('active');
   }
 
 /*

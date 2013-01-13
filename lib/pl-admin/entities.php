@@ -178,10 +178,13 @@ class PL_Admin_Card extends PL_Admin_Component {
  	// Standard wrapper for all custom card content...
 	public function render () {
 		// Display the first card in the group (hide the others for now).
-		$displayAttr = ( $this->isFirst ? '' : 'style="display:none"' );
+		$class = ( $this->isFirst ? 'active' : '' );
+
+		// Custom attribute for setting custom pane styling for this card...
+		$paneAttr = ( empty($this->paneCustom) ? '' : "pane=\"{$this->paneCustom}\"" );
 
 		?>
-		  <div id="<?php echo esc_attr( 'card-' . $this->id ); ?>" class="container-fluid" <?php echo $displayAttr; ?>>
+		  <div id="<?php echo esc_attr( 'card-' . $this->id ); ?>" class="container-fluid <?php echo $class; ?>" <?php echo $paneAttr; ?>>
 		  	<?php $this->render_content(); ?>
 		  </div>
 		<?php

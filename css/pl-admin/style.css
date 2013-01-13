@@ -2314,3 +2314,11 @@ section#pls-map-pane table.table a.active {
 
 .shake {
   display: inline-block; }
+
+.card-body > div {
+  display: none;
+}
+
+.card-body > div.active {
+  display: block;
+}
