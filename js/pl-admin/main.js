@@ -48,10 +48,6 @@ jQuery(document).ready(function($) {
     var cardElem = ( isGrp ? $(selector).find('.active') : $(selector) );
     var newPaneSize = cardElem.attr('pane');
 
-    console.log(selector);
-    console.log(cardElem);
-    console.log(newPaneSize);
-
     // Check to see if new pane size is defined -- use default value if not...
     newPaneSize = ( (typeof newPaneSize === 'undefined') ? paneSizes[0] : newPaneSize );
 
