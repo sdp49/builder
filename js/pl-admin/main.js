@@ -43,10 +43,21 @@ jQuery(document).ready(function($) {
   //  var crumbs = 
   // }
 
+  function displayCardGroup (cardGrpID) {
+    // Construct card group selector...
+    var cardGrpSelector = '#card-group-' + cardGrpID;
+    
+    // Make sure pane is visible...
+    $('#pls-pane').show();
+
+    // Hide any other card groups, then show the one passed...
+    $('#pls-pane .card-group').hide();
+    $(cardGrpSelector).show();
+  }
+
   function displayCard (cardGrpID, cardID) {
     // Construct DOM selector of the card to display...
     var cardSelector = '#pls-pane #' + cardGrpID + ' .card-body #' + cardID;
-    console.log(cardSelector);
     
     // Hide all other cards...
     $(cardSelector).siblings().hide();
@@ -94,12 +105,7 @@ jQuery(document).ready(function($) {
   // Bind "Ubiquitous" (i.e., bottom left) sections...
   $('#settingsNav a').on('click', function (event) {
     event.preventDefault();
-
-    // Show related card-group in pane...
-    var cardGrpID = '#card-group-' + $(this).attr('class');
-    // console.log(cardGrpID);
-    $('#pls-pane').show();
-    $(cardGrpID).show();
+    displayCardGroup($(this).attr('class'));
   });
 
   // Close pane...
@@ -129,7 +135,7 @@ jQuery(document).ready(function($) {
     $(this).addClass('on');
 
     var cardGrpID = $(this).parentsUntil('#pls-pane', '.card-group').attr('id');
-    displayCard(cardGrpID, this.href);
+    displayCard(cardGrpID, $(this).attr('href'));
   });
 
 });

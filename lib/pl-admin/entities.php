@@ -169,6 +169,7 @@ class PL_Admin_Card extends PL_Admin_Component {
 
 	// Instance Vars
 	public $isFirst = false;
+	public $paneCustom;
 
 	public function __construct( $id, $args = array() ) {
  		parent::__construct( $id, $args );

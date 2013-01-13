@@ -1,5 +1,5 @@
 <?php 
-	$mls_list = PL_Integration_Helper::mls_list(); 
+	$mls_list = PL_Integration_Helper::mls_list();
 	$whoami = PL_Helper_User::whoami();
 	// error_log(serialize($whoami));
 
@@ -33,13 +33,13 @@
 		<select id="mls_id" name="mls_id">
 		  <option value=""> --- </option>
 		  <?php if (is_array($mls_list)): ?>
-  		  <?php foreach ($mls_list as $mls_group => $mls_arr): ?>
-  		    <optgroup label="<?php echo $mls_group; ?>">
-  		      <?php foreach ($mls_arr as $mls_pair): ?>
-  		      	<option value="<?php echo $mls_pair[1]; ?>"><?php echo $mls_pair[0]; ?></option>
-  		      <?php endforeach; ?>
-  		    </optgroup>
-  		  <?php endforeach; ?>
+	  		  <?php foreach ($mls_list as $mls_group => $mls_arr): ?>
+	  		    <optgroup label="<?php echo $mls_group; ?>">
+	  		      <?php foreach ($mls_arr as $mls_pair): ?>
+	  		      	<option value="<?php echo $mls_pair[1]; ?>"><?php echo $mls_pair[0]; ?></option>
+	  		      <?php endforeach; ?>
+	  		    </optgroup>
+	  		  <?php endforeach; ?>
 		  <?php endif ?>
 		</select>
 	  </div>	
