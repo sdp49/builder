@@ -129,7 +129,7 @@ class PL_Admin_Card_CSS_Editor extends PL_Admin_Card {
 
  	public function render () {
  		?>
-
+      
  		<?php
  	}
 }
@@ -148,7 +148,7 @@ class PL_Admin_Card_Menu_Editor extends PL_Admin_Card {
 
 /* Cards used in the "Onboarding" Flow */
 
-class PL_Admin_Card_Info extends PL_Admin_Card {
+class PL_Admin_Card_Basic_Info extends PL_Admin_Card {
 
   public function __construct( $id, $args = array() ) {
     parent::__construct( $id, $args );
@@ -156,6 +156,38 @@ class PL_Admin_Card_Info extends PL_Admin_Card {
 
   public function render () {
     ?>
+      <div class="row-fluid">
+        <div class="span12">
+          <div id="pls-cards">
+            <div class="pls-card pls-c01 pls-active">
+              <div class="inp-slot">
+                <label for="pls-site-title" class="pls-label">Enter Site Title</label>
+                <input id="pls-site-title" type="text" class="w175">
+              </div><!--inp-slot-->
+              <div class="inp-slot">
+                <label for="pls-site-slogan" class="pls-label">Enter a Slogan</label>
+                <input id="pls-site-slogan" type="text" class="w175">
+              </div><!--inp-slot-->  
+              <div class="inp-slot">
+                <label for="pls-email-address" class="pls-label">Enter an Email Address</label>
+                <input id="pls-email-address" type="text" class="w175">
+              </div><!--inp-slot-->
+              <div class="inp-slot">
+                <label for="pls-phone-number" class="pls-label">Enter a Phone Number</label>
+                <input id="pls-phone-number" type="text" class="w175">
+              </div><!--inp-slot-->
+              <div class="bt-slot">
+                <a href="#" class="button button-green">Next: Color &amp; Palette &amp; Styling</a>
+                <a href="#" class="button button-blue">Skip</a>             
+              </div><!--bt-slot-->
+            </div><!--c01-->
+            <div class="pls-card pls-c02"></div>
+            <div class="pls-card pls-c03"></div>
+            <div class="pls-card pls-c04"></div>
+            <div class="pls-card pls-c05"></div>
+          </div>  
+        </div><!--span12-->      
+      </div>
     <?php
   }
 }
@@ -168,6 +200,43 @@ class PL_Admin_Card_MLS extends PL_Admin_Card {
 
   public function render () {
     ?>
+      <div class="row-fluid">
+        <div class="span12">
+          <div id="pls-cards">
+            <div class="pls-card pls-c01"></div>
+            <div class="pls-card pls-c02 pls-z51"></div>
+            <div class="pls-card pls-c03 pls-active">
+              <div class="inp-slot">
+                <label for="pls-select-state" class="pls-label">Select State</label>
+                <select id="pls-select-state" class="w85">
+                  <option>NY</option>
+                </select>
+              </div><!--inp-slot-->
+              <div class="inp-slot">
+                <label for="pls-mls-provider" class="pls-label">Select MLS Provider</label>
+                <select id="pls-mls-provider" class="w175">
+                  <option>MLS Provider</option>
+                </select>
+              </div><!--inp-slot-->
+              <div class="inp-slot">
+                <label for="pls-office-name" class="pls-label">Office Name</label>
+                <input id="pls-office-name" type="text" class="w175">
+              </div><!--inp-slot-->    
+              <div class="inp-slot">
+                <label for="pls-agent-id" class="pls-label">Agent ID</label>
+                <input id="pls-agent-id" type="text" class="w85">
+              </div><!--inp-slot-->                                    
+              <div class="bt-slot">
+                <a href="#" class="button button-light-grey">Prev: Color Palette &amp; Styling</a>              
+                <a href="#" class="button button-green">Next: Social Integration</a>
+                <a href="#" class="button button-blue">Skip</a>             
+              </div><!--bt-slot-->            
+            </div>            
+            <div class="pls-card pls-c04"></div>
+            <div class="pls-card pls-c05"></div>
+          </div>          
+        </div><!--span12-->
+      </div>
     <?php
   }
 }
@@ -180,11 +249,37 @@ class PL_Admin_Card_Social extends PL_Admin_Card {
 
   public function render () {
     ?>
+      <div class="row-fluid">
+        <div class="span12">
+          <div id="pls-cards">
+            <div class="pls-card pls-c01"></div>
+            <div class="pls-card pls-c02 pls-z51"></div>
+            <div class="pls-card pls-c03 pls-z52"></div>
+            <div class="pls-card pls-c04 pls-active">
+              <div class="inp-slot">
+                <label class="pls-label">Login to your favorite social networks.</label>
+                <div class="pls-social">
+                  <a href="#" id="fb"></a>
+                  <a href="#" id="go"></a>
+                  <a href="#" id="tw"></a>
+                  <a href="#" id="yh"></a>
+                </div><!--social-->
+              </div><!--inp-slot-->
+              <div class="bt-slot">
+                <a href="#" class="button button-light-grey">Prev: MLS Integration</a>              
+                <a href="#" class="button button-green">Next: Demo Data</a>
+                <a href="#" class="button button-blue">Skip</a>             
+              </div><!--bt-slot-->            
+            </div>
+            <div class="pls-card pls-c05"></div>
+          </div>
+        </div><!--span12-->
+      </div>
     <?php
   }
 }
 
-class PL_Admin_Card_Demo extends PL_Admin_Card {
+class PL_Admin_Card_Demo_Data extends PL_Admin_Card {
 
   public function __construct( $id, $args = array() ) {
     parent::__construct( $id, $args );
@@ -192,6 +287,27 @@ class PL_Admin_Card_Demo extends PL_Admin_Card {
 
   public function render () {
     ?>
+      <div class="row-fluid">
+        <div class="span12">
+          <div id="pls-cards">
+            <div class="pls-card pls-c01 row-fluid"></div>
+            <div class="pls-card pls-c02 row-fluid pls-z51"></div>
+            <div class="pls-card pls-c03 row-fluid pls-z52"></div>
+            <div class="pls-card pls-c04 row-fluid pls-z53"></div>
+            <div class="pls-card pls-c05 row-fluid pls-active">
+              <div class="inp-slot pls-rocker">
+                <label class="pls-label">Would you like demo data?</label>
+                <a class="left off" href="#">Turn Off</a>
+                <a class="right active" href="#">Turn On</a>
+              </div><!--pls-rocker-->
+              <div class="bt-slot">
+                <a href="#" class="button button-light-grey">Prev: Social Integration</a>              
+                <a href="#" class="button button-green">All Set. Start Editing</a>          
+              </div><!--bt-slot-->  
+            </div>
+          </div>            
+        </div><!--span12-->
+      </div>
     <?php
   }
 }

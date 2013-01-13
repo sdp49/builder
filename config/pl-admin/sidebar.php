@@ -140,6 +140,29 @@ $PL_ADMIN_CARDS = array(
 			'priority' => 20
 		)
 	),
+	// Special case for onboarding where cards all apply to the same group but multiple sections...
+	'onboarding' => array(
+		'basic_info' => array(
+			'title' => 'Site Title & Slogan',
+			'priority' => 10
+		),
+		'theme_skin' => array(
+			'title' => 'Color Palette & Styling',
+			'priority' => 20
+		),
+		'mls' => array(
+			'title' => 'MLS Integration',
+			'priority' => 30
+		),
+		'social' => array(
+			'title' => 'Social Integration',
+			'priority' => 40
+		),
+		'demo_data' => array(
+			'title' => 'Demo Data',
+			'priority' => 50
+		)
+	)
 );
 
 ?>
