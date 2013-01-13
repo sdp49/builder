@@ -79,13 +79,18 @@ jQuery(document).ready(function($) {
   function displayCard (cardGrpID, cardID) {
     // Construct DOM selector of the card to display...
     var cardSelector = '#pls-pane #' + cardGrpID + ' .card-body #' + cardID;
-    
+    var cardElem = $(cardSelector);
+
+    // Update card number in card-group nav...
+    var cardNum = cardElem.attr('card-num');
+    $('#pls-pane #' + cardGrpID + ' .card-nav .curr-card-num').text(cardNum);
+
     // Hide all other active cards...
-    $(cardSelector).siblings('.active').removeClass('active');
+    cardElem.siblings('.active').removeClass('active');
 
     // Update pane size (if needed), then show this card...
     updatePaneSize(cardSelector, false);
-    $(cardSelector).addClass('active');
+    cardElem.addClass('active');
   }
 
 /*

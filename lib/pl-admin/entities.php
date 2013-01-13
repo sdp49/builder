@@ -133,8 +133,7 @@ class PL_Admin_Section extends PL_Admin_Component {
  		// Get array of card objects + isolate first card and set the appropriate property...
  		$cardObjArr = array_values($this->cards);
  		list($firstCard) = $cardObjArr;
- 		$firstCard->isFirst = true;
- 		
+
  		?>
  		  <div id="card-group-<?php echo $this->id; ?>" class="pls-inner-top card-group" style="display:none">
  		    <div class="container-fluid card-nav">
@@ -144,6 +143,7 @@ class PL_Admin_Section extends PL_Admin_Component {
 	                <h1><span class="curr-card-num">1</span>/<?php echo $numCards; ?>: <?php echo $firstCard->title; ?></h1>
 	                <div class="pls-right">
 	                  <?php for ( $i = 0; $i < $numCards; $i++ ): ?>
+	                  	<?php $cardObjArr[$i]->cardNum = ($i + 1); // This is a good time to set this... ?>
 	                    <a href="<?php echo esc_attr( 'card-' . $cardObjArr[$i]->id ); ?>" class="bullet <?php echo ( $i == 0 ? 'on' : 'off' ); ?>"></a>
 	              	  <?php endfor; ?>
 	                  <a href="#" class="button button-light-grey pls-close"><span></span></a>        
@@ -168,7 +168,7 @@ class PL_Admin_Card extends PL_Admin_Component {
 	// Class Vars
 
 	// Instance Vars
-	public $isFirst = false;
+	public $cardNum;
 	public $paneCustom;
 
 	public function __construct( $id, $args = array() ) {
@@ -178,13 +178,14 @@ class PL_Admin_Card extends PL_Admin_Component {
  	// Standard wrapper for all custom card content...
 	public function render () {
 		// Display the first card in the group (hide the others for now).
-		$class = ( $this->isFirst ? 'active' : '' );
+		$class = ( $this->cardNum == 1 ? 'active' : '' );
 
-		// Custom attribute for setting custom pane styling for this card...
-		$paneAttr = ( empty($this->paneCustom) ? '' : "pane=\"{$this->paneCustom}\"" );
+		// Custom attributes...
+		$customAttr = ( empty($this->paneCustom) ? '' : "pane=\"{$this->paneCustom}\"" );
+		$customAttr .= ( " card-num=\"{$this->cardNum}\"" );
 
 		?>
-		  <div id="<?php echo esc_attr( 'card-' . $this->id ); ?>" class="container-fluid <?php echo $class; ?>" <?php echo $paneAttr; ?>>
+		  <div id="<?php echo esc_attr( 'card-' . $this->id ); ?>" class="container-fluid <?php echo $class; ?>" <?php echo $customAttr; ?>>
 		  	<?php $this->render_content(); ?>
 		  </div>
 		<?php
