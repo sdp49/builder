@@ -283,7 +283,7 @@ jQuery(document).ready(function($) {
         _themeDesc.html(response.description)
     
         // Reset pagination button(s) to match newly selected theme...
-        $('#pagination a').css('visibility', 'visible');
+        $_themePaginate.find('a').css('visibility', 'visible');
         initPagination();
       }
       _loader.hide();
@@ -308,11 +308,12 @@ jQuery(document).ready(function($) {
   });
 
   // Handles "Previous" and "Next" pagination buttons...
-  $('#pagination a').on('click', function (event) {
+  _themePaginate.find('a').on('click', function (event) {
     event.preventDefault();
 
     var type = $(this).attr('class');
     var selectElem = _themeSelect.get(0);
+    
     var maxIndex = (selectElem.options.length - 1);
     var currIndex = selectElem.selectedIndex;
     var newIndex;
@@ -337,7 +338,7 @@ jQuery(document).ready(function($) {
 
     // Set selected theme to new index... 
     selectElem.selectedIndex = newIndex;
-    $('#theme_choices').trigger('change');
+    _themeSelect.trigger('change');
   });
 
 });
