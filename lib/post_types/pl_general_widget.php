@@ -136,6 +136,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		$args['post_id'] = $_GET['id'];
 		$args['widget_url'] =  home_url() . '/?p=' . $_GET['id'];
 		
+		header("content-type: application/javascript");
 		echo $_GET['callback'] . '(' . json_encode( $args ) . ');';
 	}
  	
@@ -861,17 +862,6 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			$query->query_vars['meta_key'] = 'pl_post_type';
 			$query->query_vars['meta_value'] = $_GET['pl_widget_type'];
 		}
-	}
-	
-	public function add_shortcode_definition_below_embed( $shortcode ) {
-	?>
-	<script type="text/javascript">
-		jQuery(document).ready(function() {
-			alert('<?php echo str_replace( "'", '\'', $shortcode ); ?>');
-			jQuery('#edit-slug-box').find('.shortcode-link').html('<?php echo str_replace( "'", '\'', $shortcode ); ?>');
-		});
-	</script>
-	<?php	
 	}
 	
 }

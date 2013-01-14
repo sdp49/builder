@@ -12,9 +12,16 @@ var action_url = wp_folder + 'wp-admin/admin-ajax.php';
 var url_vars = getUrlVars( thisScriptTag.src );
 var url_json = JSON.stringify( url_vars );
 
-window.addEventListener('load', function( ) {
+if( !window.addEventListener ) {
+	window.attachEvent( 'onload', jsonp_event_listener );
+} else {
+	window.addEventListener( 'load', jsonp_event_listener );
+}
+
+function jsonp_event_listener() {
 	// JSONP approach for new elements creation
 	var script = document.createElement('script');
+	script.type = "text/javascript";
 	script.src = action_url + '?action=handle_widget_script&callback=callback';
 	
 	// add all variables to the new URL for the remote call
@@ -23,8 +30,7 @@ window.addEventListener('load', function( ) {
 	}
 	
 	document.documentElement.getElementsByTagName('head')[0].appendChild( script );
-
-});
+}
 
 // Get response from the handle_script_insertion_cross_domain() PHP function and prepare the iframe
 function callback( json ) {

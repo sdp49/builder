@@ -725,7 +725,7 @@ class PL_Component_Entity {
 					
 					    filter.init({
 					      dom_id : "#pls_search_form_listings",
-					      class : ".pls_search_form_listings",
+					      'class' : ".pls_search_form_listings",
 					      list : list,
 					      listings : listings
 					    });
@@ -733,7 +733,7 @@ class PL_Component_Entity {
 					    list.init({
 					      dom_id: '#placester_listings_list',
 					      filter : filter,
-					      class: '.placester_listings_list',
+					      'class': '.placester_listings_list',
 					      listings: listings,
 					      <?php echo do_action('static_listings_limit_default'); ?>
 					      context: '<?php echo $context; ?>'
