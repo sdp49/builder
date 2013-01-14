@@ -35,7 +35,7 @@ class PL_Admin_Card_Theme_Select extends PL_Admin_Card {
               </div>
               <div class="span5">
               	<div class="bt-slot">
-						  		<a href="#" class="button button-green">Select Theme &amp; Choose a Skin</a>                    
+						  		<a href="#" id="pls-theme-submit" class="button button-green">Select Theme &amp; Choose a Skin</a>                    
               	</div>
               </div>
             </div>
@@ -46,11 +46,11 @@ class PL_Admin_Card_Theme_Select extends PL_Admin_Card {
 		  <div class="row-fluid">
         <?php $themeObj = wp_get_theme(); ?>
         <div class="span4">
-          <img class="w100" src="<?php echo esc_url( $themeObj->get_screenshot() ); ?>" alt="Theme Image">
+          <img id="pls-theme-img" class="w100" src="<?php echo esc_url( $themeObj->get_screenshot() ); ?>" alt="Theme Image">
         </div>
         <div class="span8">
           <h2>Theme Description</h2>
-          <p><?php echo $themeObj->display('Description'); ?></p>
+          <p id="pls-theme-desc"><?php echo $themeObj->display('Description'); ?></p>
           
           <h2>Features</h2>
           <ul id="featureslist">
@@ -129,7 +129,7 @@ class PL_Admin_Card_CSS_Editor extends PL_Admin_Card {
 
  	public function render () {
  		?>
-      
+
  		<?php
  	}
 }
@@ -146,7 +146,37 @@ class PL_Admin_Card_Menu_Editor extends PL_Admin_Card {
  	}
 }
 
-/* Cards used in the "Onboarding" Flow */
+class PL_Admin_Card_Upgrade extends PL_Admin_Card {
+
+  public function __construct( $id, $args = array() ) {
+    parent::__construct( $id, $args );
+  }
+
+  public function render () {
+    ?>
+      <iframe src=""></iframe>
+    <?php
+  }
+}
+
+class PL_Admin_Card_CSS_Leads extends PL_Admin_Card {
+
+  public function __construct( $id, $args = array() ) {
+    parent::__construct( $id, $args );
+  }
+
+  public function render () {
+    ?>
+
+    <?php
+  }
+}
+
+/* 
+ * Cards used in the "Onboarding" Flow 
+ *
+ * NOTE: These are used in a very pre-meditated fashion (as far as order of rendering, etc.)
+ */
 
 class PL_Admin_Card_Basic_Info extends PL_Admin_Card {
 

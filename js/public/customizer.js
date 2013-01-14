@@ -335,15 +335,19 @@ jQuery(document).ready(function($) {
 		// return;
 
 		$.post(ajaxurl, data, function (response) {
-	        if ( response && response.theme_info ) {
-	            // Populate theme info with new html...
-	            infoElem.html(response.theme_info);
+	        if ( response && response.screenshot ) {
+	            // Alter theme_info elem with new info...
+	            infoElem.find('.theme-screenshot img').attr('src', response.screenshot);
+	            infoElem.find('p').html(response.description)
 	            infoElem.css('opacity', '1');
 	        
 	            // Reset pagination button(s) to match newly selected theme...
 			    $('#pagination a').css('visibility', 'visible');
 			    initPagination();
 	        }
+
+	        // Regardless, remove spinner.
+	        $('#theme_info #spinner').remove();
 	    },'json');
 
 	});
@@ -353,8 +357,6 @@ jQuery(document).ready(function($) {
 
 		// Remove any latent error messages if they exist...
 		container.find('#message.error').remove();
-
-
 
 		// Check if user is trying to activate a Premium theme, and act accordingly...
 		var type = $('option:selected').parent().attr('label');

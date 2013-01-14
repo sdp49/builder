@@ -119,6 +119,12 @@ $current_user = wp_get_current_user();
 	<!-- Site Content Container -->
 	<iframe id="main-iframe" src="<?php echo PL_Admin_Util::getContentURI(); ?>"></iframe>
 
+  <!-- Footer Scripts -->
+  <?php 
+    // WP Call to print scripts enqueued too late for the header + those specifically earmarked for the footer.
+    print_footer_scripts(); 
+  ?>
+
   </body>
 
  </html> 

@@ -184,9 +184,14 @@ class PL_Js_Helper {
 	public static function pl_admin () {
 		$dir_prefix = 'pl-admin/';
 
-		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/js/jquery-ui-1.8.17.custom.min.js', array( 'jquery'));
 		self::register_enqueue_if_not('pl-admin-main', trailingslashit(PL_JS_URL) . $dir_prefix . 'main.js', array('jquery'));
 		self::register_enqueue_if_not('pl-admin-content', trailingslashit(PL_JS_URL) . $dir_prefix . 'content.js', array('jquery'));
+	
+		// Footer scripts...
+		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/js/jquery-ui-1.8.17.custom.min.js', array( 'jquery'), null, true);
+		self::register_enqueue_if_not('global', trailingslashit(PL_JS_URL) .  'admin/global.js', array( 'jquery-ui'), null, true);
+		self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) .  'admin/free-trial.js', array( 'jquery-ui'), null, true);
+		self::register_enqueue_if_not('integration', trailingslashit(PL_JS_URL) .  'admin/integration.js', array( 'jquery-ui'), null, true);
 	}
 
 	public static function register_enqueue_if_not($name, $path, $dependencies = array(), $version = null, $in_footer = false) {

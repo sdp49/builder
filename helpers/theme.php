@@ -37,19 +37,11 @@ class PL_Theme_Helper {
 			// switch_theme( $theme_name, $theme_name);
 
 			$theme_obj = wp_get_theme( $theme_name );
-
-			ob_start();
-			?>
-	            <div class="theme-screenshot">
-	              <img src="<?php echo esc_url( $theme_obj->get_screenshot() ); ?>" />
-	      	    </div>
-
-	            <h2>Theme Description</h2>
-	            <p><?php echo $theme_obj->display('Description'); ?></p>
-	        <?php
-	        $new_html = ob_get_clean();
+			$screenshot = $theme_obj->get_screenshot();
+			$description = $theme_obj->display('Description');
 	       	    
-			echo json_encode(array('theme_info' => $new_html));
+			// echo json_encode(array('theme_info' => $new_html));
+			echo json_encode(array('screenshot' => $screenshot, 'description' => $description));
 		}
 
 		die();

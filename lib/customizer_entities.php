@@ -89,30 +89,6 @@ function define_custom_controls()
    		}
    }
 
-   class PL_Customize_Load_Theme_Opts_Control extends WP_Customize_Control 
-   {
-   		public $type = 'load_opt_defaults';
-
-   		public function render() {
-   		  ?>
-			<!-- Build default dropdown... -->
-			<div id="default_opts" class="custom-control">
-			  <span class="customize-title-span">Use Default Theme Options </span>
-			  <select id="def_theme_opts">
-			    <?php foreach (PLS_Options_Manager::$def_theme_opts_list as $name) : ?>
-			  	  <option value="<?php echo $name; ?>"><?php echo $name; ?></option>
-			    <?php endforeach; ?>
-			  </select>
-			  <input type="button" id="btn_def_opts" class="top-button button-primary" value="Load" style="margin: 0px" />
-			</div>
-		  <?php
-   		}
-
-   		public function render_content() {
-   			// Do Nothing...
-   		}
-   }
-
    class PL_Customize_Switch_Theme_Control extends WP_Customize_Control
    {
    		public $type = 'switch_theme';
