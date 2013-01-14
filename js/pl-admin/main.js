@@ -27,16 +27,16 @@ jQuery(document).ready(function($) {
  */
 
   // Define important single-instance elements referenced throughout the script...
-  var iframe = $('#main-iframe');
-  var loader = $('#pls-inner-bot .loader');
-  var pane = $('#pls-pane');
+  var _iframe = $('#main-iframe');
+  var _loader = $('#pls-inner-bot .loader');
+  var _pane = $('#pls-pane');
 
   // Define pane classes
-  var paneSizes = ['pls-small', 'pls-medium', 'pls-tall', 'pls-full'];
+  var _paneSizes = ['pls-small', 'pls-medium', 'pls-tall', 'pls-full'];
 
   // Trigger content iFrame refresh
   function refreshContent (boolFromServer) {
-    var id = iframe.attr('id');
+    var id = _iframe.attr('id');
     window.frames[id].location.reload(boolFromServer);
   } 
 
@@ -51,15 +51,15 @@ jQuery(document).ready(function($) {
     var newPaneSize = cardElem.attr('pane');
 
     // Check to see if new pane size is defined -- use default value if not...
-    newPaneSize = ( (typeof newPaneSize === 'undefined') ? paneSizes[0] : newPaneSize );
+    newPaneSize = ( (typeof newPaneSize === 'undefined') ? _paneSizes[0] : newPaneSize );
 
     // Remove any exiting pane sizing classes...
-    for ( var i = 0; i < paneSizes.length; ++i ) {
-      pane.removeClass(paneSizes[i]);
+    for ( var i = 0; i < _paneSizes.length; ++i ) {
+      _pane.removeClass(paneSizes[i]);
     }
 
     // Add back paneAttr as new pane size class...
-    pane.addClass(newPaneSize); 
+    _pane.addClass(newPaneSize); 
   }
 
   function displayCardGroup (cardGrpID) {
@@ -67,10 +67,10 @@ jQuery(document).ready(function($) {
     var cardGrpSelector = '#card-group-' + cardGrpID;
 
     // Make sure pane is visible...
-    pane.show();
+    _pane.show();
 
     // Hide any other card groups
-    pane.find('.card-group').hide();
+    _pane.find('.card-group').hide();
 
     // Update pane size (if needed), then show the one passed...
     updatePaneSize(cardGrpSelector, true);
@@ -80,11 +80,11 @@ jQuery(document).ready(function($) {
   function displayCard (cardGrpID, cardID) {
     // Construct DOM selector of the card to display...
     var cardSelector = '#' + cardGrpID + ' .card-body #' + cardID;
-    var cardElem = pane.find(cardSelector);
+    var cardElem = _pane.find(cardSelector);
 
     // Update card number in card-group nav...
     var cardNum = cardElem.attr('card-num');
-    pane.find('#' + cardGrpID + ' .card-nav .curr-card-num').text(cardNum);
+    _pane.find('#' + cardGrpID + ' .card-nav .curr-card-num').text(cardNum);
 
     // Hide all other active cards...
     cardElem.siblings('.active').removeClass('active');
@@ -100,7 +100,7 @@ jQuery(document).ready(function($) {
 
   // Register a function to make the spinner disappear every time the content iframe is reloaded...
   pl_admin_global.contentLoadedHandlers.push(function () {
-    loader.hide();
+    _loader.hide();
   });
 
   // Bind content refresh button...
@@ -108,7 +108,7 @@ jQuery(document).ready(function($) {
     event.preventDefault();
 
     // Display loading spinner...
-    loader.show();
+    _loader.show();
     refreshContent(true);
   });
 
@@ -123,7 +123,7 @@ jQuery(document).ready(function($) {
     // Construct and set new content url...
     var url = this.href + '?content=true';
     // console.log(url);
-    iframe.attr('src', url);
+    _iframe.attr('src', url);
 
     // alterBreadCrumbs(this.href);
   });
@@ -135,9 +135,9 @@ jQuery(document).ready(function($) {
   });
 
   // Close pane...
-  pane.find('.pls-close').on('click', function (event) {
+  _pane.find('.pls-close').on('click', function (event) {
     event.preventDefault();
-    pane.hide();
+    _pane.hide();
   });
 
   
@@ -146,7 +146,7 @@ jQuery(document).ready(function($) {
   // --------------- //
 
   // Card Navigation
-  pane.find('.pls-right .bullet').on('click', function (event) {
+  _pane.find('.pls-right .bullet').on('click', function (event) {
     event.preventDefault();
 
     // If already selected, don't bother...
@@ -160,7 +160,7 @@ jQuery(document).ready(function($) {
     $(this).removeClass('off');
     $(this).addClass('on');
 
-    var cardGrpID = $(this).parentsUntil('#' + pane.attr('id'), '.card-group').attr('id');
+    var cardGrpID = $(this).parentsUntil('#' + _pane.attr('id'), '.card-group').attr('id');
     displayCard(cardGrpID, $(this).attr('href'));
   });
 
@@ -172,16 +172,16 @@ jQuery(document).ready(function($) {
   /* Theme Functionality */
 
   // Elements that are referred to frequently... (defined up here for easy DOM structure changes)
-  var themeSelect = $('#pls-theme-select');
-  var themeSubmit = $('#pls-theme-submit');
-  var themeDesc = $'#pls-theme-desc');
-  var themeImg = $('#pls-theme-img');
-  var themePaginate = $('#pls-numbers');
+  var _themeSelect = $('#pls-theme-select');
+  var _themeSubmit = $('#pls-theme-submit');
+  var _themeDesc = $'#pls-theme-desc');
+  var _themeImg = $('#pls-theme-img');
+  var _themePaginate = $('#pls-numbers');
 
   // Logic to determine whether to hide or show pagination buttons based on change...
   function paginationHideShow (oldIdx, newIdx, maxIdx) {
-    var prev = themePaginate.find('.first');
-    var next = themePaginate.find('.last');
+    var prev = _themePaginate.find('.first');
+    var next = _themePaginate.find('.last');
     
     // Handle previous...
     if ( oldIdx == 0) { prev.css('visibility', 'visible'); } 
@@ -195,39 +195,38 @@ jQuery(document).ready(function($) {
   }
 
   function initPagination () {
-    if ( themeSelect.length > 0 ) {
-      var newInd = themeSelect.get(0).selectedIndex; // Current index is "new" index when initially setting this...
-      var maxInd = ( themeSelect.get(0).options.length - 1 );
+    if ( _themeSelect.length > 0 ) {
+      var newInd = _themeSelect.get(0).selectedIndex; // Current index is "new" index when initially setting this...
+      var maxInd = ( _themeSelect.get(0).options.length - 1 );
       paginationHideShow( -1, newInd, maxInd ); // "old" index is set to -1 so it's value won't cause any changes...
     }
   }
 
   function activateTheme () {
     // Show spinner to indicate theme activation is in progress...
-    loader.show();
+    _loader.show();
 
-    var submitElem = $('#' + submitID);
-    submitElem.attr('disabled', 'disabled');
-    submitElem.addClass('bt-disabled');
+    _themeSubmit.attr('disabled', 'disabled');
+    _themeSubmit.addClass('bt-disabled');
 
-    var data = { action: 'change_theme', new_theme: $('#' + selectID).val() };
+    var data = { action: 'change_theme', new_theme: _themeSelect.val() };
     $.post(ajaxurl, data, function (response) {
       if ( response && response.success ) {
           // Reload content iframe to display new theme...
           refreshContent(true);
       }
       else {
-        loader.hide();
+        _loader.hide();
 
-        submitElem.removeAttr('disabled');
-        submitElem.removeClass('bt-disabled');            
+        _themeSubmit.removeAttr('disabled');
+        _themeSubmit.removeClass('bt-disabled');            
       }
     },'json');
   }
 
   function valPremTheme (container) {
     // Show spinner to indicate theme premium theme validation is in progress...
-    loader.show();
+    _loader.show();
 
     // Set success and failure callbacks...
     var success_callback = function () { activateTheme(); }
@@ -258,7 +257,7 @@ jQuery(document).ready(function($) {
   // On initial page load, hide/show the pagination buttons accordingly...
   initPagination();
 
-  $('#theme_choices').on('change', function (event) {
+  _themeSelect.on('change', function (event) {
     // Remove any latent error messages if they exist...
     $('#theme_content ul.control-list').find('#message.error').remove();
 
@@ -274,26 +273,25 @@ jQuery(document).ready(function($) {
       submitElem.removeClass('bt-disabled');
     }
 
-    loader.show();
+    _loader.show();
     data = { action: 'load_theme_info', theme: $(this).val() };
 
     $.post(ajaxurl, data, function (response) {
       if ( response ) {
         // Alter theme_info elem with new info...
-        var infoElem = $('#theme_info');
-        infoElem.find('#pls-theme-img').attr('src', response.screenshot);
-        infoElem.find('#pls-theme-desc').html(response.description)
+        _themeImg.attr('src', response.screenshot);
+        _themeDesc.html(response.description)
     
         // Reset pagination button(s) to match newly selected theme...
         $('#pagination a').css('visibility', 'visible');
         initPagination();
       }
-      loader.hide();
+      _loader.hide();
     },'json');
 
   });
 
-  $('#submit_theme').on('click', function (event) {
+  _themeSubmit.on('click', function (event) {
     var container = $('#theme_content ul.control-list');
 
     // Remove any latent error messages if they exist...
@@ -314,7 +312,7 @@ jQuery(document).ready(function($) {
     event.preventDefault();
 
     var type = $(this).attr('class');
-    var selectElem = $('#theme_choices').get(0);
+    var selectElem = _themeSelect.get(0);
     var maxIndex = (selectElem.options.length - 1);
     var currIndex = selectElem.selectedIndex;
     var newIndex;
