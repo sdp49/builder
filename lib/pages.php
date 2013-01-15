@@ -81,7 +81,7 @@ class PL_Pages {
 
 	//create page
 	function manage ($args = array()) {
-		$defaults = array('post_id' => false, 'type' => 'page', 'title' => '', 'name' => false, 'content' => ' ', 'status' => 'publish', 'post_meta' => array(), 'taxonomies' => array());
+		$defaults = array('post_id' => false, 'type' => 'page', 'title' => '', 'name' => false, 'content' => ' ', 'status' => 'publish', 'post_meta' => array(), 'taxonomies' => array(), 'guid' => '');
 		extract(wp_parse_args($args, $defaults));
 		$post = array(
                  'post_type'   => $type,
