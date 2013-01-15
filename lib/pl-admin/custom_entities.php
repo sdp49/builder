@@ -122,14 +122,64 @@ class PL_Admin_Card_Theme_Skin extends PL_Admin_Card {
 }
 
 class PL_Admin_Card_CSS_Editor extends PL_Admin_Card {
+  // Ensure the inline footer JS is printed once...
+  public static $scriptAdded = false;
 
 	public function __construct( $id, $args = array() ) {
  		parent::__construct( $id, $args );
+
+    // Handle the event that more than once instance of this object is instantiated...
+    if ( self::$scriptAdded === false ) {
+      add_action( 'pl_admin_footer_inline_scripts', array(__CLASS__, 'print_footer_scripts') );
+      $scriptAdded = true;
+    }
  	}
 
- 	public function render () {
- 		?>
+  public static function print_footer_scripts () {
+    // Ensure main script is enqueued in the footer...
+    PL_Js_Helper::register_enqueue_if_not('ace-editor', trailingslashit(PL_JS_LIB_URL) . 'ace-editor/src-min-noconflict-ace.js', array( 'jquery'), null, true);
+    PL_Js_Helper::register_enqueue_if_not('ace-css', trailingslashit(PL_JS_LIB_URL) . 'ace-editor/mode-css.js', array( 'ace-editor'), null, true);
 
+    // Inline JS to initialize the CSS editor...
+    ?>
+      <script type="text/javascript">
+        var editor = ace.edit("editor");
+        // editor.setTheme("ace/theme/monokai");
+        var CSSMode = ace.require("ace/mode/css").Mode;
+        editor.getSession().setMode(new CSSMode());
+      </script>
+    <?php
+  }
+
+ 	public function render_content () {
+ 		?>
+      <div class="row-fluid">
+        <div class="span9">
+          
+          <label for="pls-css-editor" class="pls-label">Start writing your custom CSS.</label>
+          
+          <div id="css-editor"> 
+            <?php // TODO: Fetch custom CSS from theme options... ?>
+            <div id="editor">body { overflow: hidden; }</div>
+          </div><!--css-editor-->
+          
+          
+          <div class="pls-css">
+            <a href="#" class="button button-light-grey">Cancel</a>
+            <a href="#" class="button button-green">Save</a>   
+          </div><!--pls-right-aligned-->
+        </div><!--span9-->
+        
+        <div class="span3 pls-tips">
+          <div class="pls-head">
+            <h1>Tips</h1>
+            <div class="pls-right">
+              <a href="#" class="button button-light-grey pls-close"><span></span></a>         
+            </div><!--pls-pagination-->      
+          </div><!--pls-head-->  
+          <p class="pls-desc">Aliquam ultrices cursus tortor ac posuere. Proin feugiat convallis dignissim. Donec aliquam gravida nibh vehicula fermentum vestibulum suscipit.</p>
+        </div><!--span3-->        
+      </div>
  		<?php
  	}
 }
@@ -159,7 +209,7 @@ class PL_Admin_Card_Upgrade extends PL_Admin_Card {
   }
 }
 
-class PL_Admin_Card_CSS_Leads extends PL_Admin_Card {
+class PL_Admin_Card_Leads extends PL_Admin_Card {
 
   public function __construct( $id, $args = array() ) {
     parent::__construct( $id, $args );

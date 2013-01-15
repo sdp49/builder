@@ -140,6 +140,12 @@ $PL_ADMIN_CARDS = array(
 			'priority' => 20
 		)
 	),
+	'css' => array(
+		'css_editor' => array(
+			'title' => 'CSS Editor',
+			'priority' => 10
+		)
+	),
 	// Special case for onboarding where cards all apply to the same group but multiple sections...
 	'onboarding' => array(
 		'basic_info' => array(

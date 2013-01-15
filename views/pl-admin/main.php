@@ -42,6 +42,9 @@ $current_user = wp_get_current_user();
   		// WP call to load scripts enqueued for the head section...
   		print_head_scripts();
 
+      // Make a hook for printing inline JS in the header...
+      do_action( 'pl_admin_header_inline_scripts' );
+
   		// WP call to load styles enqueued for the head section...
 	  	wp_print_styles();
   	?>
@@ -122,7 +125,10 @@ $current_user = wp_get_current_user();
   <!-- Footer Scripts -->
   <?php 
     // WP Call to print scripts enqueued too late for the header + those specifically earmarked for the footer.
-    print_footer_scripts(); 
+    print_footer_scripts();
+
+    // Make a hook for printing inline JS in the header...
+    do_action( 'pl_admin_footer_inline_scripts' );
   ?>
 
   </body>

@@ -55,7 +55,7 @@ jQuery(document).ready(function($) {
 
     // Remove any exiting pane sizing classes...
     for ( var i = 0; i < _paneSizes.length; ++i ) {
-      _pane.removeClass(paneSizes[i]);
+      _pane.removeClass(_paneSizes[i]);
     }
 
     // Add back paneAttr as new pane size class...
@@ -169,12 +169,13 @@ jQuery(document).ready(function($) {
   // Cards (Custom) //
   // -------------- //
 
-  /* Theme Functionality */
+  /***
+  /* Theme Switch Functionality */
 
   // Elements that are referred to frequently... (defined up here for easy DOM structure changes)
   var _themeSelect = $('#pls-theme-select');
   var _themeSubmit = $('#pls-theme-submit');
-  var _themeDesc = $'#pls-theme-desc');
+  var _themeDesc = $('#pls-theme-desc');
   var _themeImg = $('#pls-theme-img');
   var _themePaginate = $('#pls-numbers');
 
@@ -313,7 +314,7 @@ jQuery(document).ready(function($) {
 
     var type = $(this).attr('class');
     var selectElem = _themeSelect.get(0);
-    
+
     var maxIndex = (selectElem.options.length - 1);
     var currIndex = selectElem.selectedIndex;
     var newIndex;
