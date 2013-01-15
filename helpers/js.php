@@ -192,6 +192,9 @@ class PL_Js_Helper {
 		self::register_enqueue_if_not('global', trailingslashit(PL_JS_URL) .  'admin/global.js', array( 'jquery-ui'), null, true);
 		self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) .  'admin/free-trial.js', array( 'jquery-ui'), null, true);
 		self::register_enqueue_if_not('integration', trailingslashit(PL_JS_URL) .  'admin/integration.js', array( 'jquery-ui'), null, true);
+
+		// self::register_enqueue_if_not('ace-editor', trailingslashit(PL_JS_LIB_URL) . 'ace-editor/ace-min-noconflict.js', array( 'jquery'), null, true);
+		// self::register_enqueue_if_not('ace-css', trailingslashit(PL_JS_LIB_URL) . 'ace-editor/mode-css.js', array( 'ace-editor'), null, true);
 	}
 
 	public static function register_enqueue_if_not($name, $path, $dependencies = array(), $version = null, $in_footer = false) {
