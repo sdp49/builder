@@ -421,9 +421,12 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 
 					var iframe_content = $('#preview-meta-widget').html();
 
+					var options_width = jQuery('#widget-meta-wrapper input#width').val() || 750;
+					var options_height = jQuery('#widget-meta-wrapper input#height').val() || 500;
+					
 					$('#pl-review-popup').html( iframe_content );
-					$('#pl-review-popup iframe').css('width', '750px');
-					$('#pl-review-popup iframe').css('height', '500px');
+					$('#pl-review-popup iframe').css('width', options_width + 'px');
+					$('#pl-review-popup iframe').css('height', options_height + 'px');
 
 					$('#pl-review-popup').dialog({
 							width: 800,
@@ -621,7 +624,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			if( ! empty( $post ) && $post->post_type === 'pl_general_widget' ) {
 				wp_enqueue_script('settings-template', trailingslashit(PL_JS_URL) .  'admin/settings/template.js', array( 'jquery'));
 				wp_enqueue_style( 'placester-widget', trailingslashit( PL_CSS_ADMIN_URL ) . 'placester-widget.css' );
-				wp_enqueue_script( 'placester-widget-script', trailingslashit( PL_JS_URL ) . 'admin/widget-handler.js', array( 'jquery' ), '1.1.7' );
+				wp_enqueue_script( 'placester-widget-script', trailingslashit( PL_JS_URL ) . 'admin/widget-handler.js', array( 'jquery' ), '1.1.8' );
 			}
 		}
 	}
