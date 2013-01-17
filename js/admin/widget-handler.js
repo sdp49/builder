@@ -107,8 +107,8 @@ widget_autosave = function() {
 			setTimeout(function() {
 				// breaks the overall layout
 				// var frame_width = post_data['width'];
-				var frame_width = '300';
-				var frame_height = '300';
+				var frame_width = '250';
+				var frame_height = '250';
 				var post_id = jQuery("#post_ID").val();
 				
 				var widget_class = jQuery('#widget_class').val() || '';

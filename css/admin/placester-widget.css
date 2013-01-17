@@ -1,3 +1,6 @@
+#pl-previewer-metabox-id {
+  min-height: 350px; }
+
 .iframe-link {
   margin-top: 8px;
   padding: 0 10px; }
@@ -8,12 +11,15 @@
 
 #preview-wrapper {
   position: fixed;
-  right: 330px; }
+  /* right: 0px; */ }
 
 #preview-meta-widget {
-  width: 300px;
-  height: 300px;
-  border: 1px solid gray; }
+  width: 250px;
+  height: 250px;
+  border: 1px solid gray;
+  overflow: hidden;
+  margin-left: 4px;
+  margin-top: 9px; }
 
 #pl-controls-metabox-id {
   min-height: 430px; }
@@ -72,10 +78,13 @@ div.wrap a.add-new-h2,
   text-align: center;
   padding-top: 10px; }
 
-@media screen and (max-width: 1500px) {
-  #preview-wrapper {
-    position: static;
-    float: left; } }
+/*
+@media screen and ($width-name : $target-width) {
+   #preview-wrapper {
+	position: static;
+	float: left;
+   }
+} */
 #general_widget_zoning_types {
   display: none; }
 

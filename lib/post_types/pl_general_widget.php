@@ -125,8 +125,8 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			}
 		} else {
 			$args = wp_parse_args( $_GET, array(
-				'width' => '300',
-				'height' => '300',
+				'width' => '250',
+				'height' => '250',
 			) );
 			
 			unset( $args['action'] );
@@ -143,6 +143,23 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	
 	public  function meta_box() {
 		add_meta_box( 'pl-controls-metabox-id', 'Placester Widgets', array( $this, 'pl_widgets_meta_box_cb'), 'pl_general_widget', 'normal', 'high' );
+		add_meta_box( 'pl-previewer-metabox-id', 'Widget Preview', array( $this, 'pl_previewer_meta_box_cb'), 'pl_general_widget', 'side', 'low' );
+	}
+	
+	public function pl_previewer_meta_box_cb( $post ) {
+		?>
+		<div>
+			<div id='preview-wrapper'>
+				<div id='preview-meta-widget'>
+					<img id="preview_load_spinner" src="<?php echo PL_PARENT_URL . 'images/preview_load_spin.gif'; ?>" alt="Widget options are Loading..." width="30px" height="30px" style="margin-left: 100px; margin-top: 100px;" />
+				</div>
+				<div id="pl-review-wrapper">
+					<a id="pl-review-link" href="" style="display:none;">Open Preview in a popup</a>
+					<div id="pl-review-popup" class="dialog" style="display: none;">Loading preview...</div>
+				</div>
+			</div>
+		</div>		
+		<?php 
 	}
 	
 	// add meta box for featured listings- adding custom fields
@@ -178,47 +195,38 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		?>
 		<script type="text/javascript">
 		</script>
-		<div id='preview-wrapper'>
-			<div id='preview-title'>
-				<h2>Widget Preview</h2>
-			</div>
-			<div id='preview-meta-widget'>
-				<img id="preview_load_spinner" src="<?php echo PL_PARENT_URL . 'images/preview_load_spin.gif'; ?>" alt="Widget options are Loading..." width="30px" height="30px" style="margin-left: 120px; margin-top: 120px;" />
-			</div>
-			<div id="pl-review-wrapper">
-				<a id="pl-review-link" href="" style="display:none;">Open Preview in a popup</a>
-				<div id="pl-review-popup" class="dialog" style="display: none;">Loading preview...</div>
-			</div>
-		</div>
 	
 		<div id="post_types_list">
 				<div class="post_types_list_wrapper" style="clear: both; padding-top: 10px;">
 					<span>Select Type: </span>
+					<select id="pl_post_type_dropdown" name="pl_post_type_dropdown"> 
 					<?php 
 					
 					 $num_of_post_types = count( self::$post_types );
 					 $i = 0;
+					 
 					 foreach( self::$post_types as $post_type => $label ):
 					 		$i++;
 							$link_class = ''; 
 							if( $post_type == $pl_post_type ) {
 								$link_class = 'selected_type';
 							}
-					?>			
-						<a id="pl_post_type_<?php echo $post_type; ?>" href="#" class="<?php echo $link_class; ?>"><?php echo $label; ?></a>
-						<?php if( $i < $num_of_post_types ):
-							echo '<span class="pl_type_separator"> |</span>';
-						endif; ?>
-					<?php endforeach; ?>
+						?>			
+							<option id="pl_post_type_<?php echo $post_type; ?>" class="<?php echo $link_class; ?>" value="pl_post_type_<?php echo $post_type; ?>" <?php if( ! empty( $link_class ) ) echo ' selected="selected"'  ?>><?php echo $label; ?></option>
+							<?php if( $i < $num_of_post_types ):
+								echo '<span class="pl_type_separator"> |</span>';
+							endif; ?>
+						<?php endforeach; ?>
+					</select>
 				</div>
 			</div>
 		<?php 
 		echo '<div id="widget-meta-wrapper" style="display: none; min-height: 370px">';
 		
 		// read width/height and slideshow values
-		$width =  isset( $values['width'] ) && ! empty( $values['width'][0] ) ? $values['width'][0] : '300';
+		$width =  isset( $values['width'] ) && ! empty( $values['width'][0] ) ? $values['width'][0] : '250';
 		$_POST['width'] = $width;
-		$height = isset( $values['height'] ) && ! empty( $values['height'][0] ) ? $values['height'][0] : '300';
+		$height = isset( $values['height'] ) && ! empty( $values['height'][0] ) ? $values['height'][0] : '250';
 		$_POST['height'] = $height;
 		$animationSpeed = isset( $values['animationSpeed'] ) && ! empty( $values['animationSpeed'][0] ) ? $values['animationSpeed'][0] : '800';
 		$_POST['animationSpeed'] = $animationSpeed;
@@ -333,16 +341,17 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				$('#metadata-min_avail_on_picker').datepicker();
 
 				// click a new post type as a widget type
-				$('#post_types_list a').click(function() {
+				$('#post_types_list select').change(function() {
 					if( $('#title').val() === '' ) {
 						alert('Please enter widget title first.');
 						return;
 					} 
 					
-					var selected_cpt = $(this).attr('id').substring('pl_post_type_'.length);
+					//var selected_cpt = $(this).attr('id').substring('pl_post_type_'.length);
+					var selected_cpt = $(this).parent().find(':selected').val().substring('pl_post_type_'.length);
 
-					$('#post_types_list a').removeClass('selected_type');
-					$(this).addClass('selected_type');
+					// $('#post_types_list a').removeClass('selected_type');
+					// $(this).addClass('selected_type');
 					$('#pl_post_type').val(selected_cpt);
 
 					// hide values not related to the post type and reveal the ones to be used
@@ -461,7 +470,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				// populate slug box for the edit screen
 				<?php if( ! $is_post_new ) { ?>
 					$('#edit-slug-box').after('<div class="iframe-link"><strong>Embed Code:</strong> <?php echo esc_html( $iframe_controller ); ?></div><div class="shortcode-link"></div>');
-					$('#pl_post_type_<?php echo $pl_post_type; ?>').trigger('click');
+					$('#pl_post_type_dropdown').trigger('change');
 				<?php }	?>
 
 				// reset before the view, hide everything
@@ -470,7 +479,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				$('#widget-meta-wrapper').show();
 
 				<?php if( ! $is_post_new ) { ?>
-					$('#pl_post_type_<?php echo $pl_post_type; ?>').trigger('click');
+					$('#pl_post_type_dropdown').trigger('change');
 				<?php }	?>
 				
 				$('#pl_post_type').trigger('change');
