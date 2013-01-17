@@ -411,7 +411,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 					}
 
 					
-					$('#preview-meta-widget').html('<img id="preview_load_spinner" src="<?php echo PL_PARENT_URL . 'images/preview_load_spin.gif'; ?>" alt="Widget options are Loading..." width="30px" height="30px" style="position: absolute; top: 180px; left: 130px" />');
+					$('#preview-meta-widget').html('<img id="preview_load_spinner" src="<?php echo PL_PARENT_URL . 'images/preview_load_spin.gif'; ?>" alt="Widget options are Loading..." width="30px" height="30px" style="position: absolute; top: 100px; left: 100px" />');
 
 					// call the custom widget_autosave to send values to backend
 					widget_autosave();
@@ -478,11 +478,16 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				$('.pl_template_block section').show();
 				$('#widget-meta-wrapper').show();
 
+				// Update preview when creating a new template
+				$('.save_snippet').on('click', function() {
+					$('#pl_post_type_dropdown').trigger('change');
+				});
+
 				<?php if( ! $is_post_new ) { ?>
 					$('#pl_post_type_dropdown').trigger('change');
 				<?php }	?>
 				
-				$('#pl_post_type').trigger('change');
+				$('#pl_post_type_dropdown').trigger('change');
 				$('#preview_load_spinner').remove();
 				$('#preview-meta-widget').html('<?php echo isset($iframe) ? $iframe : '' ?>');
 			});
