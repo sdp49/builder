@@ -1,8 +1,20 @@
 <?php 
-header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
-header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+$preview = ( ! empty ( $_GET['preview'] ) && $_GET['preview'] == 'true' ) ? true : false;
 
+if( $preview ) {
+	header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
+	header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
+}
+
+$widget_cache = new PL_Cache("Embeddable_Widget");
 global $post;
+
+if( $widget_page = $widget_cache->get( $post->ID ) ) {
+	echo 'cached' . $widget_page;
+	return;
+}
+
+ob_start();
 
 $widget_class = get_post_meta( $post->ID, 'widget_class', true);
 
@@ -62,3 +74,8 @@ if( ! empty( $widget_class ) ) {
 	?>
 </body>
 </html>
+<?php 
+	$widget_page = ob_get_clean();
+	$widget_cache->save( $widget_page );
+	
+	echo $widget_page;
