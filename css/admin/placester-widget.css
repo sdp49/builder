@@ -1,0 +1,83 @@
+.iframe-link {
+  margin-top: 8px;
+  padding: 0 10px; }
+
+.iframe-link strong {
+  color: #777;
+  padding-right: 3px; }
+
+#preview-wrapper {
+  position: fixed;
+  right: 330px; }
+
+#preview-meta-widget {
+  width: 300px;
+  height: 300px;
+  border: 1px solid gray; }
+
+#pl-controls-metabox-id {
+  min-height: 430px; }
+
+.pl_template_block {
+  width: 400px; }
+
+#pl_location_tax {
+  clear: both; }
+
+#widget-meta-wrapper .shortcode_container input.save_snippet {
+  font-weight: normal;
+  color: #464646;
+  background: #21759b url(../images/button-grad.png) repeat-x scroll left top;
+  text-shadow: none; }
+
+#widget-meta-wrapper section h3 {
+  font-size: 14px;
+  padding-left: 0; }
+
+#minor-publishing-actions,
+#edit-slug-box,
+div.wrap a.add-new-h2,
+.misc-pub-section,
+.misc-pub-section a.edit-timestamp {
+  display: none; }
+
+.misc-pub-section.curtime {
+  display: block; }
+
+#pl_static_listing_block {
+  clear: both; }
+
+#post_types_list {
+  width: 400px;
+  margin: 15px 3px; }
+  #post_types_list a {
+    line-height: 19px;
+    vertical-align: top;
+    margin: 0px 5px; }
+  #post_types_list .post_types_list_wrapper span {
+    font-size: 1.5em;
+    color: #464646; }
+  #post_types_list .post_types_list_wrapper span.pl_type_separator {
+    font-size: 12px;
+    line-height: 19px;
+    vertical-align: top; }
+  #post_types_list .selected_type {
+    line-height: 20px;
+    font-weight: bold; }
+
+#message a {
+  display: none; }
+
+#pl-review-wrapper {
+  text-align: center;
+  padding-top: 10px; }
+
+@media screen and (max-width: 1500px) {
+  #preview-wrapper {
+    position: static;
+    float: left; } }
+#general_widget_zoning_types {
+  display: none; }
+
+#general_widget_purchase_types {
+  display: none; }

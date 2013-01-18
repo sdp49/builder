@@ -50,6 +50,9 @@ define( 'PL_VIEWS_SHORT_URL', trailingslashit(PL_VIEWS_URL) . 'shortcodes/' );
 define( 'PL_JS_DIR', trailingslashit(PL_PARENT_DIR) . 'js/' );
 define( 'PL_JS_URL', trailingslashit(PL_PARENT_URL) . 'js/' );
 
+define( 'PL_LIB_DIR', trailingslashit(PL_PARENT_DIR) . 'lib/' );
+define( 'PL_LIB_URL', trailingslashit(PL_PARENT_URL) . 'lib/' );
+
 define( 'PL_HLP_DIR', trailingslashit(PL_PARENT_DIR) . 'helpers/' );
 define( 'PL_HLP_URL', trailingslashit(PL_PARENT_URL) . 'helpers/' );
 
@@ -119,6 +122,9 @@ include_once('lib/featured_listings_post_type.php');
 include_once('lib/demo_data.php');
 include_once('lib/customizer.php');
 include_once('lib/customizer_entities.php');
+
+/* post types */
+include_once('lib/post_types/pl_post_type_manager.php');
 
 /* models */
 include_once('models/listing.php');
@@ -231,6 +237,7 @@ function placester_admin_menu() {
     foreach ($settings_subpages as $name => $page_url) {
         add_submenu_page( 'placester', '', $name, 'edit_pages', 'placester_settings' . $page_url, array('PL_Router','settings' . $page_url) );    
     }
+    add_submenu_page( 'placester', 'Widgets', 'Widgets', 'edit_pages', 'edit.php?post_type=pl_general_widget' );
     // add_submenu_page( 'placester', '', 'Settings', 'edit_pages', 'placester_settings_general', array('PL_Router','settings') );    
     add_submenu_page( 'placester', '', 'Support', 'edit_pages', 'placester_support', array('PL_Router','support') );    
     add_submenu_page( 'placester', '', 'MLS Integration', 'edit_pages', 'placester_integrations', array('PL_Router','integrations') );    
