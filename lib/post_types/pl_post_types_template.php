@@ -10,7 +10,7 @@ $widget_cache = new PL_Cache("Embeddable_Widget");
 global $post;
 
 if( $widget_page = $widget_cache->get( $post->ID ) ) {
-	echo 'cached' . $widget_page;
+	echo $widget_page;
 	return;
 }
 
