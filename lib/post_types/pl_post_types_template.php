@@ -47,7 +47,7 @@ if( ! empty( $widget_class ) ) {
 		<script type="text/javascript">
 			jQuery(document).ready(function() {
 				if (jQuery('.shortcode-link', window.parent.document).length ) {
-					jQuery('.shortcode-link', window.parent.document).html('<?php echo str_replace( "'", "\'", $shortcode ); ?>');
+					jQuery('.shortcode-link', window.parent.document).html('<strong>Shortcode:</strong><?php echo str_replace( "'", "\'", $shortcode ); ?>');
 				};
 			});
 		</script>

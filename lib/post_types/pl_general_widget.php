@@ -199,7 +199,8 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		<div id="post_types_list">
 				<div class="post_types_list_wrapper" style="clear: both; padding-top: 10px;">
 					<span>Select Type: </span>
-					<select id="pl_post_type_dropdown" name="pl_post_type_dropdown"> 
+					<select id="pl_post_type_dropdown" name="pl_post_type_dropdown">
+					<option id="pl_post_type_undefined" value="pl_post_type_undefined">Select</option> 
 					<?php 
 					
 					 $num_of_post_types = count( self::$post_types );
@@ -350,6 +351,11 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 					//var selected_cpt = $(this).attr('id').substring('pl_post_type_'.length);
 					var selected_cpt = $(this).parent().find(':selected').val().substring('pl_post_type_'.length);
 
+					if( selected_cpt == 'undefined' ) {
+						// clicking "Select" shouldn't reflect the choice
+						return;
+					}
+					
 					// $('#post_types_list a').removeClass('selected_type');
 					// $(this).addClass('selected_type');
 					$('#pl_post_type').val(selected_cpt);
@@ -487,7 +493,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 					$('#pl_post_type_dropdown').trigger('change');
 				<?php }	?>
 				
-				$('#pl_post_type_dropdown').trigger('change');
+				// $('#pl_post_type_dropdown').trigger('change');
 				$('#preview_load_spinner').remove();
 				$('#preview-meta-widget').html('<?php echo isset($iframe) ? $iframe : '' ?>');
 			});

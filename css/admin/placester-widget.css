@@ -1,11 +1,11 @@
 #pl-previewer-metabox-id {
   min-height: 350px; }
 
-.iframe-link {
+.iframe-link, .shortcode-link {
   margin-top: 8px;
-  padding: 0 10px; }
+  padding: 0 10px 0 4px; }
 
-.iframe-link strong {
+.inside strong {
   color: #777;
   padding-right: 3px; }
 

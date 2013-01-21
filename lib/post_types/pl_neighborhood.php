@@ -100,8 +100,10 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 						continue;
 					}
 					if( $key === 'type' ) { // handle neighborhood items
-						if( in_array( $value[0], $taxonomy_args ) ) {
-							$nb_type = $value[0];
+						// interpret differently in backend and frontend
+						$type_value = is_array( $value ) ? $value[0] : $value;
+						if( in_array( $type_value, $taxonomy_args ) ) {
+							$nb_type = $type_value;
 							$nb_value_key = 'nb-select-' . $nb_type;
 							$nb_value = isset( $meta[$nb_value_key] ) ? $meta[$nb_value_key][0] : ''; 
 							$args .= "$nb_type = '{$nb_value}' ";
