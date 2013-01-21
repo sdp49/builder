@@ -69,7 +69,6 @@ function callback( json ) {
 		script_element.parentNode.insertBefore( iframe, script_element );
 	}
 	
-    console.log(json);
 }
 
 	
