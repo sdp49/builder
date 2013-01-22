@@ -90,3 +90,8 @@ div.wrap a.add-new-h2,
 
 #general_widget_purchase_types {
   display: none; }
+
+#general_widget_pl_template_before_block label,
+#general_widget_pl_template_after_block label {
+  display: block;
+  margin-bottom: 5px; }

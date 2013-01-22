@@ -94,6 +94,11 @@ class PL_Slideshow_CPT extends PL_Post_Base {
 				
 			}
 			
+			// unset before/after for shortcode, might get messy with markup and
+			// doesn't make sense for standalone shortcode
+			if( isset( $meta['pl_template_before_block'] ) ) unset( $meta['pl_template_before_block'] );
+			if( isset( $meta['pl_template_after_block'] ) ) unset( $meta['pl_template_after_block'] );
+			
 			if( isset( $meta['pl_static_listings_option'] ) ) { unset( $meta['pl_static_listings_option'] ); }
 
 			foreach( $meta as $key => $value ) {

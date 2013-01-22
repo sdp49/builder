@@ -69,6 +69,8 @@ widget_autosave = function() {
 	                'action': 'autosave_widget',
 	                'pl_post_type': post_type,
 	                'pl_cpt_template': jQuery(tpl_selector).parent().find('option:selected').val(),
+	                'pl_template_before_block': jQuery('pl_template_before_block').val(),
+	                'pl_template_after_block': jQuery('pl_template_after_block').val(),
 	                'width': jQuery('#widget-meta-wrapper input#width').val() || "250",
 	                'height': jQuery('#widget-meta-wrapper input#height').val() || "250",
 	                'pl_featured_listing_meta': JSON.stringify(featured),

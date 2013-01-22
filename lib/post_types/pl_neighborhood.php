@@ -93,6 +93,11 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 				$meta = array_merge( $meta_custom, $meta );
 			}
 			
+			// unset before/after for shortcode, might get messy with markup and
+			// doesn't make sense for standalone shortcode
+			if( isset( $meta['pl_template_before_block'] ) ) unset( $meta['pl_template_before_block'] );
+			if( isset( $meta['pl_template_after_block'] ) ) unset( $meta['pl_template_after_block'] );
+			
 			foreach( $meta as $key => $value ) {
 				// ignore underscored private meta keys from WP
 				if( strpos( $key, '_', 0 ) !== 0 && ! empty( $value[0] ) ) {
