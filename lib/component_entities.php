@@ -628,7 +628,7 @@ class PL_Component_Entity {
 			}
 
 			// Default form enclosure
-			$header = '<div id="pls_listings_search_results"><form method="POST" action="' . $form_action . '" class="pls_search_form_listings">';
+			$header = '<div id="pls_listings_search_results"><form method="POST" action="' . $form_action . '" class="pls_search_form_listings" target="_parent">';
 			$footer = '</form></div>';
 			
 			$context = 'shortcode';
