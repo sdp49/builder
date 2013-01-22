@@ -68,6 +68,12 @@ class PL_Map_CPT extends PL_Post_Base {
 		unset( $_GET['skipdb'] );
 		$meta = $_GET;
 		
+		$allowed_atts = array(
+				'width',
+				'height',
+				'pl_cpt_template'	
+			);
+		
 		if( ! empty( $post ) && $post->post_type === 'pl_map' ) {
 			$args = '';
 			// verify if skipdb param is passed
@@ -77,9 +83,16 @@ class PL_Map_CPT extends PL_Post_Base {
 			}
 			
 			foreach( $meta as $key => $value ) {
+				if( in_array( $key, $allowed_atts ) ) {
+					if( is_array($value) ) {
+						$args .= "$key = '{$value[0]}' ";
+					} else {
+						$args .= "$key = '{$value}' ";
+					}
+				}
 				// ignore underscored private meta keys from WP
-				if( strpos( $key, '_', 0 ) !== 0 && ! empty( $value[0] ) ) {
-					if( 'pl_static_listings_option' !== $key  && 'pl_featured_listing_meta' !== $key) {
+				// if( strpos( $key, '_', 0 ) !== 0 && ! empty( $value[0] ) ) {
+					/* if( 'pl_static_listings_option' !== $key  && 'pl_featured_listing_meta' !== $key) {
 						$args .= "$key = '{$value[0]}' ";
 					}
 					if( is_array( $value ) ) {
@@ -88,8 +101,8 @@ class PL_Map_CPT extends PL_Post_Base {
 					} else {
 						// handle _GET vars as strings
 						$args .= "$key = '{$value}' ";
-					}
-				}
+					} */
+				//}
 			}
 			$args .= ' map_id="' . $post->ID . '"';
 			

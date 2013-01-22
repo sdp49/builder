@@ -1,11 +1,11 @@
 #pl-previewer-metabox-id {
   min-height: 350px; }
 
-.iframe-link {
+.iframe-link, .shortcode-link {
   margin-top: 8px;
-  padding: 0 10px; }
+  padding: 0 10px 0 4px; }
 
-.iframe-link strong {
+.inside strong {
   color: #777;
   padding-right: 3px; }
 
@@ -90,3 +90,15 @@ div.wrap a.add-new-h2,
 
 #general_widget_purchase_types {
   display: none; }
+
+#general_widget_pl_template_before_block label,
+#general_widget_pl_template_after_block label {
+  display: block;
+  margin-bottom: 5px; }
+
+/* frontend */
+#full-search .form-grp:first-child {
+  margin-top: 0px; }
+
+.pls_embedded_widget_wrapper .pls_search_form_listings {
+  margin-bottom: 0px; }

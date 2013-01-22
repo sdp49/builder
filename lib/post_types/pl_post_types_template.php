@@ -33,6 +33,12 @@ if( ! empty( $widget_class ) ) {
 			.pls_embedded_widget_wrapper {
 				overflow: hidden;
 			}
+			#full-search .form-grp:first-child {
+				margin-top: 0px;
+			}
+			.pls_embedded_widget_wrapper .pls_search_form_listings {
+				margin-bottom: 0px;
+			}
 		</style>
 		<script type="text/javascript">
 			var pl_general_widget = true;
@@ -47,7 +53,7 @@ if( ! empty( $widget_class ) ) {
 		<script type="text/javascript">
 			jQuery(document).ready(function() {
 				if (jQuery('.shortcode-link', window.parent.document).length ) {
-					jQuery('.shortcode-link', window.parent.document).html('<?php echo str_replace( "'", "\'", $shortcode ); ?>');
+					jQuery('.shortcode-link', window.parent.document).html('<strong>Shortcode:</strong><?php echo str_replace( "'", "\'", $shortcode ); ?>');
 				};
 			});
 		</script>
@@ -56,9 +62,14 @@ if( ! empty( $widget_class ) ) {
 		
 		add_filter('show_admin_bar', '__return_false');
 		add_action('wp_enqueue_scripts', isset( $drop_modernizr ) ? 'pl_template_drop_modernizr': 'pl_template_add_modernizr' );
-
+	
+		$before_shortcode = get_post_meta( $post->ID, 'pl_template_before_block', true);
+		$after_shortcode = get_post_meta( $post->ID, 'pl_template_after_block', true);
+		
 		echo '<div class="pls_embedded_widget_wrapper">';
+		echo $before_shortcode;
 		echo do_shortcode( isset( $shortcode ) ? $shortcode : $post->post_content );
+		echo $after_shortcode;
 		echo '<div>';
 		
 		wp_footer();
