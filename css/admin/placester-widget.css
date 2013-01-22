@@ -95,3 +95,10 @@ div.wrap a.add-new-h2,
 #general_widget_pl_template_after_block label {
   display: block;
   margin-bottom: 5px; }
+
+/* frontend */
+#full-search .form-grp:first-child {
+  margin-top: 0px; }
+
+.pls_embedded_widget_wrapper .pls_search_form_listings {
+  margin-bottom: 0px; }

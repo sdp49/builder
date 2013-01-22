@@ -84,7 +84,11 @@ class PL_Map_CPT extends PL_Post_Base {
 			
 			foreach( $meta as $key => $value ) {
 				if( in_array( $key, $allowed_atts ) ) {
-					$args .= "$key = '{$value[0]}' ";
+					if( is_array($value) ) {
+						$args .= "$key = '{$value[0]}' ";
+					} else {
+						$args .= "$key = '{$value}' ";
+					}
 				}
 				// ignore underscored private meta keys from WP
 				// if( strpos( $key, '_', 0 ) !== 0 && ! empty( $value[0] ) ) {

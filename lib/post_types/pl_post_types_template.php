@@ -33,6 +33,12 @@ if( ! empty( $widget_class ) ) {
 			.pls_embedded_widget_wrapper {
 				overflow: hidden;
 			}
+			#full-search .form-grp:first-child {
+				margin-top: 0px;
+			}
+			.pls_embedded_widget_wrapper .pls_search_form_listings {
+				margin-bottom: 0px;
+			}
 		</style>
 		<script type="text/javascript">
 			var pl_general_widget = true;
