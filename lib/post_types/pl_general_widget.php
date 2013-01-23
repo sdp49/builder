@@ -435,6 +435,9 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				$('#widget-meta-wrapper section input, #widget-meta-wrapper section select').on('change', function() {
 					widget_autosave();				
 				});
+				$('#pl_template_before_block, #pl_template_after_block').on('change', function() {
+					widget_autosave();				
+				});
 
 				$('#pl-review-link').on('click', function(e) {
 					e.preventDefault();
