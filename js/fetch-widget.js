@@ -65,10 +65,31 @@ function callback( json ) {
 		iframe.width = json.width;
 		iframe.height = json.height;
 		
+		var before_iframe =  document.createElement( 'div' );
+		before_iframe.innerHTML = json.pl_template_before_block;
+		var after_iframe =  document.createElement( 'div' );
+		after_iframe.innerHTML = json.pl_template_after_block;
+		
 		// insert the iframe next to the script
-		script_element.parentNode.insertBefore( iframe, script_element );
+		script_element.parentNode.insertBefore( after_iframe, script_element );
+		script_element.parentNode.insertBefore( iframe, after_iframe );
+		script_element.parentNode.insertBefore( before_iframe, iframe );
+		
+		pl_regex_matcher( json.pl_template_before_block );
+		pl_regex_matcher( json.pl_template_after_block );
 	}
 	
+}
+
+// After appending script elements, you need to evaluate them as well
+function pl_regex_matcher( content ) {
+	var re = /<script\b[^>]*>([\s\S]*?)<\/script>/gm;
+
+	var match;
+	while (match = re.exec( content ) ) {
+	  // full match is in match[0], whereas captured groups are in ...[1], ...[2], etc.
+	  eval( match[1] );
+	}
 }
 
 	

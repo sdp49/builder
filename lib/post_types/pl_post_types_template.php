@@ -62,14 +62,9 @@ if( ! empty( $widget_class ) ) {
 		
 		add_filter('show_admin_bar', '__return_false');
 		add_action('wp_enqueue_scripts', isset( $drop_modernizr ) ? 'pl_template_drop_modernizr': 'pl_template_add_modernizr' );
-	
-		$before_shortcode = get_post_meta( $post->ID, 'pl_template_before_block', true);
-		$after_shortcode = get_post_meta( $post->ID, 'pl_template_after_block', true);
 		
 		echo '<div class="pls_embedded_widget_wrapper">';
-		echo $before_shortcode;
 		echo do_shortcode( isset( $shortcode ) ? $shortcode : $post->post_content );
-		echo $after_shortcode;
 		echo '<div>';
 		
 		wp_footer();

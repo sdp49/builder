@@ -628,7 +628,7 @@ class PL_Component_Entity {
 			}
 
 			// Default form enclosure
-			$header = '<div id="pls_listings_search_results"><form method="POST" action="' . $form_action . '" class="pls_search_form_listings">';
+			$header = '<div id="pls_listings_search_results"><form method="POST" action="' . $form_action . '" class="pls_search_form_listings" target="_parent">';
 			$footer = '</form></div>';
 			
 			$context = 'shortcode';
@@ -636,35 +636,33 @@ class PL_Component_Entity {
 				$context = $atts['context'];
 			}
 			
-			?>
-			<script type="text/javascript" src="<?php echo trailingslashit(PLS_JS_URL); ?>scripts/filters.js"></script>
-			<script type="text/javascript">
-				if (typeof bootloader !== 'object') {
-					var bootloader;
-				}
-	
-			  jQuery(document).ready(function( $ ) {
-			  	if (typeof bootloader !== 'object') {
-			  		bootloader = new SearchLoader();
-			  		bootloader.add_param({filter: {context: "<?php echo $context; ?>"}});
-			  	} else {
-			  		bootloader.add_param({filter: {context: "<?php echo $context; ?>"}});
-			  	}
-			  });
-			</script>
-	
-			<?php
+			if( isset( $atts['ajax'] ) ) {
+				$atts['ajax'] = true;
+				?>
+					<script type="text/javascript" src="<?php echo trailingslashit(PLS_JS_URL); ?>scripts/filters.js"></script>
+					<script type="text/javascript">
+						if (typeof bootloader !== 'object') {
+							var bootloader;
+						}
+			
+					  jQuery(document).ready(function( $ ) {
+					  	if (typeof bootloader !== 'object') {
+					  		bootloader = new SearchLoader();
+					  		bootloader.add_param({filter: {context: "<?php echo $context; ?>"}});
+					  	} else {
+					  		bootloader.add_param({filter: {context: "<?php echo $context; ?>"}});
+					  	}
+					  });
+					</script>
+				<?php 
+			} else {
+				$atts['ajax'] = false;
+			}
 			
 			// add context and ajax support if missing
 			if( !isset( $atts['context'] ) ) { $atts['context'] = 'shortcode'; }
 			// ajax option from UI means ajax is disabled
 		
-			if( isset( $atts['ajax'] ) ) { 
-				$atts['ajax'] = false; 
-			} else {
-				$atts['ajax'] = true;
-			}
-			
 			return ( $header . PLS_Partials_Listing_Search_Form::init($atts) . $footer );
 		} 
 		

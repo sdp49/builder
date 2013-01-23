@@ -92,7 +92,7 @@ class PL_Pages {
                  'post_author' => 1,
                  'post_content'=> $content,
                  'filter'      => 'db',
-                 'guid'        => $guid
+                 'guid'        => @$guid
              );
              
             if ($post_id <= 0) {
