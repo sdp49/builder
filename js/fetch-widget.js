@@ -66,9 +66,9 @@ function callback( json ) {
 		iframe.height = json.height;
 		
 		var before_iframe =  document.createElement( 'div' );
-		before_iframe.innerHTML = json.pl_template_before_block;
+		before_iframe.innerHTML = json.pl_template_before_block || '';
 		var after_iframe =  document.createElement( 'div' );
-		after_iframe.innerHTML = json.pl_template_after_block;
+		after_iframe.innerHTML = json.pl_template_after_block || '';
 		
 		// insert the iframe next to the script
 		script_element.parentNode.insertBefore( after_iframe, script_element );
