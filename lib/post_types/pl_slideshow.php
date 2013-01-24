@@ -121,7 +121,7 @@ class PL_Slideshow_CPT extends PL_Post_Base {
 			$args .= "post_id = '{$post->ID}' ";
 			
 			if( isset( $meta['pl_cpt_template'] ) ) {
-				$context = $meta['pl_cpt_template'][0];
+				$context = is_array( $meta['pl_cpt_template'] ) ? $meta['pl_cpt_template'][0] : $meta['pl_cpt_template'];
 				$args .= "context = '$context' ";
 			}
 				

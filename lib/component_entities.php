@@ -18,6 +18,8 @@ class PL_Component_Entity {
 	public static $form_html;
 	
 	public static $neighborhood_term;
+	
+	public static $slideshow_caption_index;
 	/**
 	 * Featured listings logic
 	 * @param array $atts id or future arguments
@@ -53,8 +55,9 @@ class PL_Component_Entity {
 
 		$listing_slideshow_templates = self::get_shortcode_snippet_list( 'listing_slideshow', self::$defaults );
 		foreach ($listing_slideshow_templates as $template => $type) {
-			add_filter( 'pls_slideshow_html_' . $template, array(__CLASS__,'listing_slideshow_templates'), 10, 6 );
-			// add_filter( 'pls_slideshow_data_' . $template, array(__CLASS__,'listing_slideshow_templates'), 10, 3 );
+			add_filter( 'pls_slideshow_single_caption_' . $template, array( __CLASS__, 'listing_slideshow_templates' ), 10, 5 );
+			// add_filter( 'pls_slideshow_html_' . $template, array(__CLASS__,'listing_slideshow_templates'), 10, 6 );
+// 			add_filter( 'pls_slideshow_data_' . $template, array(__CLASS__,'listing_slideshow_templates'), 10, 3 );
 		}
 		
 		$search_listings_templates = self::get_shortcode_snippet_list( 'search_listings', self::$defaults );
@@ -321,6 +324,33 @@ class PL_Component_Entity {
 			echo PLS_Slideshow::slideshow($atts); 
 		
 			return ob_get_clean();
+		}
+		
+		public static function listing_slideshow_sub_entity( $atts, $content, $tag ) {
+			if( empty( self::$listing ) ) {
+				return '';
+			}
+			
+			$listing = self::$listing;
+			
+			if( $tag === 'ls_index' ) {
+				if( ! empty( self::$slideshow_caption_index ) ) {
+					return self::$slideshow_caption_index;
+				}
+			} else if( $tag === 'ls_url' ) {
+				return $listing['cur_data']['url'];
+				
+			} else if( $tag === 'ls_address' ) {
+				return $listing['location']['address'];
+				
+			} else if( $tag === 'ls_beds' ) {
+				return $listing['cur_data']['beds'];
+				
+			} else if( $tag === 'ls_baths' ) {
+				return $listing['cur_data']['baths'];
+			}
+
+			return '';
 		}
 		
 		public static function neighborhood_sub_entity( $atts, $content, $tag ) {
@@ -815,8 +845,25 @@ class PL_Component_Entity {
 			return do_shortcode($snippet_body);
 		}
 		
-		public static function listing_slideshow_templates( $html, $data, $context, $context_var, $args ) {
+		public static function listing_slideshow_templates( $caption_html, $listing, $context, $context_var, $index ) {
 			$shortcode = 'listing_slideshow';
+			self::$listing = $listing;
+			self::$slideshow_caption_index = $index;
+			
+			$template = $context;
+			
+			// TODO: can we cache that
+			$snippet_body = PL_Shortcodes::get_active_snippet_body($shortcode, $template);
+
+			return do_shortcode( $snippet_body );
+		}
+		
+		// that would work fine for output styling, not caption-specific
+		 public static function listing_slideshow_templates3( $html, $data, $context, $context_var, $args ) {
+			$shortcode = 'listing_slideshow';
+			if( ! isset( $data['listing'] ) ) {
+				return '';
+			}
 			self::$listing = $data['listing']; 
 			
 			// get the template attached as a context arg, 33 is the length of the filter prefix
