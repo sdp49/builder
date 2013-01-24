@@ -81,6 +81,11 @@ class PL_Form_CPT extends PL_Post_Base {
 				$meta = array_merge( $meta_custom, $meta );
 			}
 			
+			// unset before/after for shortcode, might get messy with markup and
+			// doesn't make sense for standalone shortcode
+			if( isset( $meta['pl_template_before_block'] ) ) unset( $meta['pl_template_before_block'] );
+			if( isset( $meta['pl_template_after_block'] ) ) unset( $meta['pl_template_after_block'] );
+			
 			foreach( $meta as $key => $value ) {
 				// ignore underscored private meta keys from WP
 				if( $key === 'pl_cpt_template' ) {
@@ -100,7 +105,8 @@ class PL_Form_CPT extends PL_Post_Base {
 				}
 			}
 			
-			$shortcode = '[search_form ' . $args . '] [search_listings]';
+			// $shortcode = '[search_form ' . $args . '] [search_listings]';
+			$shortcode = '[search_form ' . $args . ']';
 			
 			include PL_LIB_DIR . '/post_types/pl_post_types_template.php';
 				

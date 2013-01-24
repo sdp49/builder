@@ -745,18 +745,15 @@ class PL_Listing_Helper {
         if ($transient = $cache->get($post)) {
             return $transient;
         }
-		$serialized_listing_data = get_post_meta($post->ID, 'listing_data', true);
-		$listing_data = unserialize($serialized_listing_data);
 
-		if (!$listing_data) {
-		  	// Update listing data from the API
-			$args = array('listing_ids' => array($post->post_name), 'address_mode' => 'exact');
-			$response = PL_Listing::get($args);
-			if ( !empty($response['listings']) ) {
-				$listing_data = $response['listings'][0];
-			}
+        // Listing data is not present in the cache, so get it from the API...
+        $listing_data = null;
+		$args = array('listing_ids' => array($post->post_name), 'address_mode' => 'exact');
+		$response = PL_Listing::get($args);
+		if ( !empty($response['listings']) ) {
+			$listing_data = $response['listings'][0];
 		}
-
+		
 		$cache->save($listing_data);
 		return $listing_data;		
 	}

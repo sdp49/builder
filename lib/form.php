@@ -69,10 +69,12 @@ class PL_Form {
 				</section>
 			<?php	
 		} elseif ($type == 'textarea') {
+			$rows = ! empty( $attributes['rows'] ) ? $attributes['rows'] : 2;
+			$cols = ! empty( $attributes['cols'] ) ? $attributes['cols'] : 20;
 			?>
 				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>">
 					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
-					<textarea id="<?php echo $id ?>" name="<?php echo $name ?>" rows="2" cols="20"><?php echo $value ?></textarea>
+					<textarea id="<?php echo $id ?>" name="<?php echo $name ?>" rows="<?php echo $rows; ?>" cols="<?php echo $cols; ?>"><?php echo $value ?></textarea>
 				</section>
 			<?php
 		} elseif ($type == 'select') {

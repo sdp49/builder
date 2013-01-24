@@ -94,6 +94,13 @@ class PL_Shortcodes
 															'nb_description',
 															'nb_link',
 															'nb_map'),
+									'listing_slideshow' => array(
+														'ls_index',
+														'ls_url',
+														'ls_address',
+														'ls_beds',
+														'ls_baths',
+											),
             						);
 
 	// TODO: These are a temporary solution, come up with a better convention...
@@ -303,6 +310,12 @@ class PL_Shortcodes
 		$content = PL_Component_Entity::listing_sub_entity( $atts, $content, $tag );
 		
 		return PL_Shortcode_Wrapper::create( 'listing_sub', $content );
+	}
+	
+	public static function listing_slideshow_sub_shortcode_handler ($atts, $content, $tag) {
+		$content = PL_Component_Entity::listing_slideshow_sub_entity( $atts, $content, $tag );
+	
+		return PL_Shortcode_Wrapper::create( 'listing_slideshow_sub', $content );
 	}
 	
 	public static function neighborhood_sub_shortcode_handler ($atts, $content, $tag) {

@@ -1,19 +1,29 @@
-.iframe-link {
-  margin-top: 8px;
-  padding: 0 10px; }
+#pl-previewer-metabox-id {
+  min-height: 350px; }
 
-.iframe-link strong {
+.iframe-link, .shortcode-link {
+  margin-top: 8px;
+  padding: 0 10px 0 4px; }
+
+.inside strong {
   color: #777;
   padding-right: 3px; }
 
 #preview-wrapper {
   position: fixed;
-  right: 330px; }
+  /* right: 0px; */ }
+
+#pl-previewer-metabox-id {
+  position: fixed;
+  width: 278px; }
 
 #preview-meta-widget {
-  width: 300px;
-  height: 300px;
-  border: 1px solid gray; }
+  width: 250px;
+  height: 250px;
+  border: 1px solid gray;
+  overflow: hidden;
+  margin-left: 4px;
+  margin-top: 9px; }
 
 #pl-controls-metabox-id {
   min-height: 430px; }
@@ -72,12 +82,27 @@ div.wrap a.add-new-h2,
   text-align: center;
   padding-top: 10px; }
 
-@media screen and (max-width: 1500px) {
-  #preview-wrapper {
-    position: static;
-    float: left; } }
+/*
+@media screen and ($width-name : $target-width) {
+   #preview-wrapper {
+	position: static;
+	float: left;
+   }
+} */
 #general_widget_zoning_types {
   display: none; }
 
 #general_widget_purchase_types {
   display: none; }
+
+#general_widget_pl_template_before_block label,
+#general_widget_pl_template_after_block label {
+  display: block;
+  margin-bottom: 5px; }
+
+/* frontend */
+#full-search .form-grp:first-child {
+  margin-top: 0px; }
+
+.pls_embedded_widget_wrapper .pls_search_form_listings {
+  margin-bottom: 0px; }

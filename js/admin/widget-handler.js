@@ -69,6 +69,8 @@ widget_autosave = function() {
 	                'action': 'autosave_widget',
 	                'pl_post_type': post_type,
 	                'pl_cpt_template': jQuery(tpl_selector).parent().find('option:selected').val(),
+	                'pl_template_before_block': jQuery('pl_template_before_block').val(),
+	                'pl_template_after_block': jQuery('pl_template_after_block').val(),
 	                'width': jQuery('#widget-meta-wrapper input#width').val() || "250",
 	                'height': jQuery('#widget-meta-wrapper input#height').val() || "250",
 	                'pl_featured_listing_meta': JSON.stringify(featured),
@@ -107,8 +109,8 @@ widget_autosave = function() {
 			setTimeout(function() {
 				// breaks the overall layout
 				// var frame_width = post_data['width'];
-				var frame_width = '300';
-				var frame_height = '300';
+				var frame_width = '250';
+				var frame_height = '250';
 				var post_id = jQuery("#post_ID").val();
 				
 				var widget_class = jQuery('#widget_class').val() || '';

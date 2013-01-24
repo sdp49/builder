@@ -125,8 +125,8 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			}
 		} else {
 			$args = wp_parse_args( $_GET, array(
-				'width' => '300',
-				'height' => '300',
+				'width' => '250',
+				'height' => '250',
 			) );
 			
 			unset( $args['action'] );
@@ -143,6 +143,23 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	
 	public  function meta_box() {
 		add_meta_box( 'pl-controls-metabox-id', 'Placester Widgets', array( $this, 'pl_widgets_meta_box_cb'), 'pl_general_widget', 'normal', 'high' );
+		add_meta_box( 'pl-previewer-metabox-id', 'Widget Preview', array( $this, 'pl_previewer_meta_box_cb'), 'pl_general_widget', 'side', 'low' );
+	}
+	
+	public function pl_previewer_meta_box_cb( $post ) {
+		?>
+		<div>
+			<div id='preview-wrapper'>
+				<div id='preview-meta-widget'>
+					<img id="preview_load_spinner" src="<?php echo PL_PARENT_URL . 'images/preview_load_spin.gif'; ?>" alt="Widget options are Loading..." width="30px" height="30px" style="margin-left: 100px; margin-top: 100px;" />
+				</div>
+				<div id="pl-review-wrapper">
+					<a id="pl-review-link" href="" style="display:none;">Open Preview in a popup</a>
+					<div id="pl-review-popup" class="dialog" style="display: none;">Loading preview...</div>
+				</div>
+			</div>
+		</div>		
+		<?php 
 	}
 	
 	// add meta box for featured listings- adding custom fields
@@ -159,7 +176,28 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		$pl_post_type = isset( $values['pl_post_type'] ) ? $values['pl_post_type'][0] : '';
 		
 		// manage featured and static listing form values
-		$pl_featured_meta_value = empty( $pl_featured_listing_meta ) ? '' : $pl_featured_listing_meta['featured-listings-type'];
+		$pl_featured_meta_value = ''; 
+		if( ! empty( $values['pl_featured_listing_meta'] ) ) {
+			if( is_array( $values['pl_featured_listing_meta'] ) ) {
+				$pl_featured_meta_value = $values['pl_featured_listing_meta'][0];
+				$pl_featured_meta_value = @unserialize( $pl_featured_meta_value );
+				
+				if( false === $pl_featured_meta_value ) {
+					$pl_featured_meta_value = @json_decode( $values['pl_featured_listing_meta'][0], true );
+				} else if( is_array( $pl_featured_meta_value ) && isset( $pl_featured_meta_value[0] ) ) { 
+					$pl_featured_meta_value = $pl_featured_meta_value[0]; 
+				}
+				if(is_array( $pl_featured_meta_value ) && isset( $pl_featured_meta_value['featured-listings-type'] )) {
+					$pl_featured_meta_value = $pl_featured_meta_value['featured-listings-type'];
+				}
+			} else if(isset( $values['pl_featured_listing_meta']['featured-listings-type'] )) {
+				$pl_featured_meta_value = $values['pl_featured_listing_meta']['featured-listings-type'];
+			}
+		}
+		
+		
+		
+		$_POST['pl_featured_meta_value'] = $pl_featured_meta_value;
 		
 		$pl_static_listings_option = isset( $values['pl_static_listings_option'] ) ? unserialize($values['pl_static_listings_option'][0]) : '';
 		if( is_array( $pl_static_listings_option ) ) {
@@ -178,47 +216,39 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		?>
 		<script type="text/javascript">
 		</script>
-		<div id='preview-wrapper'>
-			<div id='preview-title'>
-				<h2>Widget Preview</h2>
-			</div>
-			<div id='preview-meta-widget'>
-				<img id="preview_load_spinner" src="<?php echo PL_PARENT_URL . 'images/preview_load_spin.gif'; ?>" alt="Widget options are Loading..." width="30px" height="30px" style="margin-left: 120px; margin-top: 120px;" />
-			</div>
-			<div id="pl-review-wrapper">
-				<a id="pl-review-link" href="" style="display:none;">Open Preview in a popup</a>
-				<div id="pl-review-popup" class="dialog" style="display: none;">Loading preview...</div>
-			</div>
-		</div>
 	
 		<div id="post_types_list">
 				<div class="post_types_list_wrapper" style="clear: both; padding-top: 10px;">
 					<span>Select Type: </span>
+					<select id="pl_post_type_dropdown" name="pl_post_type_dropdown">
+					<option id="pl_post_type_undefined" value="pl_post_type_undefined">Select</option> 
 					<?php 
 					
 					 $num_of_post_types = count( self::$post_types );
 					 $i = 0;
+					 
 					 foreach( self::$post_types as $post_type => $label ):
 					 		$i++;
 							$link_class = ''; 
 							if( $post_type == $pl_post_type ) {
 								$link_class = 'selected_type';
 							}
-					?>			
-						<a id="pl_post_type_<?php echo $post_type; ?>" href="#" class="<?php echo $link_class; ?>"><?php echo $label; ?></a>
-						<?php if( $i < $num_of_post_types ):
-							echo '<span class="pl_type_separator"> |</span>';
-						endif; ?>
-					<?php endforeach; ?>
+						?>			
+							<option id="pl_post_type_<?php echo $post_type; ?>" class="<?php echo $link_class; ?>" value="pl_post_type_<?php echo $post_type; ?>" <?php if( ! empty( $link_class ) ) echo ' selected="selected"'  ?>><?php echo $label; ?></option>
+							<?php if( $i < $num_of_post_types ):
+								echo '<span class="pl_type_separator"> |</span>';
+							endif; ?>
+						<?php endforeach; ?>
+					</select>
 				</div>
 			</div>
 		<?php 
 		echo '<div id="widget-meta-wrapper" style="display: none; min-height: 370px">';
 		
 		// read width/height and slideshow values
-		$width =  isset( $values['width'] ) && ! empty( $values['width'][0] ) ? $values['width'][0] : '300';
+		$width =  isset( $values['width'] ) && ! empty( $values['width'][0] ) ? $values['width'][0] : '250';
 		$_POST['width'] = $width;
-		$height = isset( $values['height'] ) && ! empty( $values['height'][0] ) ? $values['height'][0] : '300';
+		$height = isset( $values['height'] ) && ! empty( $values['height'][0] ) ? $values['height'][0] : '250';
 		$_POST['height'] = $height;
 		$animationSpeed = isset( $values['animationSpeed'] ) && ! empty( $values['animationSpeed'][0] ) ? $values['animationSpeed'][0] : '800';
 		$_POST['animationSpeed'] = $animationSpeed;
@@ -333,16 +363,22 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				$('#metadata-min_avail_on_picker').datepicker();
 
 				// click a new post type as a widget type
-				$('#post_types_list a').click(function() {
+				$('#post_types_list select').change(function() {
 					if( $('#title').val() === '' ) {
 						alert('Please enter widget title first.');
 						return;
 					} 
 					
-					var selected_cpt = $(this).attr('id').substring('pl_post_type_'.length);
+					//var selected_cpt = $(this).attr('id').substring('pl_post_type_'.length);
+					var selected_cpt = $(this).parent().find(':selected').val().substring('pl_post_type_'.length);
 
-					$('#post_types_list a').removeClass('selected_type');
-					$(this).addClass('selected_type');
+					if( selected_cpt == 'undefined' ) {
+						// clicking "Select" shouldn't reflect the choice
+						return;
+					}
+					
+					// $('#post_types_list a').removeClass('selected_type');
+					// $(this).addClass('selected_type');
 					$('#pl_post_type').val(selected_cpt);
 
 					// hide values not related to the post type and reveal the ones to be used
@@ -385,6 +421,11 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 						}
 					});
 
+					$('.pl_template_section_title').show();
+
+					$('#general_widget_pl_template_before_block').show();
+					$('#general_widget_pl_template_after_block').show();
+
 					// display/hide featured/static listings
 					var featured_class = $('#pl_featured_listing_block').attr('class');
 					var static_class = $('#pl_static_listing_block').attr('class');
@@ -402,7 +443,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 					}
 
 					
-					$('#preview-meta-widget').html('<img id="preview_load_spinner" src="<?php echo PL_PARENT_URL . 'images/preview_load_spin.gif'; ?>" alt="Widget options are Loading..." width="30px" height="30px" style="position: absolute; top: 180px; left: 130px" />');
+					$('#preview-meta-widget').html('<img id="preview_load_spinner" src="<?php echo PL_PARENT_URL . 'images/preview_load_spin.gif'; ?>" alt="Widget options are Loading..." width="30px" height="30px" style="position: absolute; top: 100px; left: 100px" />');
 
 					// call the custom widget_autosave to send values to backend
 					widget_autosave();
@@ -413,6 +454,9 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 
 				// call the custom autosave for every changed input and select
 				$('#widget-meta-wrapper section input, #widget-meta-wrapper section select').on('change', function() {
+					widget_autosave();				
+				});
+				$('#pl_template_before_block, #pl_template_after_block').on('change', function() {
 					widget_autosave();				
 				});
 
@@ -461,7 +505,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				// populate slug box for the edit screen
 				<?php if( ! $is_post_new ) { ?>
 					$('#edit-slug-box').after('<div class="iframe-link"><strong>Embed Code:</strong> <?php echo esc_html( $iframe_controller ); ?></div><div class="shortcode-link"></div>');
-					$('#pl_post_type_<?php echo $pl_post_type; ?>').trigger('click');
+					$('#pl_post_type_dropdown').trigger('change');
 				<?php }	?>
 
 				// reset before the view, hide everything
@@ -469,11 +513,24 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				$('.pl_template_block section').show();
 				$('#widget-meta-wrapper').show();
 
+				// Update preview when creating a new template
+				$('.save_snippet').on('click', function() {
+					$('#pl_post_type_dropdown').trigger('change');
+				});
+
 				<?php if( ! $is_post_new ) { ?>
-					$('#pl_post_type_<?php echo $pl_post_type; ?>').trigger('click');
+					$('#pl_post_type_dropdown').trigger('change');
 				<?php }	?>
+
+				$('#pl-previewer-metabox-id .handlediv').on('click', function() {
+					if ( $('#pl-previewer-metabox-id').hasClass('closed') ){
+						$('#pl-previewer-metabox-id').css('min-height', '350px');
+					} else {
+						$('#pl-previewer-metabox-id').css('min-height', '0');
+					}
+				});
 				
-				$('#pl_post_type').trigger('change');
+				// $('#pl_post_type_dropdown').trigger('change');
 				$('#preview_load_spinner').remove();
 				$('#preview-meta-widget').html('<?php echo isset($iframe) ? $iframe : '' ?>');
 			});
@@ -512,8 +569,30 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		echo '</section>';
 		
 		echo '<div class="clear"></div>';
+		
+		echo '<section class="pl_template_section_title"><h2>Template Manager</h2></section>';
+		
+		// arguments for before/after blocks
+		$before_after_block_args = array(
+			'type' => 'textarea',
+			'css' => 'pl_map pl_form pl_search_listings pl_slideshow pl_neighborhood featured_listings static_listings',
+			'rows' => 7,
+			'cols' => 60
+		);
 
+		$_POST['pl_template_before_block'] = ! empty( $values['pl_template_before_block'] ) ? $values['pl_template_before_block'][0] : '';
+		$_POST['pl_template_after_block'] = ! empty( $values['pl_template_after_block'] ) ? $values['pl_template_after_block'][0] : '';
+		
+		// Print template blocks with pre/post blocks for extra markup
+		echo PL_Form::item('pl_template_before_block', 
+						array_merge( $before_after_block_args, array( 'label' => 'Before template' ) ),
+						 'POST', false, 'general_widget_');
+		
 		$this->print_template_blocks();
+		
+		echo PL_Form::item('pl_template_after_block',
+					 	array_merge( $before_after_block_args, array( 'label' => 'After template') ),
+						 'POST', false, 'general_widget_');
 		
 		echo '</div>'; // end of #widget-meta-wrapper
 	}
@@ -530,10 +609,12 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	
 		$pl_post_type = $_POST['pl_post_type'];
 		
+		// This should be a determined widget type already.
 		if( $pl_post_type === 'pl_general_widget' ) {
 			return;
 		}
 		
+		// Fetch the context template
 		$context_template = self::get_context_template( $pl_post_type );
 		
 		if( isset( $_POST['pl_template_' . $context_template ] ) ) {
@@ -542,8 +623,22 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			update_post_meta( $post_id, 'pl_cpt_template', $_POST['pl_cpt_template'] );
 		}
 		
+		// Send the before/after snippets for the template
+		if( ! empty( $_POST['pl_template_before_block'] ) ) {
+	 		update_post_meta( $post_id, 'pl_template_before_block', $_POST['pl_template_before_block'] );
+		}
+		if( ! empty( $_POST['pl_template_after_block'] ) ) {
+			update_post_meta( $post_id, 'pl_template_after_block', $_POST['pl_template_after_block'] );
+		}
+		
 		if( $pl_post_type === 'featured_listings' ||  $pl_post_type === 'static_listings') {
 			pl_featured_listings_meta_box_save( $post_id );
+		}
+		
+		if( $pl_post_type === 'pl_slideshow') {
+			if( isset( $_POST['pl_featured_listing_meta'] ) ) {
+				update_post_meta( $post_id, 'pl_featured_listing_meta',  $_POST['pl_featured_listing_meta'] );
+			}
 		}
 		
 		update_post_meta( $post_id, 'pl_post_type', $pl_post_type );
