@@ -521,6 +521,14 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				<?php if( ! $is_post_new ) { ?>
 					$('#pl_post_type_dropdown').trigger('change');
 				<?php }	?>
+
+				$('#pl-previewer-metabox-id .handlediv').on('click', function() {
+					if ( $('#pl-previewer-metabox-id').hasClass('closed') ){
+						$('#pl-previewer-metabox-id').css('min-height', '350px');
+					} else {
+						$('#pl-previewer-metabox-id').css('min-height', '0');
+					}
+				});
 				
 				// $('#pl_post_type_dropdown').trigger('change');
 				$('#preview_load_spinner').remove();

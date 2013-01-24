@@ -13,6 +13,10 @@
   position: fixed;
   /* right: 0px; */ }
 
+#pl-previewer-metabox-id {
+  position: fixed;
+  width: 278px; }
+
 #preview-meta-widget {
   width: 250px;
   height: 250px;
