@@ -84,6 +84,7 @@ widget_autosave = function() {
 	                'hide_sort_by': jQuery('#hide_sort_by').is(':checked'),
 	                'hide_sort_direction': jQuery('#hide_sort_direction').is(':checked'),
 	                'hide_num_results': jQuery('#hide_num_results').is(':checked'),
+	                'form_action_url': jQuery('#form_action_url').val(),
 	                'widget_class': widget_class
 	};
 	
