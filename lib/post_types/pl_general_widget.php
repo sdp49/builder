@@ -459,6 +459,9 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				$('#pl_template_before_block, #pl_template_after_block').on('change', function() {
 					widget_autosave();				
 				});
+				$('#save-featured-listings').on('click', function() {
+					setTimeout( widget_autosave, 1000 );
+				});
 
 				$('#pl-review-link').on('click', function(e) {
 					e.preventDefault();
