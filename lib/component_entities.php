@@ -651,6 +651,9 @@ class PL_Component_Entity {
 		public static function search_form_entity( $atts ) {
 			// Handle attributes using shortcode_atts...
 			$form_action = 	esc_url( home_url( '/' ) ) . 'listings';		
+			if( isset( $atts['form_action_url'] ) ) {
+				$form_action = $atts['form_action_url'];
+			}
 			
 			// use the form action from the metabox if AJAX is disabled
 			if( isset( $atts['ajax'] ) && $atts['ajax'] == 'true' && isset( $atts['formaction'] ) ) {

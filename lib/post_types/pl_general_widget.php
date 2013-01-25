@@ -43,6 +43,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			'timer' => array( 'type' => 'checkbox', 'label' => 'Timer', 'css' => 'pl_slideshow' ),
 			'pauseOnHover' => array( 'type' => 'checkbox', 'label' => 'Pause on hover', 'css' => 'pl_slideshow' ),
 			'hide_sort_by' => array( 'type' => 'checkbox', 'label' => 'Hide Sort By dropdown', 'css' => 'pl_static_listings' ),
+			'form_action_url' => array( 'type' => 'text', 'label' => 'Form Address', 'css' => 'pl_form' ),
 			'hide_sort_direction' => array( 'type' => 'checkbox', 'label' => 'Hide Sort Direction', 'css' => 'pl_static_listings' ),
 			'hide_num_results' => array( 'type' => 'checkbox', 'label' => 'Hide Show Number of Results', 'css' => 'pl_static_listings' ),
  			'num_results_shown' => array( 'type' => 'text', 'label' => 'Number of Results Displayed', 'css' => 'pl_static_listings' ),
@@ -458,6 +459,9 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				});
 				$('#pl_template_before_block, #pl_template_after_block').on('change', function() {
 					widget_autosave();				
+				});
+				$('#save-featured-listings').on('click', function() {
+					setTimeout( widget_autosave, 1000 );
 				});
 
 				$('#pl-review-link').on('click', function(e) {

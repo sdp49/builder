@@ -39,6 +39,9 @@ if( ! empty( $widget_class ) ) {
 			.pls_embedded_widget_wrapper .pls_search_form_listings {
 				margin-bottom: 0px;
 			}
+			p {
+				margin-top: 0px;
+			}
 		</style>
 		<script type="text/javascript">
 			var pl_general_widget = true;
