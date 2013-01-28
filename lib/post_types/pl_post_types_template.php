@@ -6,6 +6,8 @@ if( $preview ) {
 	header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 }
 
+// wp_dequeue_script( 'customizer' );
+
 $widget_cache = new PL_Cache("Embeddable_Widget");
 global $post;
 
@@ -59,7 +61,7 @@ if( ! empty( $widget_class ) ) {
 					if (jQuery('.shortcode-link', window.parent.document).length ) {
 						jQuery('.shortcode-link', window.parent.document).html('<strong>Shortcode:</strong><?php echo str_replace( "'", "\'", $shortcode ); ?>');
 					}
-				} catch( exception) {}  
+				} catch( exception ) {}  
 			});
 		</script>
 		<?php

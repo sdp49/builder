@@ -4,14 +4,12 @@
  */
 
 jQuery(window).load( function () {  
-	try {
-	    if ( (top.location != self.location) && top.customizer_global ) {
-	        top.customizer_global.previewLoaded();
-	
-	        // Check for onboarding wizard, throw appropriate event..
-	        if ( top.wizard_global ) {
-	            top.wizard_global.previewLoaded();
-	        }
-	    }
-	} catch( exception ) {}
+    if ( (top.location != self.location) && top.customizer_global ) {
+        top.customizer_global.previewLoaded();
+
+        // Check for onboarding wizard, throw appropriate event..
+        if ( top.wizard_global ) {
+            top.wizard_global.previewLoaded();
+        }
+    }
 });
