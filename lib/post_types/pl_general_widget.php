@@ -135,7 +135,13 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		}
 		
 		$args['post_id'] = $_GET['id'];
-		$args['widget_url'] =  home_url() . '/?p=' . $_GET['id'];
+		
+		if( isset( $args['widget_original_src'] ) ) {
+			$args['widget_url'] =  $args['widget_original_src'] . '/?p=' . $_GET['id'];
+			unset( $args['widget_original_src'] );
+		} else {
+			$args['widget_url'] =  home_url() . '/?p=' . $_GET['id'];
+		}
 		
 		header("content-type: application/javascript");
 		echo $_GET['callback'] . '(' . json_encode( $args ) . ');';
