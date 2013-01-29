@@ -149,7 +149,7 @@
 
   		<div class="clearfix"></div>
 
-  		<a class="details" href="[url]">View Listing Details (TE)</a>
+  		<a class="details" href="[url]">View Listing Details </a>
   	</div><!--lu-right-->	
   </div>
 
