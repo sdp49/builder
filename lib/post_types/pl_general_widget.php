@@ -105,11 +105,11 @@ class PL_General_Widget_CPT extends PL_Post_Base {
  			die();
  		}
  		
+ 		$post_id = $_GET['id'];
+		$meta = get_post_custom( $post_id );
+
 		// default GET should have at least id, callback and action
 		if( count( $_GET ) === 3 ) {
-			$post_id = $_GET['id'];
-			$meta = get_post_custom( $post_id );
-			
 			$ignore_array = array(
 				'pl_static_listings_option',
 				'pl_featured_listings_option',
@@ -129,7 +129,9 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				'width' => '250',
 				'height' => '250',
 			) );
-			 
+
+			$args['widget_class'] = ! empty( $meta['widget_class'] ) && is_array( $meta['widget_class'] ) ? $meta['widget_class'][0] : ''; 
+			
 			unset( $args['action'] );
 			unset( $args['callback'] );
 		}
