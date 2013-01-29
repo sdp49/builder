@@ -11,6 +11,9 @@ var action_url = wp_folder + 'wp-admin/admin-ajax.php';
 var url_script_vars = getUrlVars( thisScriptTag.src );
 var url_json = JSON.stringify( url_script_vars );
 
+var path_before_wpcontent = thisScriptTag.src.indexOf('/wp-content');
+url_script_vars['widget_original_src'] = thisScriptTag.src.substring(0, path_before_wpcontent);
+ 
 // since load is fired later, the load has to get the url vars
 // for every script, and not repeatedly the last one.
 // closure calling (module pattern)
@@ -51,8 +54,9 @@ function callback( json ) {
 		// create the iframe element
 		var iframe = document.createElement('iframe');
 		iframe.src = json.widget_url;
-		if( script_element.className !== undefined ) {
-			iframe.className = script_element.className;
+
+		if( json.widget_class !== undefined ) {
+			iframe.className = json.widget_class;
 		}
 		
 		for( var key in json ) {
