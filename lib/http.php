@@ -81,10 +81,10 @@ Class PL_HTTP {
 			case 'POST':
 			case 'PUT':
 				$response = wp_remote_post($url, array('body' => $request_string, 'timeout' => self::$timeout, 'method' => $method));
-				if (!is_array($response)) {
-					$response = array();
+				if ( !is_array($response) || !isset($response['body']) ) {
+					$response = array('body' => '');
 				}
-				return json_decode($response['body'], TRUE);
+				return json_decode(@$response['body'], TRUE);
 				break;
 			
 			case 'DELETE':
