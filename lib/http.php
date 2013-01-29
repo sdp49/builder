@@ -84,7 +84,7 @@ Class PL_HTTP {
 				if ( !is_array($response) || !isset($response['body']) ) {
 					$response = array('body' => '');
 				}
-				return json_decode(@$response['body'], TRUE);
+				return json_decode($response['body'], TRUE);
 				break;
 			
 			case 'DELETE':
