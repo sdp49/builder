@@ -129,7 +129,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				'width' => '250',
 				'height' => '250',
 			) );
-			
+			 
 			unset( $args['action'] );
 			unset( $args['callback'] );
 		}

@@ -13,7 +13,7 @@ var url_json = JSON.stringify( url_script_vars );
 
 var path_before_wpcontent = thisScriptTag.src.indexOf('/wp-content');
 url_script_vars['widget_original_src'] = thisScriptTag.src.substring(0, path_before_wpcontent);
-
+ 
 // since load is fired later, the load has to get the url vars
 // for every script, and not repeatedly the last one.
 // closure calling (module pattern)
