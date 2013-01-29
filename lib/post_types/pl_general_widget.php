@@ -670,7 +670,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			$select_type = 'nb-id-select-' . $radio_type;
 			if( isset( $_POST[$select_type] ) ) {
 				// persist radio box storage based on what is saved
-				update_post_meta( $post_id, 'type', $_POST['radio-type'] );
+				update_post_meta( $post_id, 'radio-type', $_POST['radio-type'] );
 				update_post_meta( $post_id, 'nb-select-' . $radio_type, $_POST[ $select_type ] );
 			}
 		}
@@ -852,7 +852,6 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			if( ! empty( $meta['hide_sort_direction'] ) ) {
 				$args .= sprintf( ' hide_sort_direction="%s"', $meta['hide_sort_direction'][0] );
 			}
-			
 
 			$shortcode = '[static_listings id="' . $post->ID . '" ' . $args . ']';
 			
