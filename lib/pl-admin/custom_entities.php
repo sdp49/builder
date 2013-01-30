@@ -27,7 +27,7 @@ class PL_Admin_Card_Theme_Select extends PL_Admin_Card {
                   <?php foreach ($PL_ADMIN_THEMES as $group => $themes): ?>
                     <optgroup label="<?php echo $group; ?>">
                       <?php foreach ($themes as $name => $template): ?>
-                        <option value="<?php echo $stylesheet ?>" <?php selected( wp_get_theme()->Template, $template ); ?>><?php echo $name; ?></option>
+                        <option value="<?php echo $template ?>" <?php selected( wp_get_theme()->Template, $template ); ?>><?php echo $name; ?></option>
                       <?php endforeach; ?>
                     </optgroup>
                   <?php endforeach; ?>
@@ -42,6 +42,12 @@ class PL_Admin_Card_Theme_Select extends PL_Admin_Card {
           </div>
         </div>
 		  </div>
+
+      <script type="text/javascript">
+        if (pl_admin_global) {
+          pl_admin_global.activeTheme = '<?php echo wp_get_theme()->Template; ?>';
+        }
+      </script>
 
 		  <div class="row-fluid">
         <?php $themeObj = wp_get_theme(); ?>
@@ -130,7 +136,7 @@ class PL_Admin_Card_CSS_Editor extends PL_Admin_Card {
 
     // Handle the event that more than once instance of this object is instantiated...
     if ( self::$scriptAdded === false ) {
-      add_action( 'pl_admin_footer_inline_scripts', array(__CLASS__, 'print_footer_scripts') );
+      // add_action( 'pl_admin_footer_inline_scripts', array(__CLASS__, 'print_footer_scripts') );
       $scriptAdded = true;
     }
  	}

@@ -172,7 +172,7 @@ jQuery(document).ready(function($) {
   /***
   /* Theme Switch Functionality */
 
-  // Elements that are referred to frequently... (defined up here for easy DOM structure changes)
+  // Elements that are referred to frequently... (defined up here for hassle-free DOM structural changes in the future)
   var _themeSelect = $('#pls-theme-select');
   var _themeSubmit = $('#pls-theme-submit');
   var _themeDesc = $('#pls-theme-desc');
@@ -207,20 +207,17 @@ jQuery(document).ready(function($) {
     // Show spinner to indicate theme activation is in progress...
     _loader.show();
 
-    _themeSubmit.attr('disabled', 'disabled');
-    _themeSubmit.addClass('bt-disabled');
-
     var data = { action: 'change_theme', new_theme: _themeSelect.val() };
     $.post(ajaxurl, data, function (response) {
       if ( response && response.success ) {
-          // Reload content iframe to display new theme...
-          refreshContent(true);
+        // Reload content iframe to display new theme...
+        refreshContent(true);
+
+        // Update "activeTheme"...
+        pl_admin_global.activeTheme = data.new_theme;
       }
       else {
-        _loader.hide();
-
-        _themeSubmit.removeAttr('disabled');
-        _themeSubmit.removeClass('bt-disabled');            
+        _loader.hide();         
       }
     },'json');
   }
@@ -260,19 +257,7 @@ jQuery(document).ready(function($) {
 
   _themeSelect.on('change', function (event) {
     // Remove any latent error messages if they exist...
-    $('#theme_content ul.control-list').find('#message.error').remove();
-
-    // If theme selected is set to current one, set the submit button to disabled, otherwise enable it
-    var submitElem = $('#submit_theme');
-    if ( _wpCustomizeSettings && _wpCustomizeSettings.theme.stylesheet == $(this).val() ) {
-      submitElem.attr('disabled', 'disabled');
-      submitElem.addClass('bt-disabled');
-    }
-    else {
-    // Might not be necessary--done to handle all cases properly
-      submitElem.removeAttr('disabled');
-      submitElem.removeClass('bt-disabled');
-    }
+    // $('#theme_content ul.control-list').find('#message.error').remove();
 
     _loader.show();
     data = { action: 'load_theme_info', theme: $(this).val() };
@@ -284,7 +269,7 @@ jQuery(document).ready(function($) {
         _themeDesc.html(response.description)
     
         // Reset pagination button(s) to match newly selected theme...
-        $_themePaginate.find('a').css('visibility', 'visible');
+        _themePaginate.find('a').css('visibility', 'visible');
         initPagination();
       }
       _loader.hide();
@@ -293,15 +278,13 @@ jQuery(document).ready(function($) {
   });
 
   _themeSubmit.on('click', function (event) {
-    var container = $('#theme_content ul.control-list');
-
     // Remove any latent error messages if they exist...
-    container.find('#message.error').remove();
+    // container.find('#message.error').remove();
 
     // Check if user is trying to activate a Premium theme, and act accordingly...
     var type = $('option:selected').parent().attr('label');
     if ( type === 'Premium' ) { 
-      valPremTheme(container); 
+      valPremTheme(container);
     }
     else {
       activateTheme();
@@ -341,6 +324,9 @@ jQuery(document).ready(function($) {
     selectElem.selectedIndex = newIndex;
     _themeSelect.trigger('change');
   });
+
+  /***
+  /* Skinning/Color Palette Functionality */
 
 });
 

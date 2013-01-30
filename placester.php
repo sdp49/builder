@@ -281,7 +281,7 @@ function load_pl_admin () {
     global $wp_customize;
             
     if ( current_user_can('manage_options') && empty($wp_customize) && empty($_GET[PL_ADMIN_ESCAPE]) ) {
-        // Load the necessary libs..
+        // Load the necessary libs...
         include_pl_admin();
 
         // Load PL admin panel...
