@@ -16,7 +16,7 @@ abstract class PL_Post_Base {
 	
 	public function init() {
 		add_action( 'init', array( $this, 'register_post_type' ) );
-		add_action( 'add_meta_boxes', array( $this, 'meta_box' ) );
+		add_action( 'add_meta_boxes', array( $this, 'meta_box' ), 99999 );
  		add_action( 'save_post', array( $this, 'meta_box_save' ) );
  		add_action( 'template_redirect', array( $this, 'post_type_templating' ) );
 		
