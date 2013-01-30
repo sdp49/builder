@@ -6,6 +6,8 @@ if( $preview ) {
 	header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 }
 
+// wp_dequeue_script( 'customizer' );
+
 $widget_cache = new PL_Cache("Embeddable_Widget");
 global $post;
 
@@ -39,6 +41,9 @@ if( ! empty( $widget_class ) ) {
 			.pls_embedded_widget_wrapper .pls_search_form_listings {
 				margin-bottom: 0px;
 			}
+			p {
+				margin-top: 0px;
+			}
 		</style>
 		<script type="text/javascript">
 			var pl_general_widget = true;
@@ -52,9 +57,11 @@ if( ! empty( $widget_class ) ) {
 		?>	
 		<script type="text/javascript">
 			jQuery(document).ready(function() {
-				if (jQuery('.shortcode-link', window.parent.document).length ) {
-					jQuery('.shortcode-link', window.parent.document).html('<strong>Shortcode:</strong><?php echo str_replace( "'", "\'", $shortcode ); ?>');
-				};
+				try {
+					if (jQuery('.shortcode-link', window.parent.document).length ) {
+						jQuery('.shortcode-link', window.parent.document).html('<strong>Shortcode:</strong><?php echo str_replace( "'", "\'", $shortcode ); ?>');
+					}
+				} catch( exception ) {}  
 			});
 		</script>
 		<?php

@@ -43,6 +43,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			'timer' => array( 'type' => 'checkbox', 'label' => 'Timer', 'css' => 'pl_slideshow' ),
 			'pauseOnHover' => array( 'type' => 'checkbox', 'label' => 'Pause on hover', 'css' => 'pl_slideshow' ),
 			'hide_sort_by' => array( 'type' => 'checkbox', 'label' => 'Hide Sort By dropdown', 'css' => 'pl_static_listings' ),
+			'form_action_url' => array( 'type' => 'text', 'label' => 'Form Address', 'css' => 'pl_form' ),
 			'hide_sort_direction' => array( 'type' => 'checkbox', 'label' => 'Hide Sort Direction', 'css' => 'pl_static_listings' ),
 			'hide_num_results' => array( 'type' => 'checkbox', 'label' => 'Hide Show Number of Results', 'css' => 'pl_static_listings' ),
  			'num_results_shown' => array( 'type' => 'text', 'label' => 'Number of Results Displayed', 'css' => 'pl_static_listings' ),
@@ -104,11 +105,11 @@ class PL_General_Widget_CPT extends PL_Post_Base {
  			die();
  		}
  		
+ 		$post_id = $_GET['id'];
+		$meta = get_post_custom( $post_id );
+
 		// default GET should have at least id, callback and action
 		if( count( $_GET ) === 3 ) {
-			$post_id = $_GET['id'];
-			$meta = get_post_custom( $post_id );
-			
 			$ignore_array = array(
 				'pl_static_listings_option',
 				'pl_featured_listings_option',
@@ -128,13 +129,21 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				'width' => '250',
 				'height' => '250',
 			) );
+
+			$args['widget_class'] = ! empty( $meta['widget_class'] ) && is_array( $meta['widget_class'] ) ? $meta['widget_class'][0] : ''; 
 			
 			unset( $args['action'] );
 			unset( $args['callback'] );
 		}
 		
 		$args['post_id'] = $_GET['id'];
-		$args['widget_url'] =  home_url() . '/?p=' . $_GET['id'];
+		
+		if( isset( $args['widget_original_src'] ) ) {
+			$args['widget_url'] =  $args['widget_original_src'] . '/?p=' . $_GET['id'];
+			unset( $args['widget_original_src'] );
+		} else {
+			$args['widget_url'] =  home_url() . '/?p=' . $_GET['id'];
+		}
 		
 		header("content-type: application/javascript");
 		echo $_GET['callback'] . '(' . json_encode( $args ) . ');';
@@ -459,6 +468,9 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 				$('#pl_template_before_block, #pl_template_after_block').on('change', function() {
 					widget_autosave();				
 				});
+				$('#save-featured-listings').on('click', function() {
+					setTimeout( widget_autosave, 1000 );
+				});
 
 				$('#pl-review-link').on('click', function(e) {
 					e.preventDefault();
@@ -658,7 +670,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			$select_type = 'nb-id-select-' . $radio_type;
 			if( isset( $_POST[$select_type] ) ) {
 				// persist radio box storage based on what is saved
-				update_post_meta( $post_id, 'type', $_POST['radio-type'] );
+				update_post_meta( $post_id, 'radio-type', $_POST['radio-type'] );
 				update_post_meta( $post_id, 'nb-select-' . $radio_type, $_POST[ $select_type ] );
 			}
 		}
@@ -840,7 +852,6 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			if( ! empty( $meta['hide_sort_direction'] ) ) {
 				$args .= sprintf( ' hide_sort_direction="%s"', $meta['hide_sort_direction'][0] );
 			}
-			
 
 			$shortcode = '[static_listings id="' . $post->ID . '" ' . $args . ']';
 			
