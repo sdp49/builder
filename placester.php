@@ -86,6 +86,9 @@ define( 'DEMO_API_KEY', '7e63514ebfad7608bbe7b4469ab470ecef4dc651099ae06fc1df680
 // Theme skin directory
 define( 'PL_THEME_SKIN_DIR', trailingslashit(PL_PARENT_DIR) . 'config/customizer/theme-skins/' );
 
+// The escape argument that can be passed (via the query string) to prevent PL Admin from rendering
+define( 'PL_ADMIN_ESCAPE', 'content');
+
 /* config */
 include_once('config/toggle_form_sections.php');
 include_once('config/api/custom_attributes.php');
@@ -173,16 +176,19 @@ include_once('third-party/convex-hull/convex-hull.php');
 include_once('third-party/mixpanel/mixpanel.php');
 
 /* pl-admin */
-include_once('config/pl-admin/general.php');
-include_once('config/pl-admin/header.php');
-include_once('config/pl-admin/sidebar.php');
+function include_pl_admin () {
+    include_once('config/pl-admin/general.php');
+    include_once('config/pl-admin/header.php');
+    include_once('config/pl-admin/sidebar.php');
 
-include_once('lib/pl-admin/entities.php');
-include_once('lib/pl-admin/custom_entities.php');
-include_once('lib/pl-admin/util.php');
+    include_once('lib/pl-admin/entities.php');
+    include_once('lib/pl-admin/custom_entities.php');
+    include_once('lib/pl-admin/util.php');
+}
 
-
-// Register hook to load blueprint from plugin if no theme has yet to do so...
+/*
+ * Register hook to load blueprint from plugin if the current theme did not
+ */
 add_action( 'after_setup_theme', 'load_blueprint_from_plugin', 18 );
 function load_blueprint_from_plugin() 
 {
@@ -192,7 +198,7 @@ function load_blueprint_from_plugin()
         add_action('init', 'blueprint_settings'); 
     }
 }
-
+// Used to register settings for Blueprint when it is loaded from the plugin...
 function blueprint_settings() {
     remove_theme_support( 'pls-default-css' );
     remove_theme_support( 'pls-default-style' );
@@ -202,9 +208,20 @@ function blueprint_settings() {
     remove_theme_support( 'pls-routing-util-templates' );
 }
 
+/*
+ * Configure usage metrics 
+ */
 register_activation_hook( __FILE__, 'placester_activate' );
+function placester_activate () {
+    $metrics = new MetricsTracker("9186cdb540264089399036dd672afb10");
+    $metrics->track('Activation');
+    PL_WordPress_Helper::report_url();
+}
 // register_deactivation_hook( __FILE__, 'placester_deactivate' );
 
+/* 
+ * Build the plugin's menu for WP-admin 
+ */
 add_action( 'admin_menu', 'placester_admin_menu' );
 function placester_admin_menu() {
     // Add separator
@@ -245,12 +262,9 @@ function placester_admin_menu() {
 
 }
 
-function placester_activate () {
-    $metrics = new MetricsTracker("9186cdb540264089399036dd672afb10");
-    $metrics->track('Activation');
-    PL_WordPress_Helper::report_url();
-}
-
+/* 
+ * Determine whether or not to render info bar on the frontend (for all pages)
+ */
 add_action( 'wp_head', 'placester_info_bar' );
 function placester_info_bar() {
     if ( PL_Option_Helper::get_demo_data_flag() && current_user_can('manage_options') ) {
@@ -258,4 +272,27 @@ function placester_info_bar() {
     }
 }
 
+/* 
+ * Determine whether or not the PL_Admin framework should be loaded and rendered
+ */
+add_action( 'template_redirect', 'load_pl_admin' );
+function load_pl_admin () {
+    // Try to retrieve this object to ensure that the request is NOT coming from the customizer...
+    global $wp_customize;
+            
+    if ( current_user_can('manage_options') && empty($wp_customize) && empty($_GET[PL_ADMIN_ESCAPE]) ) {
+        // Load the necessary libs..
+        include_pl_admin();
+
+        // Load PL admin panel...
+        PL_Router::load_builder_view('main.php', trailingslashit(PL_VIEWS_DIR) . 'pl-admin/');
+
+        // ob_start();
+        //  var_dump($_SERVER);
+        // error_log(ob_get_clean());
+
+        // Make sure WP doesn't load any other templates...
+        exit;
+    } 
+}
 ?>

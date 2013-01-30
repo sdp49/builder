@@ -4,7 +4,6 @@ PL_Admin_Util::init();
 
 class PL_Admin_Util {
 
-	const ESCAPE_ARG = 'content';
 	const PROTOCOL = 'http://';
 
 	/* Stores nav objects -- basically the object representation of the functionality that will be displayed.
@@ -12,28 +11,11 @@ class PL_Admin_Util {
 	public static $navs = array();
 
 	public static function init () {
-		add_action( 'template_redirect', array( __CLASS__, 'load_framework') );
+		
 	}
 
-	public static function load_framework () {
-	    // Try to retrieve this object to ensure that the request is NOT coming from the customizer...
-	    global $wp_customize;
-	    	    
-	    if ( current_user_can('manage_options') && empty($wp_customize) && empty($_GET[self::ESCAPE_ARG]) ) {
-	        // Load PL admin panel...
-	        PL_Router::load_builder_view('main.php', trailingslashit(PL_VIEWS_DIR) . 'pl-admin/');
-
-			// ob_start();
-			// 	var_dump($_SERVER);
-			// error_log(ob_get_clean());
-
-	        // Make sure WP doesn't load any other templates...
-	        exit;
-	    }    
-	} 
-
 	public static function getContentURI () {
-		$escape_admin = ( '?' . self::ESCAPE_ARG . '=true' );
+		$escape_admin = ( '?' . PL_ADMIN_ESCAPE . '=true' );
 		$iframe_url = ( self::PROTOCOL . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'] . $escape_admin );
 		return $iframe_url;
 	}
