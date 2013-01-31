@@ -41,60 +41,6 @@ class PL_Form_CPT extends PL_Post_Base {
 		register_post_type('pl_form', $args );
 	}
 	
-	
-	
-	public  function meta_box() {
-		add_meta_box( 'my-meta-box-id', 'Page Subtitle', array( $this, 'pl_forms_meta_box_cb' ), 'pl_form', 'normal', 'high' );
-	}
-	
-	// add meta box for featured listings- adding custom fields
-	public  function pl_forms_meta_box_cb( $post ) {
-		$values = get_post_custom( $post->ID );
-		
-		// get link for iframe
-		$permalink = '';
-		if( isset( $_GET['post'] ) ) {
-			$permalink = get_permalink($post->ID);
-		}
-		
-		$width =  isset( $values['width'] ) && ! empty( $values['width'][0] ) ? $values['width'][0] : '600';
-		$height = isset( $values['height'] ) && ! empty( $values['height'][0] ) ? $values['height'][0] : '600';
-		$style = ' style="width: ' . $width . 'px; height: ' . $height . 'px" ';
-		
-		if( ! empty( $permalink ) ):
-		$iframe = '<iframe src="' . $permalink . '"'. $style . '></iframe>';
-		?>		<div id="iframe_code">
-					<h2>Form Frame code</h2>
-					<p>Use this code snippet inside of a page: <strong><?php echo esc_html( $iframe ); ?></strong></p>
-					<em>By copying this code and pasting it into a page you display your view.</em>
-				</div>
-		<?php endif;
-		
-		// get meta values from custom fields
-		foreach( $this->fields as $field => $arguments ) {
-			$value = isset( $values[$field] ) ? $values[$field][0] : '';
-		
-			if( !empty( $value ) && empty( $_POST[$field] ) ) {
-				$_POST[$field] = $value;
-			}
-				
-			echo PL_Form::item($field, $arguments, 'POST');
-		}
-
-		wp_nonce_field( 'pl_cpt_meta_box_nonce', 'meta_box_nonce' );
-
-		PL_Snippet_Template::prepare_template(
-				array(
-						'codes' => array( 'search_form' ),
-						'p_codes' => array(
-								'search_form' => 'Search Form'
-						),
-						'select_name' => 'pl_cpt_template',
-						'value' => isset( $values['pl_cpt_template'] ) ? $values['pl_cpt_template'][0] : ''
-				)
-			);
-	}
-	
 	public  function meta_box_save( $post_id ) {
 		// Avoid autosaves
 		if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
@@ -103,7 +49,7 @@ class PL_Form_CPT extends PL_Post_Base {
 		if( !isset( $_POST['meta_box_nonce'] ) || !wp_verify_nonce( $_POST['meta_box_nonce'], 'pl_cpt_meta_box_nonce' ) ) return;
 	
 		// if our current user can't edit this post, bail
-		if( !current_user_can( 'edit_post' ) ) return;
+		// if( !current_user_can( 'edit_post' ) ) return;
 	
 		foreach( $this->fields as $field => $values ) {
 			if( isset( $_POST[$field] ) ) {
@@ -120,9 +66,11 @@ class PL_Form_CPT extends PL_Post_Base {
 
 	public static function post_type_templating( $single, $skipdb = false ) {
 		global $post;
-
+		
 		unset( $_GET['skipdb'] );
 		$meta = $_GET;
+		
+		$ignore_keys = array( 'context', 'pl_static_listings_option', 'pl_featured_listing_meta' );
 		
 		if( ! empty( $post ) && $post->post_type === 'pl_form' ) {
 			$args = '';
@@ -133,12 +81,17 @@ class PL_Form_CPT extends PL_Post_Base {
 				$meta = array_merge( $meta_custom, $meta );
 			}
 			
+			// unset before/after for shortcode, might get messy with markup and
+			// doesn't make sense for standalone shortcode
+			if( isset( $meta['pl_template_before_block'] ) ) unset( $meta['pl_template_before_block'] );
+			if( isset( $meta['pl_template_after_block'] ) ) unset( $meta['pl_template_after_block'] );
+			
 			foreach( $meta as $key => $value ) {
 				// ignore underscored private meta keys from WP
 				if( $key === 'pl_cpt_template' ) {
 					$args .= "context='{$value[0]}' ";
 				}
-				else if( strpos( $key, '_', 0 ) !== 0 && ! empty( $value[0] ) && ( $key !== 'context' ) ) {
+				else if( strpos( $key, '_', 0 ) !== 0 && ! empty( $value[0] ) && ( ! in_array( $key, $ignore_keys ) ) ) {
 					if( is_array( $value ) ) {
 						// handle meta values as arrays
 						$args .= "$key = '{$value[0]}' ";
@@ -152,7 +105,8 @@ class PL_Form_CPT extends PL_Post_Base {
 				}
 			}
 			
-			$shortcode = '[search_form ' . $args . '] [search_listings]';
+			// $shortcode = '[search_form ' . $args . '] [search_listings]';
+			$shortcode = '[search_form ' . $args . ']';
 			
 			include PL_LIB_DIR . '/post_types/pl_post_types_template.php';
 				

@@ -105,7 +105,7 @@ class PL_Snippet_Template {
 		        </div>
 			  	  <section id="shortcode_ref"> 
 		    			<label for="snippet_list">Available Implementations:</label>	
-		    			<select class="snippet_list" <?php if( ! empty( $select_name ) ) { echo 'name="'. $select_name . '"'; } ?>>
+		    			<select id="cpt_template" class="snippet_list" <?php if( ! empty( $select_name ) ) { echo 'name="'. $select_name . '"'; } ?>>
 		            <?php foreach ($pl_snippet_types as $curr_type => $title_type): ?>
 		              <optgroup label="<?php echo $title_type?>">
 		    				    <?php foreach ($pl_snippet_list[$code] as $snippet => $type): ?>

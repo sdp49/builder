@@ -7,13 +7,6 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 	public $fields = array(
 			'width' => array( 'type' => 'text', 'label' => 'Width' ),
 			'height' => array( 'type' => 'text', 'label' => 'Height' ),
-// 			'nb_type' => array( 'type' => 'radio', 'label' => 'Neighborhood type', 'options' => array( 
-// 												'city' => 'city',
-// 												'state' => 'state',
-// 												'neighborhood' => 'neighborhood',
-// 												'zip' => 'zip' 
-// 										) 
-// 								),
 	);
 
 	public function register_post_type() {
@@ -45,109 +38,6 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 		register_post_type('pl_neighborhood', $args );
 	}
 	
-	
-	public function meta_box() {
-		add_meta_box( 'my-meta-box-id', 'Page Subtitle', array( $this, 'pl_neighborhoods_meta_box_cb'), 'pl_neighborhood', 'normal', 'high' );
-	}
-	
-	// add meta box for featured listings- adding custom fields
-	public function pl_neighborhoods_meta_box_cb( $post ) {
-		$values = get_post_custom( $post->ID );
-		
-		// get link for iframe
-		$permalink = '';
-		if( isset( $_GET['post'] ) ) {
-			$permalink = get_permalink($post->ID);
-		}
-		
-		$width =  isset( $values['width'] ) && ! empty( $values['width'][0] ) ? $values['width'][0] : '300';
-		$height = isset( $values['height'] ) && ! empty( $values['height'][0] ) ? $values['height'][0] : '300';
-		$style = ' style="width: ' . $width . 'px; height: ' . $height . 'px" ';  
-		
-		if( ! empty( $permalink ) ):
-		$iframe = '<iframe src="' . $permalink . '"'. $style . '></iframe>';
-		?>		<div id="iframe_code">
-					<h2>Neihgborhood Frame code</h2>
-					<p>Use this code snippet inside of a page: <strong><?php echo esc_html( $iframe ); ?></strong></p>
-					<em>By copying this code and pasting it into a page you display your view.</em>
-				</div>
-		<?php endif;
-		
-		// get radio values
-		$radio_def = isset( $values['radio-type'] ) ? $values['radio-type'][0] : 'state';
-		$select_id = 'nb-select-' . $radio_def;
-		$select_def = isset( $values[ $select_id ] ) ? $values[ $select_id ][0] : '0';
-		
-		// get meta values from custom fields
-		foreach( $this->fields as $field => $arguments ) {
-			$value = isset( $values[$field] ) ? $values[$field][0] : '';
-		
-			if( !empty( $value ) && empty( $_POST[$field] ) ) {
-				$_POST[$field] = $value;
-			}
-				
-			echo PL_Form::item($field, $arguments, 'POST');
-		}
-	?>
-	<script type="text/javascript">
-	jQuery(document).ready(function($) {
-		$('#<?php echo $radio_def; ?>').attr('checked', true);
-		$('#nb-taxonomy-<?php echo $radio_def; ?>').css('display', 'block');
-		$('#nb-id-select-<?php echo $radio_def; ?>').val(<?php echo $select_def; ?>);
-
-		$('#pl_location_tax input:radio').on('click', radioClicks);
-
-		function radioClicks() {
-			var radio_value = this.value;
-
-			$('.nb-taxonomy').each(function() {
-				if( this.id.indexOf(radio_value, this.id.length - radio_value.length) !== -1 ) {
-					$(this).css('display', 'block');
-				} else {
-					$(this).css('display', 'none');
-				}
-			});
-		}
-
-	});
-	</script>	
-		
-	<?php 	
-		wp_nonce_field( 'pl_cpt_meta_box_nonce', 'meta_box_nonce' );
-		
-		echo '<div id="pl_location_tax">';
-		echo PL_Taxonomy_Helper::taxonomies_as_checkboxes(); 
-		echo '</div>';
-		
-		$taxonomies = PL_Taxonomy_Helper::$location_taxonomies;
-		
-		foreach( $taxonomies as $slug => $label ) {
-			$terms = PL_Taxonomy_Helper::get_taxonomy_items( $slug );
-			
-			echo "<div id='nb-taxonomy-$slug' class='nb-taxonomy' style='display: none;'>";
-				echo "<select id='nb-id-select-$slug' name='nb-select-$slug'>";
-					foreach( $terms as $term ) {
-						echo "<option value='" . $term['term_id'] . "'>" . $term['name'] . "</option>";
-					}
-				echo "</select>";
-			echo "</div>";
-		}
-		
-		//echo PL_Taxonomy_Helper::get_taxonomy_items('state') );
-		
-		PL_Snippet_Template::prepare_template(
-			array(
-				'codes' => array( 'pl_neighborhood' ),
-					'p_codes' => array(
-					'pl_neighborhood' => 'Neighborhood'
-				),
-				'select_name' => 'pl_cpt_template',
-				'value' => isset( $values['pl_cpt_template'] ) ? $values['pl_cpt_template'][0] : ''
-			)
-		);
-	
-	}
-	
 	public function meta_box_save( $post_id ) {
 	// Avoid autosaves
 		if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
@@ -155,8 +45,11 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 		// Verify nonces for ineffective calls
 		if( !isset( $_POST['meta_box_nonce'] ) || !wp_verify_nonce( $_POST['meta_box_nonce'], 'pl_cpt_meta_box_nonce' ) ) return;
 		
+		if( $_POST['post_type'] != 'pl_neighborhood' ) {
+			return;
+		}
 		// if our current user can't edit this post, bail
-		if( !current_user_can( 'edit_post' ) ) return;
+		// if( !current_user_can( 'edit_post' ) ) return;
 		
 		foreach( $this->fields as $field => $values ) {
 			if( !empty( $_POST[$field] ) ) {
@@ -200,6 +93,11 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 				$meta = array_merge( $meta_custom, $meta );
 			}
 			
+			// unset before/after for shortcode, might get messy with markup and
+			// doesn't make sense for standalone shortcode
+			if( isset( $meta['pl_template_before_block'] ) ) unset( $meta['pl_template_before_block'] );
+			if( isset( $meta['pl_template_after_block'] ) ) unset( $meta['pl_template_after_block'] );
+			
 			foreach( $meta as $key => $value ) {
 				// ignore underscored private meta keys from WP
 				if( strpos( $key, '_', 0 ) !== 0 && ! empty( $value[0] ) ) {
@@ -207,8 +105,10 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 						continue;
 					}
 					if( $key === 'type' ) { // handle neighborhood items
-						if( in_array( $value[0], $taxonomy_args ) ) {
-							$nb_type = $value[0];
+						// interpret differently in backend and frontend
+						$type_value = is_array( $value ) ? $value[0] : $value;
+						if( in_array( $type_value, $taxonomy_args ) ) {
+							$nb_type = $type_value;
 							$nb_value_key = 'nb-select-' . $nb_type;
 							$nb_value = isset( $meta[$nb_value_key] ) ? $meta[$nb_value_key][0] : ''; 
 							$args .= "$nb_type = '{$nb_value}' ";
@@ -225,6 +125,10 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 					}
 					
 				}
+			}
+			
+			if( ! empty( $meta['pl_cpt_template'] ) ) {
+				$args .= "context = '{$meta['pl_cpt_template'][0]}' ";
 			}
 			
 			// Workaround for autosave with incorrect post type

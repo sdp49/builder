@@ -47,103 +47,6 @@ class PL_Slideshow_CPT extends PL_Post_Base {
 		register_post_type('pl_slideshow', $args );
 	}
 	
-	
-	public function meta_box() {
-		add_meta_box( 'my-meta-box-id', 'Page Subtitle', array( $this, 'pl_slideshows_meta_box_cb' ), 'pl_slideshow', 'normal', 'high' );
-	}
-	
-	// add meta box for featured listings- adding custom fields
-	public function pl_slideshows_meta_box_cb( $post ) {
-		$values = get_post_custom( $post->ID );
-		
-		$pl_featured_listing_meta = isset( $values['pl_featured_listing_meta'] ) ? unserialize($values['pl_featured_listing_meta'][0]) : '';
-		$pl_featured_meta_value = empty( $pl_featured_listing_meta ) ? '' : $pl_featured_listing_meta['featured-listings-type'];
-		
-		
-		// get link for iframe
-		$permalink = '';
-		if( isset( $_GET['post'] ) ) {
-			$permalink = get_permalink($post->ID);
-		}
-		
-		$width =  isset( $values['width'] ) && ! empty( $values['width'][0] ) ? $values['width'][0] : '600';
-		$height = isset( $values['height'] ) && ! empty( $values['height'][0] ) ? $values['height'][0] : '600';
-		$style = ' style="width: ' . $width . 'px; height: ' . $height . 'px" ';
-		
-		if( ! empty( $permalink ) ):
-		$iframe = '<iframe src="' . $permalink . '"'. $style . '></iframe>';
-		?>		<div id="iframe_code">
-					<h2>Slideshow Frame code</h2>
-					<p>Use this code snippet inside of a page: <strong><?php echo esc_html( $iframe ); ?></strong></p>
-					<em>By copying this code and pasting it into a page you display your view.</em>
-				</div>
-		<?php endif; ?>	
-				<h2>Pick a Listing</h2>
-				<div id="pl-fl-meta">
-					<div style="width: 400px; min-height: 200px">
-						<div id="pl_featured_listing_block">
-						<?php 
-							include PLS_OPTRM_DIR . '/views/featured-listings.php';
-							// Enqueue all required stylings and scripts
-							wp_enqueue_style('featured-listings', OPTIONS_FRAMEWORK_DIRECTORY.'css/featured-listings.css');
-							
-							wp_register_script( 'datatable', trailingslashit( PLS_JS_URL ) . 'libs/datatables/jquery.dataTables.js' , array( 'jquery'), NULL, true );
-							wp_enqueue_script('datatable'); 
-							wp_enqueue_script('jquery-ui-core');
-							wp_enqueue_style('jquery-ui-dialog', OPTIONS_FRAMEWORK_DIRECTORY.'css/jquery-ui-1.8.22.custom.css');
-							wp_enqueue_script('jquery-ui-dialog');
-							wp_enqueue_script('options-custom', OPTIONS_FRAMEWORK_DIRECTORY.'js/options-custom.js', array('jquery'));
-							wp_enqueue_script('featured-listing', OPTIONS_FRAMEWORK_DIRECTORY.'js/featured-listing.js', array('jquery'));
-					
-							// Generate the popup dialog with featured			
-							echo pls_generate_featured_listings_ui(array(
-												'name' => 'Featured Meta',
-												'desc' => '',
-												'id' => 'featured-listings-type',
-												'type' => 'featured_listing'
-												) ,$pl_featured_meta_value
-												, 'pl_featured_listing_meta');
-						?>
-						</div><!-- end of #pl_featured_listing_block -->
-						<div id="pl_static_listing_block" style="display: none;">
-							<?php echo PL_Form::generate_form(
-										PL_Config::PL_API_LISTINGS('get', 'args'),
-										array('method' => "POST", 
-												'title' => true,
-												'wrap_form' => false, 
-										 		'echo_form' => false, 
-												'include_submit' => false, 
-												'id' => 'pls_admin_my_listings')); ?>
-						</div><!-- end of #pl_static_listing_block -->
-					</div>
-				<div>
-		
-		<?php 
-		// get meta values from custom fields
-		foreach( $this->fields as $field => $arguments ) {
-			$value = isset( $values[$field] ) ? $values[$field][0] : '';
-		
-			if( !empty( $value ) && empty( $_POST[$field] ) ) {
-				$_POST[$field] = $value;
-			}
-				
-			echo PL_Form::item($field, $arguments, 'POST');
-		}
-		
-		wp_nonce_field( 'pl_cpt_meta_box_nonce', 'meta_box_nonce' );
-		
-		PL_Snippet_Template::prepare_template(
-			array(
-				'codes' => array( 'listing_slideshow' ),
-				'p_codes' => array(
-					'listing_slideshow' => 'Listing Slideshow'
-				),
-				'select_name' => 'pl_cpt_template',
-				'value' => isset( $values['pl_cpt_template'] ) ? $values['pl_cpt_template'][0] : ''
-			)
-		);
-	}
-	
 	public function meta_box_save( $post_id ) {
 		// Avoid autosaves
 		if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
@@ -152,7 +55,7 @@ class PL_Slideshow_CPT extends PL_Post_Base {
 		if( !isset( $_POST['meta_box_nonce'] ) || !wp_verify_nonce( $_POST['meta_box_nonce'], 'pl_cpt_meta_box_nonce' ) ) return;
 	
 		// if our current user can't edit this post, bail
-		if( !current_user_can( 'edit_post' ) ) return;
+		// if( !current_user_can( 'edit_post' ) ) return;
 	
 		foreach( $this->fields as $field => $values ) {
 			if( isset( $_POST[$field] ) ) {
@@ -191,6 +94,11 @@ class PL_Slideshow_CPT extends PL_Post_Base {
 				
 			}
 			
+			// unset before/after for shortcode, might get messy with markup and
+			// doesn't make sense for standalone shortcode
+			if( isset( $meta['pl_template_before_block'] ) ) unset( $meta['pl_template_before_block'] );
+			if( isset( $meta['pl_template_after_block'] ) ) unset( $meta['pl_template_after_block'] );
+			
 			if( isset( $meta['pl_static_listings_option'] ) ) { unset( $meta['pl_static_listings_option'] ); }
 
 			foreach( $meta as $key => $value ) {
@@ -213,7 +121,7 @@ class PL_Slideshow_CPT extends PL_Post_Base {
 			$args .= "post_id = '{$post->ID}' ";
 			
 			if( isset( $meta['pl_cpt_template'] ) ) {
-				$context = $meta['pl_cpt_template'][0];
+				$context = is_array( $meta['pl_cpt_template'] ) ? $meta['pl_cpt_template'][0] : $meta['pl_cpt_template'];
 				$args .= "context = '$context' ";
 			}
 				

@@ -6,10 +6,10 @@ class PL_Pages {
 	static $property_post_type = 'property';
 
 	function init() {
-		add_action('init', array(__CLASS__, 'create_taxonomies'));
-		add_action('wp_footer', array(__CLASS__,'force_rewrite_update'));
-		add_action('admin_footer', array(__CLASS__,'force_rewrite_update'));
-		add_action( '404_template', array( __CLASS__, 'dump_permalinks'  ));
+		add_action( 'init', array(__CLASS__, 'create_taxonomies') );
+		add_action( 'wp_footer', array(__CLASS__,'force_rewrite_update') );
+		add_action( 'admin_footer', array(__CLASS__,'force_rewrite_update') );
+		add_action( '404_template', array( __CLASS__, 'dump_permalinks') );
 	}
 
 	//return many page urls
@@ -52,7 +52,6 @@ class PL_Pages {
 										'half-baths' => (string) $api_listing['cur_data']['half_baths'],
 										'mlsid' => (string) $api_listing['rets']['mls_id']
 									);
-		$page_details['post_meta'] = array('listing_data' => serialize($api_listing));
 		// pls_dump($page_details['taxonomies']);
 		return self::manage($page_details);
 	}
@@ -64,17 +63,19 @@ class PL_Pages {
 				$page_details = array();
 				$page_details['title'] = $page_info['title'];
 				if (isset($page_info['template'])) {
-          $page_details['post_meta'] = array('_wp_page_template' => $page_info['template']);
+          			$page_details['post_meta'] = array('_wp_page_template' => $page_info['template']);
 				}
 				if (isset($page_info['content'])) {
-          $page_details['content'] = $page_info['content'];
+          			$page_details['content'] = $page_info['content'];
 				}
-        self::manage($page_details);
-			} elseif ( $force_template ) {
-        if (isset($page_info['template'])) {
-         delete_post_meta( $page->ID, '_wp_page_template' );
-         add_post_meta( $page->ID, '_wp_page_template', get_template_directory_uri().'/'.$page_info['template']);
-        }
+
+        		self::manage($page_details);
+			} 
+			elseif ( $force_template ) {
+		        if (isset($page_info['template'])) {
+		        	delete_post_meta( $page->ID, '_wp_page_template' );
+		        	add_post_meta( $page->ID, '_wp_page_template', get_template_directory_uri().'/'.$page_info['template']);
+		        }
 			}
 		}
 	}
@@ -91,7 +92,7 @@ class PL_Pages {
                  'post_author' => 1,
                  'post_content'=> $content,
                  'filter'      => 'db',
-                 'guid'        => $guid
+                 'guid'        => @$guid
              );
              
             if ($post_id <= 0) {
