@@ -2322,3 +2322,19 @@ section#pls-map-pane table.table a.active {
 .card-body > div.active {
   display: block;
 }
+
+div.error {
+  background-color: #ffebe8;
+  border-color: #c00;
+  padding: 0 1em;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  border-width: 1px;
+  border-style: solid;
+  margin-bottom: 20px;
+}
+
+div.error h3 {
+  font-size: 18px;
+  line-height: 30px;
+}

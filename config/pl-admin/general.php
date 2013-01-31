@@ -14,7 +14,7 @@ $PL_ADMIN_THEMES = array(
         'Bethesda' => 'bethesda',
         'Charlotte' => 'charlotte',
         'Ontario' => 'ontario',
-        'Toronto' => 'toronto'
+        'Park City' => 'parkcity'
 	)
 );
 

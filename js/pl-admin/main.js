@@ -41,9 +41,9 @@ jQuery(document).ready(function($) {
   } 
 
   // Alter breadcrumbs to reflect a change in the iframe content...
-  // function alterBreadCrumbs (newURL) {
+  function alterBreadCrumbs (newURL) {
   //  var crumbs = 
-  // }
+  }
 
   function updatePaneSize (selector, isGrp) {
     // If selector is for group, find selector of active card...
@@ -207,6 +207,17 @@ jQuery(document).ready(function($) {
     // Show spinner to indicate theme activation is in progress...
     _loader.show();
 
+    // Move to the next card (if one exists) by simluating a click on the next card's "dot"...
+    var moveToNextCard = function () { 
+      _pane.find('.card-group:visible .card-nav .pls-right .on').siblings('.bullet').first().trigger('click'); 
+    }
+
+    // If theme is already enabled, simply move to the next card...
+    if ( _themeSelect.val() == pl_admin_global.activeTheme ) {
+      moveToNextCard();
+      return;
+    }
+
     var data = { action: 'change_theme', new_theme: _themeSelect.val() };
     $.post(ajaxurl, data, function (response) {
       if ( response && response.success ) {
@@ -215,6 +226,8 @@ jQuery(document).ready(function($) {
 
         // Update "activeTheme"...
         pl_admin_global.activeTheme = data.new_theme;
+
+        moveToNextCard();
       }
       else {
         _loader.hide();         
@@ -257,7 +270,7 @@ jQuery(document).ready(function($) {
 
   _themeSelect.on('change', function (event) {
     // Remove any latent error messages if they exist...
-    // $('#theme_content ul.control-list').find('#message.error').remove();
+    $(this).parentsUntil('.card-body', '.container-fluid').find('#message.error').remove();
 
     _loader.show();
     data = { action: 'load_theme_info', theme: $(this).val() };
@@ -278,8 +291,11 @@ jQuery(document).ready(function($) {
   });
 
   _themeSubmit.on('click', function (event) {
+    event.preventDefault();
+    var container = $(this).parentsUntil('.card-body', '.container-fluid');
+    
     // Remove any latent error messages if they exist...
-    // container.find('#message.error').remove();
+    container.find('#message.error').remove();
 
     // Check if user is trying to activate a Premium theme, and act accordingly...
     var type = $('option:selected').parent().attr('label');
@@ -295,6 +311,9 @@ jQuery(document).ready(function($) {
   _themePaginate.find('a').on('click', function (event) {
     event.preventDefault();
 
+    // Remove any latent error messages if they exist...
+    $(this).parentsUntil('.card-body', '.container-fluid').find('#message.error').remove();
+
     var type = $(this).attr('class');
     var selectElem = _themeSelect.get(0);
 
@@ -303,10 +322,10 @@ jQuery(document).ready(function($) {
     var newIndex;
 
     // Handle each type accordingly
-    if ( type === 'prev' ) {
+    if ( type === 'first' ) {
       newIndex = (currIndex - 1);
     }
-    else if ( type == 'next' ) {
+    else if ( type == 'last' ) {
       newIndex = (currIndex + 1);
     }
     else {

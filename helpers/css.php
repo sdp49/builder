@@ -110,8 +110,11 @@ class PL_Css_Helper {
 	 * Load CSS that styles Placester's custom admin panel. 
 	 */
 	public static function pl_admin () {
-		$dir_prefix = 'pl-admin/';
+		self::register_enqueue_if_not('global-css', trailingslashit(PL_CSS_URL) .  'global.css');
+		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');
 
+		$dir_prefix = 'pl-admin/';
+		
 		self::register_enqueue_if_not('pl-admin-normalize', trailingslashit(PL_CSS_URL) . $dir_prefix .  'normalize.css');
 		self::register_enqueue_if_not('pl-admin-bootstrap', trailingslashit(PL_CSS_URL) . $dir_prefix . 'bootstrap.css');
 		self::register_enqueue_if_not('pl-admin-responsive', trailingslashit(PL_CSS_URL) . $dir_prefix . 'bootstrap-responsive.css');
