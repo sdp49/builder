@@ -118,8 +118,8 @@ class PL_Admin_Card_Theme_Skin extends PL_Admin_Card {
         
         <div class="span6 ml10">
           <div class="bt-slot">
-            <a href="#" class="button button-light-grey">Return to Theme Selection</a>
-            <a href="#" class="button button-green">Select Skin &amp; Apply Changes</a>              
+            <a href="#" id="pls-skin-return" class="button button-light-grey">Return to Theme Selection</a>
+            <a href="#" id="pls-skin-submit" class="button button-green">Select Skin &amp; Apply Changes</a>              
           </div>
         </div>
       </div>

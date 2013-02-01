@@ -12,6 +12,7 @@ class PL_Theme_Helper {
 		add_action( 'wp_ajax_load_custom_styles', array(__CLASS__, 'load_custom_styles') );
 		add_action( 'wp_ajax_load_theme_info', array(__CLASS__, 'load_theme_info') );
 		add_action( 'wp_ajax_change_theme', array(__CLASS__, 'change_theme') );
+		add_action( 'wp_ajax_get_theme_skins', array(__CLASS__, 'get_theme_skins_ajax') );
 	}
 	
 	public static function load_custom_styles () {
@@ -48,7 +49,7 @@ class PL_Theme_Helper {
 	}
 
 	public static function change_theme () {
-		if ( isset ($_POST['new_theme']) ) {
+		if ( isset($_POST['new_theme']) ) {
 			$new_theme = $_POST['new_theme'];
 
 			// Assume stylesheet and template name are the same for now...
@@ -87,6 +88,17 @@ class PL_Theme_Helper {
 		}
 
 		return $skins;
+	}
+
+	public static function get_theme_skins_ajax () {
+		if ( isset($_POST['template']) ) {
+			$skins = self::get_theme_skins($_POST['template']);
+			$skins = array_merge( array('---' => 'none', 'Default' => 'default'), $skins );
+			
+			echo json_encode(array('skins' => $skins));
+		}
+
+		die();
 	}
 }
 

@@ -172,7 +172,7 @@ jQuery(document).ready(function($) {
   /***
   /* Theme Switch Functionality */
 
-  // Elements that are referred to frequently... (defined up here for hassle-free DOM structural changes in the future)
+  // Elements that are referred to frequently... (defined here for hassle-free DOM structural changes in the future)
   var _themeSelect = $('#pls-theme-select');
   var _themeSubmit = $('#pls-theme-submit');
   var _themeDesc = $('#pls-theme-desc');
@@ -203,14 +203,14 @@ jQuery(document).ready(function($) {
     }
   }
 
+  // Move to the next card (if one exists) by simluating a click on the next card's "dot"...
+  function moveToNextCard () { 
+    _pane.find('.card-group:visible .card-nav .pls-right .on').siblings('.bullet').first().trigger('click'); 
+  }
+
   function activateTheme () {
     // Show spinner to indicate theme activation is in progress...
     _loader.show();
-
-    // Move to the next card (if one exists) by simluating a click on the next card's "dot"...
-    var moveToNextCard = function () { 
-      _pane.find('.card-group:visible .card-nav .pls-right .on').siblings('.bullet').first().trigger('click'); 
-    }
 
     // If theme is already enabled, simply move to the next card...
     if ( _themeSelect.val() == pl_admin_global.activeTheme ) {
@@ -227,6 +227,8 @@ jQuery(document).ready(function($) {
         // Update "activeTheme"...
         pl_admin_global.activeTheme = data.new_theme;
 
+        // Update skin options to match the newly selected theme, then switch to the skinning card...
+        updateSkinSelect();
         moveToNextCard();
       }
       else {
@@ -346,6 +348,33 @@ jQuery(document).ready(function($) {
 
   /***
   /* Skinning/Color Palette Functionality */
+
+  // Elements that are referred to frequently... (defined here for hassle-free DOM structural changes in the future)
+  var _skinSelect = $('#pls-skin-select');
+  var _skinSubmit = $('#pls-skin-submit');
+  var _skinReturn = $('#pls-skin-return');
+
+  function updateSkinSelect () {
+    data = { action: 'get_theme_skins', template: pl_admin_global.activeTheme };
+    console.log(data);
+
+    $.post(ajaxurl, data, function (response) {
+      console.log(response);
+      // First remove all existing options...
+      _skinSelect.children().remove();
+
+      // Re-build...
+      if ( response && response.skins ) {
+        for (prop in response.skins) {
+          var newOpt = '<option value=' + response.skins[prop] + '>' + prop + '</option>';
+          _skinSelect.append(newOpt);
+        }
+      }
+    },'json');
+  }
+
+  // For testing the output...
+  updateSkinSelect();
 
 });
 
