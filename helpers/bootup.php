@@ -14,7 +14,11 @@ class PL_Bootup {
   );
 
 	public function init () {
-    add_action('after_switch_theme', array( __CLASS__, 'theme_switch_user_prompt' ));
+    // Make sure this action is NOT added if the theme is changed via an AJAX call...
+    if ( !defined('DOING_AJAX') ) {
+      add_action('after_switch_theme', array( __CLASS__, 'theme_switch_user_prompt' ));
+    }
+    
     add_action('wp_ajax_add_dummy_data', array( __CLASS__, 'add_dummy_data') );
   }
 
