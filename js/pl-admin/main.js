@@ -359,12 +359,13 @@ jQuery(document).ready(function($) {
     console.log(data);
 
     $.post(ajaxurl, data, function (response) {
+      console.log("HELLO!!!");
       console.log(response);
-      // First remove all existing options...
-      _skinSelect.children().remove();
-
       // Re-build...
       if ( response && response.skins ) {
+        // First remove all existing options...
+        _skinSelect.children().remove();
+
         for (prop in response.skins) {
           var newOpt = '<option value=' + response.skins[prop] + '>' + prop + '</option>';
           _skinSelect.append(newOpt);
@@ -373,8 +374,10 @@ jQuery(document).ready(function($) {
     },'json');
   }
 
+  updateSkin = updateSkinSelect;
+
   // For testing the output...
-  updateSkinSelect();
+  // updateSkinSelect();
 
 });
 

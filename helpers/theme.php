@@ -57,7 +57,7 @@ class PL_Theme_Helper {
 
 			echo json_encode(array('success' => 'true'));
 		}
-
+		
 		die();
 	}
 
@@ -94,7 +94,7 @@ class PL_Theme_Helper {
 		if ( isset($_POST['template']) ) {
 			$skins = self::get_theme_skins($_POST['template']);
 			$skins = array_merge( array('---' => 'none', 'Default' => 'default'), $skins );
-			
+
 			echo json_encode(array('skins' => $skins));
 		}
 
