@@ -28,10 +28,16 @@ class PL_Social_Networks_Twitter {
 	public static $fb_profile = NULL;
 	public static $fb_default_proxy_url = 'http://placester.com/bridge/';
 	
+	public static $fb_list_icon = '';
+	public static $twitter_list_icon = '';
+	
 	public static function init() {
 		// init for Twitter
 		add_action( 'admin_init', array( __CLASS__, 'verify_user_logged'), 3 );
 		add_action( 'admin_init', array( __CLASS__, 'prevent_headers_already_sent_options' ), 1 );
+		
+		self::$fb_list_icon = PL_IMG_URL . '/social/pls-fb-icon.png';
+		self::$twitter_list_icon = PL_IMG_URL . '/social/pls-twitter-icon.png';
 		
 		self::$plugin_dir = plugin_dir_path( __FILE__ );
 		self::$plugin_url = plugin_dir_url( __FILE__ );
@@ -48,6 +54,9 @@ class PL_Social_Networks_Twitter {
 		add_action( 'init', array( __CLASS__, 'fb_login_callback' ) );
 		add_action( 'pl_twitter_display', array( __CLASS__, 'twitter_handler' ) );
 		add_action( 'pl_facebook_display', array( __CLASS__, 'facebook_handler' ) );
+		
+		add_filter('manage_posts_columns', array( __CLASS__, 'social_columns_append' ) );
+		add_filter('manage_posts_custom_column', array( __CLASS__, 'social_column_behavior' ), 10, 2);
 	}
 	
 	public static function publish_post_scheduled_delay( $current_user_id, $post_id ) {
@@ -304,7 +313,7 @@ class PL_Social_Networks_Twitter {
 	/**
 	 * Content for metaboxes
 	 */
-	public static function add_post_metaboxes_callback() {
+	public static function add_post_metaboxes_callback( $post_id ) {
 	?>
 		<script type="text/javascript">
 		/*
@@ -362,14 +371,27 @@ class PL_Social_Networks_Twitter {
 		});
 		
 		</script>
+		
+		<?php
+			$facebook_message = '';
+			$twitter_message = '';
+			
+			// Populate content for future posts (remind authors what is about to get published)
+			$current_post = get_post( $post_id );
+			if( ! empty( $current_post ) && $current_post->post_status == 'future' ) {
+				$post_meta = get_post_custom( $current_post->ID );
+				$facebook_message = ! empty( $post_meta['pl_facebook_message'] ) ? $post_meta['pl_facebook_message'][0] : '';
+				$twitter_message = ! empty( $post_meta['pl_twitter_message'] ) ? $post_meta['pl_twitter_message'][0] : '';
+			}
+		?>
 		<div class="social-left facebook-block">
 			<h4>Facebook</h4>
-			<p><textarea id="pl_facebook_message" name="pl_facebook_message" cols="40" rows="5"></textarea></p>
+			<p><textarea id="pl_facebook_message" name="pl_facebook_message" cols="40" rows="5"><?php echo $facebook_message; ?></textarea></p>
 			<p><span><?php _e('Words: ', 'pls'); ?></span><span id="pl_facebook_word_count">0</span></p>
 		</div>
 		<div class="social-right facebook-block">
 			<h4>Twitter</h4>
-			<p><textarea id="pl_twitter_message" name="pl_twitter_message" cols="40" rows="5"></textarea></p>
+			<p><textarea id="pl_twitter_message" name="pl_twitter_message" cols="40" rows="5"><?php echo $twitter_message; ?></textarea></p>
 			<p><span><?php _e('Characters: ', 'pls'); ?></span><span id="pl_twitter_word_count">0</span></p>
 		</div>
 		<div class="clearblock"></div>
@@ -397,6 +419,18 @@ class PL_Social_Networks_Twitter {
 			return;
 		}
 		
+		// Update database values
+		if( ! empty( $_POST['pl_facebook_message'] ) ) {
+			$pl_facebook_message = $_POST['pl_facebook_message'];
+				
+			update_post_meta( $post_id, 'pl_facebook_message', $pl_facebook_message );
+		}
+		if( ! empty( $_POST['pl_twitter_message'] ) ) {
+			$pl_facebook_message = $_POST['pl_twitter_message'];
+		
+			update_post_meta( $post_id, 'pl_twitter_message', $pl_facebook_message );
+		}
+		
 // 		pls_log_socials('sn_saver.txt', 'Post Object: ' . var_export( $post, true ) );
 		
 		if( $post->post_status == 'future' ) { 
@@ -407,17 +441,6 @@ class PL_Social_Networks_Twitter {
 			if ( $time > time() ) { // Uh oh, someone jumped the gun!
 				// wp_clear_scheduled_hook( 'publish_future_post', array( $post_id ) ); // clear anything else in the system
 				pls_log_socials('sn_saver.txt', 'Right before scheduling' );
-				
-				if( ! empty( $_POST['pl_facebook_message'] ) ) {
-					$pl_facebook_message = $_POST['pl_facebook_message'];
-					
-					update_post_meta( $post_id, 'pl_facebook_message', $pl_facebook_message );
-				}
-				if( ! empty( $_POST['pl_twitter_message'] ) ) {
-					$pl_facebook_message = $_POST['pl_twitter_message'];
-						
-					update_post_meta( $post_id, 'pl_twitter_message', $pl_facebook_message );
-				}
 				
 				$scheduled_cron_arguments = array( get_current_user_id(), $post_id );
 				wp_schedule_single_event( $time, 'pls_add_future_post', $scheduled_cron_arguments );
@@ -686,6 +709,46 @@ class PL_Social_Networks_Twitter {
 		}
 		
 		return false;
+	}
+	
+	/**
+	 * Manage post columns to add social one
+	 * @param array $columns columns array
+	 */
+	public static function social_columns_append( $columns ) {
+		// need to add the second column
+		// array_splice doesn't handle assoc arrays properly
+		$new_columns = array();
+		$col_index = 0;
+		
+		foreach( $columns as $key => $value ) {
+			$col_index++;
+			if( $col_index == 3 ) {
+				$new_columns['Social'] = 'Social';
+			}
+			$new_columns[$key] = $value;
+		}
+		
+		return $new_columns;
+	}
+	
+	public static function social_column_behavior( $column_name, $post_id ) {
+		if( $column_name === 'Social' ) {
+			$out = '<span class="pl_list_social_icons">';			
+
+			$post_meta = get_post_custom( $post_id );
+			
+			if( ! empty( $post_meta['pl_facebook_message'] ) ) {
+				$out .= '<img src="' . self::$fb_list_icon . '" />';
+			}
+			if( ! empty( $post_meta['pl_twitter_message'] ) ) {
+				$out .= '<img src="' . self::$twitter_list_icon . '" />';
+			}
+			
+			$out .= '</span>';
+		}
+		
+		echo $out;
 	}
 
 }
