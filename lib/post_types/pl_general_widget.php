@@ -457,7 +457,6 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 					} else {
 						$('#pl_static_listing_block').show();
 					}
-
 					
 					$('#preview-meta-widget').html('<img id="preview_load_spinner" src="<?php echo PL_PARENT_URL . 'images/preview_load_spin.gif'; ?>" alt="Widget options are Loading..." width="30px" height="30px" style="position: absolute; top: 100px; left: 100px" />');
 
