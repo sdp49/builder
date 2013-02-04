@@ -215,6 +215,7 @@ jQuery(document).ready(function($) {
     // If theme is already enabled, simply move to the next card...
     if ( _themeSelect.val() == pl_admin_global.activeTheme ) {
       moveToNextCard();
+      _loader.hide();
       return;
     }
 
@@ -374,10 +375,10 @@ jQuery(document).ready(function($) {
     },'json');
   }
 
-  updateSkin = updateSkinSelect;
-
-  // For testing the output...
-  // updateSkinSelect();
+  _skinReturn.on('click', function (event) {
+    event.preventDefault();
+    moveToNextCard();
+  });
 
 });
 
