@@ -29,8 +29,8 @@ Author URI: https://www.placester.com/
 
 define('PL_PLUGIN_VERSION','1.0.6');
 
-define( 'PL_PARENT_DIR', dirname(__FILE__) );
-define( 'PL_PARENT_URL', trailingslashit(plugins_url()) . 'placester/'  );
+define( 'PL_PARENT_DIR', plugin_dir_path(__FILE__) );
+define( 'PL_PARENT_URL', plugin_dir_url(__FILE__) );
 
 define( 'PL_VIEWS_DIR', trailingslashit(PL_PARENT_DIR) . 'views/' );
 define( 'PL_VIEWS_URL', trailingslashit(PL_PARENT_URL) . 'views/' );
@@ -102,6 +102,7 @@ include_once('config/customizer/onboard_settings.php');
 include_once('config/customizer/theme_choices.php');
 
 /* lib */
+include_once('lib/social_networks.php');
 include_once('lib/config.php');
 include_once('lib/routes.php');
 include_once('lib/http.php');
@@ -255,6 +256,7 @@ function placester_admin_menu() {
         add_submenu_page( 'placester', '', $name, 'edit_pages', 'placester_settings' . $page_url, array('PL_Router','settings' . $page_url) );    
     }
     add_submenu_page( 'placester', 'Widgets', 'Widgets', 'edit_pages', 'edit.php?post_type=pl_general_widget' );
+    add_submenu_page( 'placester', 'Social', 'Social', 'edit_pages', 'placester_social', array('PL_Social_Networks_Twitter','add_social_settings_cb') );
     // add_submenu_page( 'placester', '', 'Settings', 'edit_pages', 'placester_settings_general', array('PL_Router','settings') );    
     add_submenu_page( 'placester', '', 'Support', 'edit_pages', 'placester_support', array('PL_Router','support') );    
     add_submenu_page( 'placester', '', 'MLS Integration', 'edit_pages', 'placester_integrations', array('PL_Router','integrations') );    

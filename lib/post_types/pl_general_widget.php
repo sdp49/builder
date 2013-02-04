@@ -94,6 +94,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		add_filter('post_row_actions', array( $this, 'remove_quick_edit_view'), 10, 1 );
 		add_action( 'restrict_manage_posts', array( $this, 'listing_posts_add_filter_widget_type' ) );
 		add_filter( 'parse_query', array( $this, 'widget_type_posts_filter' ) );
+		add_action( 'admin_menu', array( $this, 'correct_metabox_setup' ), 50);
 	}
 	
 	/**
@@ -153,6 +154,12 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	public  function meta_box() {
 		add_meta_box( 'pl-controls-metabox-id', 'Placester Widgets', array( $this, 'pl_widgets_meta_box_cb'), 'pl_general_widget', 'normal', 'high' );
 		add_meta_box( 'pl-previewer-metabox-id', 'Widget Preview', array( $this, 'pl_previewer_meta_box_cb'), 'pl_general_widget', 'side', 'low' );
+		
+	}
+	
+	public function correct_metabox_setup() {
+		remove_meta_box( 'socialize-buttons-meta', 'pl_general_widget', 'side');
+		remove_meta_box( 'socialize-action-meta', 'pl_general_widget', 'normal');
 	}
 	
 	public function pl_previewer_meta_box_cb( $post ) {
@@ -450,7 +457,6 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 					} else {
 						$('#pl_static_listing_block').show();
 					}
-
 					
 					$('#preview-meta-widget').html('<img id="preview_load_spinner" src="<?php echo PL_PARENT_URL . 'images/preview_load_spin.gif'; ?>" alt="Widget options are Loading..." width="30px" height="30px" style="position: absolute; top: 100px; left: 100px" />');
 
