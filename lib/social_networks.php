@@ -208,7 +208,7 @@ class PL_Social_Networks_Twitter {
 			
 			echo '<p><a href="' . self::$admin_redirect_uri .'&logout_clear=twitter">Logout from Twitter</a></p>';
 			pls_debug_socials( 'Authorized:', 'brown');
-			pls_debug_socials($content, 'brown');
+			// pls_debug_socials($content, 'brown');
 		} else {
 			// Steps 1 through 4 for authentication
 			if( isset( $_GET['oauth_token'] ) && isset( $_GET['oauth_verifier'] ) ) {
