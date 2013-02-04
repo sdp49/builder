@@ -153,30 +153,55 @@ class PL_Membership {
         $errors = array();
 
         $sanitized_username = sanitize_user( $username );
-        if ( empty( $sanitized_username ) ) 
-            $errors['missing_username'] = "The username is required.";
-        elseif ( empty( $password ) ) 
-            $errors['missing_pass'] = "The password is required.";
-        else {
-            $userdata = get_user_by( 'login', $sanitized_username );
-            // If the username exists, verify if the password is correct
-            // pls_dump($userdata);
-            if ( $userdata ) {
-                if ( !wp_check_password( $password, $userdata->user_pass, $userdata->ID ) ) 
-                    $errors['wrong_pass'] = "The password is not correct.";
 
-            } else {
-                $errors['wrong_user'] = "The username is invalid.";
-            }
-        }
-
-        if ( !empty( $errors ) ) {
-            foreach( $errors as $key => $error ) 
-                echo "<div class='pl_login_alert pl_error error {$key}'>{$error}</div>";
+        if ( empty( $sanitized_username ) ) {
+          $errors['user_login'] = "An email address is required.";
+        } elseif ( empty( $password )) {
+          $errors['user_pass'] = "A password is required.";
         } else {
-            // Not actually seen since user is redirected.
-            echo "<div class='pl_login_alert success'>You have been successfully logged in.</div>";
+          $userdata = get_user_by( 'login', $sanitized_username );
+          
+          if ( $userdata ) {
+                if ( !wp_check_password( $password, $userdata->user_pass, $userdata->ID ) )  {
+                  $errors['user_pass'] = "The password isn't correct.";
+                }
+          } else {
+            $errors['user_login'] = "The email address is invalid.";
+          }
         }
+
+        if ( !empty($errors) ) {
+          echo json_encode( $errors );
+        } else {
+          $success = "You have successfully logged in.";
+          echo json_encode( $success );
+        }
+        
+
+        // if ( empty( $sanitized_username ) ) 
+        //     $errors['missing_username'] = "The username is required.";
+        // elseif ( empty( $password ) ) 
+        //     $errors['missing_pass'] = "The password is required.";
+        // else {
+        //     $userdata = get_user_by( 'login', $sanitized_username );
+        //     // If the username exists, verify if the password is correct
+        //     // pls_dump($userdata);
+        //     if ( $userdata ) {
+        //         if ( !wp_check_password( $password, $userdata->user_pass, $userdata->ID ) ) 
+        //             $errors['wrong_pass'] = "The password is not correct.";
+        // 
+        //     } else {
+        //         $errors['wrong_user'] = "The username is invalid.";
+        //     }
+        // }
+        // 
+        // if ( !empty( $errors ) ) {
+        //     foreach( $errors as $key => $error ) 
+        //         echo "<div class='pl_login_alert pl_error error {$key}'>{$error}</div>";
+        // } else {
+        //     // Not actually seen since user is redirected.
+        //     echo "<div class='pl_login_alert success'>You have been successfully logged in.</div>";
+        // }
 
         die;
     }
@@ -630,13 +655,37 @@ class PL_Membership {
         $profile_link = ( $profile ) ? ( empty($loginout_link) ? $profile_link : $separator . $profile_link ) : '';
 
         if ( ! is_user_logged_in() ) {
-            $args = array( 
-                'echo' => false,
-                'form_id' => 'pl_login_form',
-                'label_username' => 'Email'
-            );
-            /** Get the login form. */
-            $login_form = wp_login_form( $args );
+
+            // set the URL
+            if (is_home()) {
+              $url = home_url();
+            } else {
+              $url = get_permalink();
+            }
+            ob_start();
+              ?>
+                <form name="pl_login_form" id="pl_login_form" action="<?php echo home_url(); ?>/wp-login.php" method="post">
+                  <div class="success" style="display:none;">You have successfully logged in.</div>
+                  <div id="pl_login_form_inner_wrapper">
+                    <p class="login-username">
+                      <label for="user_login">Email</label>
+                      <input type="text" name="user_login" id="user_login" class="input" required="required" value="" tabindex="20" data-message="A valid email is needed" />
+                    </p>
+                    <p class="login-password">
+                      <label for="user_pass">Password</label>
+                      <input type="password" name="user_pass" id="user_pass" class="input" required="required" value="" tabindex="21" data-message="A password is needed" />
+                    </p>
+                    <p class="login-remember">
+                      <label><input name="rememberme" type="checkbox" id="rememberme" value="forever" tabindex="90" /> Remember Me</label>
+                    </p>
+                    <p class="login-submit">
+                      <input type="submit" name="wp-submit" id="wp-submit" class="button-primary" value="Log In" tabindex="100" />
+                      <input type="hidden" name="redirect_to" value="<?php echo $url; ?>" />
+                    </p>
+                  </div>
+                </form>
+              <?php
+            $login_form = ob_get_clean();
             if ($container_tag) {
                 return "<{$container_tag} class={$container_class}>" . $loginout_link . $register_link . "</{$container_tag}>" . self::generate_lead_reg_form() . "<div style='display:none;'>{$login_form}</div>";
             }

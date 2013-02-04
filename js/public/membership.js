@@ -39,23 +39,65 @@ jQuery(document).ready(function($) {
 
     });
 
-    $('#pl_login_form').bind('submit',function(e) {
-        $this = $(this);
-        username = $(this).find('#user_login').val();
-        password = $(this).find('#user_pass').val();
-    
-        return login_user(username, password);
+    $('form#pl_login_form input[type="submit"]').on('mousedown', function() {
+
+      var this_form = $('form#pl_login_form');
+      
+      // get fields that are required from form and execture validator()
+      var inputs = $(this_form).find("input[required]").validator({
+          messageClass: 'login-form-validator-error', 
+          offset: [10,0],
+          message: "<div><span></span></div>",
+          position: 'top center'
+        });
+      
+      // check required field's validity
+      inputs.data("validator").checkValidity();
+      
     });
+
+    // initialize validator and add the custom form submission logic
+    $("form#pl_login_form").bind('submit',function(e) {
+
+      // prevent default form submission logic
+      e.preventDefault();
+      var form = $(this);
+       
+      if ($('.invalid', this).length) {
+        return false;
+      };
+
+       username = $(form).find('#user_login').val();
+       password = $(form).find('#user_pass').val();
+       
+       return login_user (username, password);
+    });
+    
+
+    // $('#pl_login_form').bind('submit',function(e) {
+    //     $this = $(this);
+    //     username = $(this).find('#user_login').val();
+    //     password = $(this).find('#user_pass').val();
+    // 
+    //     return login_user(username, password);
+    // });
     
     if(typeof $.fancybox == 'function') {
         $(".pl_register_lead_link").fancybox({
             'hideOnContentClick': false,
-            'scrolling' : true
+            'scrolling' : true,
+            onClosed : function () {
+              $(".login-form-validator-error").remove();
+            }
         });
 
         $(".pl_login_link").fancybox({
             'hideOnContentClick': false,
-            'scrolling' : true
+            'scrolling' : true,
+            onClosed : function () {
+              $(".login-form-validator-error").remove();
+            }
+            
         });
 
         $(document).ajaxStop(function() { 
@@ -76,36 +118,56 @@ jQuery(document).ready(function($) {
     }
     
     function login_user (username, password) {
+         
+       data = {
+           action: 'pl_login',
+           username: username,
+           password: password
+       };
 
+       var success = false;
 
-        data = {
-            action: 'pl_login',
-            username: username,
-            password: password
-        };
+       $.ajax({
+           url: info.ajaxurl, 
+           data: data, 
+           async: false,
+           type: "POST",
+           success: function(response) {
+             console.log(response);
+               // If request successfull empty the form
+               if ( response == '"You have successfully logged in."' ) {
+                 
+                 // remove error messages
+                 $('.login-form-validator-error').remove();
+                 
+                 // Remove form
+                 $("#pl_login_form_inner_wrapper").slideUp();
+                 
+                 // Show success message
+                 setTimeout(function() {
+                   $("#pl_login_form .success").show('fast');
+                 },500);
+                 
+                 // close fancybox
+                 // setTimeout(function() {
+                 //   $("#pl_login_form").fancybox.close();
+                 // },2000);
+                 
+                 var success = true;
+               } else {
+                 // Error Handling
+                 var errors = jQuery.parseJSON(response);
 
-        var success = false;
-        $.ajax({
-            url: info.ajaxurl, 
-            data: data, 
-            async: false,
-            type: "POST",
-            success: function(response) {
-                // If request successfull empty the form
-                if ( $(response).hasClass('success') ) {
-                    success = true;
-                } else {
-                    $(".pl_login_alert").fadeOut('fast');
-                    $this.before(response);
-                }
-            }
-        });
+                 $('form#pl_login_form').validator();
+                 $('form#pl_login_form input').data("validator").invalidate({'user_login':errors.user_login,'user_pass':errors.user_pass});
+               }
+           }
+       });
 
-        if ( ! success ) 
-            return false;
-        else 
-            return true;
-
+       if ( ! success ) {
+         return false;
+       } else {
+         return true;
+       }
     }
-        
 });
