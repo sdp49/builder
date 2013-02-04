@@ -5,21 +5,6 @@
 define( 'SOCIAL_DEBUGGER', false );
 define( 'DX_CRONO_POSTER_URL', plugin_dir_path( __FILE__ ) );
 
-function pls_debug_socials( $arg, $color = 'black' ) {
-	if( SOCIAL_DEBUGGER ) {
-		echo "<pre style='color: $color'>";
-		var_dump( $arg );
-		echo "</pre>";
-	}
-}
-
-function pls_log_socials( $file, $text ) {
-	if( SOCIAL_DEBUGGER ) {
-		$content = time() . ': ' . $text . "\n";
-		file_put_contents(DX_CRONO_POSTER_URL  . 'logs/' . $file, $content, FILE_APPEND | LOCK_EX);
-	}
-}
-
 PL_Social_Networks_Twitter::init();
 
 class PL_Social_Networks_Twitter {
@@ -705,3 +690,17 @@ class PL_Social_Networks_Twitter {
 
 }
 
+function pls_debug_socials( $arg, $color = 'black' ) {
+	if( SOCIAL_DEBUGGER ) {
+		echo "<pre style='color: $color'>";
+		var_dump( $arg );
+		echo "</pre>";
+	}
+}
+
+function pls_log_socials( $file, $text ) {
+	if( SOCIAL_DEBUGGER ) {
+		$content = time() . ': ' . $text . "\n";
+		file_put_contents(DX_CRONO_POSTER_URL  . 'logs/' . $file, $content, FILE_APPEND | LOCK_EX);
+	}
+}
