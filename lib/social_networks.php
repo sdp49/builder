@@ -733,6 +733,8 @@ class PL_Social_Networks_Twitter {
 	}
 	
 	public static function social_column_behavior( $column_name, $post_id ) {
+		$out = '';
+		
 		if( $column_name === 'Social' ) {
 			$out = '<span class="pl_list_social_icons">';			
 
