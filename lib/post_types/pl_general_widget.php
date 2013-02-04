@@ -773,18 +773,22 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	}
 	
  	public function autosave_refresh_iframe( ) {
-		$id = isset( $_POST['post_ID'] ) ? (int) $_POST['post_ID'] : 0;
-		if ( ! $id )
-			wp_die( -1 );
-		
+		if ( isset($_POST['pl_post_type']) ) {    	
+			$id = isset( $_POST['post_ID'] ) ? (int) $_POST['post_ID'] : 0;
+			
+			if ( ! $id )
+				wp_die( -1 );
+			
 			if( ! headers_sent() ):
 				?>
 					<script type="text/javascript">
 						jQuery('#post').trigger('submit');
 					</script>
 				<?php 
-			endif; 
-		$this->meta_box_save( $id );
+			endif;
+			 
+			$this->meta_box_save( $id );
+		}	
 	}
 	
 	private function print_template_blocks( ) {
