@@ -17,6 +17,11 @@ class PL_Css_Helper {
 			self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');
 			// self::register_enqueue_if_not('jquery-ui-dialog', OPTIONS_FRAMEWORK_DIRECTORY.'css/jquery-ui-1.8.22.custom.css');
 		}
+		
+		if( $hook == 'post-new.php' || ( $hook == 'edit.php' && isset( $_GET['post_type'] ) && $_GET['post_type'] == 'pl_general_widget' ) ) {
+			self::register_enqueue_if_not('post-screens', trailingslashit(PL_CSS_ADMIN_URL) .  '/post-screens.css');
+		}
+		
 		$pages = array('placester_page_placester_properties', 
 					   'placester_page_placester_property_add', 
 					   'placester_page_placester_settings', 
@@ -89,10 +94,7 @@ class PL_Css_Helper {
 			self::register_enqueue_if_not('settings-all', trailingslashit(PL_CSS_ADMIN_URL) .  '/settings/all.css');					
 			self::register_enqueue_if_not('settings-filtering', trailingslashit(PL_CSS_ADMIN_URL) .  'settings/filtering.css');					
 		}
-		
-		if( $hook == 'edit.php' && isset( $_GET['post_type'] ) && $_GET['post_type'] == 'pl_general_widget' ) {
-			self::register_enqueue_if_not('post-screens', trailingslashit(PL_CSS_ADMIN_URL) .  '/post-screens.css');
-		}
+
 	}
 
 	function customizer() {

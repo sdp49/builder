@@ -150,6 +150,7 @@ class PL_Social_Networks_Twitter {
 	 * Call settings page callback content for socials
 	 */
 	public static function add_social_settings_cb() {
+		PL_Helper_Header::placester_admin_header();
 		if( is_user_logged_in() && ! empty( self::$logged_user ) ) {
 			$current_user_id = self::$logged_user;
 			
@@ -245,11 +246,10 @@ class PL_Social_Networks_Twitter {
 		}
 		
 		/* Build an image link to start the redirect process. */
-		$content = '<a href="' . self::$admin_redirect_uri . '&social_action=twitter-redirect"><img src="' . PL_LIB_URL . 'twitteroauth/images/lighter.png" alt="Sign in with Twitter"/></a>';
+		$content = '<a href="' . self::$admin_redirect_uri . '&social_action=twitter-redirect"><img src="' .  PL_IMG_URL .'/social/twlogin.png" alt="Sign in with Twitter"/></a>';
 			
 		echo $content;
 		/* Include HTML to display on the page. */
-		// include PL_LIB_DIR . 'twitteroauth/html.inc';
 	}
 	
 	/**
@@ -302,19 +302,17 @@ class PL_Social_Networks_Twitter {
 	public static function add_post_metaboxes() {
 		add_meta_box(
 			'pl_social_box',
-			__( 'Placester Social', 'pls' ),
+			__( 'Social Publishing', 'pls' ),
 			array( __CLASS__, 'add_post_metaboxes_callback' ),
 			'page', // leave empty quotes as '' if you want it on all custom post add/edit screens
-			'side',
-			'high'
+			'normal'
 		);
 		add_meta_box(
 			'pl_social_box',
-			__( 'Placester Social', 'pls' ),
+			__( 'Social Publishing', 'pls' ),
 			array( __CLASS__, 'add_post_metaboxes_callback' ),
 			'post', // leave empty quotes as '' if you want it on all custom post add/edit screens
-			'side',
-			'high'
+			'normal'
 		);
 	}
 	
@@ -362,9 +360,11 @@ class PL_Social_Networks_Twitter {
 				var txt = $('#pl_facebook_message').val();
 				wpSocialWordCount.wc(txt, '#pl_facebook_word_count');
 			});
+			
 			$(document).bind( 'plsTwitterCountWords', function(e) {
 				var txt = $('#pl_twitter_message').val();
-				wpSocialWordCount.wc(txt, '#pl_twitter_word_count');
+				$('#pl_twitter_word_count').html( txt.length );
+				
 			});
 
 			$('#pl_facebook_message').on('change', function() {
@@ -377,12 +377,17 @@ class PL_Social_Networks_Twitter {
 		});
 		
 		</script>
-		<h3>Facebook</h3>
-		<p><textarea id="pl_facebook_message" name="pl_facebook_message" cols="40" rows="5"></textarea></p>
-		<p><span><?php _e('Words: ', 'pls'); ?></span><span id="pl_facebook_word_count">0</span></p>
-		<h3>Twitter</h3>
-		<p><textarea id="pl_twitter_message" name="pl_twitter_message" cols="40" rows="5"></textarea></p>
-		<p><span><?php _e('Words: ', 'pls'); ?></span><span id="pl_twitter_word_count">0</span></p>
+		<div class="social-left facebook-block">
+			<h4>Facebook</h4>
+			<p><textarea id="pl_facebook_message" name="pl_facebook_message" cols="40" rows="5"></textarea></p>
+			<p><span><?php _e('Words: ', 'pls'); ?></span><span id="pl_facebook_word_count">0</span></p>
+		</div>
+		<div class="social-right facebook-block">
+			<h4>Twitter</h4>
+			<p><textarea id="pl_twitter_message" name="pl_twitter_message" cols="40" rows="5"></textarea></p>
+			<p><span><?php _e('Characters: ', 'pls'); ?></span><span id="pl_twitter_word_count">0</span></p>
+		</div>
+		<div class="clearblock"></div>
 	<?php 
 	}
 
@@ -542,7 +547,7 @@ class PL_Social_Networks_Twitter {
 	public static function fb_print_login_url() {
 		$proxy_url = get_option( 'fb_proxy_url', self::$fb_default_proxy_url );
 		
-		echo '<a href="' . trailingslashit( $proxy_url ) . 'login.php">Log In with Facebook</a>' . "<br />\n\n"; 
+		echo '<a href="' . trailingslashit( $proxy_url ) . 'login.php"><img src="' . PL_IMG_URL . '/social/fblogin.png" /></a>' . "<br />\n\n"; 
 		// . print_r($this->_profile, true) . "<br />\n\n";
 	}
 	

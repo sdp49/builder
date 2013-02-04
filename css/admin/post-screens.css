@@ -8,3 +8,7 @@
 .view-switch {
 	display: none;
 }
+
+#pl_social_box textarea {
+	width: 100%;
+}
