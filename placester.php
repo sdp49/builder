@@ -29,8 +29,8 @@ Author URI: https://www.placester.com/
 
 define('PL_PLUGIN_VERSION','1.0.6');
 
-define( 'PL_PARENT_DIR', dirname(__FILE__) );
-define( 'PL_PARENT_URL', trailingslashit(plugins_url()) . 'placester/'  );
+define( 'PL_PARENT_DIR', plugin_dir_path(__FILE__) );
+define( 'PL_PARENT_URL', plugin_dir_url(__FILE__) );
 
 define( 'PL_VIEWS_DIR', trailingslashit(PL_PARENT_DIR) . 'views/' );
 define( 'PL_VIEWS_URL', trailingslashit(PL_PARENT_URL) . 'views/' );
