@@ -739,7 +739,7 @@ class PL_Social_Networks_Twitter {
 			$post_meta = get_post_custom( $post_id );
 			
 			if( ! empty( $post_meta['pl_facebook_message'] ) ) {
-				$out .= '<img src="' . self::$fb_list_icon . '" />';
+				$out .= '<img src="' . self::$fb_list_icon . '" / style="margin-right: 10px;">';
 			}
 			if( ! empty( $post_meta['pl_twitter_message'] ) ) {
 				$out .= '<img src="' . self::$twitter_list_icon . '" />';

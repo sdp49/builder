@@ -18,7 +18,7 @@ class PL_Css_Helper {
 			// self::register_enqueue_if_not('jquery-ui-dialog', OPTIONS_FRAMEWORK_DIRECTORY.'css/jquery-ui-1.8.22.custom.css');
 		}
 		
-		if( $hook == 'post-new.php' || ( $hook == 'edit.php' && isset( $_GET['post_type'] ) && $_GET['post_type'] == 'pl_general_widget' ) ) {
+		if( $hook == 'post-new.php' || $hook == 'post.php' || ( $hook == 'edit.php' && isset( $_GET['post_type'] ) && $_GET['post_type'] == 'pl_general_widget' ) ) {
 			self::register_enqueue_if_not('post-screens', trailingslashit(PL_CSS_ADMIN_URL) .  '/post-screens.css');
 		}
 		
