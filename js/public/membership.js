@@ -80,7 +80,7 @@ jQuery(document).ready(function($) {
             'hideOnContentClick': false,
             'scrolling' : true,
             onClosed : function () {
-              $(".login-form-validator-error").remove();
+              $(".register-form-validator-error").remove();
             }
         });
         // Login Form Fancybox
@@ -251,7 +251,7 @@ jQuery(document).ready(function($) {
       
       // get fields that are required from form and execture validator()
       var inputs = $(this_form).find("input[required]").validator({
-          messageClass: 'login-form-validator-error', 
+          messageClass: 'register-form-validator-error', 
           offset: [10,0],
           message: "<div><span></span></div>",
           position: 'top center'

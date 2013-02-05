@@ -428,8 +428,7 @@ class PL_Membership {
                     break;
                 
                 default:
-                  error_log("YIKES! There was an error. Try again soon.");
-                    // $error_messages .= 'There was an error, try again soon.';
+                    $error_messages['user_email'] = 'There was an error, try again soon.';
                     break;
             }
         }
@@ -454,31 +453,32 @@ class PL_Membership {
        if ( ! is_user_logged_in() ) {
         ob_start();
         ?>
-        <div style="display: none">
-            <form method="post" action="#<?php echo $role; ?>" id="pl_lead_register_form" name="pl_lead_register_form">
-                <div style="display:none" class="success">You have been successfully signed up. This page will refresh momentarily.</div><!-- id="form_message_box" -->
-                <div id="pl_lead_register_form_inner_wrapper">
-                  <h2>Sign Up</h2>
-                  <p>
-                    <label for="user_email">Email</label>
-                    <input type="text" tabindex="25" size="20" required="required" class="input" id="user_email" name="user_email" data-message="A valid email is needed.">
-                  </p>
-                  <p>
-                    <label for="user_password">Password</label>
-                    <input type="password" tabindex="26" size="20" required="required" class="input" id="user_password" name="user_password" data-message="Please enter a password.">
-                  </p>
-                  <p>
-                    <label for="user_confirm">Confirm Password</label>
-                    <input type="password" tabindex="27" size="20" required="required" class="input" id="user_confirm" name="user_confirm" data-message="Please confirm your password.">
-                  </p>
-                  <p>
-                    <input type="submit" tabindex="28" class="submit button" value="Register" id="pl_register" name="pl_register">
-                  </p>
-                  <?php echo wp_nonce_field( 'placester_true_registration', 'register_nonce_field' ); ?>
-                  <input type="hidden" tabindex="29" id="register_form_submit_button" name="_wp_http_referer" value="/listings/">
-                </div>
-            </form>
-        </div>
+          <form method="post" action="#<?php echo $role; ?>" id="pl_lead_register_form" name="pl_lead_register_form" class="pl_login_reg_form">
+
+              <div style="display:none" class="success">You have been successfully signed up. This page will refresh momentarily.</div>
+
+              <div id="pl_lead_register_form_inner_wrapper">
+                <h2>Sign Up</h2>
+                <p>
+                  <label for="user_email">Email</label>
+                  <input type="text" tabindex="25" size="20" required="required" class="input" id="user_email" name="user_email" data-message="A valid email is needed.">
+                </p>
+                <p>
+                  <label for="user_password">Password</label>
+                  <input type="password" tabindex="26" size="20" required="required" class="input" id="user_password" name="user_password" data-message="Please enter a password.">
+                </p>
+                <p>
+                  <label for="user_confirm">Confirm Password</label>
+                  <input type="password" tabindex="27" size="20" required="required" class="input" id="user_confirm" name="user_confirm" data-message="Please confirm your password.">
+                </p>
+                <p>
+                  <input type="submit" tabindex="28" class="submit button" value="Register" id="pl_register" name="pl_register">
+                </p>
+                <?php echo wp_nonce_field( 'placester_true_registration', 'register_nonce_field' ); ?>
+                <input type="hidden" tabindex="29" id="register_form_submit_button" name="_wp_http_referer" value="/listings/">
+              </div>
+
+          </form>
         <?php
         $result = ob_get_clean();
     } else {
@@ -486,11 +486,11 @@ class PL_Membership {
         ?>
             <div style="display:none">
                 <div class="pl_error error" id="pl_lead_register_form">
-                 You cannot register a user if you are logged in. You shouldn't even see a "Register" link.   
+                 You cannot register a user if you are logged in. You shouldn't even see a "Register" link.
                 </div>
             </div>
         <?php
-        $result = ob_get_clean();       
+        $result = ob_get_clean();
     }
 
     return $result; 
@@ -637,27 +637,32 @@ class PL_Membership {
             }
             ob_start();
               ?>
-                <form name="pl_login_form" id="pl_login_form" action="<?php echo home_url(); ?>/wp-login.php" method="post">
-                  <div class="success" style="display:none;">You have successfully logged in.</div>
-                  <div id="pl_login_form_inner_wrapper">
-                    <h2>Login</h2>
-                    <p class="login-username">
-                      <label for="user_login">Email</label>
-                      <input type="text" name="user_login" id="user_login" class="input" required="required" value="" tabindex="20" data-message="A valid email is needed" />
-                    </p>
-                    <p class="login-password">
-                      <label for="user_pass">Password</label>
-                      <input type="password" name="user_pass" id="user_pass" class="input" required="required" value="" tabindex="21" data-message="A password is needed" />
-                    </p>
-                    <p class="login-remember">
-                      <label><input name="rememberme" type="checkbox" id="rememberme" value="forever" tabindex="22" /> Remember Me</label>
-                    </p>
-                    <p class="login-submit">
-                      <input type="submit" name="wp-submit" id="wp-submit" class="button-primary" value="Log In" tabindex="23" />
-                      <input type="hidden" name="redirect_to" value="<?php echo $url; ?>" />
-                    </p>
-                  </div>
+              <div style="display:none;">
+                <form name="pl_login_form" id="pl_login_form" action="<?php echo home_url(); ?>/wp-login.php" method="post" class="pl_login_reg_form">
+
+                    <div class="success" style="display:none;">You have successfully logged in.</div>
+
+                    <div id="pl_login_form_inner_wrapper">
+                      <h2>Login</h2>
+                      <p class="login-username">
+                        <label for="user_login">Email</label>
+                        <input type="text" name="user_login" id="user_login" class="input" required="required" value="" tabindex="20" data-message="A valid email is needed" />
+                      </p>
+                      <p class="login-password">
+                        <label for="user_pass">Password</label>
+                        <input type="password" name="user_pass" id="user_pass" class="input" required="required" value="" tabindex="21" data-message="A password is needed" />
+                      </p>
+                      <p class="login-remember">
+                        <label><input name="rememberme" type="checkbox" id="rememberme" value="forever" tabindex="22" /> Remember Me</label>
+                      </p>
+                      <p class="login-submit">
+                        <input type="submit" name="wp-submit" id="wp-submit" class="button-primary" value="Log In" tabindex="23" />
+                        <input type="hidden" name="redirect_to" value="<?php echo $url; ?>" />
+                      </p>
+                    </div>
+
                 </form>
+              </div>
               <?php
             $login_form = ob_get_clean();
             if ($container_tag) {
