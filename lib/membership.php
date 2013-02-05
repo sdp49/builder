@@ -468,15 +468,15 @@ class PL_Membership {
                 </p> -->
                 <p>
                     <label for="user_email">Email</label>
-                    <input type="text" tabindex="20" size="20" class="input" id="user_email" name="user_email">
+                    <input type="text" tabindex="20" size="20" required="required" class="input" id="user_email" name="user_email">
                 </p>
                 <p>
                     <label for="user_password">Password</label>
-                    <input type="password" tabindex="20" size="20" class="input" id="user_password" name="user_password">
+                    <input type="password" tabindex="20" size="20" required="required" class="input" id="user_password" name="user_password">
                 </p>
                 <p>
                     <label for="user_confirm">Confirm Password</label>
-                    <input type="password" tabindex="20" size="20" class="input" id="user_confirm" name="user_confirm">
+                    <input type="password" tabindex="20" size="20" required="required" class="input" id="user_confirm" name="user_confirm">
                 </p>
                 <!-- <p>
                     <label for="user_fname">Name</label>
@@ -656,17 +656,17 @@ class PL_Membership {
                   <div id="pl_login_form_inner_wrapper">
                     <p class="login-username">
                       <label for="user_login">Email</label>
-                      <input type="text" name="user_login" id="user_login" class="input" required="required" value="" tabindex="20" data-message="A valid email is needed" />
+                      <input type="text" name="user_login" id="user_login" class="input noEnterSubmit" required="required" value="" tabindex="20" data-message="A valid email is needed" />
                     </p>
                     <p class="login-password">
                       <label for="user_pass">Password</label>
-                      <input type="password" name="user_pass" id="user_pass" class="input" required="required" value="" tabindex="21" data-message="A password is needed" />
+                      <input type="password" name="user_pass" id="user_pass" class="input noEnterSubmit" required="required" value="" tabindex="21" data-message="A password is needed" />
                     </p>
                     <p class="login-remember">
-                      <label><input name="rememberme" type="checkbox" id="rememberme" value="forever" tabindex="90" /> Remember Me</label>
+                      <label><input name="rememberme" type="checkbox" class="noEnterSubmit" id="rememberme" value="forever" tabindex="22" /> Remember Me</label>
                     </p>
                     <p class="login-submit">
-                      <input type="submit" name="wp-submit" id="wp-submit" class="button-primary" value="Log In" tabindex="100" />
+                      <input type="submit" name="wp-submit" id="wp-submit" class="button-primary" value="Log In" tabindex="23" />
                       <input type="hidden" name="redirect_to" value="<?php echo $url; ?>" />
                     </p>
                   </div>

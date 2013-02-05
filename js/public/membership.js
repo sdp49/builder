@@ -38,29 +38,17 @@ jQuery(document).ready(function($) {
         });
 
     });
-
+    
+    // beat Chrome's HTML5 tooltips for form validation
     $('form#pl_login_form input[type="submit"]').on('mousedown', function() {
-
-      var this_form = $('form#pl_login_form');
-      
-      // get fields that are required from form and execture validator()
-      var inputs = $(this_form).find("input[required]").validator({
-          messageClass: 'login-form-validator-error', 
-          offset: [10,0],
-          message: "<div><span></span></div>",
-          position: 'top center'
-        });
-      
-      // check required field's validity
-      inputs.data("validator").checkValidity();
-      
+      validate_login_form();
     });
 
     // initialize validator and add the custom form submission logic
     $("form#pl_login_form").bind('submit',function(e) {
 
       // prevent default form submission logic
-      // e.preventDefault();
+      e.preventDefault();
       var form = $(this);
        
       if ($('.invalid', this).length) {
@@ -75,6 +63,7 @@ jQuery(document).ready(function($) {
     });
     
     if(typeof $.fancybox == 'function') {
+        // Register Form Fancybox
         $(".pl_register_lead_link").fancybox({
             'hideOnContentClick': false,
             'scrolling' : true,
@@ -82,7 +71,7 @@ jQuery(document).ready(function($) {
               $(".login-form-validator-error").remove();
             }
         });
-
+        // Login Form Fancybox
         $(".pl_login_link").fancybox({
             'hideOnContentClick': false,
             'scrolling' : true,
@@ -96,7 +85,6 @@ jQuery(document).ready(function($) {
             favorites_link_signup();
         });
     }
-    
 
     favorites_link_signup();
 
@@ -119,6 +107,9 @@ jQuery(document).ready(function($) {
        };
 
        var success = false;
+
+       // Need to validate here too, just in case someone press enter in the form instead of pressing submit
+       validate_login_form();
 
        $.ajax({
            url: info.ajaxurl, 
@@ -178,4 +169,28 @@ jQuery(document).ready(function($) {
           return true;
         }
     }
+
+    function validate_login_form () {
+      
+      var this_form = $('form#pl_login_form');
+
+      // get fields that are required from form and execture validator()
+      var inputs = $(this_form).find("input[required]").validator({
+          messageClass: 'login-form-validator-error', 
+          offset: [10,0],
+          message: "<div><span></span></div>",
+          position: 'top center'
+        });
+
+      // check required field's validity
+      inputs.data("validator").checkValidity();
+  }
+
+  // Catch "Enter" keystroke and block it from submitting, except on Submit button
+  $('#pl_login_form').bind("keypress", function(e) {
+    var code = e.keyCode || e.which;
+    if (code  == 13) {
+      validate_login_form();
+    }
+  });
 });
