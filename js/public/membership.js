@@ -60,7 +60,7 @@ jQuery(document).ready(function($) {
     $("form#pl_login_form").bind('submit',function(e) {
 
       // prevent default form submission logic
-      e.preventDefault();
+      // e.preventDefault();
       var form = $(this);
        
       if ($('.invalid', this).length) {
@@ -100,9 +100,9 @@ jQuery(document).ready(function($) {
             
         });
 
-        $(document).ajaxStop(function() { 
-                favorites_link_signup();
-        });    
+        $(document).ajaxStop(function() {
+            favorites_link_signup();
+        });
     }
     
 
@@ -148,12 +148,7 @@ jQuery(document).ready(function($) {
                    $("#pl_login_form .success").show('fast');
                  },500);
                  
-                 // close fancybox
-                 // setTimeout(function() {
-                 //   $("#pl_login_form").fancybox.close();
-                 // },2000);
-                 
-                 var success = true;
+                 success = true;
                } else {
                  // Error Handling
                  var errors = jQuery.parseJSON(response);
@@ -164,10 +159,11 @@ jQuery(document).ready(function($) {
            }
        });
 
+       // allow page redirect of page on success
        if ( ! success ) {
-         return false;
-       } else {
-         return true;
-       }
+          return false;
+        } else {
+          return true;
+        }
     }
 });
