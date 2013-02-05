@@ -453,6 +453,7 @@ class PL_Membership {
        if ( ! is_user_logged_in() ) {
         ob_start();
         ?>
+        <div style="display:none;">
           <form method="post" action="#<?php echo $role; ?>" id="pl_lead_register_form" name="pl_lead_register_form" class="pl_login_reg_form">
 
               <div style="display:none" class="success">You have been successfully signed up. This page will refresh momentarily.</div>
@@ -479,6 +480,7 @@ class PL_Membership {
               </div>
 
           </form>
+        </div>
         <?php
         $result = ob_get_clean();
     } else {
@@ -637,7 +639,6 @@ class PL_Membership {
             }
             ob_start();
               ?>
-              <div style="display:none;">
                 <form name="pl_login_form" id="pl_login_form" action="<?php echo home_url(); ?>/wp-login.php" method="post" class="pl_login_reg_form">
 
                     <div class="success" style="display:none;">You have successfully logged in.</div>
@@ -662,7 +663,6 @@ class PL_Membership {
                     </div>
 
                 </form>
-              </div>
               <?php
             $login_form = ob_get_clean();
             if ($container_tag) {
