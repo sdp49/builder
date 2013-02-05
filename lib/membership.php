@@ -90,7 +90,7 @@ class PL_Membership {
 
         //check for lead errors
        if ( !empty($lead_object['errors']) ) {
-            $error_messages = self::process_errors($lead_object['errors']);
+            $error_messages = self::process_registration_errors($lead_object['errors']);
             echo $error_messages;
             die(); // oops TODO: Fix the -1 random ass issue.
         } else {
@@ -386,62 +386,58 @@ class PL_Membership {
     }
 
     // used for processing errors for the various forms. 
-    private static function process_errors($errors)
-    {
+    private static function process_registration_errors ($errors) {
         
-        $error_messages = '<div><ul>';
+        $error_messages = '';
 
         foreach ($errors as $error => $type) {
             
             switch ($type) {
                 case 'username_exists':
-                    $error_messages .= self::create_error_message('That username already exists');
+                    // $error_messages['username'][] .= 'That username already exists';
+                    $error_messages['user_email'] = 'That email already exists';
                     break;
                 
                 case 'username_empty':
-                    $error_messages .= self::create_error_message('Username is required.');
+                    // $error_messages['username'][] .= 'Username is required.';
+                    $error_messages['user_email'] = 'Email is required';
                     break;
 
                 case 'email_required':
-                    $error_messages .= self::create_error_message('Email is required');
+                    $error_messages['user_email'] = 'Email is required';
                     break;
                 
                 case 'email_invalid':
-                    $error_messages .= self::create_error_message('Your email is invalid');
+                    $error_messages['user_email'] = 'Your email is invalid';
                     break;
                 
                 case 'email_taken':
-                    $error_messages .= self::create_error_message('That email is already taken.');
+                    $error_messages['user_email'] = 'That email is already taken.';
                     break;
-
-                case 'password_mismatch':
-                    $error_messages .= self::create_error_message('Your passwords don\'t match');
-                    break;
-
+                
                 case 'password_empty':
-                    $error_messages .= self::create_error_message('Password is required');
+                    $error_messages['user_password'] = 'Password is required';
+                    break;
+                
+                case 'password_mismatch':
+                    $error_messages['user_confirm'] = 'Your passwords don\'t match';
                     break;
                 
                 case 'confirm_empty':
-                    $error_messages .= self::create_error_message('Confirm password is empty');
+                    $error_messages['user_confirm'] = 'Confirm password is empty';
                     break;
                 
                 default:
-                    $error_messages .= self::create_error_message('There was an error, try again soon.');
+                  error_log("YIKES! There was an error. Try again soon.");
+                    // $error_messages .= 'There was an error, try again soon.';
                     break;
             }
         }
 
-        $error_messages .= '</ul></div>';
-        return $error_messages;
-    }
-
-    //easy way to process all messages. 
-    private static function create_error_message ($message) {
-        ob_start();
-            ?><li><?php echo $message; ?></li><?php
-        $error_message = ob_get_clean();
-        return $error_message;
+        if ( !empty($error_messages) ) {
+          echo json_encode( $error_messages );
+        }
+        // return $error_messages;
     }
 
     /**
@@ -460,37 +456,27 @@ class PL_Membership {
         ?>
         <div style="display: none">
             <form method="post" action="#<?php echo $role; ?>" id="pl_lead_register_form" name="pl_lead_register_form">
-                <div style="display:none" id="form_message_box"></div>
-                <h2>Sign Up</h2>
-                <!-- <p>
-                    <label for="pl_reg_username">Username</label>
-                    <input type="text" tabindex="20" size="20" class="input" id="user_login" name="user_login">
-                </p> -->
-                <p>
+                <div style="display:none" class="success">You have been successfully signed up. This page will refresh momentarily.</div><!-- id="form_message_box" -->
+                <div id="pl_lead_register_form_inner_wrapper">
+                  <h2>Sign Up</h2>
+                  <p>
                     <label for="user_email">Email</label>
-                    <input type="text" tabindex="20" size="20" required="required" class="input" id="user_email" name="user_email">
-                </p>
-                <p>
+                    <input type="text" tabindex="25" size="20" required="required" class="input" id="user_email" name="user_email" data-message="A valid email is needed.">
+                  </p>
+                  <p>
                     <label for="user_password">Password</label>
-                    <input type="password" tabindex="20" size="20" required="required" class="input" id="user_password" name="user_password">
-                </p>
-                <p>
+                    <input type="password" tabindex="26" size="20" required="required" class="input" id="user_password" name="user_password" data-message="Please enter a password.">
+                  </p>
+                  <p>
                     <label for="user_confirm">Confirm Password</label>
-                    <input type="password" tabindex="20" size="20" required="required" class="input" id="user_confirm" name="user_confirm">
-                </p>
-                <!-- <p>
-                    <label for="user_fname">Name</label>
-                    <input type="text" tabindex="20" size="20" class="input" id="user_fname" name="user_fname">
-                </p>
-                <p>
-                    <label for="user_phone">Phone</label>
-                    <input type="text" tabindex="20" size="20" class="input" id="user_phone" name="user_phone">
-                </p> -->
-                <p>
-                    <input type="submit" tabindex="20" class="submit button" value="Register" id="pl_register" name="pl_register">
-                </p>
-                <?php echo wp_nonce_field( 'placester_true_registration', 'register_nonce_field' ); ?>
-                <input type="hidden" id="register_form_submit_button" name="_wp_http_referer" value="/listings/">
+                    <input type="password" tabindex="27" size="20" required="required" class="input" id="user_confirm" name="user_confirm" data-message="Please confirm your password.">
+                  </p>
+                  <p>
+                    <input type="submit" tabindex="28" class="submit button" value="Register" id="pl_register" name="pl_register">
+                  </p>
+                  <?php echo wp_nonce_field( 'placester_true_registration', 'register_nonce_field' ); ?>
+                  <input type="hidden" tabindex="29" id="register_form_submit_button" name="_wp_http_referer" value="/listings/">
+                </div>
             </form>
         </div>
         <?php
@@ -654,16 +640,17 @@ class PL_Membership {
                 <form name="pl_login_form" id="pl_login_form" action="<?php echo home_url(); ?>/wp-login.php" method="post">
                   <div class="success" style="display:none;">You have successfully logged in.</div>
                   <div id="pl_login_form_inner_wrapper">
+                    <h2>Login</h2>
                     <p class="login-username">
                       <label for="user_login">Email</label>
-                      <input type="text" name="user_login" id="user_login" class="input noEnterSubmit" required="required" value="" tabindex="20" data-message="A valid email is needed" />
+                      <input type="text" name="user_login" id="user_login" class="input" required="required" value="" tabindex="20" data-message="A valid email is needed" />
                     </p>
                     <p class="login-password">
                       <label for="user_pass">Password</label>
-                      <input type="password" name="user_pass" id="user_pass" class="input noEnterSubmit" required="required" value="" tabindex="21" data-message="A password is needed" />
+                      <input type="password" name="user_pass" id="user_pass" class="input" required="required" value="" tabindex="21" data-message="A password is needed" />
                     </p>
                     <p class="login-remember">
-                      <label><input name="rememberme" type="checkbox" class="noEnterSubmit" id="rememberme" value="forever" tabindex="22" /> Remember Me</label>
+                      <label><input name="rememberme" type="checkbox" id="rememberme" value="forever" tabindex="22" /> Remember Me</label>
                     </p>
                     <p class="login-submit">
                       <input type="submit" name="wp-submit" id="wp-submit" class="button-primary" value="Log In" tabindex="23" />

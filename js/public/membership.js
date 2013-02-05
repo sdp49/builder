@@ -1,9 +1,37 @@
 jQuery(document).ready(function($) {
 
-    $('#pl_lead_register_form').submit(function(e) {
+    // beat Chrome's HTML5 tooltips for form validation
+    $('form#pl_lead_register_form input[type="submit"]').on('mousedown', function() {
+      validate_register_form();
+    });
+    $('form#pl_login_form input[type="submit"]').on('mousedown', function() {
+      validate_login_form();
+    });
+    
+    // Catch "Enter" keystroke and block it from submitting, except on Submit button
+    $('#pl_lead_register_form').bind("keypress", function(e) {
+      var code = e.keyCode || e.which;
+      if (code  == 13) {
+        validate_register_form();
+      }
+    });
+    $('#pl_login_form').bind("keypress", function(e) {
+      var code = e.keyCode || e.which;
+      if (code  == 13) {
+        validate_login_form();
+      }
+    });
+    
+    $('#pl_lead_register_form').bind('submit', function(e) {
+        
+        // prevent default form submission logic
         e.preventDefault();
-
-        $this = $(this);
+        var form = $(this);
+        
+        if ($('.invalid', this).length) {
+          return false;
+        };
+        
         nonce = $(this).find('#register_nonce_field').val();
         username = $(this).find('#user_email').val();
         email = $(this).find('#user_email').val();
@@ -23,29 +51,13 @@ jQuery(document).ready(function($) {
             phone: phone
         };
 
-        $.post(info.ajaxurl, data, function(response) {
-            if (response) {             
-                $('#form_message_box').html(response);
-                $('#form_message_box').fadeIn('fast');
-            } else {
-                $('#form_message_box').html('You have been successfully signed up. This page will refresh momentarily.');
-                $('#form_message_box').fadeIn('fast');
-                setTimeout(function () {
-                    window.location.href = window.location.href;
-                }, 700);
-                return true;
-            }
-        });
-
+        return register_user(data);
     });
     
-    // beat Chrome's HTML5 tooltips for form validation
-    $('form#pl_login_form input[type="submit"]').on('mousedown', function() {
-      validate_login_form();
-    });
-
+    
+    
     // initialize validator and add the custom form submission logic
-    $("form#pl_login_form").bind('submit',function(e) {
+    $("form#pl_login_form").bind('submit', function(e) {
 
       // prevent default form submission logic
       e.preventDefault();
@@ -55,11 +67,11 @@ jQuery(document).ready(function($) {
         return false;
       };
 
-       username = $(form).find('#user_login').val();
-       password = $(form).find('#user_pass').val();
-       remember = $(form).find('#rememberme').val();
+      username = $(form).find('#user_login').val();
+      password = $(form).find('#user_pass').val();
+      remember = $(form).find('#rememberme').val();
 
-       return login_user (username, password, remember);
+      return login_user (username, password, remember);
     });
     
     if(typeof $.fancybox == 'function') {
@@ -97,6 +109,69 @@ jQuery(document).ready(function($) {
         }
     }
     
+    function register_user (data) {
+      
+      // Need to validate here too, just in case someone press enter in the form instead of pressing submit
+      validate_register_form();
+      
+      $.ajax({
+          url: info.ajaxurl,
+          data: data, 
+          async: false,
+          type: "POST",
+          success: function(response) {
+          
+            if (response) {
+              
+                // Error Handling
+                var errors = jQuery.parseJSON(response);
+                
+                // jQuery Tools Validator error handling
+                // $('form#pl_lead_register_form').validator();
+                
+                // take possible errors and create new object with correct ones to pass to validator
+                error_array = new Array("user_email", "user_password", "user_confirm");
+                new_error_array = new Object();
+                $(error_array).each(function(i, v) {
+                  if (typeof errors[v] != "undefined") { 
+                    new_error_array[v] = errors[v];
+                  }
+                });
+                
+                $('form#pl_lead_register_form input').data("validator").invalidate(new_error_array);
+               
+            } else {
+              
+                event.preventDefault ? event.preventDefault() : event.returnValue = false;
+               
+               // remove error messages
+               $('.register-form-validator-error').remove();
+               
+               // Remove form
+               $("#pl_lead_register_form_inner_wrapper").slideUp();
+               
+                 // Show success message
+                 setTimeout(function() {
+                   $("#pl_lead_register_form .success").show('fast');
+                 },500);
+               
+                 // send window to redirect link
+                 setTimeout(function () {
+                  window.location.href = window.location.href;
+                 }, 1500);
+               
+                $('#pl_lead_register_form .success').fadeIn('fast');
+                setTimeout(function () {
+                    window.location.href = window.location.href;
+                }, 700);
+                return true;
+            }
+         }
+
+      });
+      
+    }
+    
     function login_user (username, password, remember) {
          
        data = {
@@ -123,9 +198,6 @@ jQuery(document).ready(function($) {
                  
                  event.preventDefault ? event.preventDefault() : event.returnValue = false;
                  
-                 // Get redirect link
-                 var redirect = $("input[name='redirect_to']").val();
-                 
                  // remove error messages
                  $('.login-form-validator-error').remove();
                  
@@ -139,7 +211,7 @@ jQuery(document).ready(function($) {
                  
                  // send window to redirect link
                  setTimeout(function () {
-                  window.location.href = redirect;
+                  window.location.href = window.location.href;
                  }, 1500);
                  
                  success = true;
@@ -150,13 +222,16 @@ jQuery(document).ready(function($) {
                  // jQuery Tools Validator error handling
                  $('form#pl_login_form').validator();
                  
-                 if ((typeof errors.user_login != 'undefined') && (typeof errors.user_pass != 'undefined')) {
-                   $('form#pl_login_form input').data("validator").invalidate({'user_login':errors.user_login,'user_pass':errors.user_pass});
-                 } else if (typeof errors.user_login != 'undefined') {
-                   $('form#pl_login_form input').data("validator").invalidate({'user_login':errors.user_login});
-                 } else if (typeof errors.user_pass != 'undefined') {
-                   $('form#pl_login_form input').data("validator").invalidate({'user_pass':errors.user_pass});
-                 }
+                 // take possible errors and create new object with correct ones to pass to validator
+                 error_array = new Array("user_login", "user_pass");
+                 new_error_array = new Object();
+                 $(error_array).each(function(i, v) {
+                   if (typeof errors[v] != "undefined") { 
+                     new_error_array[v] = errors[v];
+                   }
+                 });
+                 
+                 $('form#pl_login_form input').data("validator").invalidate(new_error_array);
                  
                }
            }
@@ -169,6 +244,22 @@ jQuery(document).ready(function($) {
           return true;
         }
     }
+
+    function validate_register_form () {
+      
+      var this_form = $('form#pl_lead_register_form');
+      
+      // get fields that are required from form and execture validator()
+      var inputs = $(this_form).find("input[required]").validator({
+          messageClass: 'login-form-validator-error', 
+          offset: [10,0],
+          message: "<div><span></span></div>",
+          position: 'top center'
+        });
+      
+      // check required field's validity
+      inputs.data("validator").checkValidity();
+  }
 
     function validate_login_form () {
       
@@ -186,11 +277,4 @@ jQuery(document).ready(function($) {
       inputs.data("validator").checkValidity();
   }
 
-  // Catch "Enter" keystroke and block it from submitting, except on Submit button
-  $('#pl_login_form').bind("keypress", function(e) {
-    var code = e.keyCode || e.which;
-    if (code  == 13) {
-      validate_login_form();
-    }
-  });
 });
