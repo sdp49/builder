@@ -173,36 +173,23 @@ class PL_Membership {
         if ( !empty($errors) ) {
           echo json_encode( $errors );
         } else {
+          
+          $rememberme = $remember == "forever" ? true : false;
+
+          // Manually login user
+          $creds['user_login'] = $sanitized_username;
+          $creds['user_password'] = $password;
+          $creds['remember'] = $rememberme;
+          
+          $user = wp_signon( $creds, true );
+          
+          wp_set_current_user($user->ID);
+          
           $success = "You have successfully logged in.";
           echo json_encode( $success );
+          
         }
         
-
-        // if ( empty( $sanitized_username ) ) 
-        //     $errors['missing_username'] = "The username is required.";
-        // elseif ( empty( $password ) ) 
-        //     $errors['missing_pass'] = "The password is required.";
-        // else {
-        //     $userdata = get_user_by( 'login', $sanitized_username );
-        //     // If the username exists, verify if the password is correct
-        //     // pls_dump($userdata);
-        //     if ( $userdata ) {
-        //         if ( !wp_check_password( $password, $userdata->user_pass, $userdata->ID ) ) 
-        //             $errors['wrong_pass'] = "The password is not correct.";
-        // 
-        //     } else {
-        //         $errors['wrong_user'] = "The username is invalid.";
-        //     }
-        // }
-        // 
-        // if ( !empty( $errors ) ) {
-        //     foreach( $errors as $key => $error ) 
-        //         echo "<div class='pl_login_alert pl_error error {$key}'>{$error}</div>";
-        // } else {
-        //     // Not actually seen since user is redirected.
-        //     echo "<div class='pl_login_alert success'>You have been successfully logged in.</div>";
-        // }
-
         die;
     }
 

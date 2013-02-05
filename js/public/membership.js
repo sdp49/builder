@@ -69,18 +69,10 @@ jQuery(document).ready(function($) {
 
        username = $(form).find('#user_login').val();
        password = $(form).find('#user_pass').val();
-       
-       return login_user (username, password);
-    });
-    
+       remember = $(form).find('#rememberme').val();
 
-    // $('#pl_login_form').bind('submit',function(e) {
-    //     $this = $(this);
-    //     username = $(this).find('#user_login').val();
-    //     password = $(this).find('#user_pass').val();
-    // 
-    //     return login_user(username, password);
-    // });
+       return login_user (username, password, remember);
+    });
     
     if(typeof $.fancybox == 'function') {
         $(".pl_register_lead_link").fancybox({
@@ -117,12 +109,13 @@ jQuery(document).ready(function($) {
         }
     }
     
-    function login_user (username, password) {
+    function login_user (username, password, remember) {
          
        data = {
            action: 'pl_login',
            username: username,
-           password: password
+           password: password,
+           remember: remember
        };
 
        var success = false;
@@ -133,9 +126,14 @@ jQuery(document).ready(function($) {
            async: false,
            type: "POST",
            success: function(response) {
-             console.log(response);
+             // console.log(response);
                // If request successfull empty the form
                if ( response == '"You have successfully logged in."' ) {
+                 
+                 event.preventDefault ? event.preventDefault() : event.returnValue = false;
+                 
+                 // Get redirect link
+                 var redirect = $("input[name='redirect_to']").val();
                  
                  // remove error messages
                  $('.login-form-validator-error').remove();
@@ -148,13 +146,27 @@ jQuery(document).ready(function($) {
                    $("#pl_login_form .success").show('fast');
                  },500);
                  
+                 // send window to redirect link
+                 setTimeout(function () {
+                  window.location.href = redirect;
+                 }, 1500);
+                 
                  success = true;
                } else {
                  // Error Handling
                  var errors = jQuery.parseJSON(response);
-
+                 
+                 // jQuery Tools Validator error handling
                  $('form#pl_login_form').validator();
-                 $('form#pl_login_form input').data("validator").invalidate({'user_login':errors.user_login,'user_pass':errors.user_pass});
+                 
+                 if ((typeof errors.user_login != 'undefined') && (typeof errors.user_pass != 'undefined')) {
+                   $('form#pl_login_form input').data("validator").invalidate({'user_login':errors.user_login,'user_pass':errors.user_pass});
+                 } else if (typeof errors.user_login != 'undefined') {
+                   $('form#pl_login_form input').data("validator").invalidate({'user_login':errors.user_login});
+                 } else if (typeof errors.user_pass != 'undefined') {
+                   $('form#pl_login_form input').data("validator").invalidate({'user_pass':errors.user_pass});
+                 }
+                 
                }
            }
        });
