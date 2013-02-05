@@ -526,7 +526,7 @@ class PL_Social_Networks_Twitter {
 			self::$fb_profile = self::$fb->api( '/me' );
 		}
 		catch( FacebookApiException $e ) {
-			error_log($e->getMessage());
+			pls_debug_socials( $e->getMessage() );
 			return;
 		}
 	
@@ -703,7 +703,7 @@ class PL_Social_Networks_Twitter {
 			}
 			catch( FacebookApiException $e ) {
 				pls_log_socials( 'sn_saver.txt', 'FB API failed: ' . $e->getMessage() );
-				error_log($e->getMessage());
+				pls_debug_socials( $e->getMessage() );
 				return false;
 			}
 		}
