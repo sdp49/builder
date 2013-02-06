@@ -106,36 +106,36 @@ class PL_General_Widget_CPT extends PL_Post_Base {
  			die();
  		}
  		
+ 		// defaults
+ 		$args['width'] = '250';
+ 		$args['height'] = '250';
+ 		
+ 		// get the post and the meta
  		$post_id = $_GET['id'];
 		$meta = get_post_custom( $post_id );
 
 		// default GET should have at least id, callback and action
-		if( count( $_GET ) === 3 ) {
-			$ignore_array = array(
-				'pl_static_listings_option',
-				'pl_featured_listings_option',
-			);
-			
-			foreach( $meta as $key => $value ) {
-				// ignore several options that we don't need to pass
-				if( ! in_array( $key, $ignore_array ) ) {
-					// ignore underscored private meta keys from WP
-					if( strpos( $key, '_', 0 ) !== 0 && is_array( $value ) && ! empty( $value[0] ) ) {
-						$args[$key] = $value[0];
-					}
+		$ignore_array = array(
+			'pl_static_listings_option',
+			'pl_featured_listings_option',
+		);
+		
+		foreach( $meta as $key => $value ) {
+			// ignore several options that we don't need to pass
+			if( ! in_array( $key, $ignore_array ) ) {
+				// ignore underscored private meta keys from WP
+				if( strpos( $key, '_', 0 ) !== 0 && is_array( $value ) && ! empty( $value[0] ) ) {
+					$args[$key] = $value[0];
 				}
 			}
-		} else {
-			$args = wp_parse_args( $_GET, array(
-				'width' => '250',
-				'height' => '250',
-			) );
-
-			$args['widget_class'] = ! empty( $meta['widget_class'] ) && is_array( $meta['widget_class'] ) ? $meta['widget_class'][0] : ''; 
-			
-			unset( $args['action'] );
-			unset( $args['callback'] );
 		}
+		
+		$args['width'] = ! empty( $_GET['width'] ) ? $_GET['width'] : $args['width'];
+		$args['height'] = ! empty( $_GET['height'] ) ? $_GET['height'] : $args['height'];
+		$args['widget_class'] = ! empty( $meta['widget_class'] ) && is_array( $meta['widget_class'] ) ? $meta['widget_class'][0] : ''; 
+		
+		unset( $args['action'] );
+		unset( $args['callback'] );
 		
 		$args['post_id'] = $_GET['id'];
 		
