@@ -277,4 +277,102 @@ jQuery(document).ready(function($) {
       inputs.data("validator").checkValidity();
   }
 
+  //
+  // Facebook Login
+  //
+
+  // Additional JS functions here
+     window.fbAsyncInit = function() {
+       FB.init({
+         appId      : '263914027073402', // App ID
+         channelUrl : '<?php echo get_template_directory_uri(); ?>/fb_channel.html', // Channel File
+         status     : true, // check login status
+         cookie     : true, // enable cookies to allow the server to access the session
+         xfbml      : true  // parse XFBML
+       });
+
+      // Additional init code here
+      FB.getLoginStatus(function(response) {
+         if (response.status === 'connected') {
+           // connected
+           console.log("connected");
+           // login();
+
+           insert_fb_connected();
+           
+         } else if (response.status === 'not_authorized') {
+           // not_authorized
+           console.log("not authorized");
+           // login();
+         } else {
+           // not_logged_in
+           console.log("not logged in");
+           // login();
+         }
+      });
+      
+      
+      
+      // http://fbdevwiki.com/wiki/FB.ui
+      // FB.ui(
+      //   {
+      //     method: 'feed',
+      //     name: 'Facebook Dialogs',
+      //     link: 'http://developers.facebook.com/docs/reference/dialogs/',
+      //     picture: 'http://fbrell.com/f8.jpg',
+      //     caption: 'Reference Documentation',
+      //     description: 'Dialogs provide a simple, consistent interface for applications to interface with users.'
+      //   },
+      //   function(response) {
+      //     if (response && response.post_id) {
+      //       alert('Post was published.');
+      //     } else {
+      //       alert('Post was not published.');
+      //     }
+      //   }
+      // );
+
+     };
+
+     function login() {
+         FB.login(function(response) {
+             if (response.authResponse) {
+                 // connected
+                 console.log(response.authResponse);
+                 // testAPI();
+
+             } else {
+                 // cancelled
+                 console.log(response.authResponse);
+             }
+         });
+     }
+
+     function testAPI() {
+         console.log('Welcome!  Fetching your information.... ');
+         FB.api('/me', function(response) {
+             // console.log('Good to see you, ' + response.name + '.');
+             console.log(response);
+         });
+     }
+  
+    function insert_fb_connected () {
+      
+      var user_block = '';
+      
+      FB.api('/me', function(user) {
+          if (user) {
+            user_block += '<div id="fb-connect-wrapper">';
+            user_block += '<img id="fb-connect-image" src="http://graph.facebook.com/' + user.id + '/picture" />';
+            user_block += '<p id="fb-connect-name">' + user.name + '</div>';
+            
+            // add user block to login area
+            jQuery("#header-login").prepend(user_block);
+          }
+          
+      });
+      
+      return false;
+    }
+
 });
