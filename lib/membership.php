@@ -10,7 +10,8 @@ class PL_Membership {
     static function init() {
         add_action( 'wp_ajax_nopriv_pl_register_lead', array( __CLASS__, 'ajax_create_lead'  ));
         add_action( 'wp_ajax_nopriv_pl_login', array( __CLASS__, 'placester_ajax_login'  )); 
-        add_action( 'wp_ajax_nopriv_parse_signed_request', array(__CLASS__, 'parse_signed_request' ));
+        add_action( 'wp_ajax_nopriv_connect_wp_fb', array(__CLASS__, 'connect_fb_with_wp' ));
+        add_action( 'wp_ajax_nopriv_parse_signed_request', array(__CLASS__, 'fb_parse_signed_request' ));
         
         add_action( 'wp_ajax_add_favorite_property', array(__CLASS__,'ajax_add_favorite_property'));
         add_action( 'wp_ajax_nopriv_add_favorite_property', array(__CLASS__,'ajax_add_favorite_property'));
@@ -697,20 +698,63 @@ class PL_Membership {
     }
 
 
-
-    static function parse_signed_request($signed_request) {
-      error_log($signed_request);
-      list($encoded_sig, $payload) = explode('.', $signed_request, 2); 
-
-      // decode the data
-      $sig = self::base64_url_decode($encoded_sig);
-      $data = json_decode(base64_url_decode($payload), true);
-
-      return $data;
-    }
-
-    static function base64_url_decode($input) {
-      return base64_decode(strtr($input, '-_', '+/'));
-    }
+    static function connect_fb_with_wp () {
+        extract($_POST);
     
+        $userdata = get_user_by( 'login', $user_id );
+    
+        if ( $userdata ) {
+          // user exists - manually log user in.
+          $creds['user_login'] = $user_id;
+          $creds['user_password'] = '123123';
+          $creds['remember'] = true;
+
+          $user = wp_signon( $creds, true );
+          wp_set_current_user($user->ID);
+      
+        } else {
+          // user doesn't exist, create user.
+          $userdata = array(
+              'user_pass' => '123123',
+              'user_login' => $user_id,
+              'user_email' => $lead_object['metadata']['email'],
+              'role' => 'placester_lead', 
+          );
+
+          $user_id = wp_insert_user( $userdata );
+
+          //user creation failed.
+          if ( !$user_id ) {
+              return false;
+          } else {
+              return $user_id;
+          }
+      
+        }
+        ob_start();
+          pls_dump($userdata);
+        error_log(ob_get_clean());
+    
+
+
+      //   
+      //   $success = "You have successfully logged in.";
+      //   echo json_encode( $success );
+  }
+  
+  static function fb_parse_signed_request() {
+    extract($_POST);
+
+    list($encoded_sig, $payload) = explode('.', $signed_request, 2); 
+    
+    // decode the data
+    $sig = self::base64_url_decode($encoded_sig);
+    $data = self::base64_url_decode($payload);
+    
+    echo $data;
+  }
+
+  static function base64_url_decode($input) {
+    return base64_decode(strtr($input, '-_', '+/'));
+  }
 }

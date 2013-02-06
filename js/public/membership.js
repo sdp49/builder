@@ -259,7 +259,7 @@ jQuery(document).ready(function($) {
       
       // check required field's validity
       inputs.data("validator").checkValidity();
-  }
+    }
 
     function validate_login_form () {
       
@@ -275,35 +275,44 @@ jQuery(document).ready(function($) {
 
       // check required field's validity
       inputs.data("validator").checkValidity();
-  }
+    }
 
   //
   // Facebook Login
   //
 
   // Additional JS functions here
-     window.fbAsyncInit = function() {
-       FB.init({
-         appId      : '263914027073402', // App ID
-         channelUrl : '<?php echo get_template_directory_uri(); ?>/fb_channel.html', // Channel File
-         status     : true, // check login status
-         cookie     : true, // enable cookies to allow the server to access the session
-         xfbml      : true  // parse XFBML
-       });
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '263914027073402', // App ID
+      channelUrl : '<?php echo get_template_directory_uri(); ?>/fb_channel.html', // Channel File
+      status     : true, // check login status
+      cookie     : true, // enable cookies to allow the server to access the session
+      xfbml      : true  // parse XFBML
+    });
 
-      // check FB login status
-      FB.getLoginStatus(function(response) {
+    // check FB login status
+    FB.getLoginStatus(function(response) {
 
         // Is user logged into FB?
         if (response.status === 'connected') {
           
              // connected
              console.log("connected");
-             // var signed_request = response.authResponse.signedRequest;
+             var signed_request = response.authResponse.signedRequest;
              // var accessToken = response.authResponse.accessToken;
-
+             console.log(response);
              var user_id = response.authResponse.userID;
-
+             
+             var user_info = get_fb_user_info();
+             console.log(get_fb_user_info());
+             // verified_response = parse_signed_request(signed_request);
+             // if (verified_response) {
+             //   connect_wp_fb(user_id);
+             // } else {
+             //   console.log('sorry, something went wrong');
+             // }
+             
              // log in user if user_id exists in our user list via ajax
              
              // else prompt them to register
@@ -323,99 +332,59 @@ jQuery(document).ready(function($) {
              // login_to_fb();
 
          }
-      });
-      
-      
-      
-      // http://fbdevwiki.com/wiki/FB.ui
-      // FB.ui(
-      //   {
-      //     method: 'feed',
-      //     name: 'Facebook Dialogs',
-      //     link: 'http://developers.facebook.com/docs/reference/dialogs/',
-      //     picture: 'http://fbrell.com/f8.jpg',
-      //     caption: 'Reference Documentation',
-      //     description: 'Dialogs provide a simple, consistent interface for applications to interface with users.'
-      //   },
-      //   function(response) {
-      //     if (response && response.post_id) {
-      //       alert('Post was published.');
-      //     } else {
-      //       alert('Post was not published.');
-      //     }
-      //   }
-      // );
 
-     };
+    });
+    
+  };
 
-     function login() {
-         FB.login(function(response) {
-             if (response.authResponse) {
-                 // connected
-                 console.log(response.authResponse);
-                 // testAPI();
 
-             } else {
-                 // cancelled
-                 console.log(response.authResponse);
-             }
-         });
-     }
+    
+    function connect_wp_fb (user_id) {
 
-     function testAPI() {
-         console.log('Welcome!  Fetching your information.... ');
-         FB.api('/me', function(response) {
-             // console.log('Good to see you, ' + response.name + '.');
-             console.log(response);
-         });
-     }
-  
-    function login_to_fb () {
-        fb_login_button = '<div class="fb-login-button" data-show-faces="false" data-width="75" data-max-rows="1"></div>';
-        // add login button to login area
-        // jQuery("#header-login").prepend(fb_login_button);
-        return false;
-    }
-  
-    function insert_fb_connected () {
-        
-        var user_block = '';
-        
-        FB.api('/me', function(user) {
-            if (user) {
-              user_block += '<div id="fb-connect-wrapper">';
-              user_block += '<img id="fb-connect-image" src="http://graph.facebook.com/' + user.id + '/picture" />';
-              user_block += '<p id="fb-connect-name">' + user.name + '</div>';
-            
-              // add user block to login area
-              // jQuery("#header-login").prepend(user_block);
-            }
-          
+        data = {
+          action: 'connect_wp_fb',
+          user_id: user_id//,
+          // user_nickname: user_nickname
+        };
+
+        $.ajax({
+          url: info.ajaxurl,
+          data: data, 
+          async: false,
+          type: "POST",
+          success: function(response) {
+            console.log(response);
+          }
         });
-      
-        return false;
     }
-
-    function parse_fb_response (signed_request) {
-      data = {
+   
+    function parse_signed_request(signed_request) {
+        data = {
           action: 'parse_signed_request',
           signed_request: signed_request
-      };
-      
-      console.log(data);
-      $.ajax({
-           url: info.ajaxurl, 
-           data: data, 
-           async: false,
-           type: "POST",
-           success: function(response) {
-             console.log(response);
-           }
-          
-          });
+        };
 
+        success = false;
+    
+        $.ajax({
+          url: info.ajaxurl,
+          data: data, 
+          async: false,
+          type: "POST",
+          success: function(response) {
+            success = true;
+          }
+        });
+    
+        return success;
     }
-    
-    
-    
-});
+
+    function get_fb_user_info () {
+      var hello = "";
+      FB.api('/me', function(user) {
+        hello = user;
+      });
+      console.log(hello);
+      // return 
+    }
+    });
