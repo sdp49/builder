@@ -133,8 +133,13 @@ class PL_Admin_Util {
 	private static function constructCards ( $section_obj ) {
 		global $PL_ADMIN_CARDS;
 		// Make sure a card group definition exists for the give section in the config...
-		$config = $PL_ADMIN_CARDS[$section_obj->id];
-		if ( empty($config) ) { return null; }
+		if ( !empty($PL_ADMIN_CARDS[$section_obj->id]) ) {
+			$config = $PL_ADMIN_CARDS[$section_obj->id];
+		}
+		else {
+			return null;
+		} 
+
 
 		foreach ( $config as $cardID => $args ) {
 			// Check for custom entity, otherwise use generic class... (NOTE: Class names are NOT case-sensitive in PHP)
