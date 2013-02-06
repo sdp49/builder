@@ -291,23 +291,37 @@ jQuery(document).ready(function($) {
          xfbml      : true  // parse XFBML
        });
 
-      // Additional init code here
+      // check FB login status
       FB.getLoginStatus(function(response) {
-         if (response.status === 'connected') {
-           // connected
-           console.log("connected");
-           // login();
 
-           insert_fb_connected();
-           
+        // Is user logged into FB?
+        if (response.status === 'connected') {
+          
+             // connected
+             console.log("connected");
+             // var signed_request = response.authResponse.signedRequest;
+             // var accessToken = response.authResponse.accessToken;
+
+             var user_id = response.authResponse.userID;
+
+             // log in user if user_id exists in our user list via ajax
+             
+             // else prompt them to register
+             
+        
          } else if (response.status === 'not_authorized') {
-           // not_authorized
-           console.log("not authorized");
-           // login();
+
+             // not_authorized
+             console.log("not authorized");
+             // login();
+
          } else {
-           // not_logged_in
-           console.log("not logged in");
-           // login();
+
+             // not_logged_in
+             console.log("not logged in");
+             // add login button
+             // login_to_fb();
+
          }
       });
       
@@ -356,23 +370,52 @@ jQuery(document).ready(function($) {
          });
      }
   
+    function login_to_fb () {
+        fb_login_button = '<div class="fb-login-button" data-show-faces="false" data-width="75" data-max-rows="1"></div>';
+        // add login button to login area
+        // jQuery("#header-login").prepend(fb_login_button);
+        return false;
+    }
+  
     function insert_fb_connected () {
-      
-      var user_block = '';
-      
-      FB.api('/me', function(user) {
-          if (user) {
-            user_block += '<div id="fb-connect-wrapper">';
-            user_block += '<img id="fb-connect-image" src="http://graph.facebook.com/' + user.id + '/picture" />';
-            user_block += '<p id="fb-connect-name">' + user.name + '</div>';
+        
+        var user_block = '';
+        
+        FB.api('/me', function(user) {
+            if (user) {
+              user_block += '<div id="fb-connect-wrapper">';
+              user_block += '<img id="fb-connect-image" src="http://graph.facebook.com/' + user.id + '/picture" />';
+              user_block += '<p id="fb-connect-name">' + user.name + '</div>';
             
-            // add user block to login area
-            jQuery("#header-login").prepend(user_block);
-          }
+              // add user block to login area
+              // jQuery("#header-login").prepend(user_block);
+            }
           
-      });
+        });
       
-      return false;
+        return false;
     }
 
+    function parse_fb_response (signed_request) {
+      data = {
+          action: 'parse_signed_request',
+          signed_request: signed_request
+      };
+      
+      console.log(data);
+      $.ajax({
+           url: info.ajaxurl, 
+           data: data, 
+           async: false,
+           type: "POST",
+           success: function(response) {
+             console.log(response);
+           }
+          
+          });
+
+    }
+    
+    
+    
 });

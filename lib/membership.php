@@ -10,7 +10,8 @@ class PL_Membership {
     static function init() {
         add_action( 'wp_ajax_nopriv_pl_register_lead', array( __CLASS__, 'ajax_create_lead'  ));
         add_action( 'wp_ajax_nopriv_pl_login', array( __CLASS__, 'placester_ajax_login'  )); 
-
+        add_action( 'wp_ajax_nopriv_parse_signed_request', array(__CLASS__, 'parse_signed_request' ));
+        
         add_action( 'wp_ajax_add_favorite_property', array(__CLASS__,'ajax_add_favorite_property'));
         add_action( 'wp_ajax_nopriv_add_favorite_property', array(__CLASS__,'ajax_add_favorite_property'));
         add_action( 'wp_ajax_remove_favorite_property', array(__CLASS__,'ajax_remove_favorite_property'));
@@ -18,6 +19,8 @@ class PL_Membership {
         add_shortcode('favorite_link_toggle', array(__CLASS__,'placester_favorite_link_toggle'));
         add_shortcode('lead_user_navigation', array(__CLASS__,'placester_lead_control_panel'));
 
+        
+        
         // Create the "Property lead" role
         $lead_role = add_role( 'placester_lead','Property Lead',array('add_roomates' => true,'read_roomates' => true,'delete_roomates' => true,'add_favorites' => true,'delete_roomates' => true,'level_0' => true,'read' => true));
     }
@@ -641,11 +644,25 @@ class PL_Membership {
               ?>
                 <form name="pl_login_form" id="pl_login_form" action="<?php echo home_url(); ?>/wp-login.php" method="post" class="pl_login_reg_form">
 
-                    <div class="success" style="display:none;">You have successfully logged in.</div>
+                    <!-- <div class="success" style="display:none;">You have successfully logged in.</div> -->
 
-                    <div id="pl_login_form_inner_wrapper">
+                    <!-- <div id="pl_login_form_inner_wrapper"> -->
                       <h2>Login</h2>
-                      <p class="login-username">
+                      
+                      <iframe src="https://www.facebook.com/plugins/registration?
+                                   client_id=263914027073402&
+                                   redirect_uri=<?php echo the_permalink(); ?>&
+                                   fields=name,location,email"
+                              scrolling="auto"
+                              frameborder="no"
+                              style="border:none"
+                              allowTransparency="true"
+                              width="100%"
+                              height="330">
+                      </iframe>
+                      
+                      
+                      <!-- <p class="login-username">
                         <label for="user_login">Email</label>
                         <input type="text" name="user_login" id="user_login" class="input" required="required" value="" tabindex="20" data-message="A valid email is needed" />
                       </p>
@@ -658,9 +675,9 @@ class PL_Membership {
                       </p>
                       <p class="login-submit">
                         <input type="submit" name="wp-submit" id="wp-submit" class="button-primary" value="Log In" tabindex="23" />
-                        <input type="hidden" name="redirect_to" value="<?php echo $url; ?>" />
-                      </p>
-                    </div>
+                        <input type="hidden" name="redirect_to" value="<?php //echo $url; ?>" />
+                      </p> -->
+                    <!-- </div> -->
 
                 </form>
               <?php
@@ -680,4 +697,20 @@ class PL_Membership {
     }
 
 
+
+    static function parse_signed_request($signed_request) {
+      error_log($signed_request);
+      list($encoded_sig, $payload) = explode('.', $signed_request, 2); 
+
+      // decode the data
+      $sig = self::base64_url_decode($encoded_sig);
+      $data = json_decode(base64_url_decode($payload), true);
+
+      return $data;
+    }
+
+    static function base64_url_decode($input) {
+      return base64_decode(strtr($input, '-_', '+/'));
+    }
+    
 }
