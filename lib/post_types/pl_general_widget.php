@@ -106,36 +106,36 @@ class PL_General_Widget_CPT extends PL_Post_Base {
  			die();
  		}
  		
+ 		// defaults
+ 		$args['width'] = '250';
+ 		$args['height'] = '250';
+ 		
+ 		// get the post and the meta
  		$post_id = $_GET['id'];
 		$meta = get_post_custom( $post_id );
 
 		// default GET should have at least id, callback and action
-		if( count( $_GET ) === 3 ) {
-			$ignore_array = array(
-				'pl_static_listings_option',
-				'pl_featured_listings_option',
-			);
-			
-			foreach( $meta as $key => $value ) {
-				// ignore several options that we don't need to pass
-				if( ! in_array( $key, $ignore_array ) ) {
-					// ignore underscored private meta keys from WP
-					if( strpos( $key, '_', 0 ) !== 0 && is_array( $value ) && ! empty( $value[0] ) ) {
-						$args[$key] = $value[0];
-					}
+		$ignore_array = array(
+			'pl_static_listings_option',
+			'pl_featured_listings_option',
+		);
+		
+		foreach( $meta as $key => $value ) {
+			// ignore several options that we don't need to pass
+			if( ! in_array( $key, $ignore_array ) ) {
+				// ignore underscored private meta keys from WP
+				if( strpos( $key, '_', 0 ) !== 0 && is_array( $value ) && ! empty( $value[0] ) ) {
+					$args[$key] = $value[0];
 				}
 			}
-		} else {
-			$args = wp_parse_args( $_GET, array(
-				'width' => '250',
-				'height' => '250',
-			) );
-
-			$args['widget_class'] = ! empty( $meta['widget_class'] ) && is_array( $meta['widget_class'] ) ? $meta['widget_class'][0] : ''; 
-			
-			unset( $args['action'] );
-			unset( $args['callback'] );
 		}
+		
+		$args['width'] = ! empty( $_GET['width'] ) ? $_GET['width'] : $args['width'];
+		$args['height'] = ! empty( $_GET['height'] ) ? $_GET['height'] : $args['height'];
+		$args['widget_class'] = ! empty( $meta['widget_class'] ) && is_array( $meta['widget_class'] ) ? $meta['widget_class'][0] : ''; 
+		
+		unset( $args['action'] );
+		unset( $args['callback'] );
 		
 		$args['post_id'] = $_GET['id'];
 		
@@ -457,7 +457,6 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 					} else {
 						$('#pl_static_listing_block').show();
 					}
-
 					
 					$('#preview-meta-widget').html('<img id="preview_load_spinner" src="<?php echo PL_PARENT_URL . 'images/preview_load_spin.gif'; ?>" alt="Widget options are Loading..." width="30px" height="30px" style="position: absolute; top: 100px; left: 100px" />');
 
@@ -774,18 +773,22 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	}
 	
  	public function autosave_refresh_iframe( ) {
-		$id = isset( $_POST['post_ID'] ) ? (int) $_POST['post_ID'] : 0;
-		if ( ! $id )
-			wp_die( -1 );
-		
+		if ( isset($_POST['pl_post_type']) ) {    	
+			$id = isset( $_POST['post_ID'] ) ? (int) $_POST['post_ID'] : 0;
+			
+			if ( ! $id )
+				wp_die( -1 );
+			
 			if( ! headers_sent() ):
 				?>
 					<script type="text/javascript">
 						jQuery('#post').trigger('submit');
 					</script>
 				<?php 
-			endif; 
-		$this->meta_box_save( $id );
+			endif;
+			 
+			$this->meta_box_save( $id );
+		}	
 	}
 	
 	private function print_template_blocks( ) {
