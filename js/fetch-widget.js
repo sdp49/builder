@@ -79,20 +79,39 @@ function callback( json ) {
 		script_element.parentNode.insertBefore( iframe, after_iframe );
 		script_element.parentNode.insertBefore( before_iframe, iframe );
 		
-		pl_regex_matcher( json.pl_template_before_block );
-		pl_regex_matcher( json.pl_template_after_block );
+		if( undefined !== json.pl_template_before_block ) {
+			pl_regex_matcher( json.pl_template_before_block );
+		}
+		if( undefined !== json.pl_template_after_block ) {
+			pl_regex_matcher( json.pl_template_after_block );
+		}
 	}
 	
 }
 
 // After appending script elements, you need to evaluate them as well
 function pl_regex_matcher( content ) {
-	var re = /<script\b[^>]*>([\s\S]*?)<\/script>/gm;
+	// question mark wildcard character is not rendered properly in all browsers
+	// running 2 different regular expressions for script src="..." and <script>...</script>
+	var re_src = /<script\b[^>]*src=['"]([^'"]*)['"][^>]*><\/script>/igm;
 
-	var match;
-	while (match = re.exec( content ) ) {
+	var match_src;
+	while (match_src = re_src.exec( content ) ) {
 	  // full match is in match[0], whereas captured groups are in ...[1], ...[2], etc.
-	  eval( match[1] );
+	  // eval( match_src[1] );
+	  var scrpt = document.createElement('script');
+	  scrpt.src=match_src[1];
+	  document.head.appendChild(scrpt);
+	}
+	
+	var re_in = /<script\b[^>]*>([\s\S]*?)<\/script>/igm;
+
+	var match_in;
+	while (match_in = re_in.exec( content ) ) {
+	  // the content between the opening and the closing tag is match_in[1]
+		if( undefined !== match_in[1] && "" != match_in[1] ) {
+			eval( match_in[1] );
+		}
 	}
 }
 
