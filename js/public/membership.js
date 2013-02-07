@@ -283,29 +283,30 @@ jQuery(document).ready(function($) {
 
   // Additional JS functions here
   window.fbAsyncInit = function() {
-    FB.init({
-      appId      : '263914027073402', // App ID
-      channelUrl : '<?php echo get_template_directory_uri(); ?>/fb_channel.html', // Channel File
-      status     : true, // check login status
-      cookie     : true, // enable cookies to allow the server to access the session
-      xfbml      : true  // parse XFBML
-    });
 
+    fb_init();
+    
     // check FB login status
     FB.getLoginStatus(function(response) {
 
         // Is user logged into FB?
         if (response.status === 'connected') {
           
-             // connected
-             console.log("connected");
-             var signed_request = response.authResponse.signedRequest;
              // var accessToken = response.authResponse.accessToken;
              console.log(response);
              var user_id = response.authResponse.userID;
              
-             var user_info = get_fb_user_info();
-             console.log(get_fb_user_info());
+             
+             // get user info
+             var u_info = '';
+
+             FB.api('/me', function(user) {
+               console.log(user);
+               u_info = user;
+              });
+
+             // console.log(u_info);
+             
              // verified_response = parse_signed_request(signed_request);
              // if (verified_response) {
              //   connect_wp_fb(user_id);
@@ -338,53 +339,59 @@ jQuery(document).ready(function($) {
   };
 
 
-    
-    function connect_wp_fb (user_id) {
 
-        data = {
-          action: 'connect_wp_fb',
-          user_id: user_id//,
-          // user_nickname: user_nickname
-        };
 
-        $.ajax({
-          url: info.ajaxurl,
-          data: data, 
-          async: false,
-          type: "POST",
-          success: function(response) {
-            console.log(response);
-          }
-        });
-    }
-   
-    function parse_signed_request(signed_request) {
-        data = {
-          action: 'parse_signed_request',
-          signed_request: signed_request
-        };
 
-        success = false;
-    
-        $.ajax({
-          url: info.ajaxurl,
-          data: data, 
-          async: false,
-          type: "POST",
-          success: function(response) {
-            success = true;
-          }
-        });
-    
-        return success;
-    }
 
-    function get_fb_user_info () {
-      var hello = "";
-      FB.api('/me', function(user) {
-        hello = user;
-      });
-      console.log(hello);
-      // return 
-    }
+});
+
+function fb_init() {
+  FB.init({
+    appId      : '263914027073402', // App ID
+    channelUrl : '<?php echo get_template_directory_uri(); ?>/fb_channel.html', // Channel File
+    status     : true, // check login status
+    cookie     : true, // enable cookies to allow the server to access the session
+    xfbml      : true  // parse XFBML
+  });
+}
+
+
+function connect_wp_fb (user_id) {
+
+    data = {
+      action: 'connect_wp_fb',
+      user_id: user_id//,
+      // user_nickname: user_nickname
+    };
+
+    $.ajax({
+      url: info.ajaxurl,
+      data: data, 
+      async: false,
+      type: "POST",
+      success: function(response) {
+        console.log(response);
+      }
     });
+}
+
+function parse_signed_request(signed_request) {
+    data = {
+      action: 'parse_signed_request',
+      signed_request: signed_request
+    };
+
+    success = false;
+
+    $.ajax({
+      url: info.ajaxurl,
+      data: data, 
+      async: false,
+      type: "POST",
+      success: function(response) {
+        success = true;
+      }
+    });
+
+    return success;
+}

@@ -10,7 +10,7 @@ class PL_Membership {
     static function init() {
         add_action( 'wp_ajax_nopriv_pl_register_lead', array( __CLASS__, 'ajax_create_lead'  ));
         add_action( 'wp_ajax_nopriv_pl_login', array( __CLASS__, 'placester_ajax_login'  )); 
-        add_action( 'wp_ajax_nopriv_connect_wp_fb', array(__CLASS__, 'connect_fb_with_wp' ));
+        // add_action( 'wp_ajax_nopriv_connect_wp_fb', array(__CLASS__, 'connect_fb_with_wp' ));
         add_action( 'wp_ajax_nopriv_parse_signed_request', array(__CLASS__, 'fb_parse_signed_request' ));
         
         add_action( 'wp_ajax_add_favorite_property', array(__CLASS__,'ajax_add_favorite_property'));
@@ -123,7 +123,7 @@ class PL_Membership {
                 $lead_object['errors'][] = 'placester_create_failed';                    
             }
             
-            // If the API call was successfull, inform the user of his 
+            // If the API call was successful, inform the user of his 
             // password and set the password change nag
             if ( empty( $lead_object['errors'] ) ) {
                 update_user_meta( $wordpress_user_id, 'placester_api_id', $response['id'] );
@@ -588,6 +588,14 @@ class PL_Membership {
      * of what they need to do to register a lead account
      */
     function placester_lead_control_panel( $args ) {
+      
+        $fb_registered = false;
+        // Capture users that just logged on w/ FB registration
+        if (isset($_POST['signed_request'])) {
+          $fb_registered = true;
+          $signed_request = self::fb_parse_signed_request($_POST['signed_request'], false);
+        }
+      
         $defaults = array(
             'loginout' => true,
             'profile' => true,
@@ -603,10 +611,18 @@ class PL_Membership {
         $args = wp_parse_args( $args, $defaults );
         extract( $args, EXTR_SKIP );
 
+        // Register WP user w/ FB creds when FB registration has been triggered
+        if ($fb_registered) {
+          self::connect_fb_with_wp($signed_request);
+        }
+        
+
         $is_lead = current_user_can( 'placester_lead' );
 
         /** The login or logout link. */
-        if ( ! is_user_logged_in() ) {
+        
+        // user isn't logged into WP nor FB
+        if ( !is_user_logged_in() && !$fb_registered ) {
             $loginout_link = '<a class="pl_login_link" href="#pl_login_form">Log in</a>';
         } else {
             $loginout_link = '<a href="' . esc_url( wp_logout_url(site_url()) ) . '" id="pl_logout_link">Log out</a>';
@@ -649,19 +665,8 @@ class PL_Membership {
 
                     <!-- <div id="pl_login_form_inner_wrapper"> -->
                       <h2>Login</h2>
-                      
-                      <iframe src="https://www.facebook.com/plugins/registration?
-                                   client_id=263914027073402&
-                                   redirect_uri=<?php echo the_permalink(); ?>&
-                                   fields=name,location,email"
-                              scrolling="auto"
-                              frameborder="no"
-                              style="border:none"
-                              allowTransparency="true"
-                              width="100%"
-                              height="330">
-                      </iframe>
-                      
+                      <!-- redirect-uri="<?php //echo $_SERVER["HTTP_REFERER"]; ?>" -->
+                      <fb:registration fields="name,location,email" width="260"></fb:registration>
                       
                       <!-- <p class="login-username">
                         <label for="user_login">Email</label>
@@ -698,63 +703,100 @@ class PL_Membership {
     }
 
 
-    static function connect_fb_with_wp () {
-        extract($_POST);
-    
+    static function connect_fb_with_wp ($signed_request) {
+        
+        // json_decode signed_request into array
+        $signed_request = json_decode($signed_request, true);
+        
+        $user_id = $signed_request['user_id'];
+        $user_email = $signed_request['registration']['email'];
+        $user_name = $signed_request['registration']['name'];
         $userdata = get_user_by( 'login', $user_id );
-    
-        if ( $userdata ) {
-          // user exists - manually log user in.
-          $creds['user_login'] = $user_id;
-          $creds['user_password'] = '123123';
-          $creds['remember'] = true;
-
-          $user = wp_signon( $creds, true );
-          wp_set_current_user($user->ID);
-      
-        } else {
-          // user doesn't exist, create user.
-          $userdata = array(
-              'user_pass' => '123123',
-              'user_login' => $user_id,
-              'user_email' => $lead_object['metadata']['email'],
-              'role' => 'placester_lead', 
-          );
-
-          $user_id = wp_insert_user( $userdata );
-
-          //user creation failed.
-          if ( !$user_id ) {
-              return false;
-          } else {
-              return $user_id;
-          }
-      
-        }
+        
         ob_start();
           pls_dump($userdata);
         error_log(ob_get_clean());
-    
+        
+        if ( $userdata ) {
+          
+          // user exists - manually log user in.
+          // $creds['user_login'] = $user_id;
+          // $creds['user_password'] = '123123';
+          // $creds['remember'] = true;
+          
+          // $user = wp_signon( $creds, true );
+          // wp_set_current_user($user_id);
+          // wp_set_current_user($user->ID);
+          $user = get_user_by('login', $user_id);
+          var_dump($user);
+          wp_set_current_user($user->ID);
+          // wp_set_current_user('40');
+        
+        } else {
+          error_log("user doesn't exist!");
+          // create random password
+          $random_pass = self::random_password();
+          
+          // user doesn't exist, create user.
+          $userdata = array(
+              'user_pass' => $random_pass,
+              'user_login' => $user_id,
+              'user_url' => $_SERVER["SERVER_NAME"],
+              'user_email' => $user_email,
+              'user_nicename' => $user_name,
+              'role' => 'placester_lead'
+          );
+          
+          // add user to WP user table
+          wp_insert_user( $userdata );
 
-
-      //   
-      //   $success = "You have successfully logged in.";
-      //   echo json_encode( $success );
+          // send user email w/ login and password
+          wp_mail($user_email,
+           'Your password for ' . $_SERVER["SERVER_NAME"],
+           "to log into " . $_SERVER["SERVER_NAME"] . " your username is '" . $user_email . "', and your password is '" . $random_pass . "'. However, as long as you are signed into Facebook, you won't need to manually sign in."
+           );
+          
+        }
   }
   
-  static function fb_parse_signed_request() {
-    extract($_POST);
-
+  // Parse Facebook Signed Request
+  static function fb_parse_signed_request($signed_request = '', $return = 'ajax') {
+    
+    // ob_start();
+    //   pls_dump($signed_request);
+    // error_log(ob_get_clean());
+    
+    if (empty($signed_request)) {
+      extract($_POST);
+    }
+    
     list($encoded_sig, $payload) = explode('.', $signed_request, 2); 
     
     // decode the data
     $sig = self::base64_url_decode($encoded_sig);
     $data = self::base64_url_decode($payload);
     
-    echo $data;
+    if ($return == 'ajax') {
+      echo $data;
+    } else {
+      return $data;
+    }
+    
   }
 
   static function base64_url_decode($input) {
     return base64_decode(strtr($input, '-_', '+/'));
+  }
+
+
+  static function random_password() {
+      $alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
+      $pass = array(); //remember to declare $pass as an array
+      $alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
+      for ($i = 0; $i < 8; $i++) {
+          $n = rand(0, $alphaLength);
+          $pass[] = $alphabet[$n];
+      }
+      return implode($pass); //turn the array into a string
   }
 }
