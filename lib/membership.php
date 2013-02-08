@@ -668,7 +668,7 @@ class PL_Membership {
                       <!-- redirect-uri="<?php //echo $_SERVER["HTTP_REFERER"]; ?>" -->
                       <fb:registration fields="name,location,email" width="260"></fb:registration>
                       
-                      <!-- <p class="login-username">
+                      <p class="login-username">
                         <label for="user_login">Email</label>
                         <input type="text" name="user_login" id="user_login" class="input" required="required" value="" tabindex="20" data-message="A valid email is needed" />
                       </p>
@@ -681,8 +681,8 @@ class PL_Membership {
                       </p>
                       <p class="login-submit">
                         <input type="submit" name="wp-submit" id="wp-submit" class="button-primary" value="Log In" tabindex="23" />
-                        <input type="hidden" name="redirect_to" value="<?php //echo $url; ?>" />
-                      </p> -->
+                        <input type="hidden" name="redirect_to" value="<?php echo $url; ?>" />
+                      </p>
                     <!-- </div> -->
 
                 </form>
@@ -713,58 +713,71 @@ class PL_Membership {
         $user_name = $signed_request['registration']['name'];
         $userdata = get_user_by( 'login', $user_id );
         
-        ob_start();
-          pls_dump($userdata);
-        error_log(ob_get_clean());
+        // ob_start();
+        //   pls_dump($userdata);
+        // error_log(ob_get_clean());
         
         if ( $userdata ) {
-          
-          // user exists - manually log user in.
-          // $creds['user_login'] = $user_id;
-          // $creds['user_password'] = '123123';
-          // $creds['remember'] = true;
-          
-          // $user = wp_signon( $creds, true );
-          // wp_set_current_user($user_id);
-          // wp_set_current_user($user->ID);
-          $user = get_user_by('login', $user_id);
-          var_dump($user);
-          wp_set_current_user($user->ID);
-          // wp_set_current_user('40');
+
+            // user exists - manually log user in.
+            // $creds['user_login'] = $user_id;
+            // $creds['user_password'] = 'n8ph6QAs';
+            // $creds['remember'] = true;
+            // $user = wp_signon( $creds, true );
+
+            wp_set_current_user($user_id);
+            wp_set_auth_cookie($user_id, true);
+            
+            // $user = get_user_by('login', $user_id);
+            
+            // ob_start();
+            //   pls_dump($user->ID);
+            // error_log(ob_get_clean());
+            
+            
+            // wp_set_current_user($user->ID);
+            // wp_set_current_user('40');
         
         } else {
-          error_log("user doesn't exist!");
-          // create random password
-          $random_pass = self::random_password();
           
-          // user doesn't exist, create user.
-          $userdata = array(
-              'user_pass' => $random_pass,
-              'user_login' => $user_id,
-              'user_url' => $_SERVER["SERVER_NAME"],
-              'user_email' => $user_email,
-              'user_nicename' => $user_name,
-              'role' => 'placester_lead'
-          );
+            // create random password
+            $random_pass = self::random_password();
           
-          // add user to WP user table
-          wp_insert_user( $userdata );
+            // user doesn't exist, create user.
+            $userdata = array(
+                'user_pass' => $random_pass,
+                'user_login' => $user_id,
+                'user_url' => $_SERVER["SERVER_NAME"],
+                'user_email' => $user_email,
+                'user_nicename' => $user_name,
+                'role' => 'placester_lead'
+            );
+          
+            // add user to WP user table
+            wp_insert_user( $userdata );
 
-          // send user email w/ login and password
-          wp_mail($user_email,
-           'Your password for ' . $_SERVER["SERVER_NAME"],
-           "to log into " . $_SERVER["SERVER_NAME"] . " your username is '" . $user_email . "', and your password is '" . $random_pass . "'. However, as long as you are signed into Facebook, you won't need to manually sign in."
-           );
+            $user = get_user_by('login', $user_id);
+          
+            // wp_set_auth_cookie($user->ID, true);
+            // wp_set_current_user($user->ID);
+            
+            // $creds['user_login'] = $user_id;
+            // $creds['user_password'] = $random_pass;
+            // $creds['remember'] = true;
+            // $created_user = wp_signon( $creds, false );
+
+            // send user email w/ login and password
+            wp_mail($user_email,
+             'Your password for ' . $_SERVER["SERVER_NAME"],
+             "to log into " . $_SERVER["SERVER_NAME"] . " your username is '" . $user_email . "', and your password is '" . $random_pass . "'. However, as long as you are signed into Facebook, you won't need to manually sign in."
+             );
           
         }
   }
+
   
   // Parse Facebook Signed Request
   static function fb_parse_signed_request($signed_request = '', $return = 'ajax') {
-    
-    // ob_start();
-    //   pls_dump($signed_request);
-    // error_log(ob_get_clean());
     
     if (empty($signed_request)) {
       extract($_POST);
