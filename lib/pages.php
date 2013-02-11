@@ -26,11 +26,13 @@ class PL_Pages {
 		$sql = $wpdb->prepare("SELECT ID, post_modified FROM " . $wpdb->posts . " WHERE post_type = %s AND post_name = %s LIMIT 0, 1", self::$property_post_type, $placester_id);
 	    $row = $wpdb->get_row($sql, OBJECT, 0);
 
-	    if (isset($row->ID)) {
-	        $post_id = $row->ID;
-	        $cache[$placester_id] = $post_id;
-	        return $post_id;
-	    }    	
+	    $post_id = ( isset($row->ID) ? $row->ID : null );
+	    return $post_id;
+	    
+	    // if (isset($row->ID)) {
+	    //     $post_id = $row->ID;
+	    //     return $post_id;
+	    // }    	
 	}
 
 	//create listing page
