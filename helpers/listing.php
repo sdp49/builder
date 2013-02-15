@@ -153,12 +153,34 @@ class PL_Listing_Helper {
 		return $listing;
 	}
 
+	/* 
+	 * To be used specifically when a single listing's data is needed -- do NOT loop over calls to this function
+	 * to get N listings for performance reasons ('results()' and 'many_details()' in this class should be used).
+     *
+     * NOTE: Does NOT respect global filters!
+	 */
+	public function get_single_listing ( $property_id = null ) {
+		// Sanity check...
+		if ( empty($property_id) ) { return null; }
+
+		// Response is always bundled...
+		$listings = PL_Listing::get( array('listing_ids' => array($property_id)) );
+
+		$listing = null;
+		if ( !empty($listings['listings']) ) {
+			// There should be only one result...
+			$listing = $listings['listings'][0];
+		}
+
+		return $listing;
+	}
+
 	public function custom_attributes($args = array()) {
 		$custom_attributes = PL_Custom_Attributes::get(array('attr_class' => '2'));
 		return $custom_attributes;
 	}
 
-	function datatable_ajax() {
+	public function datatable_ajax() {
 		$response = array();
 		//exact addresses should be shown. 
 		$_POST['address_mode'] = 'exact';
