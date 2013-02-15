@@ -525,14 +525,14 @@ class PL_Component_Entity {
 							$val = PLS_Format::translate_property_type($listing_list);
 							break;
 						case 'amenities':
-							$amenities = PLS_Format::amenities_but(&$listing_list, array('half_baths', 'beds', 'baths', 'url', 'sqft', 'avail_on', 'price', 'desc'));
+							$amenities = PLS_Format::amenities_but($listing_list, array('half_baths', 'beds', 'baths', 'url', 'sqft', 'avail_on', 'price', 'desc'));
 							$amen_type = array_key_exists('type', $atts) ? (string)$atts['type'] : 'list';
 							ob_start();
 							?>
 								<div class="amenities-section grid_8 alpha">
 				                    <ul>
 				                    	<?php if (is_array($amenities[$amen_type])): ?>
-				                    	<?php PLS_Format::translate_amenities(&$amenities[$amen_type]); ?>
+				                    	<?php $amenities[$amen_type] = PLS_Format::translate_amenities($amenities[$amen_type]); ?>
 						                    <?php foreach ($amenities[$amen_type] as $amenity => $value): ?>
 						                        <li><span><?php echo $amenity; ?></span> <?php echo $value ?></li>
 						                    <?php endforeach ?>		

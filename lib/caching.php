@@ -146,7 +146,7 @@ function RawToShortMD5($alphabet, $raw) {
   return $result;
 }
 
-function DecToBase(&$alphabet, $dword) {
+function DecToBase($alphabet, $dword) {
   $rem = fmod($dword, strlen($alphabet));
   if ($dword < strlen($alphabet)) {
     return $alphabet[$rem];
