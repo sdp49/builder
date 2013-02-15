@@ -182,6 +182,7 @@ class PL_Component_Entity {
 	
 	public static function search_map_entity( $atts ) {
 		$atts = wp_parse_args($atts, array('type' => 'listings', 'width' => 600, 'height' => 400));
+		if( ! isset( $atts['map_id'] ) ) { return ''; }
 		$map_id = $atts['map_id'];
 		
 		$values = get_post_meta( $map_id );
