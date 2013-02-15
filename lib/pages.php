@@ -27,12 +27,7 @@ class PL_Pages {
 	    $row = $wpdb->get_row($sql, OBJECT, 0);
 
 	    $post_id = ( isset($row->ID) ? $row->ID : null );
-	    return $post_id;
-	    
-	    // if (isset($row->ID)) {
-	    //     $post_id = $row->ID;
-	    //     return $post_id;
-	    // }    	
+	    return $post_id; 	
 	}
 
 	//create listing page
