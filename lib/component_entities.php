@@ -565,21 +565,26 @@ class PL_Component_Entity {
 			$term_name = '';
 			$neighborhood_term = '';
 			
+			// Type of neighborhood is set as radio_type from the radio box in the admin
+			// get key and value to test for neighborhood object
+			if( ! isset( $atts['radio_type'] ) ) { 	return;  }
+			$key = $atts['radio_type'];
+			if( ! isset( $atts['nb_select_' . $key] ) ) { return;  }
+			$value = $atts['nb_select_' . $key];
+			
 			// API searches for neighborhood by slug
-			foreach( $atts as $key => $value ) {
-				if( in_array( $key, array( 'state', 'city', 'neighborhood', 'zip', 'street' ) ) ) {
-					$term = get_term_by('id', $value, $key);
-					if( ! empty( $term ) ) {
-						$taxonomy_type = $key;
-						$taxonomy = get_taxonomy( $key );
-						$atts[$key] = $term->slug;
-						$term_slug = $term->slug;
-						$term_name = $term->name;
-						$neighborhood_term = $term;
-					}
+			if( in_array( $key, array( 'state', 'city', 'neighborhood', 'zip', 'street' ) ) ) {
+				$term = get_term_by('id', $value, $key);
+				if( ! empty( $term ) ) {
+					$taxonomy_type = $key;
+					$taxonomy = get_taxonomy( $key );
+					$atts[$key] = $term->slug;
+					$term_slug = $term->slug;
+					$term_name = $term->name;
+					$neighborhood_term = $term;
 				}
 			}
-			
+
 			if( empty( $taxonomy ) ) {
 				return;
 			}
