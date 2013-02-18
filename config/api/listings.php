@@ -334,6 +334,11 @@ $PL_API_LISTINGS = array(
 					'sublet' => 'Sublet'
 				)
 			),
+			'property_type' => array(
+				'type' => 'text',
+				'label' => 'Property Type',
+				'group' => 'Basic Details'
+			),
 			'location' => array(
 				'address' => array('type' => 'text','group' => 'location', 'label' => 'Address'), 
 				'locality'  => array('type' => 'text','group' => 'location', 'label' => 'City'),
