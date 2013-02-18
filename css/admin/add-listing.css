@@ -42,18 +42,6 @@ section#property_type.pls_search_form {
 	margin: 15px 0 10px 0;
 }
 
-section#property_type-sublet.pls_search_form select,
-section#property_type-res_sale.pls_search_form select,
-section#property_type-res_rental.pls_search_form select,
-section#property_type-vac_rental.pls_search_form select,
-section#property_type-comm_sale.pls_search_form select,
-section#property_type-comm_rental.pls_search_form select,
-section#property_type-sublet.pls_search_form select {
-	float: left;
-	font-size: 18px;
-	width: 300px;
-}
-
 section#property_type.pls_search_form label {
  margin: 0px 30px 0 0;
  float: left;
@@ -138,9 +126,7 @@ input#property_type {
 	font-size: 20px;
 	width: 300px;
 }
-/*.property_type-res_sale, .property_type-vac_rental, .property_type-res_rental, .property_type-comm_rental, .property_type-comm_sale {
-	display:none;
-}*/
+
 .red {
 	background-color: #FFEBE8;
 	border: 1px solid #C00;
