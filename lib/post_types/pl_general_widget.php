@@ -687,8 +687,11 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	}
 	
 	public function post_type_templating( $single ) {
-		global $post;
+// 		global $post;
 		
+		$post = get_queried_object();
+// 		var_dump('dsadsa');
+// 		var_dump($queried);
 		if( empty( $post ) ) {
 			return $single;
 		}
