@@ -43,6 +43,7 @@ $PL_API_LISTINGS = array(
 					'rental' => 'Rental'
 				)
 			),
+			'property_type' => array(),
 			// binds to building id
 			'building_id' => array(),// => array('type' => 'text'),
 			'location' => array(
