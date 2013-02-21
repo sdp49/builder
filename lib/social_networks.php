@@ -395,6 +395,7 @@ class PL_Social_Networks_Twitter {
 			<p><span><?php _e('Characters: ', 'pls'); ?></span><span id="pl_twitter_word_count">0</span></p>
 		</div>
 		<div class="clearblock"></div>
+		 <?php wp_nonce_field( 'pls_social_submission', 'pls_social_nonce' ); ?>
 	<?php 
 	}
 
@@ -402,18 +403,21 @@ class PL_Social_Networks_Twitter {
 	 * Save hook for post social messages
 	 */
 	public static function save_post_social_messages( $post_id ) {
+		pls_log_socials('sn_saver.txt', 'Top of save_post_social_messages' );
+		pls_log_socials('sn_saver.txt', var_export( $_POST, true ) );
+
 		// Avoid autosaves
 		if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
 		
 		// Verify nonces for ineffective calls
- 		if( !isset( $_POST['_wpnonce'] ) || !wp_verify_nonce( $_POST['_wpnonce'], '_wpnonce' ) ) return;
+ 		if( !isset( $_POST['pls_social_nonce'] ) || !wp_verify_nonce( $_POST['pls_social_nonce'], 'pls_social_submission' ) ) return;
 		
 		// if our current user can't edit this post, bail - notices 
 // 		if( !current_user_can( 'edit_post' ) ) return;
 		
 		$post = get_post( $post_id );
 		
-		pls_log_socials('sn_saver.txt', 'Post ID: ' . $post_id );
+		pls_log_socials('sn_saver.txt', 'Post ID, nonce checked: ' . $post_id );
 		
 		if( empty( $post ) ) {
 			return;
@@ -623,7 +627,7 @@ class PL_Social_Networks_Twitter {
 	 */
 	
 	public static function is_facebook_authenticated( $current_user_id = 0 ) {
-		pls_log_socials('sn_saver.txt', 'Inside of is_facebook_authenticated() ');
+		pls_log_socials('fb_author.txt', 'Inside of is_facebook_authenticated() ');
 
 		// When cron request has been issued with the ID already known
 		if( empty( $current_user_id ) ) {
@@ -634,7 +638,7 @@ class PL_Social_Networks_Twitter {
 			$current_user_id = get_current_user_id();
 		}
 		
-		pls_log_socials('sn_saver.txt', 'Current User ID: ' . $current_user_id );
+		pls_log_socials('fb_author.txt', 'Current User ID: ' . $current_user_id );
 		
 		$user_facebook_token = get_user_meta( $current_user_id, self::$fb_user_meta_key_token, true );
 		
@@ -694,7 +698,7 @@ class PL_Social_Networks_Twitter {
 	 * @return Facebook object or false
 	 */
 	public static function get_facebook_object( $current_user_id = 0 ) {
-		pls_log_socials('sn_saver.txt', 'Inside of get_facebook_object() ');
+		pls_log_socials('fb_author.txt', 'Inside of get_facebook_object() ');
 		if( self::is_facebook_authenticated( $current_user_id ) ) {
 			include_once PL_LIB_DIR . 'facebook-php-sdk/src/facebook.php';
 
@@ -705,12 +709,10 @@ class PL_Social_Networks_Twitter {
 				pls_debug_socials( 'alabalaportokala' );
 				self::$fb_profile = self::$fb->api( '/me' );
 				
-				pls_log_socials('sn_saver.txt', 'self::fb object: ' . var_export(self::$fb_profile, true));
-				
 				return self::$fb;
 			}
 			catch( FacebookApiException $e ) {
-				pls_log_socials( 'sn_saver.txt', 'FB API failed: ' . $e->getMessage() );
+				pls_log_socials( 'fb_author.txt', 'FB API failed: ' . $e->getMessage() );
 				pls_debug_socials( $e->getMessage() );
 				return false;
 			}
