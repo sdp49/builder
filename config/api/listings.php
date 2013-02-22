@@ -23,155 +23,6 @@ $PL_API_LISTINGS = array(
 					'Commercial Sale' => 'Commercial Sale',
 				)
 			),
-			'property_type.sublet' => array(
-				'label' => 'Sublet Property Types',
-				'type' => 'select',
-				'options' => array(
-					'false' => 'Any',
-					'Penthouse' => 'Penthouse',
-			        'Apartment' => 'Apartment',
-			        'Condo' => 'Condo',
-			        'Townhouse' => 'Townhouse',
-			        'Duplex' => 'Duplex',
-			        'Single Family Home' => 'Single Family Home'
-				)
-			),
-			'property_type.res_sale' => array(
-				'label' => 'Residential Sale Property Types',
-				'type' => 'select',
-				'options' => array(
-					'false' => 'Any',
-					'Penthouse' => 'Penthouse',
-			        'Apartment' => 'Apartment',
-			        'Condo' => 'Condo',
-			        'Duplex' => 'Duplex',
-			        'Single Family Home' => 'Single Family Home',
-			        'Multi Family Home' => 'Multi Family Home',
-			        'Cooperative' => 'Cooperative',
-			        'Tenants In Common' => 'Tenants In Common',
-			        'Manufactured Home' =>  'Manufactured Home',
-			        'Vacant' =>  'Vacant'
-				)
-			),
-			'property_type.vac_rental' => array(
-				'label' => 'Vacation Rental Property Types',
-				'type' => 'select',
-				'options' => array(
-					'false' => 'Any',
-					'Penthouse' => 'Penthouse',
-			        'Apartment' => 'Apartment',
-			        'Condo' => 'Condo',
-			        'Townhouse' => 'Townhouse',
-			        'Duplex' => 'Duplex',
-			        'Single Family Home' => 'Single Family Home',
-			        'Multi Family Home' => 'Multi Family Home',
-			        'Cooperative' => 'Cooperative',
-			        'Tenants In Common' => 'Tenants In Common',
-			        'Manufactured Home' =>  'Manufactured Home',
-			        'Vacant' =>  'Vacant'	
-				)
-			),
-			'property_type.res_rental' => array(
-				'label' => 'Residental Rental Property Types',
-				'type' => 'select',
-				'options' => array(
-					'false' => 'Any',
-					'Penthouse' => 'Penthouse',
-			        'Apartment' => 'Apartment',
-			        'Condo' => 'Condo',
-			        'Townhouse' => 'Townhouse',
-			        'Duplex' => 'Duplex',
-			        'Single Family Home' => 'Single Family Home',
-				)
-			),
-			'property_type.comm_rental' => array(
-				'label' => 'Commercial Rental Property Types',
-				'type' => 'select',
-				'options' => array(
-					'false' => 'Any',
-					// Office           
-			        'off_loft' => 'off_loft',
-			        'off_gen' => 'off_gen',
-			        'off_inst_gov' => 'off_inst_gov',
-			        'off_med' => 'off_med',
-			        'off_rd' => 'off_rd',
-			        // Industrial
-			        'ind_flex' => 'ind_flex',
-			        'ind_manuf' => 'ind_manuf',
-			        'ind_off_shw' => 'ind_off_shw',
-			        'ind_term_trans' => 'ind_term_trans',
-			        'ind_dist_warh' => 'ind_dist_warh',
-			        'ind_warh' => 'ind_warh',
-			        'ind_ref_str' => 'ind_ref_str',
-			        // Retail
-			        'ret_outlet' => 'ret_outlet',
-			        'ret_comm' => 'ret_comm',
-			        'ret_strip' => 'ret_strip',
-			        'ret_nghbr' => 'ret_nghbr',
-			        'ret_reg' => 'ret_reg',
-			        'ret_sup_reg' => 'ret_sup_reg',
-			        'ret_special' => 'ret_special',
-			        'ret_theme' => 'ret_theme',
-			        'ret_anchor' => 'ret_anchor',
-			        'ret_resta' => 'ret_resta',
-			        'ret_pad' => 'ret_pad',
-			        'ret_free_stnd' => 'ret_free_stnd',
-			        'ret_strt_ret' => 'ret_strt_ret',
-			        'ret_veh_rel' => 'ret_veh_rel',
-			        'ret_other' => 'ret_other',
-			        // Land
-			        'lan_indust' => 'lan_indust',
-			        'lan_office' => 'lan_office',
-			        'lan_resid' => 'lan_resid',
-			        'lan_ret' => 'lan_ret',
-			        'lan_ret_pad' => 'lan_ret_pad',
-			        'lan_comm' => 'lan_comm'
-				)
-			),
-			'property_type.comm_sale' => array(
-				'label' => 'Commercial Sale Property Types',
-				'type' => 'select',
-				'options' => array(
-					'false' => 'Any',
-					// Office           
-			        'off_loft' => 'off_loft',
-			        'off_gen' => 'off_gen',
-			        'off_inst_gov' => 'off_inst_gov',
-			        'off_med' => 'off_med',
-			        'off_rd' => 'off_rd',
-			        // Industrial
-			        'ind_flex' => 'ind_flex',
-			        'ind_manuf' => 'ind_manuf',
-			        'ind_off_shw' => 'ind_off_shw',
-			        'ind_term_trans' => 'ind_term_trans',
-			        'ind_dist_warh' => 'ind_dist_warh',
-			        'ind_warh' => 'ind_warh',
-			        'ind_ref_str' => 'ind_ref_str',
-			        // Retail
-			        'ret_outlet' => 'ret_outlet',
-			        'ret_comm' => 'ret_comm',
-			        'ret_strip' => 'ret_strip',
-			        'ret_nghbr' => 'ret_nghbr',
-			        'ret_reg' => 'ret_reg',
-			        'ret_sup_reg' => 'ret_sup_reg',
-			        'ret_special' => 'ret_special',
-			        'ret_theme' => 'ret_theme',
-			        'ret_anchor' => 'ret_anchor',
-			        'ret_resta' => 'ret_resta',
-			        'ret_pad' => 'ret_pad',
-			        'ret_free_stnd' => 'ret_free_stnd',
-			        'ret_strt_ret' => 'ret_strt_ret',
-			        'ret_veh_rel' => 'ret_veh_rel',
-			        'ret_other' => 'ret_other',
-			        // Land
-			        'lan_indust' => 'lan_indust',
-			        'lan_office' => 'lan_office',
-			        'lan_resid' => 'lan_resid',
-			        'lan_ret' => 'lan_ret',
-			        'lan_ret_pad' => 'lan_ret_pad',
-			        'lan_comm' => 'lan_comm'
-				)
-			),
 			'zoning_types' => array(
 				'type' => 'select',
 				'label' => 'Zoning',
@@ -192,6 +43,7 @@ $PL_API_LISTINGS = array(
 					'rental' => 'Rental'
 				)
 			),
+			'property_type' => array(),
 			// binds to building id
 			'building_id' => array(),// => array('type' => 'text'),
 			'location' => array(
@@ -462,77 +314,6 @@ $PL_API_LISTINGS = array(
 			)
 		)
 	),
-	'details' => array(
-		'request' => array(
-			'url' => 'https://api.placester.com/v2.1/listings/',
-			'type' => 'GET'
-		),
-		'args' => array(),
-		'returns' => array(
-			'id' => false,
-			'property_type' => false,
-			'zoning_types' => false,
-			'purchase_types' => false,
-			'listing_types' => false,
-			'building_id' => false,
-			'cur_data' => array(
-				'half_baths' => false,
-                'price' => false,
-                'sqft' => false,
-                'baths' => false,
-                'avail_on' => false,
-                'beds' => false,
-                'url' => false,
-                'desc' => false,
-                'lt_sz' => false,
-                'ngb_shop' => false,
-                'ngb_hgwy' => false,
-                'grnt_tops' => false,
-                'ngb_med' => false,
-                'ngb_trails' => false,
-                'cent_ht' => false,
-                'pk_spce' => false,
-                'air_cond' => false,
-                'price_unit' => false,
-                'lt_sz_unit' => false,
-                'lse_trms' => false,
-                'ngb_trans' => false,
-                'off_den' => false,
-                'frnshed' => false,
-                'refrig' => false,
-                'deposit' => false,
-                'ngb_pubsch' => false
-			),
-			'uncur_data' => false,
-			'location' => array(
-				'address' => false,
-				'locality' => false,
-				'region' => false,
-				'postal' => false,
-				'neighborhood' => false,
-				'county' => false,
-				'country' => false,
-				'coords' => array(
-					'latitude' => false,
-					'longitude' => false
-				)
-			),
-			'contact' => array(
-				'email' => false,
-				'phone' => false
-			),
-			'images' => false,
-			'tracker_url' => false,
-			'rets' => array(
-			  'aname' => false,
-			  'oname' => false,
-			  'mls_id' => false,
-			  'alicense' => false,
-			  'aconame' => false,
-			  'oconame' => false
-			)
-		)
-	),
 	'create' => array(
 		'request' => array(
 			'url' => 'https://api.placester.com/v2/listings',
@@ -554,34 +335,9 @@ $PL_API_LISTINGS = array(
 					'sublet' => 'Sublet'
 				)
 			),
-			'property_type-sublet' => array(
+			'property_type' => array(
 				'type' => 'text',
-				'label' => 'Sublet Property Type',
-				'group' => 'Basic Details'
-			),
-			'property_type-res_sale' => array(
-				'type' => 'text',
-				'label' => 'Residential Sale Property Type',
-				'group' => 'Basic Details'
-			),
-			'property_type-vac_rental' => array(
-				'type' => 'text',
-				'label' => 'Vacation Property Type',
-				'group' => 'Basic Details'
-			),
-			'property_type-res_rental' => array(
-				'type' => 'text',
-				'label' => 'Residential Rental Property Type',
-				'group' => 'Basic Details'				
-			),
-			'property_type-comm_rental' => array(
-				'type' => 'text',
-				'label' => 'Commercial Rental Property Type',
-				'group' => 'Basic Details'
-			),
-			'property_type-comm_sale' => array(
-				'type' => 'text',
-				'label' => 'Commercial Sale Property Type',
+				'label' => 'Property Type',
 				'group' => 'Basic Details'
 			),
 			'location' => array(

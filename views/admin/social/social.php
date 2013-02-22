@@ -13,5 +13,4 @@
     
     <h3>Facebook</h3>
     <?php do_action( 'pl_facebook_display' ); ?>
-    
 </div>
