@@ -142,7 +142,6 @@ include_once('models/education-com.php');
 
 //helpers
 include_once('helpers/listing.php');
-include_once('helpers/add-listing.php');
 include_once('helpers/option.php');
 include_once('helpers/compatibility.php');
 include_once('helpers/css.php');
