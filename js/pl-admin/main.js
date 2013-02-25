@@ -357,11 +357,10 @@ jQuery(document).ready(function($) {
 
   function updateSkinSelect () {
     data = { action: 'get_theme_skins', template: pl_admin_global.activeTheme };
-    console.log(data);
+    // console.log(data);
 
     $.post(ajaxurl, data, function (response) {
-      console.log("HELLO!!!");
-      console.log(response);
+      // console.log(response);
       // Re-build...
       if ( response && response.skins ) {
         // First remove all existing options...
@@ -374,6 +373,11 @@ jQuery(document).ready(function($) {
       }
     },'json');
   }
+
+  _skinSubmit.on('click', function (event) {
+    event.preventDefault();
+    
+  });
 
   _skinReturn.on('click', function (event) {
     event.preventDefault();
