@@ -54,6 +54,11 @@ class PL_Social_Networks {
 		add_filter('manage_posts_custom_column', array( __CLASS__, 'social_column_behavior' ), 10, 2);
 	}
 	
+	/**
+	 * Future hook for publishing to FB and Twitter
+	 * @param int $current_user_id user ID
+	 * @param int $post_id post ID
+	 */
 	public static function publish_post_scheduled_delay( $current_user_id, $post_id ) {
 		$facebook = self::get_facebook_object( $current_user_id );
 		
@@ -97,6 +102,10 @@ class PL_Social_Networks {
 		return;
 	}
 	
+	/**
+	 * Verify if the user is logged in based on meta key value
+	 * @return boolean logged/not
+	 */
 	public static function verify_user_logged() {
 		if( is_user_logged_in() ) {
 			self::$logged_user = wp_get_current_user();
@@ -537,19 +546,6 @@ class PL_Social_Networks {
 		}
 	}
 	
-	public static function save_settings() {
-		if( !current_user_can('manage_options') )
-			return;
-	
-		$fb_proxy_url = isset( $_POST['fb_proxy_url'] ) ? $_POST['fb_proxy_url'] : '';
-		if(!$fb_proxy_url || !preg_match( "#^https?://(www\.)?[^\.]+\..+#", $fb_proxy_url ) )
-			return;
-	
-		$fb_proxy_url = str_replace( array('"', '\''), '', $fb_proxy_url );
-	
-		update_option( 'fb_proxy_url', $fb_proxy_url );
-	}
-	
 	/**
 	 * Print the login URL for Facebook
 	 * 
@@ -642,6 +638,11 @@ class PL_Social_Networks {
 		return true;
 	}
 	
+	/**
+	 * Is logged in to Twitter
+	 * @param int $current_user_id user ID
+	 * @return boolean is logged in
+	 */
 	public static function is_twitter_authenticated( $current_user_id = 0 ) {
 		if( empty( $current_user_id ) ) {
 			if( ! is_user_logged_in() ) {
@@ -766,6 +767,7 @@ class PL_Social_Networks {
  * Only if SOCIAL_DEBUGGER constant is true
  */
 
+// Screen debugging
 function pls_debug_socials( $arg, $color = 'black' ) {
 	if( SOCIAL_DEBUGGER ) {
 		echo "<pre style='color: $color'>";
@@ -774,6 +776,7 @@ function pls_debug_socials( $arg, $color = 'black' ) {
 	}
 }
 
+// file debugging (note: logs needs to be manually created)
 function pls_log_socials( $file, $text ) {
 	if( SOCIAL_DEBUGGER ) {
 		$content = time() . ': ' . $text . "\n";
