@@ -3,9 +3,9 @@
 define( 'SOCIAL_DEBUGGER', false );
 define( 'DX_CRONO_POSTER_URL', plugin_dir_path( __FILE__ ) );
 
-PL_Social_Networks_Twitter::init();
+PL_Social_Networks::init();
 
-class PL_Social_Networks_Twitter {
+class PL_Social_Networks {
 	public static $plugin_dir;
 	public static $plugin_url;
 	
@@ -40,7 +40,6 @@ class PL_Social_Networks_Twitter {
 		self::$plugin_dir = plugin_dir_path( __FILE__ );
 		self::$plugin_url = plugin_dir_url( __FILE__ );
 		add_action( 'admin_init', array( __CLASS__, 'init_admin_redirect_uri' ), 1 );
-		add_action( 'admin_menu', array( __CLASS__, 'add_social_settings_page' ) );
 		add_action( 'add_meta_boxes', array( __CLASS__, 'add_post_metaboxes' ) );
 		add_action( 'save_post', array( __CLASS__, 'save_post_social_messages' ) );
 		
@@ -128,14 +127,6 @@ class PL_Social_Networks_Twitter {
 		$admin_url = admin_url( 'options-general.php?page=placester-social' );
 		self::$admin_redirect_uri = $admin_url;
  		define('OAUTH_CALLBACK', $admin_url );
-	}
-
-	/**
-	 * Add a page for social settings
-	 */
-	public static function add_social_settings_page() {
-		add_options_page('Social Networks', 'Social Networks', 'manage_options', 
-						'placester-social', array( __CLASS__, 'add_social_settings_cb' ) );
 	}
 	
 	/**
