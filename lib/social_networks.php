@@ -253,7 +253,7 @@ class PL_Social_Networks {
 		}
 		
 		/* Build an image link to start the redirect process. */
-		$content = '<a href="' . self::$admin_redirect_uri . '&social_action=twitter-redirect"><img src="' .  PL_IMG_URL .'/social/twlogin.png" alt="Sign in with Twitter"/></a>';
+		$content = '<a href="' . self::$admin_redirect_uri . '&social_action=twitter-redirect"><img src="' .  trailingslashit(PL_IMG_URL) .'social/twlogin.png" alt="Sign in with Twitter"/></a>';
 			
 		echo $content;
 		/* Include HTML to display on the page. */
@@ -573,7 +573,7 @@ class PL_Social_Networks {
 	public static function fb_print_login_url() {
 		$proxy_url = get_option( 'fb_proxy_url', self::$fb_default_proxy_url );
 		
-		echo '<a href="' . trailingslashit( $proxy_url ) . 'login.php"><img src="' . PL_IMG_URL . '/social/fblogin.png" /></a>' . "<br />\n\n"; 
+		echo '<a href="' . trailingslashit( $proxy_url ) . 'login.php"><img src="' . trailingslashit(PL_IMG_URL) . 'social/fblogin.png" /></a>' . "<br />\n\n"; 
 		// . print_r($this->_profile, true) . "<br />\n\n";
 	}
 	
