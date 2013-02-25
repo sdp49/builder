@@ -117,7 +117,7 @@ include_once('lib/widgets.php');
 //function dxshortcodes() {
 include_once('lib/shortcode_wrapper.php');
 include_once('lib/component_entities.php');
-include_once('lib/shortcodes-new.php');
+include_once('lib/shortcodes.php');
 	
 include_once('lib/featured_listings_post_type.php');
 include_once('lib/demo_data.php');
