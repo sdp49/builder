@@ -3,9 +3,9 @@
 define( 'SOCIAL_DEBUGGER', false );
 define( 'DX_CRONO_POSTER_URL', plugin_dir_path( __FILE__ ) );
 
-PL_Social_Networks_Twitter::init();
+PL_Social_Networks::init();
 
-class PL_Social_Networks_Twitter {
+class PL_Social_Networks {
 	public static $plugin_dir;
 	public static $plugin_url;
 	
@@ -16,6 +16,10 @@ class PL_Social_Networks_Twitter {
 	public static $user_meta_key_token_secret = 'pl_twitter_token_secret';
 	public static $logged_user = NULL;
 	public static $admin_redirect_uri = NULL;
+	
+	// Settings API option
+	public static $social_setting = NULL;
+	public static $social_setting_key = 'pls_social_setting';
 	
 	// Facebook related variables
 	public static $fb_user_meta_key_token = 'fb_token';
@@ -40,21 +44,32 @@ class PL_Social_Networks_Twitter {
 		self::$plugin_dir = plugin_dir_path( __FILE__ );
 		self::$plugin_url = plugin_dir_url( __FILE__ );
 		add_action( 'admin_init', array( __CLASS__, 'init_admin_redirect_uri' ), 1 );
-		add_action( 'admin_menu', array( __CLASS__, 'add_social_settings_page' ) );
 		add_action( 'add_meta_boxes', array( __CLASS__, 'add_post_metaboxes' ) );
 		add_action( 'save_post', array( __CLASS__, 'save_post_social_messages' ) );
 		
+		add_action( 'admin_menu', array( __CLASS__, 'add_social_settings_page' ) );
+		
 		add_action( 'pls_add_future_post', array( __CLASS__, 'publish_post_scheduled_delay' ), 10, 2 );
+		
+		// Settings API field init
+		add_action( 'admin_init', array( __CLASS__, 'register_settings' ) );
+		add_action( 'wp_head', array( __CLASS__, 'add_google_authorship' ) );
 		
 		// Facebook init
 		add_action( 'admin_init', array( __CLASS__, 'fb_login_callback' ) );
 		add_action( 'pl_twitter_display', array( __CLASS__, 'twitter_handler' ) );
 		add_action( 'pl_facebook_display', array( __CLASS__, 'facebook_handler' ) );
+		add_action( 'pl_googleplus_display', array( __CLASS__, 'googleplus_handler' ) );
 		
 		add_filter('manage_posts_columns', array( __CLASS__, 'social_columns_append' ) );
 		add_filter('manage_posts_custom_column', array( __CLASS__, 'social_column_behavior' ), 10, 2);
 	}
 	
+	/**
+	 * Future hook for publishing to FB and Twitter
+	 * @param int $current_user_id user ID
+	 * @param int $post_id post ID
+	 */
 	public static function publish_post_scheduled_delay( $current_user_id, $post_id ) {
 		$facebook = self::get_facebook_object( $current_user_id );
 		
@@ -98,6 +113,10 @@ class PL_Social_Networks_Twitter {
 		return;
 	}
 	
+	/**
+	 * Verify if the user is logged in based on meta key value
+	 * @return boolean logged/not
+	 */
 	public static function verify_user_logged() {
 		if( is_user_logged_in() ) {
 			self::$logged_user = wp_get_current_user();
@@ -128,14 +147,6 @@ class PL_Social_Networks_Twitter {
 		$admin_url = admin_url( 'options-general.php?page=placester-social' );
 		self::$admin_redirect_uri = $admin_url;
  		define('OAUTH_CALLBACK', $admin_url );
-	}
-
-	/**
-	 * Add a page for social settings
-	 */
-	public static function add_social_settings_page() {
-		add_options_page('Social Networks', 'Social Networks', 'manage_options', 
-						'placester-social', array( __CLASS__, 'add_social_settings_cb' ) );
 	}
 	
 	/**
@@ -169,6 +180,13 @@ class PL_Social_Networks_Twitter {
 	 */
 	public static function facebook_handler() {
 		self::facebook_callback();
+	}
+	
+	/**
+	 * Display the Google+ field for adding authorship
+	 */
+	public static function googleplus_handler() {
+		include_once( PL_VIEWS_ADMIN_DIR . 'social/googleplus.php');
 	}
 	
 	/**
@@ -235,7 +253,7 @@ class PL_Social_Networks_Twitter {
 		}
 		
 		/* Build an image link to start the redirect process. */
-		$content = '<a href="' . self::$admin_redirect_uri . '&social_action=twitter-redirect"><img src="' .  PL_IMG_URL .'/social/twlogin.png" alt="Sign in with Twitter"/></a>';
+		$content = '<a href="' . self::$admin_redirect_uri . '&social_action=twitter-redirect"><img src="' .  trailingslashit(PL_IMG_URL) .'social/twlogin.png" alt="Sign in with Twitter"/></a>';
 			
 		echo $content;
 		/* Include HTML to display on the page. */
@@ -546,19 +564,6 @@ class PL_Social_Networks_Twitter {
 		}
 	}
 	
-	public static function save_settings() {
-		if( !current_user_can('manage_options') )
-			return;
-	
-		$fb_proxy_url = isset( $_POST['fb_proxy_url'] ) ? $_POST['fb_proxy_url'] : '';
-		if(!$fb_proxy_url || !preg_match( "#^https?://(www\.)?[^\.]+\..+#", $fb_proxy_url ) )
-			return;
-	
-		$fb_proxy_url = str_replace( array('"', '\''), '', $fb_proxy_url );
-	
-		update_option( 'fb_proxy_url', $fb_proxy_url );
-	}
-	
 	/**
 	 * Print the login URL for Facebook
 	 * 
@@ -568,7 +573,7 @@ class PL_Social_Networks_Twitter {
 	public static function fb_print_login_url() {
 		$proxy_url = get_option( 'fb_proxy_url', self::$fb_default_proxy_url );
 		
-		echo '<a href="' . trailingslashit( $proxy_url ) . 'login.php"><img src="' . PL_IMG_URL . '/social/fblogin.png" /></a>' . "<br />\n\n"; 
+		echo '<a href="' . trailingslashit( $proxy_url ) . 'login.php"><img src="' . trailingslashit(PL_IMG_URL) . 'social/fblogin.png" /></a>' . "<br />\n\n"; 
 		// . print_r($this->_profile, true) . "<br />\n\n";
 	}
 	
@@ -622,6 +627,10 @@ class PL_Social_Networks_Twitter {
 		return self::$fb_profile;
 	}
 	
+	public static function add_social_settings_page() {
+		add_options_page('Social Networks', 'Social Networks', 'manage_options',
+			'placester-social', array( __CLASS__, 'add_social_settings_cb' ) );
+	}
 	/**
 	 * Helpers for checking whether a user is logged in or not
 	 */
@@ -651,6 +660,11 @@ class PL_Social_Networks_Twitter {
 		return true;
 	}
 	
+	/**
+	 * Is logged in to Twitter
+	 * @param int $current_user_id user ID
+	 * @return boolean is logged in
+	 */
 	public static function is_twitter_authenticated( $current_user_id = 0 ) {
 		if( empty( $current_user_id ) ) {
 			if( ! is_user_logged_in() ) {
@@ -767,6 +781,74 @@ class PL_Social_Networks_Twitter {
 		
 		echo $out;
 	}
+	
+	/**
+	 * Register social options with the Settings API
+	 */
+	public static function register_settings() {
+		register_setting( self::$social_setting_key, self::$social_setting_key, array( __CLASS__, 'validate_settings' ) );
+	
+		add_settings_section(
+			'pls_socials_section',         
+			'',                  		
+			array( __CLASS__, 'settings_callback' ), 
+			'placester_social'
+		);
+		
+		add_settings_field(
+			'pls_googleplus_id',                      
+			'Google Plus ID',
+			array( __CLASS__, 'pls_googleplus_callback' ), 
+			'placester_social',                         
+			'pls_socials_section'  
+		);
+	}
+	
+	public static function settings_callback( ) {}
+	
+	/**
+	 * Display Google+ Input field with proper data
+	 */
+	public static function pls_googleplus_callback() {
+		$out = '';
+		$val = '';
+		
+		self::$social_setting = get_option( self::$social_setting_key, '' );
+		if( ! is_array( self::$social_setting ) || ! isset( self::$social_setting['pls_googleplus_id'] ) ) {
+			$val = '';
+		} else {
+			$val = self::$social_setting['pls_googleplus_id'];
+		}
+		
+		$out = '<input type="text" id="pls_googleplus_id" name="pls_social_setting[pls_googleplus_id]" value="' . $val . '"  />';
+		
+		echo $out;
+	}
+	
+	/**
+	 * Validate settings fields
+	 * @param array $input settings array
+	 * @return array $input get the array filtered
+	 */
+	public static function validate_settings( $input ) {
+		if( isset( $input['pls_googleplus_id'] ) ) {
+			$input['pls_googleplus_id'] = wp_strip_all_tags( $input['pls_googleplus_id'] );
+		}
+		
+		return $input;
+	}
+	
+	public static function add_google_authorship() {
+		self::$social_setting = get_option( self::$social_setting_key, array() );
+		
+		if( ! empty( self::$social_setting ) 
+			&& isset( self::$social_setting['pls_googleplus_id'] ) ) {
+			
+		?><link rel="author" href="https://plus.google.com/<?php echo self::$social_setting['pls_googleplus_id']; ?>/posts/">
+		<?php 
+		} 
+	}
+	
 }
 
 /**
@@ -775,6 +857,7 @@ class PL_Social_Networks_Twitter {
  * Only if SOCIAL_DEBUGGER constant is true
  */
 
+// Screen debugging
 function pls_debug_socials( $arg, $color = 'black' ) {
 	if( SOCIAL_DEBUGGER ) {
 		echo "<pre style='color: $color'>";
@@ -783,6 +866,7 @@ function pls_debug_socials( $arg, $color = 'black' ) {
 	}
 }
 
+// file debugging (note: logs needs to be manually created)
 function pls_log_socials( $file, $text ) {
 	if( SOCIAL_DEBUGGER ) {
 		$content = time() . ': ' . $text . "\n";

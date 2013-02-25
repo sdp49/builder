@@ -120,7 +120,7 @@ include_once('lib/widgets.php');
 //function dxshortcodes() {
 include_once('lib/shortcode_wrapper.php');
 include_once('lib/component_entities.php');
-include_once('lib/shortcodes-new.php');
+include_once('lib/shortcodes.php');
 	
 include_once('lib/featured_listings_post_type.php');
 include_once('lib/demo_data.php');
@@ -257,7 +257,7 @@ function placester_admin_menu() {
     add_submenu_page( 'placester', 'Widgets', 'Widgets', 'edit_pages', 'edit.php?post_type=pl_general_widget' );
     
     /* TODO: Re-enable when social functionality is all set... */
-    add_submenu_page( 'placester', 'Social', 'Social', 'edit_pages', 'placester_social', array('PL_Social_Networks_Twitter','add_social_settings_cb') );
+    add_submenu_page( 'placester', 'Social', 'Social', 'edit_pages', 'placester_social', array('PL_Social_Networks','add_social_settings_cb') );
     
     // add_submenu_page( 'placester', '', 'Settings', 'edit_pages', 'placester_settings_general', array('PL_Router','settings') );    
     add_submenu_page( 'placester', '', 'Support', 'edit_pages', 'placester_support', array('PL_Router','support') );    
