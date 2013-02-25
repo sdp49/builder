@@ -47,8 +47,7 @@ class PL_Social_Networks {
 		add_action( 'add_meta_boxes', array( __CLASS__, 'add_post_metaboxes' ) );
 		add_action( 'save_post', array( __CLASS__, 'save_post_social_messages' ) );
 		
-		// TODO: Remove after pages for login work again
-// 		add_action( 'admin_menu', array( __CLASS__, 'add_social_settings_page' ) );
+		add_action( 'admin_menu', array( __CLASS__, 'add_social_settings_page' ) );
 		
 		add_action( 'pls_add_future_post', array( __CLASS__, 'publish_post_scheduled_delay' ), 10, 2 );
 		
@@ -145,7 +144,7 @@ class PL_Social_Networks {
 	 * TODO: if it takes too much time, it's used in 3 methods only so clone there
 	 */
 	public static function init_admin_redirect_uri() {
-		$admin_url = admin_url( 'admin.php?page=placester_social' );
+		$admin_url = admin_url( 'options-general.php?page=placester-social' );
 		self::$admin_redirect_uri = $admin_url;
  		define('OAUTH_CALLBACK', $admin_url );
 	}
@@ -628,10 +627,10 @@ class PL_Social_Networks {
 		return self::$fb_profile;
 	}
 	
-// 	public static function add_social_settings_page() {
-// 		add_options_page('Social Networks', 'Social Networks', 'manage_options',
-// 			'placester-social', array( __CLASS__, 'add_social_settings_cb' ) );
-// 	}
+	public static function add_social_settings_page() {
+		add_options_page('Social Networks', 'Social Networks', 'manage_options',
+			'placester-social', array( __CLASS__, 'add_social_settings_cb' ) );
+	}
 	/**
 	 * Helpers for checking whether a user is logged in or not
 	 */
