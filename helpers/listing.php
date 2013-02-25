@@ -75,7 +75,7 @@ class PL_Listing_Helper {
 		return $listings;
 	}
 
-	public function many_details($args) {
+	public function many_details($args) { 
 		extract(wp_parse_args($args, array('property_ids' => array(), 'limit' => '50', 'offset' => '0')));
 		$response = array();
 		$response['listings'] = array();
@@ -95,6 +95,10 @@ class PL_Listing_Helper {
 
 		// Transfer property IDs...
 		$args_get['listing_ids'] = $args['property_ids'];
+		
+		// Add sorting options
+		if( isset( $sort_by ) ) $args_get['sort_by'] = $sort_by;
+		if( isset( $sort_type ) ) $args_get['sort_type'] = $sort_type;
 
 		// Try to retrieve details for all the listings...
 		$listings = PL_Listing::get($args_get);
