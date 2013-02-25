@@ -17,6 +17,10 @@ class PL_Social_Networks {
 	public static $logged_user = NULL;
 	public static $admin_redirect_uri = NULL;
 	
+	// Settings API option
+	public static $social_setting = NULL;
+	public static $social_setting_key = 'pls_social_setting';
+	
 	// Facebook related variables
 	public static $fb_user_meta_key_token = 'fb_token';
 	public static $fb_token_name = 'FBLoginToken';
@@ -45,10 +49,14 @@ class PL_Social_Networks {
 		
 		add_action( 'pls_add_future_post', array( __CLASS__, 'publish_post_scheduled_delay' ), 10, 2 );
 		
+		// Settings API field init
+		add_action( 'admin_init', array( __CLASS__, 'register_settings' ) );
+		
 		// Facebook init
 		add_action( 'admin_init', array( __CLASS__, 'fb_login_callback' ) );
 		add_action( 'pl_twitter_display', array( __CLASS__, 'twitter_handler' ) );
 		add_action( 'pl_facebook_display', array( __CLASS__, 'facebook_handler' ) );
+		add_action( 'pl_googleplus_display', array( __CLASS__, 'googleplus_handler' ) );
 		
 		add_filter('manage_posts_columns', array( __CLASS__, 'social_columns_append' ) );
 		add_filter('manage_posts_custom_column', array( __CLASS__, 'social_column_behavior' ), 10, 2);
@@ -169,6 +177,13 @@ class PL_Social_Networks {
 	 */
 	public static function facebook_handler() {
 		self::facebook_callback();
+	}
+	
+	/**
+	 * Display the Google+ field for adding authorship
+	 */
+	public static function googleplus_handler() {
+		include_once( PL_VIEWS_ADMIN_DIR . 'social/googleplus.php');
 	}
 	
 	/**
@@ -759,6 +774,62 @@ class PL_Social_Networks {
 		
 		echo $out;
 	}
+	
+	/**
+	 * Register social options with the Settings API
+	 */
+	public static function register_settings() {
+		register_setting( self::$social_setting_key, self::$social_setting_key, array( __CLASS__, 'validate_settings' ) );
+	
+		add_settings_section(
+			'pls_socials_section',         
+			'',                  		
+			array( __CLASS__, 'settings_callback' ), 
+			'placester_social'
+		);
+		
+		add_settings_field(
+			'pls_googleplus_id',                      
+			'Google Plus ID',
+			array( __CLASS__, 'pls_googleplus_callback' ), 
+			'placester_social',                         
+			'pls_socials_section'  
+		);
+	}
+	
+	public static function settings_callback( ) {}
+	
+	/**
+	 * Display Google+ Input field with proper data
+	 */
+	public static function pls_googleplus_callback() {
+		$out = '';
+		$val = '';
+		
+		$val = get_option( self::$social_setting_key, '' );
+		if( ! is_array( $val ) || ! isset( $val['pls_googleplus_id'] ) ) {
+			$val = '';
+		}
+		
+		$out = '<input type="text" id="pls_googleplus_id" name="pls_social_setting[pls_googleplus_id]" value="' . $val['pls_googleplus_id'] . '"  />';
+		
+		echo $out;
+	}
+	
+	/**
+	 * Validate settings fields
+	 * @param array $input settings array
+	 * @return array $input get the array filtered
+	 */
+	public static function validate_settings( $input ) {
+		if( isset( $input['pls_googleplus_id'] ) ) {
+			$input['pls_googleplus_id'] = wp_strip_all_tags( $input['pls_googleplus_id'] );
+		}
+		
+		return $input;
+	}
+	
+	
 }
 
 /**
