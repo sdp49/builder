@@ -51,6 +51,7 @@ class PL_Social_Networks {
 		
 		// Settings API field init
 		add_action( 'admin_init', array( __CLASS__, 'register_settings' ) );
+		add_action( 'wp_head', array( __CLASS__, 'add_google_authorship' ) );
 		
 		// Facebook init
 		add_action( 'admin_init', array( __CLASS__, 'fb_login_callback' ) );
@@ -806,12 +807,14 @@ class PL_Social_Networks {
 		$out = '';
 		$val = '';
 		
-		$val = get_option( self::$social_setting_key, '' );
-		if( ! is_array( $val ) || ! isset( $val['pls_googleplus_id'] ) ) {
+		self::$social_setting = get_option( self::$social_setting_key, '' );
+		if( ! is_array( self::$social_setting ) || ! isset( self::$social_setting['pls_googleplus_id'] ) ) {
 			$val = '';
+		} else {
+			$val = self::$social_setting['pls_googleplus_id'];
 		}
 		
-		$out = '<input type="text" id="pls_googleplus_id" name="pls_social_setting[pls_googleplus_id]" value="' . $val['pls_googleplus_id'] . '"  />';
+		$out = '<input type="text" id="pls_googleplus_id" name="pls_social_setting[pls_googleplus_id]" value="' . $val . '"  />';
 		
 		echo $out;
 	}
@@ -829,6 +832,16 @@ class PL_Social_Networks {
 		return $input;
 	}
 	
+	public static function add_google_authorship() {
+		self::$social_setting = get_option( self::$social_setting_key, array() );
+		
+		if( ! empty( self::$social_setting ) 
+			&& isset( self::$social_setting['pls_googleplus_id'] ) ) {
+			
+		?><link rel="author" href="https://plus.google.com/<?php echo self::$social_setting['pls_googleplus_id']; ?>/posts/">
+		<?php 
+		} 
+	}
 	
 }
 
