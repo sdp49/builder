@@ -145,7 +145,7 @@ class PL_Social_Networks {
 	 * TODO: if it takes too much time, it's used in 3 methods only so clone there
 	 */
 	public static function init_admin_redirect_uri() {
-		$admin_url = admin_url( 'admin.php?page=placester-social' );
+		$admin_url = admin_url( 'admin.php?page=placester_social' );
 		self::$admin_redirect_uri = $admin_url;
  		define('OAUTH_CALLBACK', $admin_url );
 	}
