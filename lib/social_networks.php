@@ -625,6 +625,10 @@ class PL_Social_Networks {
 		return self::$fb_profile;
 	}
 	
+	public static function add_social_settings_page() {
+		add_options_page('Social Networks', 'Social Networks', 'manage_options',
+			'placester-social', array( __CLASS__, 'add_social_settings_cb' ) );
+	}
 	/**
 	 * Helpers for checking whether a user is logged in or not
 	 */
