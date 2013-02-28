@@ -96,9 +96,11 @@ class PL_Listing_Helper {
 		// Transfer property IDs...
 		$args_get['listing_ids'] = $args['property_ids'];
 		
-		// Add sorting options
+		// Add options and pass below
+		// TODO: see if we could send the entire $args
 		if( isset( $sort_by ) ) $args_get['sort_by'] = $sort_by;
 		if( isset( $sort_type ) ) $args_get['sort_type'] = $sort_type;
+		if( isset( $limit ) ) $args_get['limit'] = $limit;
 
 		// Try to retrieve details for all the listings...
 		$listings = PL_Listing::get($args_get);
