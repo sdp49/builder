@@ -464,24 +464,41 @@ class PL_Membership {
 
               <div id="pl_lead_register_form_inner_wrapper">
 
+                <?php pls_do_atomic( 'register_form_before_title' ); ?>
+                
                 <h2>Sign Up</h2>
-                <p>
+
+                <?php pls_do_atomic( 'register_form_before_email' ); ?>
+                
+                <p class="reg_form_email">
                   <label for="user_email">Email</label>
                   <input type="text" tabindex="25" size="20" required="required" class="input" id="reg_user_email" name="user_email" data-message="A valid email is needed." placeholder="Email">
                 </p>
-                <p>
+                
+                <?php pls_do_atomic( 'register_form_before_password' ); ?>
+                
+                <p class="reg_form_pass">
                   <label for="user_password">Password</label>
                   <input type="password" tabindex="26" size="20" required="required" class="input" id="reg_user_password" name="user_password" data-message="Please enter a password." placeholder="Password">
                 </p>
-                <p>
+                
+                <?php pls_do_atomic( 'register_form_before_confirm_password' ); ?>
+                
+                <p class="reg_form_confirm_pass">
                   <label for="user_confirm">Confirm Password</label>
                   <input type="password" tabindex="27" size="20" required="required" class="input" id="reg_user_confirm" name="user_confirm" data-message="Please confirm your password." placeholder="Confirm Password">
                 </p>
-                <p>
+                
+                <?php pls_do_atomic( 'register_form_before_submit' ); ?>
+                
+                <p class="reg_form_submit">
                   <input type="submit" tabindex="28" class="submit button" value="Register" id="pl_register" name="pl_register">
                 </p>
                 <?php echo wp_nonce_field( 'placester_true_registration', 'register_nonce_field' ); ?>
                 <input type="hidden" tabindex="29" id="register_form_submit_button" name="_wp_http_referer" value="/listings/">
+                
+                <?php pls_do_atomic( 'register_form_after_submit' ); ?>
+
               </div>
 
           </form>
@@ -555,13 +572,22 @@ class PL_Membership {
         ob_start();
         ?>
             <div id="pl_add_remove_lead_favorites">
+                
+                <?php pls_do_atomic( 'before_add_to_fav' ); ?>
+                
                 <?php if (is_user_logged_in()): ?>
+                    <?php pls_do_atomic( 'before_add_to_fav_registered' ); ?>
                     <a href="<?php echo "#" . $property_id ?>" id="pl_add_favorite" class="pl_prop_fav_link" <?php echo $is_favorite ? "style='display:none;'" : "" ?> ><?php echo $add_text ?></a>
                 <?php else: ?>
+                    <?php pls_do_atomic( 'before_add_to_fav_unregistered' ); ?>
                     <a class="pl_register_lead_favorites_link" href="#pl_lead_register_form"><?php echo $add_text ?></a>
                 <?php endif ?>
+                
                 <a href="<?php echo "#" . $property_id ?>" id="pl_remove_favorite" class="pl_prop_fav_link" <?php echo !$is_favorite ? "style='display:none;'" : "" ?> ><?php echo $remove_text ?></a>
                 <img class="pl_spinner" src="<?php echo $spinner ?>" alt="ajax-spinner" style="display:none; margin-left: 5px;">
+                
+                <?php pls_do_atomic( 'after_add_to_fav' ); ?>
+                
             </div>
         <?php
         return ob_get_clean();
@@ -663,29 +689,43 @@ class PL_Membership {
               ?>
                 <form name="pl_login_form" id="pl_login_form" action="<?php echo home_url(); ?>/wp-login.php" method="post" class="pl_login_reg_form">
 
-                    <!-- <div class="success" style="display:none;">You have successfully logged in.</div> -->
+                    <?php pls_do_atomic( 'login_form_before_title' ); ?>
 
-                    <!-- <div id="pl_login_form_inner_wrapper"> -->
+                    <div id="pl_login_form_inner_wrapper">
                       <h2>Login</h2>
                       <!-- redirect-uri="<?php //echo $_SERVER["HTTP_REFERER"]; ?>" -->
                       <!-- <fb:registration fields="name,location,email" width="260"></fb:registration> -->
+                      
+                      <?php pls_do_atomic( 'login_form_before_email' ); ?>
                       
                       <p class="login-username">
                         <label for="user_login">Email</label>
                         <input type="text" name="user_login" id="user_login" class="input" required="required" value="" tabindex="20" data-message="A valid email is needed" placeholder="Email" />
                       </p>
+                      
+                      <?php pls_do_atomic( 'login_form_before_password' ); ?>
+                      
                       <p class="login-password">
                         <label for="user_pass">Password</label>
                         <input type="password" name="user_pass" id="user_pass" class="input" required="required" value="" tabindex="21" data-message="A password is needed" placeholder="Password" />
                       </p>
+                      
+                      <?php pls_do_atomic( 'login_form_before_remember' ); ?>
+                      
                       <p class="login-remember">
                         <label><input name="rememberme" type="checkbox" id="rememberme" value="forever" tabindex="22" /> Remember Me</label>
                       </p>
+                      
+                      <?php pls_do_atomic( 'login_form_before_submit' ); ?>
+                      
                       <p class="login-submit">
                         <input type="submit" name="wp-submit" id="wp-submit" class="button-primary" value="Log In" tabindex="23" />
                         <input type="hidden" name="redirect_to" value="<?php echo $url; ?>" />
                       </p>
-                    <!-- </div> -->
+
+                      <?php pls_do_atomic( 'before_login_title' ); ?>
+
+                    </div>
 
                 </form>
               <?php
