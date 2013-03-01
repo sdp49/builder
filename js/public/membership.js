@@ -33,10 +33,10 @@ jQuery(document).ready(function($) {
         };
         
         nonce = $(this).find('#register_nonce_field').val();
-        username = $(this).find('#user_email').val();
-        email = $(this).find('#user_email').val();
-        password = $(this).find('#user_password').val();
-        confirm = $(this).find('#user_confirm').val();
+        username = $(this).find('#reg_user_email').val();
+        email = $(this).find('#reg_user_email').val();
+        password = $(this).find('#reg_user_password').val();
+        confirm = $(this).find('#reg_user_confirm').val();
         name = $(this).find('#user_fname').val();
         phone = $(this).find('#user_phone').val();
 
@@ -75,6 +75,7 @@ jQuery(document).ready(function($) {
     });
     
     if(typeof $.fancybox == 'function') {
+      
         // Register Form Fancybox
         $(".pl_register_lead_link").fancybox({
             'hideOnContentClick': false,
@@ -90,7 +91,6 @@ jQuery(document).ready(function($) {
             onClosed : function () {
               $(".login-form-validator-error").remove();
             }
-            
         });
 
         $(document).ajaxStop(function() {
@@ -282,61 +282,61 @@ jQuery(document).ready(function($) {
   //
 
   // Additional JS functions here
-  window.fbAsyncInit = function() {
-
-    fb_init();
-    
-    // check FB login status
-    FB.getLoginStatus(function(response) {
-
-        // Is user logged into FB?
-        if (response.status === 'connected') {
-          
-             // var accessToken = response.authResponse.accessToken;
-             console.log(response);
-             var user_id = response.authResponse.userID;
-             
-             
-             // get user info
-             var u_info = '';
-
-             FB.api('/me', function(user) {
-               console.log(user);
-               u_info = user;
-              });
-
-             // console.log(u_info);
-             
-             // verified_response = parse_signed_request(signed_request);
-             // if (verified_response) {
-             //   connect_wp_fb(user_id);
-             // } else {
-             //   console.log('sorry, something went wrong');
-             // }
-             
-             // log in user if user_id exists in our user list via ajax
-             
-             // else prompt them to register
-             
-        
-         } else if (response.status === 'not_authorized') {
-
-             // not_authorized
-             console.log("not authorized");
-             // login();
-
-         } else {
-
-             // not_logged_in
-             console.log("not logged in");
-             // add login button
-             // login_to_fb();
-
-         }
-
-    });
-    
-  };
+  // window.fbAsyncInit = function() {
+  // 
+  //   fb_init();
+  //   
+  //   // check FB login status
+  //   FB.getLoginStatus(function(response) {
+  // 
+  //       // Is user logged into FB?
+  //       if (response.status === 'connected') {
+  //         
+  //            // var accessToken = response.authResponse.accessToken;
+  //            console.log(response);
+  //            var user_id = response.authResponse.userID;
+  //            
+  //            
+  //            // get user info
+  //            var u_info = '';
+  // 
+  //            FB.api('/me', function(user) {
+  //              console.log(user);
+  //              u_info = user;
+  //             });
+  // 
+  //            // console.log(u_info);
+  //            
+  //            // verified_response = parse_signed_request(signed_request);
+  //            // if (verified_response) {
+  //            //   connect_wp_fb(user_id);
+  //            // } else {
+  //            //   console.log('sorry, something went wrong');
+  //            // }
+  //            
+  //            // log in user if user_id exists in our user list via ajax
+  //            
+  //            // else prompt them to register
+  //            
+  //       
+  //        } else if (response.status === 'not_authorized') {
+  // 
+  //            // not_authorized
+  //            console.log("not authorized");
+  //            // login();
+  // 
+  //        } else {
+  // 
+  //            // not_logged_in
+  //            console.log("not logged in");
+  //            // add login button
+  //            // login_to_fb();
+  // 
+  //        }
+  // 
+  //   });
+  //   
+  // };
 
 
 

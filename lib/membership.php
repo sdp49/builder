@@ -11,7 +11,7 @@ class PL_Membership {
         add_action( 'wp_ajax_nopriv_pl_register_lead', array( __CLASS__, 'ajax_create_lead'  ));
         add_action( 'wp_ajax_nopriv_pl_login', array( __CLASS__, 'placester_ajax_login'  )); 
         // add_action( 'wp_ajax_nopriv_connect_wp_fb', array(__CLASS__, 'connect_fb_with_wp' ));
-        add_action( 'wp_ajax_nopriv_parse_signed_request', array(__CLASS__, 'fb_parse_signed_request' ));
+        // add_action( 'wp_ajax_nopriv_parse_signed_request', array(__CLASS__, 'fb_parse_signed_request' ));
         
         add_action( 'wp_ajax_add_favorite_property', array(__CLASS__,'ajax_add_favorite_property'));
         add_action( 'wp_ajax_nopriv_add_favorite_property', array(__CLASS__,'ajax_add_favorite_property'));
@@ -458,7 +458,7 @@ class PL_Membership {
         ob_start();
         ?>
         <div style="display:none;">
-          <form method="post" action="#<?php echo $role; ?>" id="pl_lead_register_form" name="pl_lead_register_form" class="pl_login_reg_form">
+          <form method="post" action="#<?php echo $role; ?>" id="pl_lead_register_form" name="pl_lead_register_form" class="pl_login_reg_form" autocomplete="off">
 
               <div style="display:none" class="success">You have been successfully signed up. This page will refresh momentarily.</div>
 
@@ -466,15 +466,15 @@ class PL_Membership {
                 <h2>Sign Up</h2>
                 <p>
                   <label for="user_email">Email</label>
-                  <input type="text" tabindex="25" size="20" required="required" class="input" id="user_email" name="user_email" data-message="A valid email is needed.">
+                  <input type="text" tabindex="25" size="20" required="required" class="input" id="reg_user_email" name="user_email" data-message="A valid email is needed." placeholder="Email">
                 </p>
                 <p>
                   <label for="user_password">Password</label>
-                  <input type="password" tabindex="26" size="20" required="required" class="input" id="user_password" name="user_password" data-message="Please enter a password.">
+                  <input type="password" tabindex="26" size="20" required="required" class="input" id="reg_user_password" name="user_password" data-message="Please enter a password." placeholder="Password">
                 </p>
                 <p>
                   <label for="user_confirm">Confirm Password</label>
-                  <input type="password" tabindex="27" size="20" required="required" class="input" id="user_confirm" name="user_confirm" data-message="Please confirm your password.">
+                  <input type="password" tabindex="27" size="20" required="required" class="input" id="reg_user_confirm" name="user_confirm" data-message="Please confirm your password." placeholder="Confirm Password">
                 </p>
                 <p>
                   <input type="submit" tabindex="28" class="submit button" value="Register" id="pl_register" name="pl_register">
@@ -591,10 +591,10 @@ class PL_Membership {
       
         $fb_registered = false;
         // Capture users that just logged on w/ FB registration
-        if (isset($_POST['signed_request'])) {
-          $fb_registered = true;
-          $signed_request = self::fb_parse_signed_request($_POST['signed_request'], false);
-        }
+        // if (isset($_POST['signed_request'])) {
+        //   $fb_registered = true;
+        //   $signed_request = self::fb_parse_signed_request($_POST['signed_request'], false);
+        // }
       
         $defaults = array(
             'loginout' => true,
@@ -606,15 +606,16 @@ class PL_Membership {
             'anchor_class' => false,
             'separator' => ' | ',
             'inside_pre_tag' => false,
-            'inside_post_tag' => false
+            'inside_post_tag' => false,
+            'no_forms' => false // use this to return just the login/logout forms, no links. Do this for all calls to this function after the first on a page.
         );
         $args = wp_parse_args( $args, $defaults );
         extract( $args, EXTR_SKIP );
 
         // Register WP user w/ FB creds when FB registration has been triggered
-        if ($fb_registered) {
-          self::connect_fb_with_wp($signed_request);
-        }
+        // if ($fb_registered) {
+        //   self::connect_fb_with_wp($signed_request);
+        // }
         
 
         $is_lead = current_user_can( 'placester_lead' );
@@ -649,7 +650,7 @@ class PL_Membership {
         $register_link = ( $register ) ? ( empty($loginout_link) ? $register_link : $separator . $register_link ) : '';
         $profile_link = ( $profile ) ? ( empty($loginout_link) ? $profile_link : $separator . $profile_link ) : '';
 
-        if ( ! is_user_logged_in() ) {
+        if ( ! is_user_logged_in() && ($no_forms != true) ) {
 
             // set the URL
             if (is_home()) {
@@ -666,15 +667,15 @@ class PL_Membership {
                     <!-- <div id="pl_login_form_inner_wrapper"> -->
                       <h2>Login</h2>
                       <!-- redirect-uri="<?php //echo $_SERVER["HTTP_REFERER"]; ?>" -->
-                      <fb:registration fields="name,location,email" width="260"></fb:registration>
+                      <!-- <fb:registration fields="name,location,email" width="260"></fb:registration> -->
                       
                       <p class="login-username">
                         <label for="user_login">Email</label>
-                        <input type="text" name="user_login" id="user_login" class="input" required="required" value="" tabindex="20" data-message="A valid email is needed" />
+                        <input type="text" name="user_login" id="user_login" class="input" required="required" value="" tabindex="20" data-message="A valid email is needed" placeholder="Email" />
                       </p>
                       <p class="login-password">
                         <label for="user_pass">Password</label>
-                        <input type="password" name="user_pass" id="user_pass" class="input" required="required" value="" tabindex="21" data-message="A password is needed" />
+                        <input type="password" name="user_pass" id="user_pass" class="input" required="required" value="" tabindex="21" data-message="A password is needed" placeholder="Password" />
                       </p>
                       <p class="login-remember">
                         <label><input name="rememberme" type="checkbox" id="rememberme" value="forever" tabindex="22" /> Remember Me</label>
@@ -688,7 +689,7 @@ class PL_Membership {
                 </form>
               <?php
             $login_form = ob_get_clean();
-            if ($container_tag) {
+            if ($container_tag && ($no_forms != true)) {
                 return "<{$container_tag} class={$container_class}>" . $loginout_link . $register_link . "</{$container_tag}>" . self::generate_lead_reg_form() . "<div style='display:none;'>{$login_form}</div>";
             }
             return $loginout_link . $register_link . self::generate_lead_reg_form() . "<div style='display:none;'>{$login_form}</div>";
