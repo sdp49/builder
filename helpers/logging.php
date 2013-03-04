@@ -52,16 +52,16 @@ class PL_Logging {
 	 	if (!PL_Option_Helper::api_key()) {
 	 		?>
 		 		<script type="text/javascript">
-		 			$('#signup_wizard').live('dialogopen', function () {
+		 			jQuery('#signup_wizard').live('dialogopen', function () {
 		 				mixpanel.track("SignUp: Overlay Opened");			
 		 			});
-		 			$('#signup_wizard').live('dialogclose', function () {
+		 			jQuery('#signup_wizard').live('dialogclose', function () {
 		 				mixpanel.track("SignUp: Overlay Closed");			
 		 			});
-		 			$('#pls_search_form input#email').live('focus', function() {
+		 			jQuery('#pls_search_form input#email').live('focus', function() {
 		 				mixpanel.track("SignUp: Edit Sign Up Email");			
 		 			});
-		 			$('#confirm_email_button').live('click', function() {
+		 			jQuery('#confirm_email_button').live('click', function() {
 		 				mixpanel.track("SignUp: Confirm Email Click");			
 		 			});
 		 		</script>	
