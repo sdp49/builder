@@ -8,7 +8,7 @@ Version: 1.1.5
 Author URI: https://www.placester.com/
 */
 
-/*  Copyright (c) 2012 Placester, Inc. <frederick@placester.com>
+/*  Copyright (c) 2012 Placester, Inc. <matt@placester.com>
 	All rights reserved.
 
 	Placester Promoter is distributed under the GNU General Public License, Version 2,
