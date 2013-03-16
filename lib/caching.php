@@ -11,7 +11,7 @@ class PL_Cache {
 	public $transient_id = false;
 
 	function __construct ($type = 'general') {
-		$this->offset = get_option('pls_cache_offset', 0);
+		self::$offset = get_option('pls_cache_offset', 0);
 		$this->type = $type;
 	}
 
@@ -33,7 +33,6 @@ class PL_Cache {
 	}
 
 	function get () {
-
 		// Just ignore caching for admins and regular folk too!
 		if(is_admin() || is_admin_bar_showing() || is_user_logged_in()) {
 			return false;
@@ -46,7 +45,7 @@ class PL_Cache {
 	
 		$func_args = func_get_args();
 		$arg_hash = rawToShortMD5(MD5_85_ALPHABET, md5(http_build_query( $func_args ), true));
-		$this->transient_id = 'pl_' . $this->type . $this->offset . '_' . $arg_hash;
+		$this->transient_id = 'pl_' . $this->type . '_' . self::$offset . '_' . $arg_hash;
         $transient = get_transient($this->transient_id);
         if ($transient) {
         	return $transient;
@@ -64,17 +63,8 @@ class PL_Cache {
 	}
 
 	public static function clear() {
-		global $wpdb;
-	    
-	    $placester_options = $wpdb->get_results('SELECT option_name FROM ' . $wpdb->prefix . 'options ' ."WHERE option_name LIKE '_transient_pl_%'");
-	    foreach ($placester_options as $option) {
-	        delete_option( $option->option_name );
-	    }
-	    
-	    $saved_searches = $wpdb->get_results('SELECT option_name FROM ' . $wpdb->prefix . 'options ' ."WHERE option_name LIKE 'pls_ss_%'");
-	    foreach ($saved_searches as $option) {
-	        delete_option( $option->option_name );
-	    }
+		// Get rid of this redundant function eventually...
+		self::invalidate();
 	}
 
 	public static function ajax_clear() {
