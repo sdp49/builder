@@ -63,16 +63,6 @@ class PL_Cache {
 		}
 	}
 
-	public static function items() {
-		global $wpdb;
-	    $placester_options = $wpdb->get_results('SELECT * FROM ' . $wpdb->prefix . 'options ' ."WHERE option_name LIKE '_transient_pl_%'", ARRAY_A);		
-	    if ($placester_options && is_array($placester_options)) {
-	    	return $placester_options;
-	    } else {
-	    	return false;
-	    }
-	}
-
 	public static function clear() {
 		global $wpdb;
 	    
