@@ -32,7 +32,6 @@ class PL_Cache {
 		// Flush cache when posts are trashed or untrashed -pek
 		add_action('wp_trash_post', array(__CLASS__, 'invalidate'));
 		add_action('untrash_post', array(__CLASS__, 'invalidate'));
-
 	}
 
 	function get () {
@@ -47,14 +46,12 @@ class PL_Cache {
 		}
 	
 		$func_args = func_get_args();
-		$arg_hash = rawToShortMD5(MD5_85_ALPHABET, md5(http_build_query( $func_args ), true));
+		$arg_hash = rawToShortMD5( MD5_85_ALPHABET, md5(http_build_query($func_args), true) );
 		$this->transient_id = 'pl_' . $this->type . '_' . self::$offset . '_' . $arg_hash;
+        
         $transient = get_transient($this->transient_id);
-        if ($transient) {
-        	return $transient;
-        } else {
-        	return false;
-        }
+        // Return as is -- if transient doesn't exist, it's up the caller to check...
+        return $transient;
 	}
 
 	public function save ($result, $duration = 172800) {
