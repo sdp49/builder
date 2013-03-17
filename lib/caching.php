@@ -26,7 +26,7 @@ class PL_Cache {
 			self::invalidate();
 		}
 
-		add_action('wp_ajax_user_empty_cache', array(__CLASS__, 'ajax_clear' ) );
+		// Invalidate cache when site's theme is changed...
 		add_action('switch_theme', array(__CLASS__, 'invalidate'));
 		
 		// Flush cache when posts are trashed or untrashed -pek
@@ -50,7 +50,7 @@ class PL_Cache {
 		$this->transient_id = 'pl_' . $this->type . '_' . self::$offset . '_' . $arg_hash;
         
         $transient = get_transient($this->transient_id);
-        // Return as is -- if transient doesn't exist, it's up the caller to check...
+        // Return as is -- if transient doesn't exist, it's up to the caller to check...
         return $transient;
 	}
 
@@ -64,12 +64,6 @@ class PL_Cache {
 
 	public static function clear() {
 		// TODO: Allow user to clear by type...
-	}
-
-	public static function ajax_clear() {
-		self::clear();
-		echo json_encode(array('result' => true, 'message' => 'You\'ve successfully cleared your cache'));
-		die();
 	}
 
 	public static function delete($option_name) {
