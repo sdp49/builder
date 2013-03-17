@@ -6,12 +6,14 @@ class PL_Cache {
 	const TTL_LOW  = 900; // 15 minutes
 	const TTL_HIGH = 172800; // 48 hours
 
+	private static $offset_key = 'pl_cache_offset';
 	public static $offset = 0;
+
 	public $type = 'general';
 	public $transient_id = false;
 
 	function __construct ($type = 'general') {
-		self::$offset = get_option('pls_cache_offset', 0);
+		self::$offset = get_option(self::$offset_key, 0);
 		$this->type = $type;
 	}
 
@@ -26,7 +28,8 @@ class PL_Cache {
 
 		add_action('wp_ajax_user_empty_cache', array(__CLASS__, 'ajax_clear' ) );
 		add_action('switch_theme', array(__CLASS__, 'invalidate'));
-		// flush cache when posts are trashed or untrashed -pek
+		
+		// Flush cache when posts are trashed or untrashed -pek
 		add_action('wp_trash_post', array(__CLASS__, 'invalidate'));
 		add_action('untrash_post', array(__CLASS__, 'invalidate'));
 
@@ -63,8 +66,7 @@ class PL_Cache {
 	}
 
 	public static function clear() {
-		// Get rid of this redundant function eventually...
-		self::invalidate();
+		// TODO: Allow user to clear by type...
 	}
 
 	public static function ajax_clear() {
@@ -80,12 +82,18 @@ class PL_Cache {
 	}
 
 	public static function invalidate() {
-		$cache = new self();
-		$cache->offset += 1;
-		if($cache->offset > 99) {
-			$cache->offset = 0;
+		// Retrieve the latest offset value 
+		$new_offset = get_option(self::$offset_key, 0);
+		$new_offset += 1;
+
+		// Reset offset if value is high enough...
+		if ($new_offset > 99) {
+			$new_offset = 0;
 		}
-		update_option('pls_cache_offset', $cache->offset);
+
+		// Update the option, then update the static variable
+		update_option(self::$offset_key, $new_offset);
+		self::$offset = $new_offset;
 	}
 
 //end class
@@ -97,11 +105,10 @@ function PL_Options_Save_Flush() {
 	// Check if options are being saved
 	$doing_ajax = ( defined('DOING_AJAX') && DOING_AJAX );
 	$editing_widgets = ( isset($_GET['savewidgets']) || isset($_POST['savewidgets']));
-	if($_SERVER['REQUEST_METHOD'] == 'POST' && is_admin() && (!$doing_ajax || $editing_widgets)) {
+	if ($_SERVER['REQUEST_METHOD'] == 'POST' && is_admin() && (!$doing_ajax || $editing_widgets)) {
 
 		// Flush the cache
 		PL_Cache::invalidate();
-
 	}
 }
 
