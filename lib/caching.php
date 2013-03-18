@@ -36,14 +36,14 @@ class PL_Cache {
 		add_action('untrash_post', array(__CLASS__, 'invalidate'));
 	}
 
-	function get () {
-		// Just ignore caching for admins and regular folk too!
-		if (is_admin() || is_admin_bar_showing() || is_user_logged_in()) {
+	public function get () {
+		// Do not cache based on allow_caching() function...
+		if ( !self::allow_caching() ) {
 			return false;
 		}
 
-		// Backdoor to ignore the cache completely
-		if (isset($_GET['no_cache']) || isset($_POST['no_cache'])) {
+		// Backdoor to ignore the cache completely...
+		if ( isset($_GET['no_cache']) || isset($_POST['no_cache']) ) {
 			return false;
 		}
 	
@@ -57,11 +57,15 @@ class PL_Cache {
 	}
 
 	public function save ($result, $duration = 172800) {
-		// Don't save any content from logged in users
-		// We were getting things like "log out" links cached
-		if ($this->transient_id && !is_user_logged_in()) {
+		// Make sure the transient_id was properly set in the "get" call, and that caching is permitted...
+		if ( $this->transient_id && self::allow_caching() ) {
 			set_transient($this->transient_id, $result , $duration);
 		}
+	}
+
+	public static function allow_caching() {
+		// Allow caching as long as user is NOT an admin panel AND is NOT in the admin panel...
+		return ( !current_user_can('manage_options') && !is_admin() );
 	}
 
 	public static function clear() {
