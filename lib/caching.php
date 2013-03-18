@@ -6,6 +6,9 @@ class PL_Cache {
 	const TTL_LOW  = 900; // 15 minutes
 	const TTL_HIGH = 172800; // 48 hours
 
+	private static $log_enabled = false;
+	const LOG_PATH = "/Users/iantendick/dev/wp_cache.log";
+	
 	private static $offset_key = 'pl_cache_offset';
 	public static $offset = 0;
 
@@ -14,11 +17,10 @@ class PL_Cache {
 
 	function __construct ($type = 'general') {
 		self::$offset = get_option(self::$offset_key, 0);
-		$this->type = $type;
+		$this->type = preg_replace( "/\W/", "_", strtolower($type) );
 	}
 
 	public static function init () {
-
 		// Allow cache to be cleared by going to url like http://example.com/?clear_cache
 		if(isset($_GET['clear_cache']) || isset($_POST['clear_cache'])) {
 			// style-util.php calls its PLS_Style::init() immediately
@@ -36,12 +38,12 @@ class PL_Cache {
 
 	function get () {
 		// Just ignore caching for admins and regular folk too!
-		if(is_admin() || is_admin_bar_showing() || is_user_logged_in()) {
+		if (is_admin() || is_admin_bar_showing() || is_user_logged_in()) {
 			return false;
 		}
 
 		// Backdoor to ignore the cache completely
-		if(isset($_GET['no_cache']) || isset($_POST['no_cache'])) {
+		if (isset($_GET['no_cache']) || isset($_POST['no_cache'])) {
 			return false;
 		}
 	
@@ -85,6 +87,27 @@ class PL_Cache {
 		// Update the option, then update the static variable
 		update_option(self::$offset_key, $new_offset);
 		self::$offset = $new_offset;
+	}
+
+/*
+ * Cache logging functionality...
+ */
+
+	private static function cache_log ($msg) {
+		if ( !empty($msg) && self::$log_enabled ) {
+			$msg = '[' . date("M-d-Y g:i A T") . '] ' . $msg . "\n";
+			error_log($msg, 3, self::LOG_PATH);
+		}
+	}
+
+	private static function log_trace ($trace) {
+		// Print the file, the function in that file, and the specific line where the given caching call 
+		// is being made from to the cache log...
+		if ( isset($trace[1]) ) {
+			$file = str_replace('/Users/iantendick/Dev/wordpress/', '', @$trace[1]['file']);
+			$caller = $file . ', ' . @$trace[2]['function'] . ', ' . @$trace[1]['line'];
+			self::cache_log('Caller: ' . $caller);
+		}
 	}
 
 //end class
