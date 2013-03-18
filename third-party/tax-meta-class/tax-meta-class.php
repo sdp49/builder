@@ -998,9 +998,10 @@ class Tax_Meta_Class {
     
     if (!is_array($meta)) $meta = (array) $meta;
     $this->show_field_begin($field, $meta);
-    $options = $field['options'];
+    $options = $field['options']; 
+    if( isset( $options['post_type'] ) ) $options['args']['post_type'] = $options['post_type'];
+    	
     $posts = get_posts($options['args']);
-    
     // checkbox_list
     if ('checkbox_list' == $options['type']) {
       foreach ($posts as $p) {
@@ -1010,6 +1011,9 @@ class Tax_Meta_Class {
     // select
     else {
       echo "<select name='{$field['id']}" . ($field['multiple'] ? "[]' multiple='multiple' style='height:auto'" : "'") . ">";
+      if( ! empty( $options['std'] ) ) {
+      	echo "<option value='false'>" . $options['std'] . "</option>";
+      }	
       foreach ($posts as $p) {
         echo "<option value='$p->ID'" . selected(in_array($p->ID, $meta), true, false) . ">$p->post_title</option>";
       }
