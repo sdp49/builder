@@ -47,10 +47,9 @@ class PL_Cache {
 			return false;
 		}
 	
-		$func_args = func_get_args();
-		$arg_hash = rawToShortMD5( MD5_85_ALPHABET, md5(http_build_query($func_args), true) );
-		$this->transient_id = 'pl_' . $this->type . '_' . self::$offset . '_' . $arg_hash;
-        
+		// Create and store item's cache key...
+		$this->transient_id = self::build_cache_key($this->type, func_get_args());
+
         $transient = get_transient($this->transient_id);
         // Return as is -- if transient doesn't exist, it's up to the caller to check...
         return $transient;
@@ -66,6 +65,14 @@ class PL_Cache {
 	public static function allow_caching() {
 		// Allow caching as long as user is NOT an admin panel AND is NOT in the admin panel...
 		return ( !current_user_can('manage_options') && !is_admin() );
+	}
+
+	public static function build_cache_key ($type, $func_args = array()) {
+		// Create a hash key 
+		$arg_hash = rawToShortMD5( MD5_85_ALPHABET, md5(http_build_query($func_args), true) );
+		$key = 'pl_' . $type . '_' . self::$offset . '_' . $arg_hash;
+
+		return $key;
 	}
 
 	public static function clear() {
