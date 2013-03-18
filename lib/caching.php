@@ -12,12 +12,12 @@ class PL_Cache {
 	private static $offset_key = 'pl_cache_offset';
 	public static $offset = 0;
 
-	public $type = 'general';
+	public $group = 'pl_general';
 	public $transient_id = false;
 
-	function __construct ($type = 'general') {
+	function __construct ($group = 'general') {
 		self::$offset = get_option(self::$offset_key, 0);
-		$this->type = preg_replace( "/\W/", "_", strtolower($type) );
+		$this->group = 'pl_' . preg_replace( "/\W/", "_", strtolower($group) );
 	}
 
 	public static function init () {
@@ -27,6 +27,9 @@ class PL_Cache {
 			// so this can't be tied to a hook
 			self::invalidate();
 		}
+
+		// This is VITAL for caching to work properly...
+		// add_action( 'w3tc_register_fragment_groups', array(__CLASS__, 'register_fragment_groups') );
 
 		// Invalidate cache when site's theme is changed...
 		add_action('switch_theme', array(__CLASS__, 'invalidate'));
@@ -48,7 +51,7 @@ class PL_Cache {
 		}
 	
 		// Create and store item's cache key...
-		$this->transient_id = self::build_cache_key($this->type, func_get_args());
+		$this->transient_id = self::build_cache_key($this->group, func_get_args());
 
         $transient = get_transient($this->transient_id);
         // Return as is -- if transient doesn't exist, it's up to the caller to check...
@@ -67,24 +70,31 @@ class PL_Cache {
 		return ( !current_user_can('manage_options') && !is_admin() );
 	}
 
-	public static function build_cache_key ($type, $func_args = array()) {
+	public static function build_cache_key ($group, $func_args = array()) {
 		// Create a hash key 
 		$arg_hash = rawToShortMD5( MD5_85_ALPHABET, md5(http_build_query($func_args), true) );
-		$key = 'pl_' . $type . '_' . self::$offset . '_' . $arg_hash;
+		$key = $group . '_' . self::$offset . '_' . $arg_hash;
 
 		return $key;
 	}
 
 	public static function clear() {
-		// TODO: Allow user to clear by type...
+		// TODO: Allow user to clear by group...
+
+		//manually flush a blog specific group.
+		// w3tc_fragmentcache_flush_group('my_plugin_');
+
+		//manually flush a network wide group
+		// w3tc_fragmentcache_flush_group('my_plugin_global_', true);
 	}
 
-	public static function delete($option_name) {
-		$option_name = str_replace('_transient_', '', $option_name);
-		$result = delete_transient( $option_name );
+	public static function delete ($group, $func_args = array()) {
+		$cache_key = build_cache_key($group, $func_args);
+		$result = delete_transient($cache_key);
 		return $result;
 	}
 
+	/* This call will delete ALL site transients (i.e., everything in the current site's cache)... */
 	public static function invalidate() {
 		// Retrieve the latest offset value 
 		$new_offset = get_option(self::$offset_key, 0);
@@ -120,6 +130,26 @@ class PL_Cache {
 			self::cache_log('Caller: ' . $caller);
 		}
 	}
+
+/*
+ * Mix-in W3TC fragment caching functionality...
+ */	
+
+	/* Register the groups we will use for caching... */
+	// public static function register_fragment_groups() {
+	// 	$blog_groups = array();
+	// 	$network_groups = array();
+
+	// 	// Blog specific group and an array of actions that will trigger a flush of the group
+	// 	foreach ( $blog_groups as $group => $actions_arr ) {
+	// 		w3tc_register_fragment_group('pl_{$group}_', $actions_arr);
+	// 	}
+
+	// 	//If using MultiSite Network/site wide specific group and an array of actions that will trigger a flush of the group
+	// 	foreach ( $network_groups as $group => $actions_arr ) {
+	// 		w3tc_register_fragment_group_global('{$group}_network_', $actions_arr);
+	// 	}
+	// }
 
 //end class
 }
