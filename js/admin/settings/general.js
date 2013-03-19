@@ -76,6 +76,24 @@ jQuery(document).ready(function($) {
 		  };
 		}, 'json');
 	});
+	
+	$('#enable_community_pages').on('click', function() {
+		var request = {
+			enable_pages: $(this).is(':checked'),
+			action: 'enable_community_pages'
+		}
+		$.post(ajaxurl, request, function(data, textStatus, xhr) {
+		  if (data && data.result) {
+			$('#community_pages_message').html(data.message);
+			$('#community_pages_message').removeClass('red');
+			$('#community_pages_message').addClass('green');
+		  } else {
+		  	$('#community_pages_message').html(data.message);
+		  	$('#community_pages_message').removeClass('green');
+		  	$('#community_pages_message').addClass('red');
+		  };
+		}, 'json');
+	});
 
 
 	$('#block_address').live('click', function() {
