@@ -434,8 +434,8 @@ class PL_Listing_Helper {
 	 * filled with the coresponding unique values that exist.
 	 */
 	public function basic_aggregates ($keys) {
-		// Need to specify keys...
-		if (empty($keys)) { return array(); }
+		// Need to specify an array that contains at least one key..
+		if (!is_array($keys) || empty($keys)) { return array(); }
 
 		$args = array('keys' => $keys);
 		$response = PL_Listing::aggregates($args);
