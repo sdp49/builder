@@ -70,14 +70,15 @@ class PL_Helper_User {
 			$enable_pages = 0;
 		}
 		 
-		$result = PL_Option_Helper::set_community_pages($enable_pages);
-		if( $result === 'false' ) $result = false;
+		$updated = PL_Option_Helper::set_community_pages($enable_pages);
+		$result = true;
+		if( ! $updated || ! $enable_pages ) $result = false;
 
 		// TODO: some bad caching occurs here, do fix 
 		if( $result ) {
-			echo json_encode(array('result' => $result, 'message' => 'You successfully enabled community pages'));
+			echo json_encode(array('result' => true, 'message' => 'You successfully enabled community pages'));
 		} else {
-			echo json_encode(array('result' => $result, 'message' => 'You successfully disabled community pages'));
+			echo json_encode(array('result' => false, 'message' => 'You successfully disabled community pages'));
 		}
 		die();
 	}

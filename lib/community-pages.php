@@ -14,6 +14,7 @@ class PL_Community_Pages {
 	public static function init() {
 		add_action( 'init', array(__CLASS__, 'create_community_page_cpt') );
 		add_action( 'init', array( __CLASS__, 'create_neighborhood_picker' ) );
+		add_action( 'init', array(__CLASS__,'dump_permalinks') );
 		add_action( 'wp_footer', array(__CLASS__,'force_rewrite_update') );
 		add_action( 'add_meta_boxes', array( __CLASS__, 'add_neighborhood_meta_box') );
 		add_action( 'save_post', array( __CLASS__, 'save_community_page' ) );
@@ -181,7 +182,7 @@ class PL_Community_Pages {
 		register_post_type(self::$community_post_type, $args );
 	}
 
-	// TODO: fix
+	/* // TODO: fix
 	function create_once ($pages_to_create, $force_template = true) {
 		foreach ($pages_to_create as $page_info) {
 			$page = get_page_by_title($page_info['title']);
@@ -250,7 +251,7 @@ class PL_Community_Pages {
 		}
 		return false;
 	}
-
+    */
 
 	function force_rewrite_update () {
 		if ( PL_PLUGIN_VERSION ) {
