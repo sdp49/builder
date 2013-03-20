@@ -387,7 +387,7 @@ class PL_Listing_Helper {
 		$global_filters = PL_Helper_User::get_global_filters();
 		if ( $allow_globals && !empty($global_filters) && !empty($global_filters['location']) ) {
 			// TODO: Move these to a global var or constant...
-			$global_filters['keys'] = array( 'location.locality', 'location.region', 'location.postal', 'location.neighborhood', 'location.county' );
+			$global_filters['keys'] = array('location.locality', 'location.region', 'location.postal', 'location.neighborhood', 'location.county');
 			$response = PL_Listing::aggregates($global_filters);
 		
 			// Remove "location." from key names to conform to data standard expected by caller(s)...
@@ -419,6 +419,28 @@ class PL_Listing_Helper {
 		} else {
 			return array();	
 		}
+	}
+
+	/* 
+	 * Aggregates listing data to produce all unique values that exist for the given set of keys passed
+	 * in as array.  Classified as "basic" because no filters are incorporated (might add this later...)
+	 *
+	 * Keys must be passed in a slightly different format than elsewhere, for example, to aggregate on
+	 * city and state (i.e., find all unique cities and states present in all available listings), you'd
+	 * pass the following value for $keys:
+	 *     array('location.region', 'location.locality') // Notice the 'dot' notation in contrast to brackets...
+	 *
+	 * Returns an array containing keys for all those passed in (i.e. $keys) that themselves map to arrays 
+	 * filled with the coresponding unique values that exist.
+	 */
+	public function basic_aggregates ($keys) {
+		// Need to specify keys...
+		if (empty($keys)) { return array(); }
+
+		$args = array('keys' => $keys);
+		$response = PL_Listing::aggregates($args);
+
+		return $response;
 	}
 
 	public function polygon_locations ($return_only = false) {
