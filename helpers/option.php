@@ -48,6 +48,15 @@ class PL_Option_Helper {
 		$places_api_key = get_option('placester_places_api_key', '');
 		return $places_api_key;
 	}
+	
+	function get_community_pages_enabled() {
+		$response = get_option('pls_enable_community_pages', false);
+		
+		if ($response == NULL ) {
+			return false;
+		}
+		return $response;
+	}
 
 	function post_slug() {
 	    $url_slug = get_option('placester_url_slug');
@@ -85,6 +94,10 @@ class PL_Option_Helper {
 		return PL_Options::get('pls_global_search_filters');		
 	}
 
+	public function set_community_pages ($enable_pages = 0) {
+		$response = PL_Options::set('pls_enable_community_pages', $enable_pages);
+		return $response;
+	}
 
 	public function set_log_errors ($report_errors = 1) {
 		$response = PL_Options::set('pls_log_errors', $report_errors);
