@@ -14,8 +14,6 @@ class PL_Community_Pages {
 	public static function init() {
 		add_action( 'init', array(__CLASS__, 'create_community_page_cpt') );
 		add_action( 'init', array( __CLASS__, 'create_neighborhood_picker' ) );
-		add_action( 'init', array(__CLASS__,'dump_permalinks') );
-		add_action( 'wp_footer', array(__CLASS__,'force_rewrite_update') );
 		add_action( 'add_meta_boxes', array( __CLASS__, 'add_neighborhood_meta_box') );
 		add_action( 'save_post', array( __CLASS__, 'save_community_page' ) );
 		
@@ -124,10 +122,10 @@ class PL_Community_Pages {
 		$neighborhoods = get_terms( 'neighborhood' );
 
 		foreach( $neighborhoods as $neighborhood ) {
- 			printf("<input type='checkbox' name='neighborhoods[]' value='%d' %s />", 
+ 			printf("<input type='checkbox' name='neighborhoods[]' id=n-".$neighborhood->term_id." value='%d' %s />", 
 		 			$neighborhood->term_id, 
 		 			checked(in_array($neighborhood->term_id, array_values( $page_neighborhoods ) ), true, false) );
-			echo $neighborhood->name;
+			echo "<label for=n-".$neighborhood->term_id.">".$neighborhood->name."</label>";
 			echo '<br />';
 		}
 		
@@ -252,24 +250,5 @@ class PL_Community_Pages {
 		return false;
 	}
     */
-
-	function force_rewrite_update () {
-		if ( PL_PLUGIN_VERSION ) {
-			$old_version = get_option('pl_plugin_version');
-			if ($old_version != PL_PLUGIN_VERSION) {
-				update_option('pl_plugin_version', PL_PLUGIN_VERSION);
-				global $wp_rewrite;
-				$wp_rewrite->flush_rules();
-				PL_Cache::invalidate();
-				// PL_HTTP::clear_cache();
-				self::delete_all();
-			}
-		}
-	}
-
-	public function dump_permalinks () {
-		global $wp_rewrite;
-		$wp_rewrite->flush_rules();
-	}
 
 }
