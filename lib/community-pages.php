@@ -122,10 +122,10 @@ class PL_Community_Pages {
 		$neighborhoods = get_terms( 'neighborhood' );
 
 		foreach( $neighborhoods as $neighborhood ) {
- 			printf("<input type='checkbox' name='neighborhoods[]' value='%d' %s />", 
+ 			printf("<input type='checkbox' name='neighborhoods[]' id=n-".$neighborhood->term_id." value='%d' %s />", 
 		 			$neighborhood->term_id, 
 		 			checked(in_array($neighborhood->term_id, array_values( $page_neighborhoods ) ), true, false) );
-			echo $neighborhood->name;
+			echo "<label for=n-".$neighborhood->term_id.">".$neighborhood->name."</label>";
 			echo '<br />';
 		}
 		
