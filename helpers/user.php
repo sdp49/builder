@@ -49,8 +49,8 @@ class PL_Helper_User {
 		die();
 	}
 
-	public static function whoami($args = array()) {
-		return PL_User::whoami($args);
+	public static function whoami($args = array(), $api_key = null) {
+		return PL_User::whoami($args, $api_key);
 	}
 
 	public static function existing_api_key_view () {
