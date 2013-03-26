@@ -3,20 +3,22 @@ class PL_Router {
 
 	private static function router($template, $params, $wrap = false, $directory = PL_VIEWS_ADMIN_DIR) {
 		ob_start();
-// 			delete_option('placester_api_key');
 			self::load_builder_view('header.php');
 
-			// Need to conditionally include these...
-	    	self::load_builder_partial('free-trial.php');
-
+			// Load partials used in the "wizard" dialog process when API key is not set...
 			if (!PL_Option_Helper::api_key()) {
 				do_action('sign-up-action');
 				self::load_builder_partial('sign-up.php');
-
-				// Other components that are only needed when plug-in has no associated API key...
-				echo '<div id="integration_wizard"></div>';	
+				self::load_builder_partial('free-trial.php');
 		    	self::load_builder_partial('demo-data.php');
+
+		    	// The integration form is heavy and time-consuming to render, so defer loading it until later 
+		    	// via AJAX -- still need to provide this placeholder for use by JQuery dialog (see integration.js)
+				?>
+				  <div id="integration_wizard"></div>
+				<?php
 			}
+
 			self::load_builder_view($template, $directory, $params);	
 			self::load_builder_view('footer.php');
 		echo ob_get_clean();	
@@ -147,6 +149,12 @@ class PL_Router {
 
 	public function integrations() {
 		self::router('integrations.php', array(), false);
+		
+		// This gets loaded by default if no API key is present, so conditionally load it here
+		// to ensure it's not included twice...
+		if (PL_Option_Helper::api_key()) {
+			self::load_builder_partial('free-trial.php');
+		}
 	}
 
 //end of class

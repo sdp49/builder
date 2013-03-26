@@ -4,14 +4,14 @@ PL_Js_Helper::init();
 
 class PL_Js_Helper {
 
-	public function init() {
+	public static function init() {
 		add_action( 'admin_enqueue_scripts', array( __CLASS__, 'admin') );
 		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'frontend') );
 		add_action( 'admin_head', array(__CLASS__, 'admin_menu_url') );
 		add_action( 'customize_controls_enqueue_scripts', array(__CLASS__, 'customizer') );
 	}
 
-	public function admin ($hook) {
+	public static function admin ($hook) {
 		// Inject premium themes logic into the themes admin page when visiting from any site on the hosted env...
 		if ($hook == 'themes.php' && defined('HOSTED_PLUGIN_KEY')) {
 			self::register_enqueue_if_not('premium', trailingslashit(PL_JS_URL) . 'admin/premium.js', array('jquery'));
@@ -62,18 +62,14 @@ class PL_Js_Helper {
 		
 		self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/js/jquery-ui-1.8.17.custom.min.js', array( 'jquery'));
 		self::register_enqueue_if_not('global', trailingslashit(PL_JS_URL) .  'admin/global.js', array( 'jquery-ui'));
-		
-		// ob_start();
-		// pls_dump(PL_User::subscriptions());
-		// error_log(ob_get_clean());
 
-		// $sub = PL_User::subscriptions();
-		// if ( empty($sub['plan']) && $sub['eligible_for_trial'] ) {
+		// If no API key is set, load the following JS files for use by the wizard on ANY plugin settings page...
+		if (!PL_Option_Helper::api_key()) {
 			self::register_enqueue_if_not('sign-up', trailingslashit(PL_JS_URL) .  'admin/sign-up.js', array( 'jquery-ui'));
 			self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) .  'admin/free-trial.js', array( 'jquery-ui'));
 			self::register_enqueue_if_not('integration', trailingslashit(PL_JS_URL) .  'admin/integration.js', array( 'jquery-ui'));
 			self::register_enqueue_if_not('demo-data', trailingslashit(PL_JS_URL) .  'admin/demo-data.js', array('jquery-ui'));
-		// }
+		}
 		
 		if ($hook == 'placester_page_placester_properties') {
 			self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) .  'datatables/jquery.dataTables.js', array( 'jquery'));			
@@ -90,10 +86,10 @@ class PL_Js_Helper {
 			self::register_enqueue_if_not('theme-gallery', trailingslashit(PL_JS_URL) .  'admin/theme-gallery.js', array( 'jquery'));			
 		}
 
-		// if ($hook == 'placester_page_placester_integrations') {						
-		// 	self::register_enqueue_if_not('integration', trailingslashit(PL_JS_URL) .  'admin/integration.js', array( 'jquery'));			
-		// }
-
+		if ($hook == 'placester_page_placester_integrations') {
+			self::register_enqueue_if_not('integration', trailingslashit(PL_JS_URL) .  'admin/integration.js', array( 'jquery'));
+			self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) .  'admin/free-trial.js', array( 'jquery-ui'));		
+		}
 
 		if ($hook == 'placester_page_placester_settings') {
 			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) .  'admin/settings/general.js', array( 'jquery'));	
@@ -134,7 +130,7 @@ class PL_Js_Helper {
 		}
 	}
 
-	public function admin_menu_url () {
+	public static function admin_menu_url () {
 		?>
 			<script type="text/javascript">
 				var adminurl = '<?php echo ADMIN_MENU_URL; ?>';
@@ -144,7 +140,7 @@ class PL_Js_Helper {
 
 	}
 
-	public function frontend() {
+	public static function frontend() {
 		self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) .  'datatables/jquery.dataTables.js', array( 'jquery'));			
 		self::register_enqueue_if_not('leads', trailingslashit(PL_JS_PUB_URL) .  'leads.js', array( 'jquery'));
 		self::register_enqueue_if_not('membership', trailingslashit(PL_JS_PUB_URL) .  'membership.js', array( 'jquery'));
@@ -155,7 +151,7 @@ class PL_Js_Helper {
 		}			
 	}
 
-	public function customizer() {
+	public static function customizer() {
 		self::register_enqueue_if_not('customizer', trailingslashit(PL_JS_PUB_URL) . 'customizer.js', array('jquery'));
 		if ( PL_Customizer_Helper::is_onboarding() ) {
 			self::register_enqueue_if_not('onboard', trailingslashit(PL_JS_PUB_URL) . 'onboard.js', array('jquery'));
