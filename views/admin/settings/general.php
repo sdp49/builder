@@ -135,12 +135,12 @@
 					<input id="error_logging_click" type="checkbox" name="error_logging" <?php echo $error_logging ? 'checked="checked"' : '' ?>>
 					<label for="error_logging">You can help improve Placester. Allow the Real Estate Website Builder Plugin to anonymously report errors and usage information so we can fix errors and add new features.</label>
 				</li>
-				<?php if( current_theme_supports('pls-community-pages') ) {?>
+			  <?php if (current_theme_supports('pls-community-pages')): ?>
 				<li>
 					<input id="enable_community_pages" type="checkbox" name="enable_community_pages" <?php echo $enable_community_pages ? 'checked="checked"' : '' ?>>
 					<label for="enable_community_pages">Enable Community Pages</label>
 				</li>
-				<?php } ?>
+			  <?php endif; ?>
 			</ul>
 
 			
