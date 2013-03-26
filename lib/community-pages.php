@@ -43,6 +43,9 @@ class PL_Community_Pages {
 		if( ! current_user_can( 'manage_options' ) ) {
 			return; 
 		}
+		if( isset( $_POST['page_header_title'] ) ) {
+			update_post_meta( $post_id, 'page_header_title', $_POST['page_header_title'] );
+		}
 		
 		// Get old meta and clear neighborhoods
 		$old_neighborhoods = get_post_meta( $post_id, 'community_neighborhoods', true );
@@ -113,7 +116,12 @@ class PL_Community_Pages {
 	
 	public static function neighborhood_picker_box( $post ) {
 		
-		// TODO: get all saved neighborhoods
+		$page_header_title = get_post_meta( $post->ID, 'page_header_title', true );
+		
+		if( empty( $page_header_title ) ) $page_header_title = '';
+		
+		echo "<p>Page Header Title: <input type='text' name='page_header_title' value='$page_header_title' style='width: 150px'/></p>";
+		
 		$page_neighborhoods = get_post_meta( $post->ID, 'community_neighborhoods', true );
 		if( empty( $page_neighborhoods ) ) {
 			$page_neighborhoods = array();
