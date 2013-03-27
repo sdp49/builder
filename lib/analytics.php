@@ -14,7 +14,7 @@ class PL_Analytics {
 		if (defined('HOSTED_PLUGIN_KEY')) {
 			$can_collect = true;
 		}
-		else { // Not on the hosted platform...
+		else { // i.e., not on the hosted platform...
 			$can_collect = PL_Option_Helper::get_log_errors();
 		}
 
@@ -53,23 +53,40 @@ class PL_Analytics {
 	private static function produce_data ($type, $args = array()) {
 		global $PL_ANALYTICS_CONFIG;
 
-		// Validate args for the given type...
+		// Get config for particular event type...
+		$type_config;
+		if (isset($PL_ANALYTICS_CONFIG[$type])) {
+			$type_config = $PL_ANALYTICS_CONFIG[$type];
+		}
+		else {
+			// Unknown event type -- exit prematurely by returning null...
+			return null;
+		}	
 		
+		// Construct event data array, initially storing the event category..
+		$data = array("category" => $type_config["category"]);
+
+		// Only include values from the $args array whose keys are specified by the given event type's config...
+		foreach ($type_config["allowed_params"] as $param) {
+			if (isset($args[$param])) {
+				$data[$param] = $args[$param];
+			}	
+		}
 
 		$output = self::hash_data($info["api_key"], $info["web_secret"], $data);
 		return $output;
 	}
 
-	public static function contact_data ($args = array()) {
+	public static function contact_submission ($args = array()) {
 		return self::produce_data("contact_submission", $args);
 	}
 
-	public static function listing_data ($property_id) {
+	public static function listing_view ($property_id) {
 		// Map this to the key the gatherer uses...
 		return self::produce_data("listing_view", array("page_id" => $property_id));
 	}
 
-	public static function search_data ($args = array()) {
+	public static function listing_search ($args = array()) {
 		return self::produce_data("listing_search", $args);
 	}
 }
@@ -83,7 +100,10 @@ class PL_Base64 {
 		// Start with the standard base64 encoding...
 		$base = base64_encode($str);
 
-		// 
+		// Make enconding comply with 'strict' standards...
+		$strict = $base;
+		
+		return $strict;
 	}
 
 	public static function url_safe ($str) {
@@ -92,9 +112,9 @@ class PL_Base64 {
 		
 		// Apply the necessary character transformations to make encoding URL safe...
 		// (specifically, '+' => '-', and '/' => '_')
-		$urlsafe = strtr($base, "+/", "-_");
+		$url_safe = strtr($base, "+/", "-_");
 
-		return $urlsafe;
+		return $url_safe;
 	}
 }
 
