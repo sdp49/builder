@@ -90,7 +90,7 @@ class PL_Analytics {
 		return self::produce_data("listing_search", $args);
 	}
 
-	public static function log_js_snippet ($data) {
+	public static function log_snippet_js ($data) {
 	  	ob_start();
 	  	?>
 	  		<script type="text/javascript">
@@ -99,7 +99,7 @@ class PL_Analytics {
 	  			}
 	  		</script>
 	  	<?php
-	  	
+
 	  	return ob_get_clean();
 	}
 }
