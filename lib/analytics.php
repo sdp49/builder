@@ -89,6 +89,19 @@ class PL_Analytics {
 	public static function listing_search ($args = array()) {
 		return self::produce_data("listing_search", $args);
 	}
+
+	public static function log_js_snippet ($data) {
+	  	ob_start();
+	  	?>
+	  		<script type="text/javascript">
+	  			if (PlacesterAds) {
+	    			PlacesterAds.log(<?php echo $data; ?>);  
+	  			}
+	  		</script>
+	  	<?php
+	  	
+	  	return ob_get_clean();
+	}
 }
 
 /* 
@@ -100,7 +113,7 @@ class PL_Base64 {
 		// Start with the standard base64 encoding...
 		$base = base64_encode($str);
 
-		// Make enconding comply with 'strict' standards...
+		// Make base64 encoding comply with 'strict' standards...
 		$strict = $base;
 		
 		return $strict;
