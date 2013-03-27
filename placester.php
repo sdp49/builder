@@ -97,9 +97,9 @@ include_once('config/third-party/google-places.php');
 include_once('config/api/wordpress.php');
 include_once('config/customizer/onboard_settings.php');
 include_once('config/customizer/theme_choices.php');
+include_once('config/analytics.php');
 
 //lib
-include_once('lib/social_networks.php');
 include_once('lib/config.php');
 include_once('lib/routes.php');
 include_once('lib/http.php');
@@ -112,18 +112,16 @@ include_once('lib/menus.php');
 include_once('lib/posts.php');
 include_once('lib/membership.php');
 include_once('lib/caching.php');
-// include_once('lib/shortcodes.php');
 include_once('lib/widgets.php');
-//add_action('init', 'dxshortcodes');
-//function dxshortcodes() {
 include_once('lib/shortcode_wrapper.php');
 include_once('lib/component_entities.php');
 include_once('lib/shortcodes.php');
-	
 include_once('lib/featured_listings_post_type.php');
 include_once('lib/demo_data.php');
 include_once('lib/customizer.php');
 include_once('lib/customizer_entities.php');
+include_once('lib/social_networks.php');
+include_once('lib/analytics.php');
 
 //post types
 include_once('lib/post_types/pl_post_type_manager.php');
@@ -165,7 +163,6 @@ include_once('helpers/membership.php');
 include_once('helpers/snippet.php');
 include_once('helpers/template.php');
 include_once('helpers/customizer.php');
-
 include_once('helpers/bootup.php');
 
 

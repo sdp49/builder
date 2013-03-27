@@ -148,7 +148,12 @@ class PL_Js_Helper {
 		
 		if ( PL_Option_Helper::get_demo_data_flag() && current_user_can('manage_options') ) {
 			self::register_enqueue_if_not('infobar', trailingslashit(PL_JS_PUB_URL) .  'infobar.js', array( 'jquery'));
-		}			
+		}
+
+		if ( defined('PL_ANALYTICS_SCRIPT_URL') && PL_Analytics::can_collect() ) {
+			error_log("in here!");
+			self::register_enqueue_if_not('infobar', PL_ANALYTICS_SCRIPT_URL);
+		}		
 	}
 
 	public static function customizer() {
