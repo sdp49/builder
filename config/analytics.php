@@ -1,6 +1,6 @@
 <?php
 
-define("PL_ANALYTICS_SCRIPT_URL", "https://d3uemyw1e5n0jw.cloudfront.net/assets/ads-1.0.js");
+// define("PL_ANALYTICS_SCRIPT_URL", "https://d3uemyw1e5n0jw.cloudfront.net/assets/ads-1.0.js");
 
 global $PL_ANALYTICS_CONFIG;
 $PL_ANALYTICS_CONFIG = array(
@@ -26,6 +26,7 @@ $PL_ANALYTICS_CONFIG = array(
 			"postal",
 			"neighborhood", 
 			"county")
+			// MISSING: "min_price", "max_price", "beds", "baths", "min_sqft", "max_sqft"
 	),
 	"contact_submitted" => array(
 		"category" => "contact",
