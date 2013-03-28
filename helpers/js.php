@@ -71,7 +71,7 @@ class PL_Js_Helper {
 		// $sub = PL_User::subscriptions();
 		// if ( empty($sub['plan']) && $sub['eligible_for_trial'] ) {
 			self::register_enqueue_if_not('sign-up', trailingslashit(PL_JS_URL) .  'admin/sign-up.js', array( 'jquery-ui-dialog'));
-			self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) .  'admin/free-trial.js', array( 'jquery-ui-core'));
+			self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) .  'admin/free-trial.js', array( 'jquery-ui-core', 'jquery-ui-dialog'));
 			self::register_enqueue_if_not('integration', trailingslashit(PL_JS_URL) .  'admin/integration.js', array( 'jquery-ui-core'));
 			self::register_enqueue_if_not('demo-data', trailingslashit(PL_JS_URL) .  'admin/demo-data.js', array('jquery-ui-core'));
 		// }
@@ -157,14 +157,14 @@ class PL_Js_Helper {
 	}
 
 	public function customizer() {
-		self::register_enqueue_if_not('customizer', trailingslashit(PL_JS_PUB_URL) . 'customizer.js', array('jquery'));
+		self::register_enqueue_if_not('customizer', trailingslashit(PL_JS_PUB_URL) . 'customizer.js', array('jquery', 'jquery-ui-core'));
 		if ( PL_Customizer_Helper::is_onboarding() ) {
-			self::register_enqueue_if_not('onboard', trailingslashit(PL_JS_PUB_URL) . 'onboard.js', array('jquery'));
+			self::register_enqueue_if_not('onboard', trailingslashit(PL_JS_PUB_URL) . 'onboard.js', array('jquery', 'jquery-ui-core'));
 		}
 
 		// self::register_enqueue_if_not('jquery-ui', trailingslashit(PL_JS_LIB_URL) .  'jquery-ui/js/jquery-ui-1.8.17.custom.min.js', array( 'jquery'));
 		self::register_enqueue_if_not('global', trailingslashit(PL_JS_URL) .  'admin/global.js', array( 'jquery-ui-core'));
-		self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) .  'admin/free-trial.js', array( 'jquery-ui-core'));
+		self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) .  'admin/free-trial.js', array( 'jquery-ui-core', 'jquery-ui-dialog'));
 		self::register_enqueue_if_not('integration', trailingslashit(PL_JS_URL) .  'admin/integration.js', array( 'jquery-ui-core'));
 
 	    if ( PL_Bootup::is_theme_switched() ) {
