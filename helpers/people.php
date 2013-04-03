@@ -104,10 +104,10 @@ class PL_People_Helper {
 	}
 
 	/**
-	 * Helper function for getting API key for a user
-	 * @return API key
+	 * Helper function for a user's unique Placester ID (managed by Rails, stored in WP's usermeta table)
+	 * @return User's Placester ID
 	 */
-	private function get_placester_api_key() {
+	private function get_placester_user_id() {
 		$wp_user = PL_Membership::get_user();
 		$placester_id = get_user_meta($wp_user->ID, 'placester_api_id');
 		if (is_array($placester_id)) { $placester_id = implode($placester_id, ''); }
