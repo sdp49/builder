@@ -38,10 +38,7 @@ class PL_People_Helper {
 			die();
 		}
 		
-		$saved_searches = get_user_meta($user_id, self::$user_saved_keys );
-		if( empty( $saved_searches ) && ! is_array( $saved_searches ) ) {
-			$saved_searches = array();
-		}
+		$saved_searches = self::get_user_saved_links();
 		
 		$search_value = json_encode( $search_args );
 		
@@ -114,4 +111,23 @@ class PL_People_Helper {
 		
 		return $placester_id;
 	}
+	
+	public static function get_user_saved_links( $user_id = 0 ) {
+		// fallback to current user if user_id is not set
+		if( empty( $user_id ) ) {
+			if( ! is_user_logged_in() ) {
+				return array();
+			}
+			$user_id = get_current_user_id();
+		}
+		
+		// fetch saved searches
+		$saved_searches = get_user_meta($user_id, self::$user_saved_keys );
+		if( empty( $saved_searches ) && ! is_array( $saved_searches ) ) {
+			$saved_searches = array();
+		}
+		
+		return $saved_searches;
+	}
+		
 }

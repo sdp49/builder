@@ -47,5 +47,12 @@ class PL_Membership_Helper {
 		}
 		return $send_client_message_text;
 	}
-
+	
+	/**
+	 * Helper functions for saved search
+	 */
+	public static function get_save_search_link() {
+		return '<a href="#" class="pls_save_search">Save Search</a>';
+	}
+	
 }
