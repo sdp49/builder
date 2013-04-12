@@ -176,7 +176,7 @@ class PL_Js_Helper {
 			wp_register_script($name, $path, $dependencies, $version, $in_footer);		
 		}
 
-		if ( !wp_script_is($name, 'queue') ) {
+		if (!wp_script_is($name, 'queue')) {
 			wp_enqueue_script($name);		
 		}	
 	}
