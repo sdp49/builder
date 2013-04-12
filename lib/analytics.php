@@ -26,15 +26,15 @@ class PL_Analytics {
 		$whoami = PL_Helper_User::whoami();
 
 		// We need BOTH of these...
-		if (empty($whoami["api_key"]) || empty($whoami["api_key_web_secret"])) {
+		if (empty($whoami["api_key_id"]) || empty($whoami["api_key_web_secret"])) {
 			return false;
 		}
 
-		$info = array("api_key" => $whoami["api_key"], "web_secret" => $whoami["api_key_web_secret"]);
+		$info = array("api_key" => $whoami["api_key_id"], "web_secret" => $whoami["api_key_web_secret"]);
 		return $info;
 	}
 
-	private static function hash_data ($api_key, $web_secret, $data) {
+	private static function hash_data ($data) {
 		$info = self::get_admin_info();
 		
 		// Sanity check...
@@ -44,7 +44,7 @@ class PL_Analytics {
 		$data_json = json_encode(array_merge($data, $info));
 
 		// Combine, hash and repeat as necessary...
-		$hash = PL_Base64::strict((hash_hmac("sha256", $data_json, "{$api_key}{$web_secret}", true)));
+		$hash = PL_Base64::strict((hash_hmac("sha256", $data_json, "{$info['api_key']}{$info['web_secret']}", true)));
 		$output = PL_Base64::url_safe("{$hash}--{$data}");
 
 		return $output;
@@ -72,8 +72,8 @@ class PL_Analytics {
 				$data[$param] = $args[$param];
 			}	
 		}
-
-		$output = self::hash_data($info["api_key"], $info["web_secret"], $data);
+		error_log(var_export($data, true));
+		$output = self::hash_data($data);
 		return $output;
 	}
 

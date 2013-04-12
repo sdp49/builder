@@ -4,8 +4,8 @@ PL_Membership_Helper::init();
 class PL_Membership_Helper {
 
 	public static function init () {
-		add_action( 'wp_ajax_set_client_settings', array('PL_Membership_Helper', 'set_client_settings'  )); 
-		add_action( 'wp', array(__CLASS__, 'admin_bar'  )); 
+		add_action('wp_ajax_set_client_settings', array(__CLASS__, 'set_client_settings')); 
+		add_action('wp', array(__CLASS__, 'admin_bar')); 
 	}
 
 	public static function admin_bar() {
