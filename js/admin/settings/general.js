@@ -1,7 +1,7 @@
 jQuery(document).ready(function($) {
 
 	$('#existing_placester').bind('click', function() {
-		$( "#existing_placester_dialog" ).dialog( "open" );
+		$("#existing_placester_dialog").dialog("open");
 		return false;
 	});
 

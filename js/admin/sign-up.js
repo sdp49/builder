@@ -1,6 +1,6 @@
 jQuery(document).ready(function($) {
 
-	var main_buttons = {
+	var new_api_key_buttons = {
 		1 : {
 			text: "Close Setup Wizard",
 			class: "gray-btn",
@@ -22,15 +22,6 @@ jQuery(document).ready(function($) {
 			class: "green-btn right-btn",
 			click: function() {
 				new_sign_up(modal_state.integration_launch);
-				
-			// FOR TESTING PURPOSES	(remove!!!)
-				// $.post(ajaxurl, {action: 'set_placester_api_key', api_key: ''}, function(response, textStatus, xhr) {
-				// 	// console.log(response);
-				// 	if (response['result']) {
-				// 		modal_state.integration_launch();
-				// 	}
-				// },'json');
-			// =========================
 			}
 		}
 	}
@@ -40,7 +31,7 @@ jQuery(document).ready(function($) {
 			text: "Close Setup Wizard",
 			class: "gray-btn",
 			click: function() {
-				 $( this ).dialog( "close" );
+				 $(this).dialog("close");
 			}
 		},
 		2 : {
@@ -62,7 +53,6 @@ jQuery(document).ready(function($) {
 	}
 
 	function existing_api_key() {
-		$ = jQuery; //we're in no conflict land. 
 		$.post(ajaxurl, {action:"existing_api_key_view"}, function (result) {
 			if (result) {
 				$('#signup_wizard').html(result);
@@ -74,27 +64,26 @@ jQuery(document).ready(function($) {
 	}
 
 	function new_api_key() {
-		$ = jQuery; //we're in no conflict land. 
 		$.post(ajaxurl, {action:"new_api_key_view"}, function (result) {
 			if (result) {
 				$('#signup_wizard').html(result);
 				$('#signup_wizard').show();
 				$('#signup_wizard').dialog('option', 'title', '	<h3>Welcome to the RE Website Builder Set Up Wizard</h3>');
-				$('#signup_wizard').dialog('option', 'buttons', main_buttons);
+				$('#signup_wizard').dialog('option', 'buttons', new_api_key_buttons);
 			};
 		});
 	}
 
-	$( "#signup_wizard" ).dialog({
+	$("#signup_wizard").dialog({
 		autoOpen: true,
 		draggable: false,
 		modal: true,
-		title: '<h3>Welcome to the RE Website Builder Set Up Wizard</h3>',
+		title: '<h3>Activate Your Plugin</h3>',
 		width: 700,
-		buttons: main_buttons
+		buttons: new_api_key_buttons
 	});
 
-	$('.wrapper, #settings_get_started_signup').live('click', function() {
+	$('.wrapper, #settings_get_started_signup').on('click', function() {
 		$( "#signup_wizard" ).dialog( "open" );
 	});
 	

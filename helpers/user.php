@@ -53,9 +53,7 @@ class PL_Helper_User {
 		return PL_User::whoami($args, $api_key);
 	}
 
-	/*
-	 * Creates a new placester account -- returns API key upon success
-	 */
+	/* Creates a new placester account -- returns the new account's API key upon success */
 	public static function create_account() {
 		if ($_POST['email']) {
 			$success = PL_User::create(array('email'=>$_POST['email']) );
@@ -74,22 +72,12 @@ class PL_Helper_User {
 		die();
 	}
 
-	public static function existing_api_key_view () {
-		echo PL_Router::load_builder_partial('existing-placester.php');
-		die();
-	}
-
-	public static function new_api_key_view() {
-		self::set_admin_email();
-		echo PL_Router::load_builder_partial('sign-up.php');
-		die();	
-	}
-
 	public static function ajax_update_user () {
 		$response = array('result' => false, 'message' => 'There was an error. Please try again.');
 		$whoami = self::whoami();
 		$_POST['id'] = $whoami['user']['id'];
 		$_POST['email'] = $whoami['user']['email'];
+		
 		$api_response = self::update_user($_POST);
 		if ($api_response['id']) {
 			$response = array('result' => true, 'message' => 'Account successfully updated.');
@@ -97,6 +85,7 @@ class PL_Helper_User {
 		} elseif ($api_response['validations']) {
 			echo json_encode($api_response);
 		}
+		
 		die();
 	}
 
@@ -104,6 +93,27 @@ class PL_Helper_User {
 		$response = PL_User::update($args);
 		return $response;
 	}
+
+
+	/*
+	 * Returns rendered HTML for use in dialogs regarding plugin activation
+	 */
+
+	public static function new_api_key_view() {
+		self::set_admin_email();
+		echo PL_Router::load_builder_partial('sign-up.php');
+		die();	
+	}
+
+	public static function existing_api_key_view () {
+		echo PL_Router::load_builder_partial('existing-placester.php');
+		die();
+	}
+
+
+	/*
+	 * Functionality for Global Filters
+	 */
 
 	public static function remove_all_global_filters () {
 		$response = PL_Option_Helper::set_global_filters(array('filters' => array()));
@@ -127,7 +137,6 @@ class PL_Helper_User {
 		}
 		
 		$global_search_filters = PL_Validate::request($args, PL_Config::PL_API_LISTINGS('get', 'args'));
-		// pls_dump($global_search_filters);
 		foreach ($global_search_filters as $key => $filter) {
 			foreach ($filter as $subkey => $subfilter) {
 				if (!is_array($subfilter) && (count($filter) > 1) ) {
@@ -137,7 +146,6 @@ class PL_Helper_User {
 				}
 			}
 		}
-		// pls_dump($global_search_filters);
 		$response = PL_Option_Helper::set_global_filters(array('filters' => $global_search_filters));
 		if ($response) {
 			echo json_encode(array('result' => true, 'message' => 'You successfully updated the global search filters'));
@@ -147,6 +155,11 @@ class PL_Helper_User {
 		echo json_encode(PL_WordPress_Helper::report_filters());
 		die();
 	}
+
+
+	/*
+	 * Get/Setter callbacks for generic plugin settings
+	 */
 
 	public static function ajax_log_errors () {
 		if ( $_POST['report_errors'] == 'true') {
