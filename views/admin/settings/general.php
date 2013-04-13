@@ -93,9 +93,7 @@
 					</div>	
 				</div>
 			</form>
-			<?php //do_action('sign-up-action'); ?>
-			<?php //self::load_builder_partial('sign-up.php'); ?>
-		<?php endif ?>
+		<?php endif; ?>
 
 			<div class="header-wrapper">
 				<h2>Google Places API Key</h2>
@@ -142,7 +140,6 @@
 				</li>
 			  <?php endif; ?>
 			</ul>
-
 			
 		</div>
 	<?php PL_Router::load_builder_partial('existing-placester.php') ?>

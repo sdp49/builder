@@ -8,7 +8,7 @@ jQuery(document).ready(function($) {
 	$('#new_email').bind('click', function () {
 		$.post(ajaxurl, {action: 'new_api_key_view'}, function(data, textStatus, xhr) {
   			//optional stuff to do after success
-  			$("#existing_placester_dialog" ).dialog("open");
+  			$("#existing_placester_dialog").dialog("open");
   			$('#existing_placester_dialog').html(data);
   			$('#existing_placester_dialog').dialog('option', 'title', '	<h2>Welcome to the RE Website Builder Set Up Wizard</h2>');
 			$('#existing_placester_dialog').dialog('option', 'buttons', {
@@ -44,7 +44,7 @@ jQuery(document).ready(function($) {
 				  text: "Close",
 				  class: "gray-btn",
 				  click: function() {
-					  $( this ).dialog( "close" );
+					  $(this).dialog("close");
 				  }
 				},
 				2: {

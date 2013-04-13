@@ -148,26 +148,30 @@ jQuery(document).ready(function($) {
 		}
 	}
 
-	$( "#integration_wizard" ).dialog({
-		autoOpen: false,
-		draggable: false,
-		modal: true,
-		title: '<h3>Set Up an MLS Integration for your Website</h3>',
-		width: 810,
-		minHeight: 500,
-		buttons: integration_buttons
-	});
-});
+	function prompt_integration_local () {
+		// TODO: Add spinner/loading prompt...
+		$.post(ajaxurl, {action:"new_integration_view"}, function (result) {
+		  	if (result) {
+				// If it doesn't already existing, create container for wizard dialog...
+				if ( $('#integration_wizard').length == 0 ) {
+					$('body').append('<div id="integration_wizard"></div>');
+				}
 
-function prompt_integration () {
-  jQuery(document).ready(function($) {
-  	$('#integration_wizard').dialog( "open" );
-  	// TODO: Add spinner/loading prompt...
-	$.post(ajaxurl, {action:"new_integration_view"}, function (result) {
-	  if (result) {
-		// console.log(result);
-		$('#integration_wizard').html(result);
-	  };
-	});
-  });
-}
+					// Render...
+				$('#integration_wizard').html(result);
+				$( "#integration_wizard" ).dialog({
+					autoOpen: true,
+					draggable: false,
+					modal: true,
+					title: '<h3>Set Up an MLS Integration for your Website</h3>',
+					width: 810,
+					minHeight: 500,
+					buttons: integration_buttons
+				});
+		  	}
+		});
+	}
+
+	// Expose function to global namespace
+	prompt_integration = prompt_integration_local;
+});

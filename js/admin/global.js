@@ -4,7 +4,7 @@ var modal_state = {
 		prompt_integration();								
 	},
 	demo_data_launch: function () {
-		jQuery('#integration_wizard').dialog( "close" );
+		jQuery('#integration_wizard').dialog("close");
 		prompt_demo_data();
 	}	
 };
@@ -87,7 +87,7 @@ function new_sign_up (success_callback) {
 				$('#api_key_validation').html(message.join(', ')).show();
 				$('#confirm_email input#email').removeClass('green').addClass('red');
 			} 
-			else if(data['api_key']) {
+			else if (data['api_key']) {
 				$('#api_key_success').html('Success! Setting up plugin.');
 				mixpanel.track("SignUp: Successful Signup");
 				$('#confirm_email input#email').removeClass('red').addClass('green');

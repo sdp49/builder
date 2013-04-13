@@ -9,7 +9,7 @@ jQuery(document).ready(function($) {
 			}
 		},
 		2 : {
-			text: "Use Existing Placester API Key",
+			text: "Use Existing Placester Account",
 			class: "gray-btn",
 			classes: "left",
 			click: function() {
@@ -56,9 +56,14 @@ jQuery(document).ready(function($) {
 		$.post(ajaxurl, {action:"existing_api_key_view"}, function (result) {
 			if (result) {
 				$('#signup_wizard').html(result);
-				$('#existing_placester_dialog').show();
-				$('#signup_wizard').dialog('option', 'title', '	<h3>Use an Existing Placester API Key</h3>');
-				$('#signup_wizard').dialog('option', 'buttons', existing_api_key_buttons);
+				$("#signup_wizard").dialog({
+					autoOpen: true,
+					draggable: false,
+					modal: true,
+					title: '<h3>Use an Existing Placester API Key</h3>',
+					width: 700,
+					buttons: existing_api_key_buttons
+				});
 			};
 		});
 	}
@@ -67,24 +72,25 @@ jQuery(document).ready(function($) {
 		$.post(ajaxurl, {action:"new_api_key_view"}, function (result) {
 			if (result) {
 				$('#signup_wizard').html(result);
-				$('#signup_wizard').show();
-				$('#signup_wizard').dialog('option', 'title', '	<h3>Welcome to the RE Website Builder Set Up Wizard</h3>');
-				$('#signup_wizard').dialog('option', 'buttons', new_api_key_buttons);
+				$("#signup_wizard").dialog({
+					autoOpen: true,
+					draggable: false,
+					modal: true,
+					title: '<h3>Activate Your Plugin</h3>',
+					width: 700,
+					buttons: new_api_key_buttons
+				});
 			};
 		});
 	}
 
-	$("#signup_wizard").dialog({
-		autoOpen: true,
-		draggable: false,
-		modal: true,
-		title: '<h3>Activate Your Plugin</h3>',
-		width: 700,
-		buttons: new_api_key_buttons
-	});
+	// Create the sign-up wizard dialog container on initial page load...
+	$('body').append('<div id="signup_wizard"></div>');
+	new_api_key();
 
+	// 
 	$('.wrapper, #settings_get_started_signup').on('click', function() {
-		$( "#signup_wizard" ).dialog( "open" );
+		$("#signup_wizard").dialog("open");
 	});
 	
 });
