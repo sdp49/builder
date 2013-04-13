@@ -53,6 +53,27 @@ class PL_Helper_User {
 		return PL_User::whoami($args, $api_key);
 	}
 
+	/*
+	 * Creates a new placester account -- returns API key upon success
+	 */
+	public static function create_account() {
+		if ($_POST['email']) {
+			$success = PL_User::create(array('email'=>$_POST['email']) );
+			$response = $success ? $success : array(false, 'There was an error. Is that a valid email address?');
+		} else {
+			$response = array(false, 'No Email Provided');
+		}
+
+		echo json_encode($response);
+		die();
+	}
+
+	public static function set_placester_api_key() {
+		$result = PL_Option_Helper::set_api_key($_POST['api_key']);
+		echo json_encode($result);
+		die();
+	}
+
 	public static function existing_api_key_view () {
 		echo PL_Router::load_builder_partial('existing-placester.php');
 		die();
@@ -63,33 +84,8 @@ class PL_Helper_User {
 		echo PL_Router::load_builder_partial('sign-up.php');
 		die();	
 	}
-	
-	public function enable_community_pages() {
-		$enable_pages = 1; 
-		if( $_POST['enable_pages'] === 'false' || ! $_POST['enable_pages'] ) {
-			$enable_pages = 0;
-		}
-		 
-		$updated = PL_Option_Helper::set_community_pages($enable_pages);
-		$result = true;
-		if( ! $updated || ! $enable_pages ) $result = false;
 
-		// TODO: some bad caching occurs here, do fix 
-		if( $result ) {
-			echo json_encode(array('result' => true, 'message' => 'You successfully enabled community pages'));
-		} else {
-			echo json_encode(array('result' => false, 'message' => 'You successfully disabled community pages'));
-		}
-		die();
-	}
-
-	public function set_placester_api_key() {
-		$result = PL_Option_Helper::set_api_key($_POST['api_key']);
-		echo json_encode($result);
-		die();
-	}
-
-	public function ajax_update_user () {
+	public static function ajax_update_user () {
 		$response = array('result' => false, 'message' => 'There was an error. Please try again.');
 		$whoami = self::whoami();
 		$_POST['id'] = $whoami['user']['id'];
@@ -104,12 +100,12 @@ class PL_Helper_User {
 		die();
 	}
 
-	public function update_user ($args = array()) {
+	public static function update_user ($args = array()) {
 		$response = PL_User::update($args);
 		return $response;
 	}
 
-	public function remove_all_global_filters () {
+	public static function remove_all_global_filters () {
 		$response = PL_Option_Helper::set_global_filters(array('filters' => array()));
 		if ($response) {
 			echo json_encode(array('result' => true, 'message' => 'You successfully removed all global search filters'));
@@ -119,12 +115,12 @@ class PL_Helper_User {
 		die();
 	}
 
-	public function get_global_filters () {
+	public static function get_global_filters () {
 		$response = PL_Option_Helper::get_global_filters();
 		return $response;
 	}
 
-	public function set_global_filters ($args = array()) {
+	public static function set_global_filters ($args = array()) {
 		if (empty($args) ) {
 			unset($_POST['action']);
 			$args = $_POST;
@@ -152,21 +148,7 @@ class PL_Helper_User {
 		die();
 	}
 
-	public function create_account() {
-		if ($_POST['email']) {
-			$response = PL_User::create(array('email'=>$_POST['email']) );
-			if ($response) {
-				echo json_encode($response);
-			} else {
-				echo json_encode(array(false, 'There was an error. Is that a valid email address?'));
-			}
-		} else {
-			echo json_encode(array(false, 'No Email Provided'));
-		}
-		die();
-	}
-
-	public function ajax_log_errors () {
+	public static function ajax_log_errors () {
 		if ( $_POST['report_errors'] == 'true') {
 			$report_errors = 1;
 		} else {
@@ -185,7 +167,7 @@ class PL_Helper_User {
 		die();
 	}
 
-	public function ajax_block_address () {
+	public static function ajax_block_address () {
 		if ( $_POST['use_block_address'] == 'true') {
 			$block_address = 1;
 		} else {
@@ -206,7 +188,7 @@ class PL_Helper_User {
 		die();
 	}
 
-	public function set_default_country () {
+	public static function set_default_country () {
 		if (isset($_POST['country'])) {
 			$response = PL_Option_Helper::set_default_country($_POST['country']);
 			if ($response) {
@@ -220,12 +202,31 @@ class PL_Helper_User {
 		die();
 	}
 
-	public function get_default_country () {
+	public static function get_default_country () {
 		$response = PL_Option_Helper::get_default_country();
 		if (empty($response)) {
 			return array('default_country' => 'US');
 		} 
 		return array('default_country' => $response);
 		
+	}
+	
+	public static function enable_community_pages() {
+		$enable_pages = 1; 
+		if( $_POST['enable_pages'] === 'false' || ! $_POST['enable_pages'] ) {
+			$enable_pages = 0;
+		}
+		 
+		$updated = PL_Option_Helper::set_community_pages($enable_pages);
+		$result = true;
+		if( ! $updated || ! $enable_pages ) $result = false;
+
+		// TODO: some bad caching occurs here, do fix 
+		if( $result ) {
+			echo json_encode(array('result' => true, 'message' => 'You successfully enabled community pages'));
+		} else {
+			echo json_encode(array('result' => false, 'message' => 'You successfully disabled community pages'));
+		}
+		die();
 	}
 }	
