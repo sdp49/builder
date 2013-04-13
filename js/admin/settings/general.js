@@ -1,5 +1,43 @@
 jQuery(document).ready(function($) {
 
+	function create_existing_dialog() {
+		$.post(ajaxurl, {action:"existing_api_key_view"}, function (result) {
+			if (result) {
+				$('#existing_placester_dialog').html(result);
+				$("#existing_placester_dialog").dialog({
+					autoOpen: false,
+					draggable: false,
+					modal: true,
+					title: false,
+					width: 700,
+					title: "<h2>Use an existing Placester account</h2>",
+					buttons: {
+						1: {
+						  text: "Close",
+						  class: "gray-btn",
+						  click: function() {
+							  $(this).dialog("close");
+						  }
+						},
+						2: {
+						  text: "Switch API Keys",
+							id: "switch_placester_api_key",
+							class: "green-btn right-btn",
+							click: function() {
+								 check_api_key($("#existing_placester_modal_api_key").val());
+							}
+						}
+					}
+				});
+			}
+		}, 'json');		
+	}
+
+	// Create the sign-up wizard dialog container on initial page load...
+	$('body').append('<div id="existing_placester_dialog"></div>');
+	create_existing_dialog();
+	
+
 	$('#existing_placester').bind('click', function() {
 		$("#existing_placester_dialog").dialog("open");
 		return false;
@@ -32,33 +70,6 @@ jQuery(document).ready(function($) {
 		
 	});
 
-	$( "#existing_placester_dialog" ).dialog({
-		autoOpen: false,
-		draggable: false,
-		modal: true,
-		title: false,
-		width: 700,
-		title: "<h2>Use an existing Placester account</h2>",
-		buttons: {
-				1: {
-				  text: "Close",
-				  class: "gray-btn",
-				  click: function() {
-					  $(this).dialog("close");
-				  }
-				},
-				2: {
-				  text: "Switch API Keys",
-					id: "switch_placester_api_key",
-					class: "green-btn right-btn",
-					click: function() {
-						 check_api_key($("#existing_placester_modal_api_key").val());
-					}
-				}
-			}
-	});
-	
-
 	$('#error_logging_click').live('click', function() {
 		var request = {
 			report_errors: $(this).is(':checked'),
@@ -73,7 +84,7 @@ jQuery(document).ready(function($) {
 		  	$('#error_logging_message').html(data.message);
 		  	$('#error_logging_message').removeClass('green');
 		  	$('#error_logging_message').addClass('red');
-		  };
+		  }
 		}, 'json');
 	});
 	
