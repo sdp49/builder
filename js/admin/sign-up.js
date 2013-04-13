@@ -1,45 +1,46 @@
 jQuery(document).ready(function($) {
 
-	var new_api_key_buttons = {
+	var new_buttons = {
 		1 : {
-			text: "Close Setup Wizard",
-			class: "gray-btn",
-			click: function() {
-				 $( this ).dialog( "close" );
+				text: "Close Setup Wizard",
+				class: "gray-btn",
+				click: function() {
+					 $(this).dialog( "close" );
 			}
 		},
 		2 : {
-			text: "Use Existing Placester Account",
-			class: "gray-btn",
-			classes: "left",
-			click: function() {
-				 existing_api_key();
+				text: "Use Existing Placester Account",
+				class: "gray-btn",
+				classes: "left",
+				click: function() {
+					 construct_modal(existing_acct_args);
 			}
 		},
 		3 : {
-			text: "Confirm",
-			id: 'confirm_email_button',
-			class: "green-btn right-btn",
-			click: function() {
-				new_sign_up(modal_state.integration_launch);
+				text: "Confirm Email",
+				id: 'confirm_email_button',
+				class: "green-btn right-btn",
+				click: function() {
+					// new_sign_up(modal_state.integration_launch);
+					// Open IDX dialog...
 			}
 		}
 	}
 
-	var existing_api_key_buttons = {
+	var existing_buttons = {
 		1 : {
-			text: "Close Setup Wizard",
-			class: "gray-btn",
-			click: function() {
-				 $(this).dialog("close");
+				text: "Close Setup Wizard",
+				class: "gray-btn",
+				click: function() {
+					 $(this).dialog("close");
 			}
 		},
 		2 : {
-			text: "Use a new Email address",
-			class: "gray-btn",
-			classes: "left",
-			click: function() {
-				 new_api_key();
+				text: "Use a new Email address",
+				class: "gray-btn",
+				classes: "left",
+				click: function() {
+					 construct_modal('new_api_key_view', '');
 			}
 		},
 		3 : {
@@ -52,33 +53,22 @@ jQuery(document).ready(function($) {
 		}
 	}
 
-	function existing_api_key() {
-		$.post(ajaxurl, {action:"existing_api_key_view"}, function (result) {
-			if (result) {
-				$('#signup_wizard').html(result);
-				$("#signup_wizard").dialog({
-					autoOpen: true,
-					draggable: false,
-					modal: true,
-					title: '<h3>Use an Existing Placester API Key</h3>',
-					width: 700,
-					buttons: existing_api_key_buttons
-				});
-			};
-		});
-	}
+	// Modal config args...
+	var new_acct_args = { ajax: 'new_api_key_view', title: 'Activate Your Plugin', buttons: new_buttons };
+	var existing_acct_args = { ajax: 'existing_api_key_view', title: 'Use an Existing Placester API Key', buttons: existing_buttons };
+	var idx_args = { ajax: '', title: '' };
 
-	function new_api_key() {
-		$.post(ajaxurl, {action:"new_api_key_view"}, function (result) {
+	function construct_modal(args) {
+		$.post(ajaxurl, {action: args.ajax}, function (result) {
 			if (result) {
 				$('#signup_wizard').html(result);
 				$("#signup_wizard").dialog({
 					autoOpen: true,
 					draggable: false,
 					modal: true,
-					title: '<h3>Activate Your Plugin</h3>',
+					title: '<h3>' + args.title + '</h3>',
 					width: 700,
-					buttons: new_api_key_buttons
+					buttons: args.buttons
 				});
 			};
 		});
@@ -86,7 +76,7 @@ jQuery(document).ready(function($) {
 
 	// Create the sign-up wizard dialog container on initial page load...
 	$('body').append('<div id="signup_wizard"></div>');
-	new_api_key();
+	construct_modal(new_acct_args);
 
 	// 
 	$('.wrapper, #settings_get_started_signup').on('click', function() {

@@ -4,7 +4,6 @@ PL_Helper_User::init();
 class PL_Helper_User {
 	
 	public function init() {
-		add_action( 'sign-up-action', array(__CLASS__, 'set_admin_email' ) );
 		add_action( 'wp_ajax_set_placester_api_key', array(__CLASS__, 'set_placester_api_key' ) );
 		add_action( 'wp_ajax_existing_api_key_view', array(__CLASS__, 'existing_api_key_view' ) );
 		add_action( 'wp_ajax_new_api_key_view', array(__CLASS__, 'new_api_key_view' ) );
@@ -22,7 +21,7 @@ class PL_Helper_User {
 		add_action( 'wp_ajax_update_google_places', array(__CLASS__, 'update_google_places' ) );
 	}
 
-	public static function set_admin_email (){
+	public static function set_admin_email() {
 		$_POST['email'] = get_option('admin_email');
 	}
 
@@ -36,7 +35,7 @@ class PL_Helper_User {
 		die();
 	}
 
-	public static function update_google_places () {
+	public static function update_google_places() {
 		if (isset($_POST['places_key'])) {
 			$response = PL_Option_Helper::set_google_places_key($_POST['places_key']);
 			echo json_encode($response);
@@ -72,7 +71,7 @@ class PL_Helper_User {
 		die();
 	}
 
-	public static function ajax_update_user () {
+	public static function ajax_update_user() {
 		$response = array('result' => false, 'message' => 'There was an error. Please try again.');
 		$whoami = self::whoami();
 		$_POST['id'] = $whoami['user']['id'];
@@ -85,7 +84,7 @@ class PL_Helper_User {
 		} elseif ($api_response['validations']) {
 			echo json_encode($api_response);
 		}
-		
+
 		die();
 	}
 
@@ -105,7 +104,7 @@ class PL_Helper_User {
 		die();	
 	}
 
-	public static function existing_api_key_view () {
+	public static function existing_api_key_view() {
 		echo PL_Router::load_builder_partial('existing-placester.php');
 		die();
 	}
@@ -115,7 +114,7 @@ class PL_Helper_User {
 	 * Functionality for Global Filters
 	 */
 
-	public static function remove_all_global_filters () {
+	public static function remove_all_global_filters() {
 		$response = PL_Option_Helper::set_global_filters(array('filters' => array()));
 		if ($response) {
 			echo json_encode(array('result' => true, 'message' => 'You successfully removed all global search filters'));
@@ -125,7 +124,7 @@ class PL_Helper_User {
 		die();
 	}
 
-	public static function get_global_filters () {
+	public static function get_global_filters() {
 		$response = PL_Option_Helper::get_global_filters();
 		return $response;
 	}
@@ -161,7 +160,7 @@ class PL_Helper_User {
 	 * Get/Setter callbacks for generic plugin settings
 	 */
 
-	public static function ajax_log_errors () {
+	public static function ajax_log_errors() {
 		if ( $_POST['report_errors'] == 'true') {
 			$report_errors = 1;
 		} else {
@@ -180,7 +179,7 @@ class PL_Helper_User {
 		die();
 	}
 
-	public static function ajax_block_address () {
+	public static function ajax_block_address() {
 		if ( $_POST['use_block_address'] == 'true') {
 			$block_address = 1;
 		} else {
@@ -201,7 +200,7 @@ class PL_Helper_User {
 		die();
 	}
 
-	public static function set_default_country () {
+	public static function set_default_country() {
 		if (isset($_POST['country'])) {
 			$response = PL_Option_Helper::set_default_country($_POST['country']);
 			if ($response) {
@@ -215,7 +214,7 @@ class PL_Helper_User {
 		die();
 	}
 
-	public static function get_default_country () {
+	public static function get_default_country() {
 		$response = PL_Option_Helper::get_default_country();
 		if (empty($response)) {
 			return array('default_country' => 'US');

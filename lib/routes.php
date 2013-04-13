@@ -7,7 +7,7 @@ class PL_Router {
 
 			// Load partials used in the "wizard" dialog process when API key is not set...
 			if (!PL_Option_Helper::api_key()) {
-				do_action('sign-up-action');
+				PL_Helper_User::set_admin_email();
 				self::load_builder_partial('free-trial.php');
 		    	self::load_builder_partial('demo-data.php');
 			}
@@ -48,10 +48,10 @@ class PL_Router {
 			echo ob_get_clean();	
 	}
 	
-	
 	public static function pl_extensions() {
 		return '';
 	}
+
 	/**
 	 * List post type view paths (post types are hidden not to overlap admin dashboard)
 	 * 
