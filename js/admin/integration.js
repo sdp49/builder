@@ -22,16 +22,6 @@ jQuery(document).ready(function($) {
 		}
 	}
 
-	function validate_phone (number) {
-		// Check for blank input...
-		if (!number) { 
-			return false;
-		}
-
-		// All tests passed...
-		return true;
-	}
-
 	$('#pls_integration_form').live('submit', function(event) {
 		event.preventDefault();
 
@@ -69,7 +59,7 @@ jQuery(document).ready(function($) {
 		$('#rets_form_message').html('Checking Account Status...');
 
 		// Check to see if phone number input exists--if it exists and has invalid input, act accordingly...
-		if ( $('#phone').length != 0 && !validate_phone($('#phone').val()) ) {
+		if ( $('#phone').length != 0 && !validate_phone_number($('#phone').val()) ) {
 			$('#phone').addClass('invalid');
 			$('#phone').closest('div .row').find('h3').first().addClass('invalid');
 

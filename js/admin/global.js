@@ -101,3 +101,18 @@ function new_sign_up (success_callback) {
 	},'json');
 }
 
+/*
+ * Checks if input is a valid North American or internationally formatted phone number
+ */
+function validate_phone_number (phone) {
+
+    // North American Regex
+    var regex_NA = /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/;
+
+    // International Regex
+    var regex_int = /^\+(?:[0-9] ?){6,14}[0-9]$/;
+
+    var valid = ( (regex_NA.test(phone) || regex_int.test(phone)) ? true : false );
+    return valid;
+}
+

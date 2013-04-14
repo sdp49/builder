@@ -5,11 +5,9 @@ class PL_Router {
 		ob_start();
 			self::load_builder_view('header.php');
 
-			// Load partials used in the "wizard" dialog process when API key is not set...
+			// Set admin e-mail as a POST variable if no API key exists...
 			if (!PL_Option_Helper::api_key()) {
 				PL_Helper_User::set_admin_email();
-				self::load_builder_partial('free-trial.php');
-		    	self::load_builder_partial('demo-data.php');
 			}
 
 			self::load_builder_view($template, $directory, $params);	

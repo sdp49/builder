@@ -67,8 +67,6 @@ class PL_Js_Helper {
 		if (!PL_Option_Helper::api_key()) {
 			self::register_enqueue_if_not('sign-up', trailingslashit(PL_JS_URL) . 'admin/sign-up.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 			self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) . 'admin/free-trial.js', array('jquery-ui-core', 'jquery-ui-dialog'));
-			self::register_enqueue_if_not('integration', trailingslashit(PL_JS_URL) . 'admin/integration.js', array('jquery-ui-core', 'jquery-ui-dialog'));
-			self::register_enqueue_if_not('demo-data', trailingslashit(PL_JS_URL) . 'admin/demo-data.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 		}
 		
 		if ($hook == 'placester_page_placester_properties') {
