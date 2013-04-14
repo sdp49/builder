@@ -22,8 +22,6 @@ function parse_validation (response) {
 	}
 }
 
-
-
 function check_api_key (api_key) {
 	$ = jQuery; //we're in no conflict land. 
 	$('#api_key_message').hide();
@@ -43,9 +41,7 @@ function check_api_key (api_key) {
 					$('#api_key_message').html("You've successfully changed your Placester API Key.").show().removeClass('red').addClass('green');
 					$('#api-key-message-icon').show().addClass('green');
           $('#api_key_form #existing_placester_modal_api_key').addClass('green');
-          setTimeout(function () {
-           window.location.href = window.location.href;
-          }, 2000);
+          setTimeout(function () { window.location.href = window.location.href; }, 2000);
 				} else {
 					$('#api_key_message').html(response.message).show().removeClass('green').addClass('red');
 					$('#api-key-message-icon').show().removeClass('green').addClass('red');
@@ -93,7 +89,7 @@ function new_sign_up (success_callback) {
 			            setTimeout(function () { window.location.href = window.location.href; }, 2000);
 	            
 	           			// API key was successfully created AND set, ok to move-on to the integration dialog...
-	           			// if (success_callback) { success_callback(); }
+	           			if (success_callback) { success_callback(); }
          			}
         		},'json');
 			}
@@ -115,4 +111,3 @@ function validate_phone_number (phone) {
     var valid = ( (regex_NA.test(phone) || regex_int.test(phone)) ? true : false );
     return valid;
 }
-

@@ -3,24 +3,24 @@ jQuery(document).ready(function($) {
 	var integration_success_callback = function () {
 		jQuery('#integration_wizard').dialog("close");
 		prompt_demo_data();
-	}
+	};
 
 	var integration_buttons = {
 		1 : {
-			text: "Skip Integration Set Up",
-			click: function() {
-				 $(this).dialog( "close" );
-				 prompt_demo_data();
-			}
-		},
+				text: "Skip Integration Set Up",
+				click: function() {
+					 $(this).dialog( "close" );
+					 prompt_demo_data();
+				}
+			},
 		2 : {
-			text: "Submit",
-			id: 'submit_integration_button',
-			click: function() {
-				 submit_handler(integration_success_callback);
+				text: "Submit",
+				id: 'submit_integration_button',
+				click: function() {
+					 submit_handler(integration_success_callback);
+				}
 			}
-		}
-	}
+	};
 
 	$('#pls_integration_form').live('submit', function(event) {
 		event.preventDefault();

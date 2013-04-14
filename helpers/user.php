@@ -100,12 +100,12 @@ class PL_Helper_User {
 
 	public static function new_api_key_view() {
 		self::set_admin_email();
-		echo PL_Router::load_builder_partial('sign-up.php');
+		PL_Router::load_builder_partial('sign-up.php');
 		die();	
 	}
 
 	public static function existing_api_key_view() {
-		echo PL_Router::load_builder_partial('existing-placester.php');
+		PL_Router::load_builder_partial('existing-placester.php');
 		die();
 	}
 
