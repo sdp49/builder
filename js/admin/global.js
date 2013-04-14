@@ -1,14 +1,3 @@
-var modal_state = {
-	integration_launch: function () {
-		jQuery('#signup_wizard').dialog("close");
-		prompt_integration();								
-	},
-	demo_data_launch: function () {
-		jQuery('#integration_wizard').dialog("close");
-		prompt_demo_data();
-	}	
-};
-
 function parse_validation (response) {
 	$ = jQuery; //we're in no conflict land. 
 	if (response && response['validations']) {
