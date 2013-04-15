@@ -361,10 +361,10 @@ h3.hndle {
 }
 
 .ui-dialog .green-btn {
-  color: white;
-  background: #86b229;
-  background: -moz-linear-gradient(top, #a0cc42 0%, #86b229 50%, #6e9910);
-  background: -webkit-gradient(linear, left top, left bottom, from(#a0cc42), color-stop(0.5, #86b229), to(#6e9910));
+  color: white !important;
+  background: #86b229  !important;
+  background: -moz-linear-gradient(top, #a0cc42 0%, #86b229 50%, #6e9910)  !important;
+  background: -webkit-gradient(linear, left top, left bottom, from(#a0cc42), color-stop(0.5, #86b229), to(#6e9910))  !important;
   border-radius: 5px;
   -moz-border-radius: 5px;
   -webkit-border-radius: 5px;
