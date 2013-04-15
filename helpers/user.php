@@ -27,8 +27,7 @@ class PL_Helper_User {
 	}
 
 	public static function start_subscription_trial() {
-		// echo json_encode(PL_User::start_subscription_trial());
-		error_log("Would have started a trial...");
+		echo json_encode(PL_User::start_subscription_trial());
 		die();
 	}
 
@@ -52,9 +51,8 @@ class PL_Helper_User {
 	/* Creates a new placester account -- returns the new account's API key upon success */
 	public static function create_account() {
 		if ($_POST['email']) {
-			// $success = PL_User::create(array('email'=>$_POST['email']));
-			// $response = $success ? $success : array('outcome' => false, 'message' => 'There was an error. Is that a valid email address?');
-			$response = array('api_key' => 'HRg71JaLtWXnqfOrmkXKIghPSbAYukvRFvfaNKXDYFhwmSogYbiULKRk7G71GVy7j6cLGaKTbf201CaaPlFZsQaa');
+			$success = PL_User::create(array('email'=>$_POST['email']));
+			$response = $success ? $success : array('outcome' => false, 'message' => 'There was an error. Is that a valid email address?');
 		} else {
 			$response = array('outcome' => false, 'message' => 'No Email Provided');
 		}
