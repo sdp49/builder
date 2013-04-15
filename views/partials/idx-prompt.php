@@ -9,7 +9,7 @@
     <p class="subtitle">This video will show you how to manually enter listings in the plugin.</p>
     <!-- How to Add Listings Manually Video -->
     <img src="http://placehold.it/450x270">
-    <p class="subtitle">Still have questions? <span class="span-anchor-spaces"><a href="#">Check out tutorials</a> or <a href="mailto:support@placester.com">Email Us</a></span></p>
+    <p class="subtitle">Still have questions? <span class="span-anchor-spaces"><a href="http://www.youtube.com/watch?feature=player_embedded&v=a6sJi4iXObU">Check out tutorials</a> or <a href="mailto:support@placester.com">Email Us</a></span></p>
 </div>
 
 <!-- Contact Me for IDX -->
