@@ -192,9 +192,6 @@ function blueprint_settings() {
     remove_theme_support( 'pls-routing-util-templates' );
 }
 
-register_activation_hook( __FILE__, 'placester_activate' );
-// register_deactivation_hook( __FILE__, 'placester_deactivate' );
-
 add_action( 'admin_menu', 'placester_admin_menu' );
 function placester_admin_menu() {
     // Add separator
@@ -239,6 +236,8 @@ function placester_admin_menu() {
 
 }
 
+register_activation_hook( __FILE__, 'placester_activate' );
+// register_deactivation_hook( __FILE__, 'placester_deactivate' );
 function placester_activate () {
     $metrics = new MetricsTracker("9186cdb540264089399036dd672afb10");
     $metrics->track('Activation');
