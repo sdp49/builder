@@ -71,7 +71,7 @@ jQuery(document).ready(function($) {
         },
         2 : {
             text: "Yes",
-            class: "green-btn yes-idx-btn right-btn",
+            class: "yes-idx-btn right-btn green-btn",
             click: function() {
 				// Remove current dialog area, add phone # dialog area.
 				$('#idx-add-inner').addClass('hide');
@@ -91,6 +91,7 @@ jQuery(document).ready(function($) {
             click: function() {
               // Direct to Add Listings page
               $(this).dialog("close");
+              window.location.href = window.location.href;
             }
         }, 
         4 : {
@@ -110,7 +111,7 @@ jQuery(document).ready(function($) {
         },
         5 : {
             text: "Please Call Me",
-            class: "green-btn hide call-me-btn right-btn",
+            class: "hide call-me-btn right-btn green-button green-btn",
             click: function() {
 				// Check if number entered is valid...
 				var valid = validate_phone_number($("#callme-idx-phone").val());
@@ -144,6 +145,7 @@ jQuery(document).ready(function($) {
             click: function() {
 				// Point to phone number modal
 				$(this).dialog("close");
+				window.location.href = window.location.href;
             }            
 		}
     };
