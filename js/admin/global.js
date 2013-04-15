@@ -65,10 +65,11 @@ function new_sign_up (success_callback) {
 		if (result) {	
       		// console.log(result);
 			if (result['validations']) {
-				mixpanel.track("SignUp: Validation issue on signup");
+				// mixpanel.track("SignUp: Validation issue on signup");
 				
 				// Display validation message
 				var message = parse_validation(result);
+				console.log(message);
 				$('#api_key_success').html('');
 				$('#api_key_validation').html(message.join(', ')).show();
 				$('input#email').removeClass('green').addClass('red');
@@ -88,7 +89,7 @@ function new_sign_up (success_callback) {
 	            		// mixpanel.track("SignUp: API key installed");
 	            
 	           			// API key was successfully created AND set, ok to move-on to the integration dialog...
-	           			// if (success_callback) { success_callback(); }
+	           			if (success_callback) { success_callback(); }
          			}
         		},'json');
 				

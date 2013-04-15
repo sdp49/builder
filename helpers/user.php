@@ -52,9 +52,9 @@ class PL_Helper_User {
 	/* Creates a new placester account -- returns the new account's API key upon success */
 	public static function create_account() {
 		if ($_POST['email']) {
-			// $success = PL_User::create(array('email'=>$_POST['email']) );
-			// $response = $success ? $success : array('outcome' => false, 'message' => 'There was an error. Is that a valid email address?');
-			$response = array('api_key' => 'HRg71JaLtWXnqfOrmkXKIghPSbAYukvRFvfaNKXDYFhwmSogYbiULKRk7G71GVy7j6cLGaKTbf201CaaPlFZsQaa');
+			$success = PL_User::create(array('email'=>$_POST['email']));
+			$response = $success ? $success : array('outcome' => false, 'message' => 'There was an error. Is that a valid email address?');
+			// $response = array('api_key' => 'HRg71JaLtWXnqfOrmkXKIghPSbAYukvRFvfaNKXDYFhwmSogYbiULKRk7G71GVy7j6cLGaKTbf201CaaPlFZsQaa');
 		} else {
 			$response = array('outcome' => false, 'message' => 'No Email Provided');
 		}
@@ -79,7 +79,7 @@ class PL_Helper_User {
 			$response = array('result' => true, 'message' => 'Account successfully updated.');
 		} 
 		elseif ($api_response['validations']) {
-			$resonse = $api_response;
+			$response = $api_response;
 		}
 		else {
 			$response = array('result' => false, 'message' => 'There was an error. Please try again.');
