@@ -61,6 +61,7 @@ jQuery(document).ready(function($) {
 				// Remove current dialog area, add "Add Listings Manually" dialog area.
 				$('#idx-add-inner').addClass('hide');
 				$('#idx-none-inner').removeClass('hide');
+				
 				// Hide buttons, show new buttons
 				$('.yes-idx-btn, .no-thanks-idx-btn').addClass('hide');
 				$('.add-listings-manually-btn').removeClass('hide');
@@ -68,8 +69,6 @@ jQuery(document).ready(function($) {
 				// Change title
 				$('.ui-dialog-title h3').html("Add Listings to your Website Manually");
 				$(".ui-dialog-title").parent().parent().css("top", 90);
-
-
             }
         },
         2 : {
@@ -85,16 +84,20 @@ jQuery(document).ready(function($) {
 				$('.i-prefer-email-btn, .call-me-btn').removeClass('hide');
 				
 				// Start free trial...
-				$.post(ajaxurl, {action: "start_subscription_trial"}, function (result) {}, "json");
+				$.post(ajaxurl, {action: "start_subscription_trial"}, function (result) {
+					console.log(result);
+				}, "json");
             }            
         },  
         3 : {
             text: "All set!",
             class: "linkify-button hide add-listings-manually-btn right-btn",
             click: function() {
-              // Direct to Add Listings page
-              $(this).dialog("close");
-              window.location.href = window.location.href;
+				// Direct to Add Listings page
+				$(this).dialog("close");
+				
+				// Reload page to reflect the addition of an API key...
+				setTimeout(function () { window.location.href = window.location.href; }, 1000);
             }
         }, 
         4 : {
@@ -103,9 +106,7 @@ jQuery(document).ready(function($) {
             click: function() {
 				// remove current dialog
 				$('#idx-contact-inner').addClass('hide');
-
 				$('.ui-dialog-title h3').html("Congratulations! IDX / MLS Request Submitted");
-
 
 				// Show email dialog
 				$('#idx-success-inner span#action').text("email");
@@ -123,7 +124,8 @@ jQuery(document).ready(function($) {
             class: "hide call-me-btn right-btn green-button green-btn",
             click: function() {
 				// Check if number entered is valid...
-				var valid = validate_phone_number($("#callme-idx-phone").val());
+				var phone_number = $("#callme-idx-phone").val();
+				var valid = validate_phone_number(phone_number);
 
 				if (valid) {
 					$('.ui-dialog-title h3').html("Congratulations! IDX / MLS Request Submitted");
@@ -142,8 +144,14 @@ jQuery(document).ready(function($) {
 					$('.i-prefer-email-btn, .call-me-btn').addClass('hide');
 					$('.request-done-btn').removeClass('hide');
 					$("#phone-validation-message").html('');
-
+					
+					// Move to top of the screen
 					$(".ui-dialog-title").parent().parent().css("top", 90);
+
+					// Update user's account with phone number in Rails...
+					$.post(ajaxurl, {action: 'update_user', phone: phone_number}, function (result) {
+						// console.log(result);
+					}, "json");
 				} 
 				else {
 					// Invalid Phone Number
@@ -158,8 +166,10 @@ jQuery(document).ready(function($) {
             click: function() {
 				// Point to phone number modal
 				$(this).dialog("close");
-				window.location.href = window.location.href;
-            }            
+
+				// Reload page to reflect the addition of an API key...
+				setTimeout(function () { window.location.href = window.location.href; }, 1000);            
+			}            
 		}
     };
 
@@ -183,20 +193,6 @@ jQuery(document).ready(function($) {
 			};
 		});
 	}
-
-	// Execute "Add IDX To My Website" modal
-    // $("#add-idx-dialog").dialog({
-    //     close: function(event, ui) {
-    //       // Hide dialogs again
-    //       $('#add-listings-manually-inner, #call-me-for-idx-inner, #email-me-for-idx-inner, #phone-me-for-idx-inner').addClass('hide');
-    //       // Hide buttons again
-    //       $('.request-done-btn, .call-me-btn, .i-prefer-email-btn').addClass('hide');
-    //       // Show only the initial dialog
-    //       $('#add-idx-inner').removeClass('hide');
-	// 		 // Reload page to reflect the addition of an API key...
-    //       setTimeout(function () { window.location.href = window.location.href; }, 2000);
-    //     }
-    // });
 
 	// Create the sign-up wizard dialog container on initial page load...
 	$('body').append('<div id="signup_wizard"></div>');
