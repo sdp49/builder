@@ -13,5 +13,5 @@
     <div id="api_key_validation"></div>
 	<div id="api_key_success"></div>
     <input id="email" type="email" name="email" value="<?php echo $email; ?>" />
-    <a href="#" class="learn-more">Learn More</a>
+    <a href="https://placester.com/support/why-do-i-need-to-create-an-account/" target="_blank" class="learn-more">Learn More</a>
 </div>

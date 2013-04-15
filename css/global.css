@@ -506,8 +506,12 @@ h3.hndle {
 }
 
 .ui-dialog.ui-widget-content .ui-dialog-content p.subtitle {
+  margin-left: -23px;
   font-size: 15px;
   color: dimgrey; 
+}
+.ui-resizable-se {
+  display: none !important;
 }
 
 .ui-dialog.ui-widget-content .ui-dialog-content input[type="text"], 
