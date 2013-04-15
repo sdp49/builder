@@ -56,6 +56,7 @@ function new_sign_up (success_callback) {
 	$ = jQuery; // we're in no conflict land. 
 	var email = $('input#email').val();
 	
+	$('#loading_gif').show();
 	$('#api_key_success').html('Checking...').show();
 	$('#api_key_validation').html('');
   	$('input#email').removeClass('green').removeClass('red');
