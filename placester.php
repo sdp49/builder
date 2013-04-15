@@ -249,7 +249,7 @@ function on_first_activation() {
     if (!get_option('placester_activation_redirect', false)) {
         ?>
             <script type="text/javascript">    
-                window.location.href = "<?php echo admin_url() . "admin.php?page=placester_properties" ?>";
+                window.location.href = "<?php echo trailingslashit(admin_url()) . 'admin.php?page=placester_properties' ?>";
                 mixpanel.track("Activation");
             </script>         
         <?php
