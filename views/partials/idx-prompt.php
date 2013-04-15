@@ -1,7 +1,7 @@
 <!-- Do you want IDX integration? -->
 <div id="idx-add-inner">
     <p class="subtitle">Most people who use Placester want IDX / MLS on their site. Do you?</p>
-    <a href="#" class="learn-more">Learn More</a>
+    <a href="https://placester.com/real-estate-marketing-academy/integration-is-key-to-successful-real-estate-website/" class="learn-more">Learn More</a>
 </div>
 
 <!-- No IDX, manually enter listings. -->
@@ -9,7 +9,7 @@
     <p class="subtitle">This video will show you how to manually enter listings in the plugin.</p>
     <!-- How to Add Listings Manually Video -->
     <img src="http://placehold.it/450x270">
-    <p class="subtitle">Still have questions? <span class="span-anchor-spaces"><a href="#">Check out tutorials</a> or <a href="mailto:support@placester.com">Email Us</a></span></p>
+    <p class="subtitle">Still have questions? <span class="span-anchor-spaces"><a href="http://www.youtube.com/watch?feature=player_embedded&v=a6sJi4iXObU">Check out tutorials</a> or <a href="mailto:support@placester.com">Email Us</a></span></p>
 </div>
 
 <!-- Contact Me for IDX -->

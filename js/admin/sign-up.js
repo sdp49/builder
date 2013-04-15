@@ -67,12 +67,15 @@ jQuery(document).ready(function($) {
 				$('.add-listings-manually-btn').removeClass('hide');
 
 				// Change title
-				$('.ui-dialog-title h2').html("Add Listings to your Website Manually");
+				$('.ui-dialog-title h3').html("Add Listings to your Website Manually");
+				$(".ui-dialog-title").parent().parent().css("top", 90);
+
+
             }
         },
         2 : {
             text: "Yes",
-            class: "green-btn yes-idx-btn right-btn",
+            class: "yes-idx-btn right-btn green-btn",
             click: function() {
 				// Remove current dialog area, add phone # dialog area.
 				$('#idx-add-inner').addClass('hide');
@@ -92,6 +95,7 @@ jQuery(document).ready(function($) {
             click: function() {
               // Direct to Add Listings page
               $(this).dialog("close");
+              window.location.href = window.location.href;
             }
         }, 
         4 : {
@@ -100,7 +104,8 @@ jQuery(document).ready(function($) {
             click: function() {
 				// remove current dialog
 				$('#idx-contact-inner').addClass('hide');
-				
+				$('.ui-dialog-title h3').html("Congratulations! IDX / MLS Request Submitted");
+
 				// Show email dialog
 				$('#idx-success-inner span#action').text("email");
 				$('#idx-success-inner').removeClass('hide');
@@ -108,17 +113,21 @@ jQuery(document).ready(function($) {
 				// Hide buttons, show new buttons
 				$('.i-prefer-email-btn, .call-me-btn').addClass('hide');
 				$('.request-done-btn').removeClass('hide');
+
+				$(".ui-dialog-title").parent().parent().css("top", 90);
             }
         },
         5 : {
             text: "Please Call Me",
-            class: "green-btn hide call-me-btn right-btn",
+            class: "hide call-me-btn right-btn green-button green-btn",
             click: function() {
 				// Check if number entered is valid...
 				var phone_number = $("#callme-idx-phone").val();
 				var valid = validate_phone_number(phone_number);
 
 				if (valid) {
+					$('.ui-dialog-title h3').html("Congratulations! IDX / MLS Request Submitted");
+
 					// Valid Phone Number
 					$('#idx-contact-inner').prepend("YEP!");
 
@@ -133,6 +142,9 @@ jQuery(document).ready(function($) {
 					$('.i-prefer-email-btn, .call-me-btn').addClass('hide');
 					$('.request-done-btn').removeClass('hide');
 					$("#phone-validation-message").html('');
+					
+					// Move to top of the screen
+					$(".ui-dialog-title").parent().parent().css("top", 90);
 
 					// Update user's account with phone number in Rails...
 					$.post(ajaxurl, {action: 'update_user', phone: phone_number}, function (result) { });
@@ -150,6 +162,7 @@ jQuery(document).ready(function($) {
             click: function() {
 				// Point to phone number modal
 				$(this).dialog("close");
+				window.location.href = window.location.href;
             }            
 		}
     };
