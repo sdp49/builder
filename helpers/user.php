@@ -27,7 +27,8 @@ class PL_Helper_User {
 	}
 
 	public static function start_subscription_trial() {
-		echo json_encode(PL_User::start_subscription_trial());
+		// echo json_encode(PL_User::start_subscription_trial());
+		error_log("Would have started a trial...");
 		die();
 	}
 
@@ -51,10 +52,11 @@ class PL_Helper_User {
 	/* Creates a new placester account -- returns the new account's API key upon success */
 	public static function create_account() {
 		if ($_POST['email']) {
-			$success = PL_User::create(array('email'=>$_POST['email']) );
-			$response = $success ? $success : array(false, 'There was an error. Is that a valid email address?');
+			// $success = PL_User::create(array('email'=>$_POST['email']) );
+			// $response = $success ? $success : array('outcome' => false, 'message' => 'There was an error. Is that a valid email address?');
+			$response = array('api_key' => 'HRg71JaLtWXnqfOrmkXKIghPSbAYukvRFvfaNKXDYFhwmSogYbiULKRk7G71GVy7j6cLGaKTbf201CaaPlFZsQaa');
 		} else {
-			$response = array(false, 'No Email Provided');
+			$response = array('outcome' => false, 'message' => 'No Email Provided');
 		}
 
 		echo json_encode($response);
@@ -68,7 +70,6 @@ class PL_Helper_User {
 	}
 
 	public static function ajax_update_user() {
-		$response = array('result' => false, 'message' => 'There was an error. Please try again.');
 		$whoami = self::whoami();
 		$_POST['id'] = $whoami['user']['id'];
 		$_POST['email'] = $whoami['user']['email'];
@@ -76,11 +77,15 @@ class PL_Helper_User {
 		$api_response = self::update_user($_POST);
 		if ($api_response['id']) {
 			$response = array('result' => true, 'message' => 'Account successfully updated.');
-			echo json_encode($response);
-		} elseif ($api_response['validations']) {
-			echo json_encode($api_response);
+		} 
+		elseif ($api_response['validations']) {
+			$resonse = $api_response;
+		}
+		else {
+			$response = array('result' => false, 'message' => 'There was an error. Please try again.');
 		}
 
+		echo json_encode($response);
 		die();
 	}
 

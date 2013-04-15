@@ -84,7 +84,9 @@ jQuery(document).ready(function($) {
 				$('.i-prefer-email-btn, .call-me-btn').removeClass('hide');
 				
 				// Start free trial...
-				$.post(ajaxurl, {action: "start_subscription_trial"}, function (result) {}, "json");
+				$.post(ajaxurl, {action: "start_subscription_trial"}, function (result) {
+					console.log(result);
+				}, "json");
             }            
         },  
         3 : {
@@ -147,7 +149,9 @@ jQuery(document).ready(function($) {
 					$(".ui-dialog-title").parent().parent().css("top", 90);
 
 					// Update user's account with phone number in Rails...
-					$.post(ajaxurl, {action: 'update_user', phone: phone_number}, function (result) { });
+					$.post(ajaxurl, {action: 'update_user', phone: phone_number}, function (result) {
+						// console.log(result);
+					}, "json");
 				} 
 				else {
 					// Invalid Phone Number
