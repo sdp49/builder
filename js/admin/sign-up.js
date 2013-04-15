@@ -19,6 +19,9 @@ jQuery(document).ready(function($) {
             text: "Confirm Email",
             class: "green-btn right-btn",
             click: function() {
+            	// Instrument...
+            	mixpanel.track("Registration - Submitted");
+
                 new_sign_up(function () { 
                 	construct_modal(idx_args); 
                 	$(this).dialog("close");
@@ -83,9 +86,13 @@ jQuery(document).ready(function($) {
 				$('.yes-idx-btn, .no-thanks-idx-btn').addClass('hide');
 				$('.i-prefer-email-btn, .call-me-btn').removeClass('hide');
 				
+				// Instrument...
+				mixpanel.track("Registration - Integration Requested");
+
 				// Start free trial...
 				$.post(ajaxurl, {action: "start_subscription_trial"}, function (result) {
 					console.log(result);
+					// mixpanel.track("Registration - Trial Started",  {'source' : 'Activation Modal'});
 				}, "json");
             }            
         },  
@@ -128,6 +135,9 @@ jQuery(document).ready(function($) {
 				var valid = validate_phone_number(phone_number);
 
 				if (valid) {
+					// Instrument...
+					mixpanel.track("Registration - Phone Number");
+
 					$('.ui-dialog-title h3').html("Congratulations! IDX / MLS Request Submitted");
 
 					// Valid Phone Number
@@ -164,8 +174,8 @@ jQuery(document).ready(function($) {
             text: "All set!",
             class: "linkify-button hide request-done-btn right-btn",
             click: function() {
-				// Point to phone number modal
-				$(this).dialog("close");
+            	// Instrument...
+            	mixpanel.track("Registration - Complete");
 
 				// Reload page to reflect the addition of an API key...
 				setTimeout(function () { window.location.href = window.location.href; }, 1000);            
@@ -197,6 +207,9 @@ jQuery(document).ready(function($) {
 	// Create the sign-up wizard dialog container on initial page load...
 	$('body').append('<div id="signup_wizard"></div>');
 	construct_modal(new_acct_args);
+
+	// Instrument...
+	mixpanel.track("Registration - Opportunity", {'type' : 'Activation Modal'});
 
 	// Prevent any clicks...
 	$('.wrapper').on('click', function() {

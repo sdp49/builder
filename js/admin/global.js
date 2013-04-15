@@ -77,9 +77,11 @@ function new_sign_up (success_callback) {
 			} 
 			else if (result['api_key']) {
 				$('#api_key_success').html('Success! Setting up plugin.');
-				// mixpanel.track("SignUp: Successful Signup");
 				$('input#email').removeClass('red').addClass('green');
         		// console.log(result);
+
+        		// Instrument...
+        		mixpanel.track("Registration - Account Created");
         		
         		$.post(ajaxurl, {action: 'set_placester_api_key', api_key: result['api_key']}, function (response) {
 		          	if (response['result']) {
@@ -90,7 +92,7 @@ function new_sign_up (success_callback) {
 	            		// mixpanel.track("SignUp: API key installed");
 	            
 	           			// API key was successfully created AND set, ok to move-on to the integration dialog...
-	           			if (success_callback) { success_callback(); }
+	           			// if (success_callback) { success_callback(); }
          			}
         		},'json');
 				
