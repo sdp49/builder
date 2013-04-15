@@ -2,14 +2,14 @@ jQuery(document).ready(function($) {
 
 	var new_buttons = {
         1 : {
-            text: "Don't activate yet.",
+            text: "Don't activate yet",
             class: "linkify-button",
             click: function() {
                 $(this).dialog("close");
             }
         },  
         2 : {
-            text: "I already have an account.",
+            text: "I already have an account",
             class: "linkify-button",
             click: function() {
              	construct_modal(existing_acct_args);
@@ -32,15 +32,15 @@ jQuery(document).ready(function($) {
 
 	var existing_buttons = {
 		1 : {
-			text: "Close Setup Wizard",
-			class: "gray-btn",
+			text: "Don't Activate Yet",
+			class: "linkify-button",
 			click: function() {
 				 $(this).dialog("close");
 			}
 		},
 		2 : {
-			text: "Use a new Email address",
-			class: "gray-btn",
+			text: "Create a New Account",
+			class: "linkify-button",
 			classes: "left",
 			click: function() {
 				 construct_modal(new_acct_args);
@@ -185,7 +185,7 @@ jQuery(document).ready(function($) {
 
 	// Modal config args...
 	var new_acct_args = { ajax: 'new_api_key_view', title: 'Activate Your Plugin', buttons: new_buttons, width: 500 };
-	var existing_acct_args = { ajax: 'existing_api_key_view', title: 'Use an Existing Placester API Key', buttons: existing_buttons, width: 700 };
+	var existing_acct_args = { ajax: 'existing_api_key_view', title: 'Use an Existing Placester Account', buttons: existing_buttons, width: 700 };
 	var idx_args = { ajax: 'idx_prompt_view', title: 'Add IDX / MLS To My Website', buttons: idx_buttons, width: 500 };
 
 	function construct_modal(args) {
