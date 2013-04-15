@@ -36,12 +36,12 @@
 	color: red;
 	font-weight: bold;
 }
-#api_key_validation span.red {
+#api_key_validation span.red, #phone-validation-message {
 	background-color: white !important;
 	border: none !important;
-	display: none;
+	/*display: none;*/
 	color: red;
-	font-weight: bold;
+	/*font-weight: bold;*/
 }
 
 

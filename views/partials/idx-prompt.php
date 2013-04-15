@@ -17,7 +17,7 @@
     <p class="subtitle">We'll call you to setup IDX / MLS</p>
     <p>We'll reach out immediately to get you started. What's your phone number?</p>
     <input id="callme-idx-phone" type="text" name="phone" placeholder="617 555 1234" />
-    <span id="phone-validation-message" class="red"></span>
+    <span id="phone-validation-message"></span>
 </div>
 
 <!-- IDX Request Submitted -->
