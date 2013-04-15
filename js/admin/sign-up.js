@@ -69,8 +69,6 @@ jQuery(document).ready(function($) {
 				// Change title
 				$('.ui-dialog-title h3').html("Add Listings to your Website Manually");
 				$(".ui-dialog-title").parent().parent().css("top", 90);
-
-
             }
         },
         2 : {
@@ -93,9 +91,11 @@ jQuery(document).ready(function($) {
             text: "All set!",
             class: "linkify-button hide add-listings-manually-btn right-btn",
             click: function() {
-              // Direct to Add Listings page
-              $(this).dialog("close");
-              window.location.href = window.location.href;
+				// Direct to Add Listings page
+				$(this).dialog("close");
+				
+				// Reload page to reflect the addition of an API key...
+				setTimeout(function () { window.location.href = window.location.href; }, 1000);
             }
         }, 
         4 : {
@@ -162,8 +162,10 @@ jQuery(document).ready(function($) {
             click: function() {
 				// Point to phone number modal
 				$(this).dialog("close");
-				window.location.href = window.location.href;
-            }            
+
+				// Reload page to reflect the addition of an API key...
+				setTimeout(function () { window.location.href = window.location.href; }, 1000);            
+			}            
 		}
     };
 
@@ -187,20 +189,6 @@ jQuery(document).ready(function($) {
 			};
 		});
 	}
-
-	// Execute "Add IDX To My Website" modal
-    // $("#add-idx-dialog").dialog({
-    //     close: function(event, ui) {
-    //       // Hide dialogs again
-    //       $('#add-listings-manually-inner, #call-me-for-idx-inner, #email-me-for-idx-inner, #phone-me-for-idx-inner').addClass('hide');
-    //       // Hide buttons again
-    //       $('.request-done-btn, .call-me-btn, .i-prefer-email-btn').addClass('hide');
-    //       // Show only the initial dialog
-    //       $('#add-idx-inner').removeClass('hide');
-	// 		 // Reload page to reflect the addition of an API key...
-    //       setTimeout(function () { window.location.href = window.location.href; }, 2000);
-    //     }
-    // });
 
 	// Create the sign-up wizard dialog container on initial page load...
 	$('body').append('<div id="signup_wizard"></div>');
