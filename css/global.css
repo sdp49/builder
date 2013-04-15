@@ -219,6 +219,17 @@ h3.hndle {
     .ui-dialog.ui-widget-content .ui-dialog-content #api_key_form #api-key-message-icon.green, .ui-dialog.ui-widget-content .ui-dialog-content #signup_wizard #api-key-message-icon.green, .ui-dialog.ui-widget-content .ui-dialog-content #confirm_email #api-key-message-icon.green {
       background: url(../images/icons/green-chk.png) no-repeat 0 5px; }
 
+#loading_gif {
+  margin-top: 5px;
+  position: absolute; 
+  top: 34px; 
+  left: 335px; 
+  display: none;
+  height: 30px;
+  width: 30px;
+}
+
+
 #api_key_validation, #api_key_success {
   position: absolute;
   padding: 0;
