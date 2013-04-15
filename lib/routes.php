@@ -4,12 +4,6 @@ class PL_Router {
 	private static function router($template, $params, $wrap = false, $directory = PL_VIEWS_ADMIN_DIR) {
 		ob_start();
 			self::load_builder_view('header.php');
-
-			// Set admin e-mail as a POST variable if no API key exists...
-			if (!PL_Option_Helper::api_key()) {
-				PL_Helper_User::set_admin_email();
-			}
-
 			self::load_builder_view($template, $directory, $params);	
 			self::load_builder_view('footer.php');
 		echo ob_get_clean();	

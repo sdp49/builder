@@ -58,7 +58,7 @@ function new_sign_up (success_callback) {
 	
 	$('#api_key_success').html('Checking...').show();
 	$('#api_key_validation').html('');
-  	$('#confirm_email input#email').removeClass('green').removeClass('red');
+  	$('input#email').removeClass('green').removeClass('red');
 
 	$.post(ajaxurl, {action: 'create_account', email: email}, function(data, textStatus, xhr) {
 		if (data) {	
@@ -70,12 +70,12 @@ function new_sign_up (success_callback) {
 				var message = parse_validation(data);
 				$('#api_key_success').html('');
 				$('#api_key_validation').html(message.join(', ')).show();
-				$('#confirm_email input#email').removeClass('green').addClass('red');
+				$('input#email').removeClass('green').addClass('red');
 			} 
 			else if (data['api_key']) {
 				$('#api_key_success').html('Success! Setting up plugin.');
 				mixpanel.track("SignUp: Successful Signup");
-				$('#confirm_email input#email').removeClass('red').addClass('green');
+				$('input#email').removeClass('red').addClass('green');
         		
         		$.post(ajaxurl, {action: 'set_placester_api_key', api_key: data['api_key']}, function(response, textStatus, xhr) {
 		          	if (response['result']) {

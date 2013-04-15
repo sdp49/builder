@@ -21,10 +21,6 @@ class PL_Helper_User {
 		add_action( 'wp_ajax_update_google_places', array(__CLASS__, 'update_google_places' ) );
 	}
 
-	public static function set_admin_email() {
-		$_POST['email'] = get_option('admin_email');
-	}
-
 	public static function ajax_subscriptions() {
 		echo json_encode(PL_User::subscriptions());
 		die();
@@ -99,8 +95,8 @@ class PL_Helper_User {
 	 */
 
 	public static function new_api_key_view() {
-		self::set_admin_email();
-		PL_Router::load_builder_partial('sign-up.php');
+		$admin_email = get_option('admin_email');
+		PL_Router::load_builder_partial('sign-up.php', array('email' => $admin_email));
 		die();	
 	}
 

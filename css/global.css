@@ -484,7 +484,8 @@ h3.hndle {
 
 /** New shit... **/
 .hide {
-  display: none; }
+  display: none; 
+}
 
 .linkify-button {
   text-transform: capitalize !important;
@@ -496,29 +497,48 @@ h3.hndle {
   background: none !important;
   border: none !important;
   padding: 10px 15px 10px 0 !important;
-  font-size: 12px !important; }
-  .linkify-button.request-done-btn, .linkify-button .add-listings-manually-btn {
-    text-align: right !important; }
+  font-size: 12px !important; 
+}
+
+.linkify-button.request-done-btn, 
+.linkify-button .add-listings-manually-btn {
+  text-align: right !important; 
+}
 
 .ui-dialog.ui-widget-content .ui-dialog-content p.subtitle {
   font-size: 15px;
-  color: dimgrey; }
-.ui-dialog.ui-widget-content .ui-dialog-content input[type="text"], .ui-dialog.ui-widget-content .ui-dialog-content input[type="email"] {
+  color: dimgrey; 
+}
+
+.ui-dialog.ui-widget-content .ui-dialog-content input[type="text"], 
+.ui-dialog.ui-widget-content .ui-dialog-content input[type="email"] {
   border-width: 1px !important;
   background-color: white !important;
   border-radius: 3px;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-style: solid;
-  font-size: 15px; }
-  .ui-dialog.ui-widget-content .ui-dialog-content input[type="text"]#phone, .ui-dialog.ui-widget-content .ui-dialog-content input[type="email"]#phone {
-    width: 150px; }
-  .ui-dialog.ui-widget-content .ui-dialog-content input[type="text"]#email, .ui-dialog.ui-widget-content .ui-dialog-content input[type="email"]#email {
-    width: 350px; }
+  font-size: 15px; 
+}
+
+.ui-dialog.ui-widget-content .ui-dialog-content input[type="text"]#phone, 
+.ui-dialog.ui-widget-content .ui-dialog-content input[type="email"]#phone {
+  width: 150px; 
+}
+
+.ui-dialog.ui-widget-content .ui-dialog-content input[type="text"]#email, 
+.ui-dialog.ui-widget-content .ui-dialog-content input[type="email"]#email {
+  width: 350px; 
+}
+
 .ui-dialog.ui-widget-content .ui-dialog-content p.green {
-  color: green; }
+  color: green; 
+}
+
 .ui-dialog.ui-widget-content .ui-dialog-content p.major-subtitle {
-  font-size: 17px; }
+  font-size: 17px; 
+}
+
 .ui-dialog.ui-widget-content .ui-dialog-content p.green.major-subtitle {
   color: #468847;
   background-color: #dff0d8;
@@ -529,13 +549,20 @@ h3.hndle {
   -moz-box-sizing: border-box;
   border-radius: 3px;
   -webkit-border-radius: 3px;
-  -moz-border-radius: 3px; }
+  -moz-border-radius: 3px; 
+}
+
 .ui-dialog.ui-widget-content .ui-dialog-content a.learn-more {
   font-size: 12px;
   float: right;
   padding-top: 8px;
-  outline: 0; }
+  outline: 0; 
+}
+
 .ui-dialog.ui-widget-content .ui-dialog-content p span.span-anchor-spaces {
-  margin-left: 10px; }
-  .ui-dialog.ui-widget-content .ui-dialog-content p span.span-anchor-spaces a {
-    margin: 0 2px; }    
+  margin-left: 10px; 
+}
+
+.ui-dialog.ui-widget-content .ui-dialog-content p span.span-anchor-spaces a {
+  margin: 0 2px; 
+} 
