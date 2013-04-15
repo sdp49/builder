@@ -19,8 +19,7 @@ jQuery(document).ready(function($) {
             text: "Confirm Email",
             class: "green-btn right-btn",
             click: function() {
-            	var construct_idx_modal = function () { construct_modal(idx_args); }
-                new_sign_up(construct_idx_modal);
+                new_sign_up(function () { construct_modal(idx_args); });
 				$(this).dialog("close");
             }
         }
@@ -75,9 +74,13 @@ jQuery(document).ready(function($) {
 				// Remove current dialog area, add phone # dialog area.
 				$('#idx-add-inner').addClass('hide');
 				$('#idx-contact-inner').removeClass('hide');
+				
 				// Hide buttons, show new buttons
 				$('.yes-idx-btn, .no-thanks-idx-btn').addClass('hide');
 				$('.i-prefer-email-btn, .call-me-btn').removeClass('hide');
+				
+				// Start free trial...
+				$.post(ajaxurl, {action: "start_subscription_trial"}, function (result) {}, "json");
             }            
         },  
         3 : {
@@ -130,7 +133,7 @@ jQuery(document).ready(function($) {
 					// Invalid Phone Number
 					$("#callme-idx-phone").addClass('red');
 					$("#phone-validation-message").html("Phone number is not valid");
-				};
+				}
             }            
         },
         6 : {
@@ -140,8 +143,7 @@ jQuery(document).ready(function($) {
 				// Point to phone number modal
 				$(this).dialog("close");
             }            
-          },
-        }
+		}
     };
 
 	// Modal config args...
@@ -174,6 +176,8 @@ jQuery(document).ready(function($) {
     //       $('.request-done-btn, .call-me-btn, .i-prefer-email-btn').addClass('hide');
     //       // Show only the initial dialog
     //       $('#add-idx-inner').removeClass('hide');
+	// 		 // Reload page to reflect the addition of an API key...
+    //       setTimeout(function () { window.location.href = window.location.href; }, 2000);
     //     }
     // });
 
@@ -181,8 +185,8 @@ jQuery(document).ready(function($) {
 	$('body').append('<div id="signup_wizard"></div>');
 	construct_modal(new_acct_args);
 
-	// 
-	$('.wrapper, #settings_get_started_signup').on('click', function() {
+	// Prevent any clicks...
+	$('.wrapper').on('click', function() {
 		$("#signup_wizard").dialog("open");
 	});
 	

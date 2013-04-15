@@ -38,12 +38,11 @@ jQuery(document).ready(function($) {
 	create_existing_dialog();
 	
 
-	$('#existing_placester').bind('click', function() {
+	$('#existing_placester').on('click', function() {
 		$("#existing_placester_dialog").dialog("open");
-		return false;
 	});
 
-	$('#new_email').bind('click', function () {
+	$('#new_email').on('click', function () {
 		$.post(ajaxurl, {action: 'new_api_key_view'}, function(data, textStatus, xhr) {
   			//optional stuff to do after success
   			$("#existing_placester_dialog").dialog("open");
@@ -70,7 +69,7 @@ jQuery(document).ready(function($) {
 		
 	});
 
-	$('#error_logging_click').live('click', function() {
+	$('#error_logging_click').on('click', function() {
 		var request = {
 			report_errors: $(this).is(':checked'),
 			action: 'ajax_log_errors'
@@ -107,7 +106,7 @@ jQuery(document).ready(function($) {
 	});
 
 
-	$('#block_address').live('click', function() {
+	$('#block_address').on('click', function() {
 		var request = {
 			use_block_address: $(this).is(':checked'),
 			action: 'ajax_block_address'
@@ -125,7 +124,7 @@ jQuery(document).ready(function($) {
 		}, 'json');
 	});
 
-	$('#demo_data').live('click', function() {
+	$('#demo_data').on('click', function() {
 		var method = ( $(this).is(':checked') ? 'demo_data_on' : 'demo_data_off' );
 		var request = { action : method };
 
@@ -138,7 +137,7 @@ jQuery(document).ready(function($) {
 		}, 'json');
 	});
 
-	$('#google_places_api_button').live('click', function (event) {
+	$('#google_places_api_button').on('click', function (event) {
 		event.preventDefault();
 		var request = {};
 		request.places_key = $('#google_places_api').val();

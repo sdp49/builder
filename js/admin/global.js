@@ -60,38 +60,41 @@ function new_sign_up (success_callback) {
 	$('#api_key_validation').html('');
   	$('input#email').removeClass('green').removeClass('red');
 
-	$.post(ajaxurl, {action: 'create_account', email: email}, function(data, textStatus, xhr) {
-		if (data) {	
-      		// console.log(data);
-			if (data['validations']) {
+	$.post(ajaxurl, {action: 'create_account', email: email}, function (result) {
+		if (result) {	
+      		// console.log(result);
+			if (result['validations']) {
 				mixpanel.track("SignUp: Validation issue on signup");
 				
 				// Display validation message
-				var message = parse_validation(data);
+				var message = parse_validation(result);
 				$('#api_key_success').html('');
 				$('#api_key_validation').html(message.join(', ')).show();
 				$('input#email').removeClass('green').addClass('red');
 			} 
-			else if (data['api_key']) {
+			else if (result['api_key']) {
 				$('#api_key_success').html('Success! Setting up plugin.');
 				mixpanel.track("SignUp: Successful Signup");
 				$('input#email').removeClass('red').addClass('green');
         		
-        		$.post(ajaxurl, {action: 'set_placester_api_key', api_key: data['api_key']}, function(response, textStatus, xhr) {
+        		$.post(ajaxurl, {action: 'set_placester_api_key', api_key: result['api_key']}, function(response, textStatus, xhr) {
 		          	if (response['result']) {
 		          		// Display success message
 			            var msg = (response['message']) ? response['message'] : '';
 			            $('#api_key_success').html(msg).show();
             		
 	            		mixpanel.track("SignUp: API key installed");
-			            
-			            // Reload page to reflect the addition of an API key
-			            setTimeout(function () { window.location.href = window.location.href; }, 2000);
 	            
 	           			// API key was successfully created AND set, ok to move-on to the integration dialog...
 	           			if (success_callback) { success_callback(); }
          			}
         		},'json');
+			}
+			else { 
+				console.log("Made it here...");
+				console.log(result);
+
+				if (success_callback) { success_callback(); }
 			}
 		}
 	},'json');
