@@ -201,6 +201,7 @@ jQuery(document).ready(function($) {
 					width: args.width,
 					buttons: args.buttons
 				});
+				$('#signup_wizard').dialog("option", "position", "center");
 			};
 		});
 	}

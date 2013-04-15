@@ -1,7 +1,7 @@
 <!-- Do you want IDX integration? -->
 <div id="idx-add-inner">
     <p class="subtitle">Most people who use Placester want IDX / MLS on their site. Do you?</p>
-    <a href="https://placester.com/real-estate-marketing-academy/integration-is-key-to-successful-real-estate-website/" class="learn-more">Learn More</a>
+    <a target="_blank" href="https://placester.com/real-estate-marketing-academy/integration-is-key-to-successful-real-estate-website/" class="learn-more">Learn More</a>
 </div>
 
 <!-- No IDX, manually enter listings. -->
