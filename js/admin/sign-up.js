@@ -66,7 +66,10 @@ jQuery(document).ready(function($) {
 				$('.add-listings-manually-btn').removeClass('hide');
 
 				// Change title
-				$('.ui-dialog-title h2').html("Add Listings to your Website Manually");
+				$('.ui-dialog-title h3').html("Add Listings to your Website Manually");
+				$(".ui-dialog-title").parent().parent().css("top", 90);
+
+
             }
         },
         2 : {
@@ -100,6 +103,10 @@ jQuery(document).ready(function($) {
             click: function() {
 				// remove current dialog
 				$('#idx-contact-inner').addClass('hide');
+
+				$('.ui-dialog-title h3').html("Congratulations! IDX / MLS Request Submitted");
+
+
 				// Show email dialog
 				$('#idx-success-inner span#action').text("email");
 				$('#idx-success-inner').removeClass('hide');
@@ -107,6 +114,8 @@ jQuery(document).ready(function($) {
 				// Hide buttons, show new buttons
 				$('.i-prefer-email-btn, .call-me-btn').addClass('hide');
 				$('.request-done-btn').removeClass('hide');
+
+				$(".ui-dialog-title").parent().parent().css("top", 90);
             }
         },
         5 : {
@@ -117,6 +126,8 @@ jQuery(document).ready(function($) {
 				var valid = validate_phone_number($("#callme-idx-phone").val());
 
 				if (valid) {
+					$('.ui-dialog-title h3').html("Congratulations! IDX / MLS Request Submitted");
+
 					// Valid Phone Number
 					$('#idx-contact-inner').prepend("YEP!");
 
@@ -131,6 +142,8 @@ jQuery(document).ready(function($) {
 					$('.i-prefer-email-btn, .call-me-btn').addClass('hide');
 					$('.request-done-btn').removeClass('hide');
 					$("#phone-validation-message").html('');
+
+					$(".ui-dialog-title").parent().parent().css("top", 90);
 				} 
 				else {
 					// Invalid Phone Number
