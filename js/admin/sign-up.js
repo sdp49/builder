@@ -19,8 +19,10 @@ jQuery(document).ready(function($) {
             text: "Confirm Email",
             class: "green-btn right-btn",
             click: function() {
-                new_sign_up(function () { construct_modal(idx_args); });
-				$(this).dialog("close");
+                new_sign_up(function () { 
+                	construct_modal(idx_args); 
+                	$(this).dialog("close");
+                });
             }
         }
     };
