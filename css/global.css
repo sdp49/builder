@@ -583,3 +583,10 @@ h3.hndle {
 .ui-dialog.ui-widget-content .ui-dialog-content p span.span-anchor-spaces a {
   margin: 0 2px; 
 } 
+
+#api_key_validation span.red {
+  background-color: white !important;
+  border: none !important;
+  color: red;
+  font-size: 12px;
+}

@@ -73,6 +73,7 @@ function new_sign_up (success_callback) {
 				$('#api_key_success').html('');
 				$('#api_key_validation').html(message.join(', ')).show();
 				$('input#email').removeClass('green').addClass('red');
+				$('#loading_gif').hide();
 			} 
 			else if (result['api_key']) {
 				$('#api_key_success').html('Success! Setting up plugin.');
