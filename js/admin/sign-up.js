@@ -61,6 +61,7 @@ jQuery(document).ready(function($) {
 				// Remove current dialog area, add "Add Listings Manually" dialog area.
 				$('#idx-add-inner').addClass('hide');
 				$('#idx-none-inner').removeClass('hide');
+				
 				// Hide buttons, show new buttons
 				$('.yes-idx-btn, .no-thanks-idx-btn').addClass('hide');
 				$('.add-listings-manually-btn').removeClass('hide');
@@ -99,6 +100,7 @@ jQuery(document).ready(function($) {
             click: function() {
 				// remove current dialog
 				$('#idx-contact-inner').addClass('hide');
+				
 				// Show email dialog
 				$('#idx-success-inner span#action').text("email");
 				$('#idx-success-inner').removeClass('hide');
@@ -113,7 +115,8 @@ jQuery(document).ready(function($) {
             class: "green-btn hide call-me-btn right-btn",
             click: function() {
 				// Check if number entered is valid...
-				var valid = validate_phone_number($("#callme-idx-phone").val());
+				var phone_number = $("#callme-idx-phone").val();
+				var valid = validate_phone_number(phone_number);
 
 				if (valid) {
 					// Valid Phone Number
@@ -130,6 +133,9 @@ jQuery(document).ready(function($) {
 					$('.i-prefer-email-btn, .call-me-btn').addClass('hide');
 					$('.request-done-btn').removeClass('hide');
 					$("#phone-validation-message").html('');
+
+					// Update user's account with phone number in Rails...
+					$.post(ajaxurl, {action: 'update_user', phone: phone_number}, function (result) { });
 				} 
 				else {
 					// Invalid Phone Number

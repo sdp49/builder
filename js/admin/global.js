@@ -78,7 +78,7 @@ function new_sign_up (success_callback) {
 				mixpanel.track("SignUp: Successful Signup");
 				$('input#email').removeClass('red').addClass('green');
         		
-        		$.post(ajaxurl, {action: 'set_placester_api_key', api_key: result['api_key']}, function(response, textStatus, xhr) {
+        		$.post(ajaxurl, {action: 'set_placester_api_key', api_key: result['api_key']}, function (response) {
 		          	if (response['result']) {
 		          		// Display success message
 			            var msg = (response['message']) ? response['message'] : '';
