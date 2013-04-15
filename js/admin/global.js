@@ -1,5 +1,5 @@
 function parse_validation (response) {
-	$ = jQuery; //we're in no conflict land. 
+	$ = jQuery;
 	if (response && response['validations']) {
 		var item_messages = [];
 		for(var key in response['validations']) {
@@ -23,7 +23,7 @@ function parse_validation (response) {
 }
 
 function check_api_key (api_key) {
-	$ = jQuery; //we're in no conflict land. 
+	$ = jQuery;
 	$('#api_key_message').hide();
 
 	var data = {action : "set_placester_api_key",api_key: api_key};
@@ -53,7 +53,7 @@ function check_api_key (api_key) {
 }
 
 function new_sign_up (success_callback) {
-	$ = jQuery; // we're in no conflict land. 
+	$ = jQuery;
 	var email = $('input#email').val();
 	
 	$('#loading_gif').show();
@@ -65,7 +65,8 @@ function new_sign_up (success_callback) {
 		if (result) {	
       		// console.log(result);
 			if (result['validations']) {
-				// mixpanel.track("SignUp: Validation issue on signup");
+				// Instrument...
+				mixpanel.track("SignUp: Validation issue on signup");
 				
 				// Display validation message
 				var message = parse_validation(result);
@@ -78,7 +79,6 @@ function new_sign_up (success_callback) {
 			else if (result['api_key']) {
 				$('#api_key_success').html('Success! Setting up plugin.');
 				$('input#email').removeClass('red').addClass('green');
-        		// console.log(result);
 
         		// Instrument...
         		mixpanel.track("Registration - Account Created");
@@ -89,19 +89,13 @@ function new_sign_up (success_callback) {
 			            var msg = (response['message']) ? response['message'] : '';
 			            $('#api_key_success').html(msg).show();
             		
-	            		// mixpanel.track("SignUp: API key installed");
+            			// Instrument...
+	            		mixpanel.track("SignUp: API key installed");
 	            
 	           			// API key was successfully created AND set, ok to move-on to the integration dialog...
-	           			// if (success_callback) { success_callback(); }
+	           			if (success_callback) { success_callback(); }
          			}
-        		},'json');
-				
-			}
-			else { 
-				console.log("Made it here...");
-				console.log(result);
-
-				if (success_callback) { success_callback(); }
+        		},'json');	
 			}
 		}
 	},'json');
