@@ -57,7 +57,8 @@ function new_sign_up (success_callback) {
   	$('input#email').removeClass('green').removeClass('red');
 
 	$.post(ajaxurl, {action: 'create_account', email: email}, function (response) {
-		if (response) {	
+		if (response) {
+			console.log(response);
 			if (response.validations) {
 				// Instrument...
 				mixpanel.track("SignUp: Validation issue on signup");

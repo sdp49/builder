@@ -8,9 +8,8 @@ jQuery(document).ready(function($) {
 					autoOpen: true,
 					draggable: false,
 					modal: true,
-					title: false,
 					width: 700,
-					title: "<h2>Use an existing Placester account</h2>",
+					title: '<h3>Use an existing Placester account</h3>',
 					buttons: {
 						1: {
 						  text: "Close",
@@ -42,24 +41,30 @@ jQuery(document).ready(function($) {
 	});
 
 	$('#new_email').on('click', function () {
-		$.post(ajaxurl, {action: 'new_api_key_view'}, function(data, textStatus, xhr) {
+		$.post(ajaxurl, {action: 'new_api_key_view'}, function (result) {
   			// Change the dialog's content and display it...
-  			$("#existing_placester_dialog").dialog("open");
-  			$('#existing_placester_dialog').html(data);
-  			$('#existing_placester_dialog').dialog('option', 'title', '	<h3>Create  a New Placester Account</h3>');
-			$('#existing_placester_dialog').dialog('option', 'buttons', {
-				1:{
-					text: "Cancel",
-					class: "gray-btn",
-					click: function (){
-						$(this).dialog("close")
-					}
-				},
-				2:{
-					text: "Confirm Email",
-					class: "green-btn right-btn",
-					click: function () {
-						new_sign_up(function () { $(this).dialog("close"); });
+  			$('#existing_placester_dialog').html(result);
+  			
+			$('#existing_placester_dialog').dialog({
+				autoOpen: true,
+				draggable: false,
+				modal: true,
+				width: 500,
+				title: '<h3>Create a New Placester Account</h3>' ,
+				buttons: {
+					1:{
+						text: "Cancel",
+						class: "gray-btn",
+						click: function (){
+							$(this).dialog("close")
+						}
+					},
+					2:{
+						text: "Confirm Email",
+						class: "green-btn right-btn",
+						click: function () {
+							new_sign_up(function () { $(this).dialog("close"); });
+						}
 					}
 				}
 			});
