@@ -192,9 +192,6 @@ function blueprint_settings() {
     remove_theme_support( 'pls-routing-util-templates' );
 }
 
-register_activation_hook( __FILE__, 'placester_activate' );
-// register_deactivation_hook( __FILE__, 'placester_deactivate' );
-
 add_action( 'admin_menu', 'placester_admin_menu' );
 function placester_admin_menu() {
     // Add separator
@@ -234,15 +231,31 @@ function placester_admin_menu() {
     
     // add_submenu_page( 'placester', '', 'Settings', 'edit_pages', 'placester_settings_general', array('PL_Router','settings') );    
     add_submenu_page( 'placester', '', 'Support', 'edit_pages', 'placester_support', array('PL_Router','support') );    
-    add_submenu_page( 'placester', '', 'MLS Integration', 'edit_pages', 'placester_integrations', array('PL_Router','integrations') );    
+    add_submenu_page( 'placester', '', 'IDX / MLS', 'edit_pages', 'placester_integrations', array('PL_Router','integrations') );    
 
 
 }
 
-function placester_activate () {
+register_activation_hook( __FILE__, 'placester_activate' );
+// register_deactivation_hook( __FILE__, 'placester_deactivate' );
+function placester_activate() {
     $metrics = new MetricsTracker("9186cdb540264089399036dd672afb10");
     $metrics->track('Activation');
     PL_WordPress_Helper::report_url();
+}
+
+add_action('admin_notices', 'on_first_activation');
+function on_first_activation() {
+    if (!get_option('placester_activation_redirect', false)) {
+        ?>
+            <script type="text/javascript">    
+                window.location.href = "<?php echo trailingslashit(admin_url()) . 'admin.php?page=placester_properties' ?>";
+                mixpanel.track("Activation");
+            </script>         
+        <?php
+        // Make sure this doesn't happen again...
+        update_option('placester_activation_redirect', true);
+    }
 }
 
 add_action( 'wp_head', 'placester_info_bar' );
