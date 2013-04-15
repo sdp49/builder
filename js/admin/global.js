@@ -30,26 +30,21 @@ function check_api_key (api_key) {
 	$('#api_key_message').removeClass('red');
 	$('#api_key_message').html('Checking....').show().addClass('green');
 
-	$.ajax({
-		url: ajaxurl, //wordpress thing
-		type: "POST",
-		data: data,
-		dataType: "json",
-		success: function (response) {
-			if (response && response.message) {
-				if (response.result) {
-					$('#api_key_message').html("You've successfully changed your Placester API Key.").show().removeClass('red').addClass('green');
-					$('#api-key-message-icon').show().addClass('green');
-          $('#api_key_form #existing_placester_modal_api_key').addClass('green');
-          setTimeout(function () { window.location.href = window.location.href; }, 2000);
-				} else {
-					$('#api_key_message').html(response.message).show().removeClass('green').addClass('red');
-					$('#api-key-message-icon').show().removeClass('green').addClass('red');
-          $('#existing_placester_modal_api_key').removeClass('green').addClass('red');
-				};
-			};		
+	$.post(ajaxurl, data, function (response) {
+		if (response && response.message) {
+			if (response.result) {
+				$('#api_key_message').html("You've successfully changed your Placester API Key.").show().removeClass('red').addClass('green');
+				$('#api-key-message-icon').show().addClass('green');
+				$('#api_key_form #existing_placester_modal_api_key').addClass('green');
+				setTimeout(function () { window.location.href = window.location.href; }, 2000);
+			} 
+			else {
+				$('#api_key_message').html(response.message).show().removeClass('green').addClass('red');
+				$('#api-key-message-icon').show().removeClass('green').addClass('red');
+				$('#existing_placester_modal_api_key').removeClass('green').addClass('red');
+			}
 		}
-	});
+	}, 'json');
 }
 
 function new_sign_up (success_callback) {
@@ -61,44 +56,50 @@ function new_sign_up (success_callback) {
 	$('#api_key_validation').html('');
   	$('input#email').removeClass('green').removeClass('red');
 
-	$.post(ajaxurl, {action: 'create_account', email: email}, function (result) {
-		if (result) {	
-      		// console.log(result);
-			if (result['validations']) {
+	$.post(ajaxurl, {action: 'create_account', email: email}, function (response) {
+		if (response) {	
+			if (response.validations) {
 				// Instrument...
 				mixpanel.track("SignUp: Validation issue on signup");
 				
 				// Display validation message
-				var message = parse_validation(result);
-				console.log(message);
+				var message = parse_validation(response);
+				
 				$('#api_key_success').html('');
 				$('#api_key_validation').html(message.join(', ')).show();
 				$('input#email').removeClass('green').addClass('red');
 				$('#loading_gif').hide();
 			} 
-			else if (result['api_key']) {
+			else if (response.api_key) {
 				$('#api_key_success').html('Success! Setting up plugin.');
 				$('input#email').removeClass('red').addClass('green');
 
         		// Instrument...
         		mixpanel.track("Registration - Account Created");
         		
-        		$.post(ajaxurl, {action: 'set_placester_api_key', api_key: result['api_key']}, function (response) {
-		          	if (response['result']) {
+        		$.post(ajaxurl, {action: 'set_placester_api_key', api_key: response.api_key}, function (response) {
+		          	if (response.result) {
 		          		// Display success message
 			            var msg = (response['message']) ? response['message'] : '';
 			            $('#api_key_success').html(msg).show();
             		
             			// Instrument...
 	            		mixpanel.track("SignUp: API key installed");
-	            
+	            		
 	           			// API key was successfully created AND set, ok to move-on to the integration dialog...
 	           			if (success_callback) { success_callback(); }
          			}
-        		},'json');	
+         			else {
+         				$('#api_key_success').html('');
+         				var msg = (response['message']).replace('API Key', 'Account');
+						$('#api_key_validation').html(msg).show();
+						$('input#email').removeClass('green').addClass('red');
+						$('#loading_gif').hide();
+         			}
+        		}, 'json');	
 			}
 		}
-	},'json');
+	}, 'json');
 }
 
 /*

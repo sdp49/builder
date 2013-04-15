@@ -5,7 +5,7 @@ jQuery(document).ready(function($) {
 			if (result) {
 				$('#existing_placester_dialog').html(result);
 				$("#existing_placester_dialog").dialog({
-					autoOpen: false,
+					autoOpen: true,
 					draggable: false,
 					modal: true,
 					title: false,
@@ -30,24 +30,23 @@ jQuery(document).ready(function($) {
 					}
 				});
 			}
-		}, 'json');		
+		});		
 	}
 
 	// Create the sign-up wizard dialog container on initial page load...
 	$('body').append('<div id="existing_placester_dialog"></div>');
-	create_existing_dialog();
-	
+
 
 	$('#existing_placester').on('click', function() {
-		$("#existing_placester_dialog").dialog("open");
+		create_existing_dialog();
 	});
 
 	$('#new_email').on('click', function () {
 		$.post(ajaxurl, {action: 'new_api_key_view'}, function(data, textStatus, xhr) {
-  			//optional stuff to do after success
+  			// Change the dialog's content and display it...
   			$("#existing_placester_dialog").dialog("open");
   			$('#existing_placester_dialog').html(data);
-  			$('#existing_placester_dialog').dialog('option', 'title', '	<h2>Welcome to the RE Website Builder Set Up Wizard</h2>');
+  			$('#existing_placester_dialog').dialog('option', 'title', '	<h3>Create  a New Placester Account</h3>');
 			$('#existing_placester_dialog').dialog('option', 'buttons', {
 				1:{
 					text: "Cancel",
@@ -60,7 +59,7 @@ jQuery(document).ready(function($) {
 					text: "Confirm Email",
 					class: "green-btn right-btn",
 					click: function () {
-						new_sign_up();
+						new_sign_up(function () { $(this).dialog("close"); });
 					}
 				}
 			});

@@ -58,7 +58,7 @@ jQuery(document).ready(function($) {
 
 	var idx_buttons = {
         1 : {
-            text: "No thanks.",
+            text: "No thanks",
             class: "linkify-button no-thanks-idx-btn",
             click: function() {
 				// Remove current dialog area, add "Add Listings Manually" dialog area.
@@ -92,7 +92,8 @@ jQuery(document).ready(function($) {
 				// Start free trial...
 				$.post(ajaxurl, {action: "start_subscription_trial"}, function (result) {
 					console.log(result);
-					// mixpanel.track("Registration - Trial Started",  {'source' : 'Activation Modal'});
+					// Instrument...
+					mixpanel.track("Registration - Trial Started",  {'source' : 'Activation Modal'});
 				}, "json");
             }            
         },  
@@ -104,11 +105,11 @@ jQuery(document).ready(function($) {
 				$(this).dialog("close");
 				
 				// Reload page to reflect the addition of an API key...
-				setTimeout(function () { window.location.href = window.location.href; }, 1000);
+				window.location.href = window.location.href;
             }
         }, 
         4 : {
-            text: "I prefer email.",
+            text: "I prefer email",
             class: "linkify-button hide i-prefer-email-btn",
             click: function() {
 				// remove current dialog
@@ -160,7 +161,7 @@ jQuery(document).ready(function($) {
 
 					// Update user's account with phone number in Rails...
 					$.post(ajaxurl, {action: 'update_user', phone: phone_number}, function (result) {
-						// console.log(result);
+						console.log(result);
 					}, "json");
 				} 
 				else {
@@ -178,12 +179,12 @@ jQuery(document).ready(function($) {
             	mixpanel.track("Registration - Complete");
 
 				// Reload page to reflect the addition of an API key...
-				setTimeout(function () { window.location.href = window.location.href; }, 1000);            
+				window.location.href = window.location.href;            
 			}            
 		}
     };
 
-	// Modal config args...
+	// Dialog config args...
 	var new_acct_args = { ajax: 'new_api_key_view', title: 'Activate Your Plugin', buttons: new_buttons, width: 500 };
 	var existing_acct_args = { ajax: 'existing_api_key_view', title: 'Use an Existing Placester Account', buttons: existing_buttons, width: 700 };
 	var idx_args = { ajax: 'idx_prompt_view', title: 'Add IDX / MLS To My Website', buttons: idx_buttons, width: 500 };

@@ -76,7 +76,7 @@ class PL_Helper_User {
 		if ($api_response['id']) {
 			$response = array('result' => true, 'message' => 'Account successfully updated.');
 		} 
-		elseif ($api_response['validations']) {
+		elseif (isset($api_response['validations'])) {
 			$response = $api_response;
 		}
 		else {

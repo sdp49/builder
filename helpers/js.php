@@ -90,7 +90,7 @@ class PL_Js_Helper {
 		}
 
 		if ($hook == 'placester_page_placester_settings') {
-			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings/general.js', array('jquery'));	
+			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings/general.js', array('jquery-ui-core', 'jquery-ui-dialog'));	
 		}
 
 		if ($hook == 'placester_page_placester_settings_polygons') {
