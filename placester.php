@@ -238,10 +238,24 @@ function placester_admin_menu() {
 
 register_activation_hook( __FILE__, 'placester_activate' );
 // register_deactivation_hook( __FILE__, 'placester_deactivate' );
-function placester_activate () {
+function placester_activate() {
     $metrics = new MetricsTracker("9186cdb540264089399036dd672afb10");
     $metrics->track('Activation');
     PL_WordPress_Helper::report_url();
+}
+
+add_action('admin_notices', 'on_first_activation');
+function on_first_activation() {
+    if (!get_option('placester_activation_redirect', false)) {
+        ?>
+            <script type="text/javascript">    
+                window.location.href = "<?php echo admin_url() . "admin.php?page=placester_properties" ?>";
+                mixpanel.track("Activation");
+            </script>         
+        <?php
+        // Make sure this doesn't happen again...
+        update_option('placester_activation_redirect', true);
+    }
 }
 
 add_action( 'wp_head', 'placester_info_bar' );
