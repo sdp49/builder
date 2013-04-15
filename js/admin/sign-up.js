@@ -19,11 +19,9 @@ jQuery(document).ready(function($) {
             text: "Confirm Email",
             class: "green-btn right-btn",
             click: function() {
-                // add_idx_dialog();
-                // $(this).dialog("close");
-
-                // new_sign_up(modal_state.integration_launch);
-				// Open IDX dialog...
+            	var construct_idx_modal = function () { construct_modal(idx_args); }
+                new_sign_up(construct_idx_modal);
+				$(this).dialog("close");
             }
         }
     };
@@ -54,7 +52,7 @@ jQuery(document).ready(function($) {
 		}
 	};
 
-	var idx_prompt_buttons = {
+	var idx_buttons = {
         1 : {
             text: "No thanks.",
             class: "linkify-button no-thanks-idx-btn",
@@ -149,7 +147,7 @@ jQuery(document).ready(function($) {
 	// Modal config args...
 	var new_acct_args = { ajax: 'new_api_key_view', title: 'Activate Your Plugin', buttons: new_buttons, width: 500 };
 	var existing_acct_args = { ajax: 'existing_api_key_view', title: 'Use an Existing Placester API Key', buttons: existing_buttons, width: 700 };
-	var idx_args = { ajax: '', title: '', buttons: null, width: 500 };
+	var idx_args = { ajax: 'idx_prompt_view', title: 'Add IDX / MLS To My Website', buttons: idx_buttons, width: 500 };
 
 	function construct_modal(args) {
 		$.post(ajaxurl, {action: args.ajax}, function (result) {
@@ -166,6 +164,18 @@ jQuery(document).ready(function($) {
 			};
 		});
 	}
+
+	// Execute "Add IDX To My Website" modal
+    // $("#add-idx-dialog").dialog({
+    //     close: function(event, ui) {
+    //       // Hide dialogs again
+    //       $('#add-listings-manually-inner, #call-me-for-idx-inner, #email-me-for-idx-inner, #phone-me-for-idx-inner').addClass('hide');
+    //       // Hide buttons again
+    //       $('.request-done-btn, .call-me-btn, .i-prefer-email-btn').addClass('hide');
+    //       // Show only the initial dialog
+    //       $('#add-idx-inner').removeClass('hide');
+    //     }
+    // });
 
 	// Create the sign-up wizard dialog container on initial page load...
 	$('body').append('<div id="signup_wizard"></div>');
