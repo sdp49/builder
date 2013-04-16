@@ -214,18 +214,18 @@ jQuery(document).ready(function($) {
 
 		if (valid || is_blank) {
 			// Instrument...
-			// mixpanel.track("Customizer - MLS / IDX Displayed");
+			mixpanel.track("Customizer - MLS / IDX Displayed");
 
 			// Attempt to start a trial...
-			// $.post(ajaxurl, {action: "start_subscription_trial"}, function (result) {
+			$.post(ajaxurl, {action: "start_subscription_trial"}, function (result) {
 				// Instrument...
-				// mixpanel.track(Registration - Trial Started",  {'source' : 'Customizer'});
-			// }, "json");
+				mixpanel.track("Registration - Trial Started",  {'source' : 'Customizer'});
+			}, "json");
 
 			// Functionality specifically for when the user enters a valid phone number...
 			if (valid) {
 				// Instrument...
-				//mixpanel.track("Customizer - Phone");
+				mixpanel.track("Customizer - Phone");
 
 				// Update user's account with phone number in Rails...
 				$.post(ajaxurl, {action: 'update_user', phone: phone_number}, function (result) { }, "json");

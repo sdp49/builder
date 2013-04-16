@@ -185,9 +185,12 @@ jQuery(document).ready(function($) {
       tooltip.addClass('arrow');
       tooltip.find('a.close').show();
 
-      //  Bring the tooltip back into focus with the next state loaded...
+      // Bring the tooltip back into focus with the next state loaded...
 			moveToNextState();
       loadState(wizard_global.active_state);
+
+      // Instrument...
+      mixpanel.track("Customizer - Intro Dismissed");
 		}
 		else {
       // console.log('Here!');
