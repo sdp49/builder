@@ -62,6 +62,9 @@ var wizard_global = {
           jQuery('#welcome-overlay').fadeIn(500, function () {
             loadState(wiz.initial_state);
           });
+
+          // Instrument...
+          mixpanel.track("Customizer - Loaded");
         }
         else {
           this.active_state = 'theme';
