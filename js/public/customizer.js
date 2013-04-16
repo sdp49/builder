@@ -234,6 +234,9 @@ jQuery(document).ready(function($) {
 			// Show integration video + hide the form...
 			$('#mls_submitted').show();
 			$('#pls_integration_form').hide();
+			$('#mls_content h1').html('Congratulations!');
+			$('#mls_content h3').html('IDX / MLS Request Submitted');
+			$(this).hide();
 
 			// Set completion flag so this screen doesn't appear again...
 			$.post(ajaxurl, {action: 'idx_prompt_completed', mark_completed: true}, function (result) { }, "json");

@@ -116,12 +116,16 @@
 	font-weight: bold;
 }
 
-.infobox {
-	
+.infobox p.last-message {
+	margin-bottom: 25px;
+}
+.infobox p {
+	margin-top: 10px;	
+	font-style: normal !important;
 }
 
-.infobox p {
-	
+#mls_submitted iframe {
+	margin-top: 15px;
 }
 
 h3.invalid,

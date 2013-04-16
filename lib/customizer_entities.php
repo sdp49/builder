@@ -76,7 +76,7 @@ function define_custom_controls()
 				<div id="pls_integration_form" class="rets_form">
 					<div class="infobox">
 						<p>By adding our IDX / MLS listings feature, Placester can pull all of the active listings from your MLS and create indexable property pages for each.</p>
-						<p>These pages will automatically update as listings are added/edited on the MLS database and are always fully searchable by customers.</p>
+						<p class="last-message">These pages will automatically update as listings are added/edited on the MLS database and are always fully searchable by customers.</p>
 					</div>
 
 					<div class="row">
@@ -92,7 +92,6 @@ function define_custom_controls()
 
 				<!-- Show if user submits an MLS/IDX request -->
 				<div id="mls_submitted" class="infobox" style="display: none">
-    				<p class="major-subtitle green">Congratulations! IDX / MLS Request Submitted.</p>
 				    <p>Someone from the Placester Team will contact you between 9am - 5pm EST, Monday through Friday to get started.</p>
 				    <p>In a rush to setup your IDX / MLS? Feel free to call us at 1(800) 728-8391 ext. 1</p>
     				<iframe src="http://fast.wistia.net/embed/iframe/prklf3uk1b?playerColor=1980cf&version=v1&videoHeight=259&videoWidth=460&volumeControl=true" allowtransparency="true" frameborder="0" scrolling="no" class="wistia_embed" name="wistia_embed" width="460" height="259"></iframe>
