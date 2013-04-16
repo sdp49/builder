@@ -214,26 +214,35 @@ jQuery(document).ready(function($) {
 
 		if (valid || is_blank) {
 			// Instrument...
-			mixpanel.track("Customizer - MLS / IDX Displayed");
+			// mixpanel.track("Customizer - MLS / IDX Displayed");
 
 			// Attempt to start a trial...
-			$.post(ajaxurl, {action: "start_subscription_trial"}, function (result) {
+			// $.post(ajaxurl, {action: "start_subscription_trial"}, function (result) {
 				// Instrument...
 				// mixpanel.track(Registration - Trial Started",  {'source' : 'Customizer'});
-			}, "json");
+			// }, "json");
 
 			// Functionality specifically for when the user enters a valid phone number...
 			if (valid) {
 				// Instrument...
-				mixpanel.track("Customizer - Phone");
+				//mixpanel.track("Customizer - Phone");
 
 				// Update user's account with phone number in Rails...
 				$.post(ajaxurl, {action: 'update_user', phone: phone_number}, function (result) { }, "json");
 			}
+
+			// Show integration video + hide the form...
+			$('#mls_submitted').show();
+			$('#pls_integration_form').hide();
+
+			// Set completion flag so this screen doesn't appear again...
+			$.post(ajaxurl, {action: 'idx_prompt_completed', mark_completed: true}, function (result) { }, "json");
 		}
 		else {
 			// Entered number is invalid!
-
+			var msg = "Please enter a valid phone number (or just leave it blank)";
+			$('#pls_integration_form').prepend('<div id="message" class="error"><h3>' + msg + '</h3></div>');
+			$('#pls_integration_form #phone').addClass('invalid');
 		}
 	});
 

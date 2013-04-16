@@ -116,6 +116,10 @@
 	font-weight: bold;
 }
 
+.infobox p {
+	
+}
+
 h3.invalid,
 label.invalid {
 	color: red !important;
