@@ -164,7 +164,7 @@ class PL_Js_Helper {
 		self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) . 'admin/free-trial.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 		self::register_enqueue_if_not('integration', trailingslashit(PL_JS_URL) . 'admin/integration.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 
-	    if ( PL_Bootup::is_theme_switched() ) {
+	    if ( PL_Bootup::is_theme_switched() && !PL_Customizer_Helper::is_onboarding() ) {
 	    	self::register_enqueue_if_not('theme-switch', trailingslashit(PL_JS_URL) . 'admin/theme-switch.js', array('jquery-ui-core', 'jquery-ui-dialog'));  
 	    }
 	}

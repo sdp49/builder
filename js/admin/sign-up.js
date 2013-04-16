@@ -112,6 +112,9 @@ jQuery(document).ready(function($) {
             text: "I prefer email",
             class: "linkify-button hide i-prefer-email-btn",
             click: function() {
+            	// Instrument...
+            	mixpanel.track("Registration - MLS through Email");
+            	
 				// remove current dialog
 				$('#idx-contact-inner').addClass('hide');
 				$('.ui-dialog-title h3').html("Congratulations! IDX / MLS Request Submitted");
