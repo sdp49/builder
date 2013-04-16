@@ -71,7 +71,6 @@ function define_custom_controls()
    		public $type = 'integration';
 
    		public function render() {
-   			PL_Router::load_builder_partial('integration-form.php', array('no_form' => true));
    			?>
    			  <!-- <div id="customize_integration_submit" style="width: 50px; height: 30px; background: grey;">Submit</div> -->
 

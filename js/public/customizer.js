@@ -411,7 +411,7 @@ jQuery(document).ready(function($) {
   */	
 
   	/* --- Blog Post --- */
-
+/*
 	function toggleInvalid (item, invalid) {
         if (invalid) {
 		  	item.addClass('invalid');
@@ -466,10 +466,11 @@ jQuery(document).ready(function($) {
 	        }
 	    },'json');
   	});
-
+*/
 	
 	/* --- Create a Listing --- */
 
+/*
   	$('#submit_listing').on('click', function (event) {
 		// $('#loading_overlay').show();
 
@@ -527,7 +528,7 @@ jQuery(document).ready(function($) {
 			}
 		}, 'json');
     });
-
+*/
 
 	/* -- Custom CSS -- */
 
