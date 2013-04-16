@@ -201,6 +201,44 @@ jQuery(document).ready(function($) {
 
 
  /*
+  * Handles integration pane...
+  */
+
+	$('#customize_integration_submit').on('click', function() {
+		// In case this is visible...
+		$('#message.error').remove();
+
+		var phone_number = $('#pls_integration_form #phone').val();
+		var valid = validate_phone_number(phone_number);
+		var is_blank = (phone_number.length == 0);
+
+		if (valid || is_blank) {
+			// Instrument...
+			mixpanel.track("Customizer - MLS / IDX Displayed");
+
+			// Attempt to start a trial...
+			$.post(ajaxurl, {action: "start_subscription_trial"}, function (result) {
+				// Instrument...
+				// mixpanel.track(Registration - Trial Started",  {'source' : 'Customizer'});
+			}, "json");
+
+			// Functionality specifically for when the user enters a valid phone number...
+			if (valid) {
+				// Instrument...
+				mixpanel.track("Customizer - Phone");
+
+				// Update user's account with phone number in Rails...
+				$.post(ajaxurl, {action: 'update_user', phone: phone_number}, function (result) { }, "json");
+			}
+		}
+		else {
+			// Entered number is invalid!
+
+		}
+	});
+
+
+ /*
   * Handles theme selection...
   */
 

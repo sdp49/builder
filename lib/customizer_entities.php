@@ -72,11 +72,25 @@ function define_custom_controls()
 
    		public function render() {
    			?>
-   			  <!-- <div id="customize_integration_submit" style="width: 50px; height: 30px; background: grey;">Submit</div> -->
+				<!-- <div id="customize_integration_submit" style="width: 50px; height: 30px; background: grey;">Submit</div> -->
+				<div id="pls_integration_form" class="rets_form">
+					<div class="row">
+						<div class="info">
+							<h3>Phone Number</h3>
+							<p>This will help us provide prompt support to get your integration setup.</p>
+						</div>
+						<div class="elements">
+							<input id="phone" name="phone" type="text" placeholder="617 555 1234">
+						</div>
+					</div>
+				</div>
 
-   			  <div class="row">
-		        <input type="button" id="customize_integration_submit" class="bt-norm" value="Submit Request" />
-		      </div>
+				<!-- Welcome to Placester Video -->
+    			
+
+				<div class="row">
+					<input type="button" id="customize_integration_submit" class="bt-norm" value="Submit Request" />
+				</div>
    			<?php
 
    			// Needed to subscribe a user...

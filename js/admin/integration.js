@@ -34,20 +34,6 @@ jQuery(document).ready(function($) {
 		submit_handler(refresh_page);	
 	});
 
-	$('#customize_integration_submit').live('click', function() {
-		var clear_form = function () {
-			// In case this is visible...
-			$('#message.error').remove();
-
-			// Clear form values... 
-			$.each($('#pls_integration_form').find('input, select'), function (i, elem) {
-				$(elem).val('');
-			});	
-		}
-
-		submit_handler(clear_form);
-	});
-
 	function submit_handler (success_callback) {
 		$('#rets_form_message').removeClass('red');
 		$('#message.error').remove();

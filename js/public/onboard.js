@@ -11,54 +11,30 @@ var wizard_global = {
   			link: 'Let\'s Get Started',
   			left: '39%',
   			top: '33%',
-  			next_state: 'theme'
+  			next_state: 'mls'
   		},
+      mls:  {
+        header: 'MLS Integration',
+        content: '',
+        link_text: 'Integrate with your MLS',
+        next_state: 'theme'
+      },
   		theme: {
   			header: 'Theme Selection',
   			content: '',
   			link_text: 'Select a Theme',
-  			next_state: 'title'
+  			next_state: 'colors'
   		},
+      colors: {
+        header: 'Colors & Style',
+        content: '',
+        link_text: 'Customize your Theme',
+        next_state: 'title' // switch back to 'brand' when finished...
+      },
   		title: {
   			header: 'Slogan & Title',
   			content: '',
   			link_text: 'Add a Title',
-  			next_state: 'colors'
-  		},
-  		colors: {
-  			header: 'Colors & Style',
-  			content: '',
-  			link_text: 'Customize your Theme',
-  			next_state: 'mls' // switch back to 'brand' when finished...
-  		},
-  		// brand: {
-  		// 	header: 'Upload Logo',
-  		// 	content: '',
-  		// 	link_text: 'Upload my Logo',
-  		// 	next_state: 'mls'
-  		// },
-  		mls:  {
-  			header: 'MLS Integration',
-  			content: '',
-  			link_text: 'Integrate with your MLS',
-  			next_state: 'listing'
-  		},
-  		listing: {
-  			header: 'Post a Listing',
-  			content: '',
-  			link_text: 'Post my First Listing',
-  			next_state: 'post'
-  		},
-  		post: {
-  			header: 'Make a Blog Post',
-  			content: '',
-  			link_text: 'Make a Post',
-  			next_state: 'analytics'
-  		},
-  		analytics: {
-  			header: 'Analytics',
-  			content: '',
-  			link_text: 'Integrate with Google',
   			next_state: 'confirm'
   		},
   		confirm: {
