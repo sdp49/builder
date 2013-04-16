@@ -104,7 +104,7 @@ jQuery(document).ready(function($) {
 				$(this).dialog("close");
 				
 				// Reload page to reflect the addition of an API key...
-				window.location.href = window.location.href;
+				setTimeout(function () { window.location.href = window.location.href; }, 1000);
             }
         }, 
         4 : {
@@ -180,8 +180,11 @@ jQuery(document).ready(function($) {
             	// Instrument...
             	mixpanel.track("Registration - Complete");
 
+				// Marks flag that prevents similar IDX prompts elsewhere in the app from firing in the future...
+				$.post(ajaxurl, {action: 'idx_prompt_completed', mark_completed: true}, function (result) { }, "json");
+
 				// Reload page to reflect the addition of an API key...
-				window.location.href = window.location.href;            
+				setTimeout(function () { window.location.href = window.location.href; }, 2000);            
 			}            
 		}
     };
