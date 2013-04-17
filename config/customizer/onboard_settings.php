@@ -39,7 +39,7 @@ $PL_CUSTOMIZER_ONBOARD_OPTS = array(
 
 
         array(
-            'name' => 'Choose Theme',
+            'name' => 'Select Theme',
             'desc' => 'Choose the Right Look-and-Feel for your Business',
             'id' => 'theme',
             'type' => 'heading'

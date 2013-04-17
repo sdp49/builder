@@ -116,6 +116,18 @@
 	font-weight: bold;
 }
 
+.infobox p.last-message {
+	margin-bottom: 25px;
+}
+.infobox p {
+	margin-top: 10px;	
+	font-style: normal !important;
+}
+
+#mls_submitted iframe {
+	margin-top: 15px;
+}
+
 h3.invalid,
 label.invalid {
 	color: red !important;
