@@ -76,12 +76,13 @@ class PL_Js_Helper {
 		}
 
 		if ($hook == 'placester_page_placester_theme_gallery') {						
-			self::register_enqueue_if_not('theme-gallery', trailingslashit(PL_JS_URL) . 'admin/theme-gallery.js', array('jquery'));			
+			self::register_enqueue_if_not('theme-gallery', trailingslashit(PL_JS_URL) . 'admin/theme-gallery.js', array('jquery'));
+			self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) . 'admin/free-trial.js', array('jquery-ui-core', 'jquery-ui-dialog'));	
 		}
 
 		if ($hook == 'placester_page_placester_integrations') {
 			self::register_enqueue_if_not('integration', trailingslashit(PL_JS_URL) . 'admin/integration.js', array('jquery'));
-			self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) . 'admin/free-trial.js', array('jquery-ui-core', 'jquery-ui-dialog'));		
+			self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) . 'admin/free-trial.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 		}
 
 		if ($hook == 'placester_page_placester_settings') {

@@ -3,7 +3,7 @@
 PL_Helper_User::init();
 class PL_Helper_User {
 	
-	public function init() {
+	public static function init() {
 		add_action( 'wp_ajax_set_placester_api_key', array(__CLASS__, 'set_placester_api_key') );
 		add_action( 'wp_ajax_existing_api_key_view', array(__CLASS__, 'existing_api_key_view') );
 		add_action( 'wp_ajax_new_api_key_view', array(__CLASS__, 'new_api_key_view') );
@@ -28,7 +28,8 @@ class PL_Helper_User {
 	}
 
 	public static function start_subscription_trial() {
-		echo json_encode(PL_User::start_subscription_trial());
+		$args = array('source' => $_POST['source']);
+		echo json_encode(PL_User::start_subscription_trial($args));
 		die();
 	}
 
