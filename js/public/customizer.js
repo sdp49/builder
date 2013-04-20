@@ -217,7 +217,7 @@ jQuery(document).ready(function($) {
 			mixpanel.track("Customizer - MLS / IDX Displayed");
 
 			// Attempt to start a trial...
-			$.post(ajaxurl, {action: "start_subscription_trial"}, function (result) {
+			$.post(ajaxurl, {action: "start_subscription_trial", source: "wci"}, function (result) {
 				// Instrument...
 				mixpanel.track("Registration - Trial Started",  {'source' : 'Customizer'});
 			}, "json");
@@ -348,7 +348,7 @@ jQuery(document).ready(function($) {
 		  } 
 		  else if (response && response.eligible_for_trial) {
 		  	// console.log('prompt free trial');
-		  	prompt_free_trial('Start your 15 day Free Trial to Activate a Premium Theme', success_callback, failure_callback);
+		  	prompt_free_trial('Start your 15 day Free Trial to Activate a Premium Theme', success_callback, failure_callback, 'wc');
 		  } 
 		  else {
 		  	failure_callback();
