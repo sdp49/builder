@@ -202,11 +202,11 @@ jQuery(document).ready(function($) {
 					autoOpen: true,
 					draggable: false,
 					modal: true,
+					position: 'center',
 					title: '<h3>' + args.title + '</h3>',
 					width: args.width,
 					buttons: args.buttons
 				});
-				$('#signup_wizard').dialog("option", "position", "center");
 			};
 		});
 	}

@@ -30,9 +30,6 @@ class PL_Js_Helper {
 			<?php
 			echo ob_get_clean();
 
-			// Need this for trial activation...
-			PL_Router::load_builder_partial('free-trial.php');
-
 			// Launch dialog after theme is switched...
 			if ( PL_Bootup::is_theme_switched() ) {
 	    		self::register_enqueue_if_not('theme-switch', trailingslashit(PL_JS_URL) . 'admin/theme-switch.js', array('jquery-ui-core', 'jquery-ui-dialog'));  
@@ -65,7 +62,6 @@ class PL_Js_Helper {
 		// If no API key is set, load the following JS files for use by the wizard on ANY plugin settings page...
 		if (!PL_Option_Helper::api_key()) {
 			self::register_enqueue_if_not('sign-up', trailingslashit(PL_JS_URL) . 'admin/sign-up.js', array('jquery-ui-core', 'jquery-ui-dialog'));
-			self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) . 'admin/free-trial.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 		}
 		
 		if ($hook == 'placester_page_placester_properties') {

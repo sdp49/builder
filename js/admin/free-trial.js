@@ -1,11 +1,20 @@
 jQuery(document).ready(function($) {
-	$( "#premium_wizard" ).dialog({
-		autoOpen: false,
-		draggable: false,
-		modal: true,
-		width: 700,
-		zIndex: 600000
-	});
+	// Create the premium account free trial wizard dialog container on initial page load...
+  $('body').append('<div id="premium_wizard"></div>');
+
+  $.post(ajaxurl, {action: 'free_trial_view'}, function (result) {
+    if (result) {
+      $('#premium_wizard').html(result);
+      $("#premium_wizard").dialog({
+        autoOpen: false,
+        draggable: false,
+        modal: true,
+        width: 700,
+        zIndex: 600000
+        position: 'center'
+      });
+    };
+  });
 });
 
 function prompt_free_trial (title, success_callback, cancel_callback) {
@@ -14,7 +23,7 @@ function prompt_free_trial (title, success_callback, cancel_callback) {
 	$( "#premium_wizard" ).dialog({close : cancel_callback} );
 	$( "#premium_wizard" ).dialog( "open" );
 
-	$('#premium_wizard_start').live('click', function(event) {
+	$('#premium_wizard_start').on('click', function (event) {
 		event.preventDefault();
 		var content_div = $(this).parents('.ui-dialog-content');
 		$(content_div).html('<div class="ajax_message">Confirming Name and Phone have been entered....</div>');
