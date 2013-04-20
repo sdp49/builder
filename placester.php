@@ -177,7 +177,7 @@ function load_blueprint_from_plugin()
 {
     if (!class_exists('Placester_Blueprint')) {
         require_once('blueprint/blueprint.php');
-        new Placester_Blueprint('2.1', 'plugin');
+        new Placester_Blueprint('2.5', 'plugin');
         add_action('init', 'blueprint_settings');
         
     }
