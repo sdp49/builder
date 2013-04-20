@@ -1,14 +1,26 @@
 jQuery(document).ready(function($) {
 
-	function validate_phone (number) {
-		// Check for blank input...
-		if (!number) { 
-			return false;
-		}
+	var integration_success_callback = function () {
+		jQuery('#integration_wizard').dialog("close");
+		prompt_demo_data();
+	};
 
-		// All tests passed...
-		return true;
-	}
+	var integration_buttons = {
+		1 : {
+				text: "Skip Integration Set Up",
+				click: function() {
+					 $(this).dialog( "close" );
+					 prompt_demo_data();
+				}
+			},
+		2 : {
+				text: "Submit",
+				id: 'submit_integration_button',
+				click: function() {
+					 submit_handler(integration_success_callback);
+				}
+			}
+	};
 
 	$('#pls_integration_form').live('submit', function(event) {
 		event.preventDefault();
@@ -22,20 +34,6 @@ jQuery(document).ready(function($) {
 		submit_handler(refresh_page);	
 	});
 
-	$('#customize_integration_submit').live('click', function() {
-		var clear_form = function () {
-			// In case this is visible...
-			$('#message.error').remove();
-
-			// Clear form values... 
-			$.each($('#pls_integration_form').find('input, select'), function (i, elem) {
-				$(elem).val('');
-			});	
-		}
-
-		submit_handler(clear_form);
-	});
-
 	function submit_handler (success_callback) {
 		$('#rets_form_message').removeClass('red');
 		$('#message.error').remove();
@@ -47,7 +45,7 @@ jQuery(document).ready(function($) {
 		$('#rets_form_message').html('Checking Account Status...');
 
 		// Check to see if phone number input exists--if it exists and has invalid input, act accordingly...
-		if ( $('#phone').length != 0 && !validate_phone($('#phone').val()) ) {
+		if ( $('#phone').length != 0 && !validate_phone_number($('#phone').val()) ) {
 			$('#phone').addClass('invalid');
 			$('#phone').closest('div .row').find('h3').first().addClass('invalid');
 
@@ -63,7 +61,7 @@ jQuery(document).ready(function($) {
 		  } else if (data && data.eligible_for_trial) {
 		  	// console.log('prompt free trial');
 		  	var success_handler = function () { check_mls_credentials(success_callback); }
-		  	prompt_free_trial('Start Your 15 Day Free Trial to Complete the MLS Integration', success_handler, display_cancel_message);
+		  	prompt_free_trial('Start Your 15 Day Free Trial to Complete the MLS Integration', success_handler, display_cancel_message, 'wi');
 		  } else {
 		  	// console.log('not eligible');
 		  	var msg = '<h3>Sorry, your account isn\'t eligible to link with an MLS.</h3>';
@@ -131,43 +129,29 @@ jQuery(document).ready(function($) {
 		$('#pls_integration_form').prepend('<div id="message" class="error"><h3>Sorry, this feature requires a premium subscription</h3><p>However, you can test the MLS integration feature for free by creating a website at <a href="https://placester.com" target="_blank">placester.com</a></p></div>');
 	}
 
-	var integration_buttons = {
-		1 : {
-			text: "Skip Integration Set Up",
-			click: function() {
-				 $(this).dialog( "close" );
-				 prompt_demo_data();
-			}
-		},
-		2 : {
-			text: "Submit",
-			id: 'submit_integration_button',
-			click: function() {
-				 submit_handler(modal_state.demo_data_launch);
-			}
-		}
+	function prompt_integration_local () {
+		// TODO: Add spinner/loading prompt...
+		$.post(ajaxurl, {action:"new_integration_view"}, function (result) {
+		  	if (result) {
+				// If it doesn't already exist, create container for the wizard dialog...
+				if ( $('#integration_wizard').length == 0 ) {
+					$('body').append('<div id="integration_wizard"></div>');
+				}
+				// Render...
+				$('#integration_wizard').html(result);
+				$( "#integration_wizard" ).dialog({
+					autoOpen: true,
+					draggable: false,
+					modal: true,
+					title: '<h3>Set Up an MLS Integration for your Website</h3>',
+					width: 810,
+					minHeight: 500,
+					buttons: integration_buttons
+				});
+		  	}
+		});
 	}
 
-	$( "#integration_wizard" ).dialog({
-		autoOpen: false,
-		draggable: false,
-		modal: true,
-		title: '<h3>Set Up an MLS Integration for your Website</h3>',
-		width: 810,
-		minHeight: 500,
-		buttons: integration_buttons
-	});
+	// Expose function to global namespace
+	prompt_integration = prompt_integration_local;
 });
-
-function prompt_integration () {
-  jQuery(document).ready(function($) {
-  	$('#integration_wizard').dialog( "open" );
-  	// TODO: Add spinner/loading prompt...
-	$.post(ajaxurl, {action:"new_integration_view"}, function (result) {
-	  if (result) {
-		// console.log(result);
-		$('#integration_wizard').html(result);
-	  };
-	});
-  });
-}

@@ -3,9 +3,9 @@
 PL_Logging::init();
 class PL_Logging {
 
-	static $hook;
+	private static $hook;
 
-	 function init() {
+	public static function init() {
 	 	$logging_option = PL_Option_Helper::get_log_errors();
 	 	if ($logging_option) {
 			add_action('admin_head', array(__CLASS__, 'start'));
@@ -13,37 +13,26 @@ class PL_Logging {
 			add_action('admin_enqueue_scripts', array(__CLASS__, 'record_page'));
 			register_activation_hook( PL_PARENT_DIR, 'activation' );
 		}
-	 }
+	}
 
-	 function record_page ($hook) {
+	public static function record_page ($hook) {
 	 	self::$hook = $hook;
-	 }
+	}
 
-	 function start () {
+	public static function start () {
 	 	$hook = self::$hook;
-	 	$pages = array('placester_page_placester_properties', 'placester_page_placester_property_add', 'placester_page_placester_settings', 'placester_page_placester_support', 'placester_page_placester_theme_gallery');
+	 	$pages = array('placester_page_placester_properties', 
+	 				   'placester_page_placester_property_add', 
+	 				   'placester_page_placester_settings', 
+	 				   'placester_page_placester_support', 
+	 				   'placester_page_placester_theme_gallery');
+		
 		if (!in_array($hook, $pages)) { return; }
 
-	 	ob_start();
-	 	?>
-	 		<script type="text/javascript">
-			    (function(c,a){window.mixpanel=a;var b,d,h,e;b=c.createElement("script");
-			    b.type="text/javascript";b.async=!0;b.src=("https:"===c.location.protocol?"https:":"http:")+
-			    '//cdn.mxpnl.com/libs/mixpanel-2.2.min.js';d=c.getElementsByTagName("script")[0];
-			    d.parentNode.insertBefore(b,d);a._i=[];a.init=function(b,c,f){function d(a,b){
-			    var c=b.split(".");2==c.length&&(a=a[c[0]],b=c[1]);a[b]=function(){a.push([b].concat(
-			    Array.prototype.slice.call(arguments,0)))}}var g=a;"undefined"!==typeof f?g=a[f]=[]:
-			    f="mixpanel";g.people=g.people||[];h=['disable','track','track_pageview','track_links',
-			    'track_forms','register','register_once','unregister','identify','alias','name_tag',
-			    'set_config','people.set','people.increment','people.track_charge','people.append'];
-			    for(e=0;e<h.length;e++)d(g,h[e]);a._i.push([b,c,f])};a.__SV=1.2;})(document,window.mixpanel||[]);
-			    mixpanel.init("9186cdb540264089399036dd672afb10");
-			</script>
-	 	<?php
-	 	echo ob_get_clean();
-	 }
+	 	echo self::mixpanel_inline_js();
+	}
 
-	 function events () {
+	public static function events () {
 	 	$hook = self::$hook;
 	 	$pages = array('placester_page_placester_properties', 'placester_page_placester_property_add', 'placester_page_placester_settings', 'placester_page_placester_support', 'placester_page_placester_theme_gallery');
 		if (!in_array($hook, $pages)) { return; }
@@ -96,9 +85,30 @@ class PL_Logging {
 	 	}
 
 	 	echo ob_get_clean();
-	 }
+	}
 
-	 function activation () {
+	public static function activation() {
 
-	 }
+	}
+
+	public static function mixpanel_inline_js() {
+		ob_start();
+	 	?>
+	 		<script type="text/javascript">
+			    (function(c,a){window.mixpanel=a;var b,d,h,e;b=c.createElement("script");
+			    b.type="text/javascript";b.async=!0;b.src=("https:"===c.location.protocol?"https:":"http:")+
+			    '//cdn.mxpnl.com/libs/mixpanel-2.2.min.js';d=c.getElementsByTagName("script")[0];
+			    d.parentNode.insertBefore(b,d);a._i=[];a.init=function(b,c,f){function d(a,b){
+			    var c=b.split(".");2==c.length&&(a=a[c[0]],b=c[1]);a[b]=function(){a.push([b].concat(
+			    Array.prototype.slice.call(arguments,0)))}}var g=a;"undefined"!==typeof f?g=a[f]=[]:
+			    f="mixpanel";g.people=g.people||[];h=['disable','track','track_pageview','track_links',
+			    'track_forms','register','register_once','unregister','identify','alias','name_tag',
+			    'set_config','people.set','people.increment','people.track_charge','people.append'];
+			    for(e=0;e<h.length;e++)d(g,h[e]);a._i.push([b,c,f])};a.__SV=1.2;})(document,window.mixpanel||[]);
+			    mixpanel.init("9186cdb540264089399036dd672afb10");
+			</script>
+	 	<?php
+	 	
+	 	return ob_get_clean();
+	}
 }
