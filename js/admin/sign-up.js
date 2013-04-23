@@ -90,7 +90,7 @@ jQuery(document).ready(function($) {
 				mixpanel.track("Registration - Integration Requested");
 
 				// Start free trial...
-				$.post(ajaxurl, {action: "start_subscription_trial"}, function (result) {
+				$.post(ajaxurl, {action: "start_subscription_trial", source: "wi"}, function (result) {
 					// Instrument...
 					mixpanel.track("Registration - Trial Started",  {'source' : 'Activation Modal'});
 				}, "json");
@@ -202,11 +202,11 @@ jQuery(document).ready(function($) {
 					autoOpen: true,
 					draggable: false,
 					modal: true,
+					position: 'center',
 					title: '<h3>' + args.title + '</h3>',
 					width: args.width,
 					buttons: args.buttons
 				});
-				$('#signup_wizard').dialog("option", "position", "center");
 			};
 		});
 	}
