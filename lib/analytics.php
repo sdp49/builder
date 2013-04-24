@@ -72,7 +72,7 @@ class PL_Analytics {
 				$data[$param] = $args[$param];
 			}	
 		}
-		error_log(var_export($data, true));
+
 		$output = self::hash_data($data);
 		return $output;
 	}
@@ -95,7 +95,7 @@ class PL_Analytics {
 	  	?>
 	  		<script type="text/javascript">
 	  			if (PlacesterAds) {
-	    			PlacesterAds.log(<?php echo $data; ?>);  
+	    			PlacesterAds.log("<?php echo $data; ?>");  
 	  			}
 	  		</script>
 	  	<?php
