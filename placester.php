@@ -219,7 +219,7 @@ function placester_admin_menu() {
                                'Global Property Filtering' => '_filtering', 
                                'Polygon Controls' => '_polygons', 
                                'Property Pages' => '_property_pages', 
-                               'Template Controls' => '_template', 
+                               // 'Template Controls' => '_template', 
                                'International Settings' => '_international' );
     foreach ($settings_subpages as $name => $page_url) {
         add_submenu_page( 'placester', '', $name, 'edit_pages', 'placester_settings' . $page_url, array('PL_Router','settings' . $page_url) );    
