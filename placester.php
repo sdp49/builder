@@ -177,7 +177,7 @@ function load_blueprint_from_plugin()
 {
     if (!class_exists('Placester_Blueprint')) {
         require_once('blueprint/blueprint.php');
-        new Placester_Blueprint('2.1', 'plugin');
+        new Placester_Blueprint('2.5', 'plugin');
         add_action('init', 'blueprint_settings');
         
     }
@@ -219,7 +219,7 @@ function placester_admin_menu() {
                                'Global Property Filtering' => '_filtering', 
                                'Polygon Controls' => '_polygons', 
                                'Property Pages' => '_property_pages', 
-                               'Template Controls' => '_template', 
+                               // 'Template Controls' => '_template', 
                                'International Settings' => '_international' );
     foreach ($settings_subpages as $name => $page_url) {
         add_submenu_page( 'placester', '', $name, 'edit_pages', 'placester_settings' . $page_url, array('PL_Router','settings' . $page_url) );    

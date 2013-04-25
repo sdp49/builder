@@ -187,7 +187,13 @@ jQuery(document).ready(function($) {
 
       // Bring the tooltip back into focus with the next state loaded...
 			moveToNextState();
-      loadState(wizard_global.active_state);
+			
+  	  // Added to bring MLS popup directly after "Let's get started"
+  	  if( wizard_global.active_state === 'mls' ) {
+  		  openStatePane();
+  	  } else {
+  		  loadState(wizard_global.active_state);
+  	  }
 
       // Instrument...
       mixpanel.track("Customizer - Intro Dismissed");
