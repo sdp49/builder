@@ -45,13 +45,11 @@ class PL_Cache {
  */
 
 	public function get () {
-		// Do not cache based on allow_caching() function...
-		if ( !self::allow_caching() ) {
-			return false;
-		}
-
 		// Backdoor to ignore the cache completely...
-		if ( isset($_GET['no_cache']) || isset($_POST['no_cache']) ) {
+		$cache_escape = ( isset($_GET['no_cache']) || isset($_POST['no_cache']) );
+
+		// Do not cache if it is not allowed OR if escape mechanism is set...
+		if ( !self::allow_caching() || $cache_escape) {
 			return false;
 		}
 	
