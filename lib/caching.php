@@ -73,8 +73,11 @@ class PL_Cache {
  */
 
 	public static function allow_caching() {
-		// Allow caching as long as user is NOT an admin panel AND is NOT in the admin panel...
-		return ( !current_user_can('manage_options') && !is_admin() );
+		// Allow caching as long as user is not an admin AND is not in the admin panel...
+		// return ( !current_user_can('manage_options') && !is_admin() );
+
+		// For now, refuse caching for ALL authenticated users...
+		return ( !is_user_logged_in() && !is_admin() );
 	}
 
 	public static function build_cache_key ($group, $func_args = array()) {
