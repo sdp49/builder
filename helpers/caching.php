@@ -19,7 +19,7 @@ class PL_Caching_Helper {
 	}
 
 	public static function ajax_clear() {
-		self::clear();
+		PL_Cache::clear();
 		echo json_encode(array('result' => true, 'message' => 'You\'ve successfully cleared your cache'));
 		die();
 	}
