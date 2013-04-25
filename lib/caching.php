@@ -40,6 +40,10 @@ class PL_Cache {
 		add_action('untrash_post', array(__CLASS__, 'invalidate'));
 	}
 
+/*
+ * Object functions (i.e., can only be called on individual instances of this class...)
+ */
+
 	public function get () {
 		// Do not cache based on allow_caching() function...
 		if ( !self::allow_caching() ) {
@@ -65,6 +69,10 @@ class PL_Cache {
 			set_transient($this->transient_id, $result , $duration);
 		}
 	}
+
+/*
+ * Core class/static function library...
+ */
 
 	public static function allow_caching() {
 		// Allow caching as long as user is NOT an admin panel AND is NOT in the admin panel...
@@ -162,7 +170,6 @@ function PL_Options_Save_Flush() {
 	$doing_ajax = ( defined('DOING_AJAX') && DOING_AJAX );
 	$editing_widgets = ( isset($_GET['savewidgets']) || isset($_POST['savewidgets']));
 	if ($_SERVER['REQUEST_METHOD'] == 'POST' && is_admin() && (!$doing_ajax || $editing_widgets)) {
-
 		// Flush the cache
 		PL_Cache::invalidate();
 	}
