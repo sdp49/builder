@@ -6,6 +6,8 @@ class PL_Cache {
 	const TTL_LOW  = 900; // 15 minutes
 	const TTL_HIGH = 172800; // 48 hours
 
+	private static $key_prefix = 'pl_';
+
 	private static $log_enabled = false;
 	const LOG_PATH = "~/dev/wp_cache.log";
 	
@@ -17,7 +19,7 @@ class PL_Cache {
 
 	function __construct ($group = 'general') {
 		self::$offset = get_option(self::$offset_key, 0);
-		$this->group = 'pl_' . preg_replace( "/\W/", "_", strtolower($group) );
+		$this->group = preg_replace( "/\W/", "_", strtolower($group) );
 	}
 
 	public static function init () {
@@ -72,7 +74,7 @@ class PL_Cache {
 	public static function build_cache_key ($group, $func_args = array()) {
 		// Create a hash key 
 		$arg_hash = rawToShortMD5( MD5_85_ALPHABET, md5(http_build_query($func_args), true) );
-		$key = $group . '_' . self::$offset . '_' . $arg_hash;
+		$key = self::$key_prefix . $group . '_' . self::$offset . '_' . $arg_hash;
 
 		return $key;
 	}
