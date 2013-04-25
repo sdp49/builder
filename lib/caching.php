@@ -7,12 +7,12 @@ class PL_Cache {
 	const TTL_HIGH = 172800; // 48 hours
 
 	private static $log_enabled = false;
-	const LOG_PATH = "/Users/iantendick/dev/wp_cache.log";
+	const LOG_PATH = "~/dev/wp_cache.log";
 	
 	private static $offset_key = 'pl_cache_offset';
 	public static $offset = 0;
 
-	public $group = 'pl_general';
+	public $group; // set by constructor...
 	public $transient_id = false;
 
 	function __construct ($group = 'general') {
@@ -23,8 +23,7 @@ class PL_Cache {
 	public static function init () {
 		// Allow cache to be cleared by going to url like http://example.com/?clear_cache
 		if(isset($_GET['clear_cache']) || isset($_POST['clear_cache'])) {
-			// style-util.php calls its PLS_Style::init() immediately
-			// so this can't be tied to a hook
+			// style-util.php calls its PLS_Style::init() immediately so this can't be tied to a hook
 			self::invalidate();
 		}
 
