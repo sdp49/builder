@@ -22,7 +22,7 @@ class PL_Cache {
 		$this->group = preg_replace( "/\W/", "_", strtolower($group) );
 	}
 
-	public static function init () {
+	public static function init() {
 		// Allow cache to be cleared by going to url like http://example.com/?clear_cache
 		if(isset($_GET['clear_cache']) || isset($_POST['clear_cache'])) {
 			// style-util.php calls its PLS_Style::init() immediately so this can't be tied to a hook
@@ -44,7 +44,7 @@ class PL_Cache {
  * Object functions (i.e., can only be called on individual instances of this class...)
  */
 
-	public function get () {
+	public function get() {
 		// Backdoor to ignore the cache completely...
 		$cache_escape = ( isset($_GET['no_cache']) || isset($_POST['no_cache']) );
 
