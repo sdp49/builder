@@ -92,6 +92,10 @@ class PL_Logging {
 	}
 
 	public static function mixpanel_inline_js() {
+
+		$whoami = PLS_Plugin_API::get_user_details();
+
+
 		ob_start();
 	 	?>
 	 		<script type="text/javascript">
@@ -106,6 +110,31 @@ class PL_Logging {
 			    'set_config','people.set','people.increment','people.track_charge','people.append'];
 			    for(e=0;e<h.length;e++)d(g,h[e]);a._i.push([b,c,f])};a.__SV=1.2;})(document,window.mixpanel||[]);
 			    mixpanel.init("9186cdb540264089399036dd672afb10");
+
+				//things that we want to track for every request.
+				var core_properties = {
+					"first seen": new Date(),
+					"$initial referrer": document.referrer,
+					"wordpress_location": "<?php echo site_url(); ?>",
+					"wordpress_version": "<?php echo get_bloginfo('version'); ?>",
+					"wordpress_language": "<?php echo get_bloginfo('language'); ?>",
+				};
+				//append them to every request.
+				mixpanel.register_once(core_properties);
+
+				//conditionally identify if we actually know who this person is.
+				<?php if ( is_array($whoami) ): ?>
+					mixpanel.identify("<?php echo $whoami['user']['email'] ?>");
+					mixpanel.name_tag("Registered - <?php echo $whoami['user']['email']; ?>");				
+					var user_data = core_properties;
+					user_data['$email'] = "<?php echo $whoami['user']['email'] ?>";
+					user_data['$first_name'] = "<?php echo $whoami['user']['first_name'] ?>";
+					user_data['$last_name'] = "<?php echo $whoami['user']['last_name'] ?>";
+					user_data['wordpress_email'] = "<?php echo get_option('admin_email'); ?>";
+					mixpanel.people.set(user_data);
+				<?php else : ?>
+					mixpanel.name_tag("Unregistered - <?php echo get_option('admin_email'); ?>");
+				<?php endif ?>
 			</script>
 	 	<?php
 	 	
