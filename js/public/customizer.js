@@ -149,6 +149,9 @@ jQuery(document).ready(function($) {
 		var activeLi = $('#navlist li.active');
 		if ( activeLi.length > 0 ) {
 			activeLi.each( function() { $(this).toggleClass('active'); } );
+
+			//record the user closing the pane.
+			mixpanel.track("Customizer - Pane Closed", {'theme' : $('#theme_choices').val() });
 		}
 	});
 
