@@ -654,6 +654,10 @@ jQuery(document).ready(function($) {
 	    $.post(ajaxurl, data, function (response) {
 	    	// console.log(response);
 	    	if (response && response.styles) {
+
+				//pass pane opened event to mixpanel
+				mixpanel.track("Customizer - Color Changed", {'theme' : $('#theme_choices').val(), 'color' : data.color });
+
 	    		// Change the linked CSS textarea to trigger an update of the preview pane...
 	    		updateCustomCSS(response.styles);
 
