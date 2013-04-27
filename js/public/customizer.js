@@ -153,6 +153,10 @@ jQuery(document).ready(function($) {
 	});
 
 	$('#navlist li:not(.no-pane)').on('click', function (event) {
+
+		//pass pane opened event to mixpanel
+		mixpanel.track("Customizer - Pane Opened", {'type' : $(this).attr('id'), 'theme' : $('#theme_choices').val() });
+
 		event.preventDefault();
 
 		// If activated menu section is clicked OR preview is refreshing/loading, do nothing...
