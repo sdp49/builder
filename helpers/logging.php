@@ -4,6 +4,19 @@ PL_Logging::init();
 class PL_Logging {
 
 	private static $hook;
+	private static $pages = array('placester_page_placester_properties', 
+								  'placester_page_placester_property_add',
+								  'placester_page_placester_settings', 
+								  'placester_page_placester_support', 
+								  'placester_page_placester_theme_gallery',
+								  'placester_page_placester_settings_client',
+								  'placester_page_placester_settings_filtering',
+								  'placester_page_placester_settings_polygons',
+								  'placester_page_placester_settings_property_pages',
+								  'placester_page_placester_settings_international',
+								  'placester_page_placester_social',
+								  'placester_page_placester_integrations'
+								  );
 
 	public static function init() {
 	 	$logging_option = PL_Option_Helper::get_log_errors();
@@ -20,22 +33,15 @@ class PL_Logging {
 	}
 
 	public static function start () {
-	 	$hook = self::$hook;
-	 	$pages = array('placester_page_placester_properties', 
-	 				   'placester_page_placester_property_add', 
-	 				   'placester_page_placester_settings', 
-	 				   'placester_page_placester_support', 
-	 				   'placester_page_placester_theme_gallery');
-		
-		if (!in_array($hook, $pages)) { return; }
-
-	 	echo self::mixpanel_inline_js();
+		if (!in_array(self::$hook, self::$pages)) { 
+			return; 
+		} else {
+			echo self::mixpanel_inline_js();	
+		}
 	}
 
 	public static function events () {
-	 	$hook = self::$hook;
-	 	$pages = array('placester_page_placester_properties', 'placester_page_placester_property_add', 'placester_page_placester_settings', 'placester_page_placester_support', 'placester_page_placester_theme_gallery');
-		if (!in_array($hook, $pages)) { return; }
+		if (!in_array(self::$hook, self::$pages)) { return; }
 
 	 	ob_start();
 
@@ -56,34 +62,64 @@ class PL_Logging {
 		 			});
 		 		</script>	
 		 	<?php	
-	 	}
+	 	} else {
+	 		$page = 'unknown';
+	 		switch (self::$hook) {
+	 			case 'placester_page_placester_properties':
+	 				$page = 'View - Property Index';
+	 				break;
 
-	 	if ($hook == 'placester_page_placester_property_add') {
-		 	?>
-		 		<script type="text/javascript">
-		 			$(document).ready(function($) {
-		 				mixpanel.track("Add Property: View");		
-		 				$('#add_listing_publish').bind('click', function () {
-		 					mixpanel.track("Add Property: Submit");		
-		 				});
-			 		});
-		 		</script>	
-		 	<?php	
-	 	}
+	 			case 'placester_page_placester_property_add':
+	 				$page = 'View - Property Add';
+	 				break;
 
-	 	if ($hook == 'placester_page_placester_theme_gallery') {
-		 	?>
-		 		<script type="text/javascript">
-		 			$(document).ready(function($) {
-		 				mixpanel.track("Theme Gallery: View");		
-		 				$('#theme_gallery_placester').bind('click', function () {
-		 					mixpanel.track("Theme Gallery: To Placester");		
-		 				});
-			 		});
-		 		</script>	
-		 	<?php	
-	 	}
+	 			case 'placester_page_placester_support':
+	 				$page = 'View - Property Support';
+	 				break;
 
+	 			case 'placester_page_placester_theme_gallery':
+	 				$page = 'View - Property Theme Gallery';
+	 				break;
+
+	 			case 'placester_page_placester_settings':
+	 				$page = 'View - Settings - General';
+	 				break;
+
+	 			case 'placester_page_placester_settings_client':
+	 				$page = 'View = Settings - Client';
+	 				break;
+
+	 			case 'placester_page_placester_settings_filtering':
+	 				$page = 'View = Settings - Global Filtering';
+	 				break;
+
+	 			case 'placester_page_placester_settings_polygons':
+	 				$page = 'View = Settings - Polygons';
+	 				break;
+
+	 			case 'placester_page_placester_settings_property_pages':
+	 				$page = 'View = Settings - Property Pages Index';
+	 				break;
+
+	 			case 'placester_page_placester_settings_international':
+	 				$page = 'View = Settings - International Settings';
+	 				break;
+
+	 			case 'placester_page_placester_social':
+	 				$page = 'View = Settings - Social';
+	 				break;
+
+	 			case 'placester_page_placester_integrations':
+	 				$page = 'View = Settings - MLS / IDX';
+	 				break;
+	 		}
+	 		?>
+	 		<script type="text/javascript">
+	 			//Log page views since wordpress always appears as admin.php :(. 
+	 			mixpanel.track("<?php echo $page ?>");		
+	 		</script>
+	 		<?php
+	 	}
 	 	echo ob_get_clean();
 	}
 
