@@ -143,7 +143,10 @@ class PL_Logging {
 
 	private static function is_placester_page () {
 		global $typenow;
-		pls_dump(self::$hook, $typenow);
+		
+		// easy way to dump out page names.
+		// pls_dump(self::$hook, $typenow);
+
 		//custom post type indexs appear as edit.php
 		if (self::$hook === 'edit.php' && array_key_exists($typenow, self::$custom_post_types) ) {
 			return true;
