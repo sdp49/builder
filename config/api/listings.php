@@ -378,13 +378,13 @@ $PL_API_LISTINGS = array(
                 'avail_on' => array('type' => 'date', 'group' => 'basic details', 'label' => 'Available On'),
                 'desc' => array('type' => 'textarea', 'group' => 'description', 'label' => 'Description'),
                 //rentals
-                'lse_trms' => array('type' => 'select', 'options' => array('per_mnt' => 'Per Month','per_ngt' => 'Per Month', 'per_wk' => 'Per Week', 'per_yr' => 'Per Year'), 'group' => 'Transaction Details','label' => 'Lease Terms'),
-                'lse_type' => array('type' => 'select', 'options' => array('ind_grs' => 'Full Service','ind_grs' => 'Industrial Gross', 'mod_grs' => 'Modified Gross', 'mod_net' => 'Modified Net', 'na' => 'N/A', 'other' => 'Other' ), 'group' => 'Transaction Details','label' => 'Lease Type'),
+                'lse_trms' => array('type' => 'select', 'options' => array('false' => 'None', 'per_mnt' => 'Per Month','per_ngt' => 'Per Month', 'per_wk' => 'Per Week', 'per_yr' => 'Per Year'), 'group' => 'Transaction Details','label' => 'Lease Terms'),
+                'lse_type' => array('type' => 'select', 'options' => array('false' => 'None', 'ind_grs' => 'Full Service','ind_grs' => 'Industrial Gross', 'mod_grs' => 'Modified Gross', 'mod_net' => 'Modified Net', 'na' => 'N/A', 'other' => 'Other' ), 'group' => 'Transaction Details','label' => 'Lease Type'),
                 'sublse' => array('type' => 'checkbox', 'group' => 'Transaction Details','label' => 'Sublease'),
                 'rate_unit' => array('type' => 'select', 'options' => array('amt_mnt' => 'Amount/Month','amt_yr' => 'Amount/Year', 'sf_mnt' => 'Sqft/Month', 'sf_yr' => 'Sqft/Year'), 'group' => 'Transaction Details','label' => 'Rental Rate'),
                 //General
                 'lt_sz' => array('type' => 'text', 'group' => 'Lot Details', 'label' => 'Lot Size'),
-                'lt_sz_unit' => array('type' => 'select','options' => array('acres' => 'Acres', 'sqft' => 'Square Feet'), 'group' => 'Lot Details', 'label' => 'Lot Unit Type'),
+                'lt_sz_unit' => array('type' => 'select','options' => array('false' => 'None', 'acres' => 'Acres', 'sqft' => 'Square Feet'), 'group' => 'Lot Details', 'label' => 'Lot Unit Type'),
                 'year_blt' => array('type' => 'text', 'group' => 'Lot Details', 'label' => 'Year Built'),
                 'pk_spce' => array('type' => 'text', 'group' => 'basic details', 'label' => 'Parking Spaces'),
                 'park_type' => array('type' => 'select','options' => array('atch_gar' => 'Attached Garage', 'cov' => 'Covered', 'dtch_gar' => 'Detached Garage', 'off_str' => 'Off-street', 'strt' => 'On-street', 'tan' => 'Tandem'), 'group' => 'basic details', 'label' => 'Parking Type'),
