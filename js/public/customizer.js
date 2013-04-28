@@ -38,6 +38,7 @@ jQuery(window).load( function () {
 
 window.onbeforeunload = function () {
 	if ( customizer_global.stateAltered ) {
+		mixpanel.track("Customizer - Leaving with unsaved changes");
 		return 'You have unsaved changes that will be lost!';
 	}
 }
