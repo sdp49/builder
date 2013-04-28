@@ -215,6 +215,19 @@ jQuery(document).ready(function($) {
   */
 
 	$('#customize_integration_submit').on('click', function() {
+
+		$.post(ajaxurl, {action: "start_subscription_trial", source: "wci"}, function (result) {
+			// Instrument...
+			mixpanel.track("Registration - Trial Started",  {'source' : 'Customizer'});
+		}, "json");
+
+		// Show the phone number section.
+		$('#customizer_mls_phone_section').show();
+		$('#customizer_mls_request_buttons').hide();
+	});
+
+	$('#customize_integration_phone_submit').on('click', function () {
+
 		// In case this is visible...
 		$('#message.error').remove();
 
@@ -222,42 +235,35 @@ jQuery(document).ready(function($) {
 		var valid = validate_phone_number(phone_number);
 		var is_blank = (phone_number.length == 0);
 
-		if (valid || is_blank) {
+		// Functionality specifically for when the user enters a valid phone number...
+		if (valid) {
 			// Instrument...
-			mixpanel.track("Customizer - MLS / IDX Displayed");
+			mixpanel.track("Customizer - Phone - Submitted");
 
-			// Attempt to start a trial...
-			$.post(ajaxurl, {action: "start_subscription_trial", source: "wci"}, function (result) {
-				// Instrument...
-				mixpanel.track("Registration - Trial Started",  {'source' : 'Customizer'});
-			}, "json");
-
-			// Functionality specifically for when the user enters a valid phone number...
-			if (valid) {
-				// Instrument...
-				mixpanel.track("Customizer - Phone");
-
-				// Update user's account with phone number in Rails...
-				$.post(ajaxurl, {action: 'update_user', phone: phone_number}, function (result) { }, "json");
-			}
-
-			// Show integration video + hide the form...
-			$('#mls_submitted').show();
-			$('#pls_integration_form').hide();
-			$('#mls_content h1').html('Congratulations!');
-			$('#mls_content h3').html('IDX / MLS Request Submitted');
-			$(this).hide();
-
-			// Set completion flag so this screen doesn't appear again...
-			$.post(ajaxurl, {action: 'idx_prompt_completed', mark_completed: true}, function (result) { }, "json");
-		}
-		else {
+			// Update user's account with phone number in Rails...
+			$.post(ajaxurl, {action: 'update_user', phone: phone_number}, function (result) { phone_success(); }, "json");
+		} else {
 			// Entered number is invalid!
-			var msg = "Please enter a valid phone number (or just leave it blank)";
-			$('#pls_integration_form').prepend('<div id="message" class="error"><h3>' + msg + '</h3></div>');
+			var msg = "Please enter a valid phone number (or click 'No Thanks')";
+			$('#custmizer_mls_phone_validation').prepend('<div id="message" class="error"><h3>' + msg + '</h3></div>');
 			$('#pls_integration_form #phone').addClass('invalid');
 		}
+
 	});
+
+	function phone_success() {
+		mixpanel.track("Customizer - Phone - Saved");
+		// Show integration video + hide the form...
+		
+		$('#mls_submitted').show();
+		$('#pls_integration_form').hide();
+		$('#mls_content h1').html('Congratulations!');
+		$('#mls_content h3').html('IDX / MLS Request Submitted');
+		$(this).hide();
+
+		// Set completion flag so this screen doesn't appear again...
+		$.post(ajaxurl, {action: 'idx_prompt_completed', mark_completed: true}, function (result) { }, "json");
+	}
 
 
  /*
