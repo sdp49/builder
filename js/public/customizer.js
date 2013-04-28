@@ -196,6 +196,8 @@ jQuery(document).ready(function($) {
 		// Set this back to false so that user won't be prompted about "losing changes" 
 		// when re-directing back to homepage...
 		customizer_global.stateAltered = false;
+
+		mixpanel.track("Customizer - Saved");
 		
 		var home_url = ( window.location.origin ) ? window.location.origin : ( window.location.protocol + "//" + window.location.host );
 
