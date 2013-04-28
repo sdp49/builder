@@ -4,19 +4,27 @@ PL_Logging::init();
 class PL_Logging {
 
 	private static $hook;
-	private static $pages = array('placester_page_placester_properties', 
-								  'placester_page_placester_property_add',
-								  'placester_page_placester_settings', 
-								  'placester_page_placester_support', 
-								  'placester_page_placester_theme_gallery',
-								  'placester_page_placester_settings_client',
-								  'placester_page_placester_settings_filtering',
-								  'placester_page_placester_settings_polygons',
-								  'placester_page_placester_settings_property_pages',
-								  'placester_page_placester_settings_international',
-								  'placester_page_placester_social',
-								  'placester_page_placester_integrations'
+	private static $pages = array(
+	  'placester_page_placester_properties' => 'Property Index', 
+	  'placester_page_placester_property_add' => 'Property Add',
+	  'placester_page_placester_settings' => 'Settings - General', 
+	  'placester_page_placester_support' => 'Property Support', 
+	  'placester_page_placester_theme_gallery' => 'Property Theme Gallery',
+	  'placester_page_placester_settings_client' => 'Settings - Client',
+	  'placester_page_placester_settings_filtering' => 'Settings - Global Filtering',
+	  'placester_page_placester_settings_polygons' => 'Settings - Polygons',
+	  'placester_page_placester_settings_property_pages' => 'Settings - Property Pages Index',
+	  'placester_page_placester_settings_international' => 'Settings - International Settings',
+	  'placester_page_placester_social' => 'Settings - Social',
+	  'placester_page_placester_integrations' => 'Settings - MLS / IDX'
 								  );
+	private static $custom_post_types = array(
+		'agent' => 'Agent Post Type',
+		'service' => 'Service Post Type',
+		'testimonial' => 'Testimonial Post Type',
+		'property' => 'Property Post Type',
+		'pl_general_widget' => 'Widget Post Type' //the custom post type that powers the short code functionality.
+		);
 
 	public static function init() {
 	 	$logging_option = PL_Option_Helper::get_log_errors();
@@ -32,16 +40,19 @@ class PL_Logging {
 	 	self::$hook = $hook;
 	}
 
+	//logic to help determine which pages mixpanel fires on.
+	//no need to fire mixpanel on non-placester pages.
 	public static function start () {
-		if (!in_array(self::$hook, self::$pages)) { 
-			return; 
-		} else {
+
+		if ( self::is_placester_page() ) {
 			echo self::mixpanel_inline_js();	
+		} else {
+			return false;
 		}
 	}
 
 	public static function events () {
-		if (!in_array(self::$hook, self::$pages)) { return; }
+		if (!self::is_placester_page()) { return; }
 
 	 	ob_start();
 
@@ -63,56 +74,9 @@ class PL_Logging {
 		 		</script>	
 		 	<?php	
 	 	} else {
-	 		$page = 'unknown';
-	 		switch (self::$hook) {
-	 			case 'placester_page_placester_properties':
-	 				$page = 'View - Property Index';
-	 				break;
 
-	 			case 'placester_page_placester_property_add':
-	 				$page = 'View - Property Add';
-	 				break;
+	 		$page = self::get_page_tracking_name();
 
-	 			case 'placester_page_placester_support':
-	 				$page = 'View - Property Support';
-	 				break;
-
-	 			case 'placester_page_placester_theme_gallery':
-	 				$page = 'View - Property Theme Gallery';
-	 				break;
-
-	 			case 'placester_page_placester_settings':
-	 				$page = 'View - Settings - General';
-	 				break;
-
-	 			case 'placester_page_placester_settings_client':
-	 				$page = 'View = Settings - Client';
-	 				break;
-
-	 			case 'placester_page_placester_settings_filtering':
-	 				$page = 'View = Settings - Global Filtering';
-	 				break;
-
-	 			case 'placester_page_placester_settings_polygons':
-	 				$page = 'View = Settings - Polygons';
-	 				break;
-
-	 			case 'placester_page_placester_settings_property_pages':
-	 				$page = 'View = Settings - Property Pages Index';
-	 				break;
-
-	 			case 'placester_page_placester_settings_international':
-	 				$page = 'View = Settings - International Settings';
-	 				break;
-
-	 			case 'placester_page_placester_social':
-	 				$page = 'View = Settings - Social';
-	 				break;
-
-	 			case 'placester_page_placester_integrations':
-	 				$page = 'View = Settings - MLS / IDX';
-	 				break;
-	 		}
 	 		?>
 	 		<script type="text/javascript">
 	 			//Log page views since wordpress always appears as admin.php :(. 
@@ -130,7 +94,6 @@ class PL_Logging {
 	public static function mixpanel_inline_js() {
 
 		$whoami = PLS_Plugin_API::get_user_details();
-
 
 		ob_start();
 	 	?>
@@ -175,5 +138,54 @@ class PL_Logging {
 	 	<?php
 	 	
 	 	return ob_get_clean();
+	}
+
+
+	private static function is_placester_page () {
+		global $typenow;
+		pls_dump(self::$hook, $typenow);
+		//custom post type indexs appear as edit.php
+		if (self::$hook === 'edit.php' && array_key_exists($typenow, self::$custom_post_types) ) {
+			return true;
+
+		//custom post type create new pages appear as "post-new.php"
+		} elseif (self::$hook === 'post-new.php' && array_key_exists($typenow, self::$custom_post_types)) {
+			return true;
+
+		//custom post type edit pages are on post.php
+		} elseif (self::$hook === 'post.php' && array_key_exists($typenow, self::$custom_post_types) ) {
+			return true;
+
+		//otherwise check for a placester value in the hook.	
+		} elseif (array_key_exists(self::$hook, self::$pages)) {
+			return true;
+			
+		//so we can catch the activation event
+		} elseif (self::$hook === 'plugins.php') {
+			return true;
+
+		} else {
+			return false;	
+		}
+	}
+
+	private static function get_page_tracking_name () {
+		global $typenow;
+ 		$page = 'unknown';
+
+ 		if (self::$hook === 'edit.php') {
+ 			$page = 'View - ' . self::$custom_post_types[$typenow];
+
+ 		} elseif ( self::$hook === 'post-new.php' ) {
+ 			$page = 'View - New - ' . self::$custom_post_types[$typenow];
+
+ 		} elseif ( self::$hook === 'post.php'  ) {
+ 			$page = 'View - Edit - ' . self::$custom_post_types[$typenow];
+
+ 		} elseif (array_key_exists(self::$hook, self::$pages)) {
+ 			$page = 'View - ' . self::$pages[self::$hook];
+ 		} 
+
+ 		return $page;
 	}
 }
