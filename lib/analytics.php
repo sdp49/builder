@@ -45,7 +45,7 @@ class PL_Analytics {
 
 		// Combine, hash and repeat as necessary...
 		$hash = PL_Base64::strict((hash_hmac("sha256", $data_json, "{$info['api_key']}{$info['web_secret']}", true)));
-		$output = PL_Base64::url_safe("{$hash}--{$data}");
+		$output = PL_Base64::url_safe("{$hash}--{$data_json}");
 
 		return $output;
 	}
