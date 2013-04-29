@@ -94,8 +94,8 @@ class PL_Analytics {
 	  	ob_start();
 	  	?>
 	  		<script type="text/javascript">
-	  			if (PlacesterAds) {
-	    			PlacesterAds.log("<?php echo $data; ?>");  
+	  			if (PlacesterAnalytics) {
+	    			PlacesterAnalytics.log("<?php echo $data; ?>");  
 	  			}
 	  		</script>
 	  	<?php
