@@ -40,8 +40,11 @@ class PL_Analytics {
 		// Sanity check...
 		if (empty($info)) { return null; }
 		
-		// Merge $data with $info to include the API key and web_secret, then encode the result as JSON...
-		$data_json = json_encode(array_merge($data, $info));
+		// Add the API key to the data array...
+		$data["api_key_id"] = $info["api_key_id"];
+
+		// Encode the data array as JSON...
+		$data_json = json_encode($data);
 
 		// Combine, hash and repeat as necessary...
 		$hash = PL_Base64::strict((hash_hmac("sha256", $data_json, "{$info['api_key']}{$info['web_secret']}", true)));
@@ -72,6 +75,9 @@ class PL_Analytics {
 				$data[$param] = $args[$param];
 			}	
 		}
+
+		// Add the "time" arg + value...
+		$data['time'] = time();
 
 		$output = self::hash_data($data);
 		return $output;
