@@ -30,7 +30,7 @@ class PL_Analytics {
 			return false;
 		}
 
-		$info = array("api_key" => $whoami["api_key_id"], "web_secret" => $whoami["api_key_web_secret"]);
+		$info = array("api_key_id" => $whoami["api_key_id"], "web_secret" => $whoami["api_key_web_secret"]);
 		return $info;
 	}
 
