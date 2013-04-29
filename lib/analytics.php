@@ -77,7 +77,7 @@ class PL_Analytics {
 		}
 
 		// Add the "time" arg + value...
-		$data['time'] = time();
+		$data["time"] = time();
 
 		$output = self::hash_data($data);
 		return $output;
