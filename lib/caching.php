@@ -1,6 +1,7 @@
 <?php 
 
 PL_Cache::init();
+
 class PL_Cache {
 
 	const TTL_LOW  = 900; // 15 minutes
@@ -24,7 +25,7 @@ class PL_Cache {
 
 	public static function init() {
 		// Allow cache to be cleared by going to url like http://example.com/?clear_cache
-		if(isset($_GET['clear_cache']) || isset($_POST['clear_cache'])) {
+		if (isset($_GET['clear_cache']) || isset($_POST['clear_cache'])) {
 			// style-util.php calls its PLS_Style::init() immediately so this can't be tied to a hook
 			self::invalidate();
 		}
@@ -77,7 +78,7 @@ class PL_Cache {
 		// return ( !current_user_can('manage_options') && !is_admin() );
 
 		// For now, refuse caching for ALL authenticated users + devs with debug turned on...
-		return ( !is_user_logged_in() && !is_admin() && !defined('PL_DISABLE_CACHE') );
+		return ( !is_user_logged_in() && !defined('PL_DISABLE_CACHE') );
 	}
 
 	public static function build_cache_key ($group, $func_args = array()) {
@@ -171,7 +172,7 @@ function PL_Options_Save_Flush() {
 	$doing_ajax = ( defined('DOING_AJAX') && DOING_AJAX );
 	$editing_widgets = ( isset($_GET['savewidgets']) || isset($_POST['savewidgets']));
 	if ($_SERVER['REQUEST_METHOD'] == 'POST' && is_admin() && (!$doing_ajax || $editing_widgets)) {
-		// Flush the cache
+		// Flush the entire blog/site's cache...
 		PL_Cache::invalidate();
 	}
 }
