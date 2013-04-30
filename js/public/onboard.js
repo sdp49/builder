@@ -71,7 +71,8 @@ var wizard_global = {
           this.state_num = 1; // This is subject to change...
 
           // Insert menu overlay (to prevent clicking other menu items directly...)
-          generateMenuOverlay();
+          // Commented out for now to test usability
+          // generateMenuOverlay();
 
           // Tack on tooltip display elements needed going forward...
           var tooltip = jQuery('#tooltip');
@@ -179,7 +180,8 @@ jQuery(document).ready(function($) {
       $('#welcome-overlay').remove();
 
       // Insert menu overlay (to prevent clicking other menu items directly...)
-      generateMenuOverlay();
+      // Commented out for now to test usability
+      // generateMenuOverlay();
 
       // Tack on tooltip display elements needed going forward...
       tooltip.addClass('arrow');

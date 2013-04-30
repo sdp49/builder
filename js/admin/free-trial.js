@@ -10,7 +10,7 @@ jQuery(document).ready(function($) {
         draggable: false,
         modal: true,
         width: 700,
-        zIndex: 600000
+        zIndex: 600000,
         position: 'center'
       });
     };
