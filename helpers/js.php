@@ -124,7 +124,7 @@ class PL_Js_Helper {
 		}
 	}
 
-	public static function admin_menu_url () {
+	public static function admin_menu_url() {
 		?>
 			<script type="text/javascript">
 				var adminurl = '<?php echo ADMIN_MENU_URL; ?>';
