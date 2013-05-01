@@ -70,7 +70,7 @@ Class PL_HTTP {
 	    	$request_string = urldecode($request_string);
 	    }
 
-	    error_log("Endpoint Logged As: {$method} {$url}?{$request_string}");
+	    // error_log("Endpoint Logged As: {$method} {$url}?{$request_string}");
 
 		switch ($method) {
 			case 'POST':
