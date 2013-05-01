@@ -103,7 +103,7 @@ include_once('config/analytics.php');
 include_once('lib/config.php');
 include_once('lib/routes.php');
 include_once('lib/http.php');
-include_once('lib/debug.php');
+// include_once('lib/debug.php');
 include_once('lib/form.php');
 include_once('lib/validation.php');
 include_once('lib/pages.php');
@@ -192,6 +192,7 @@ function blueprint_settings() {
     remove_theme_support( 'pls-routing-util-templates' );
 }
 
+// Build plugin settings tabs/UI...
 add_action( 'admin_menu', 'placester_admin_menu' );
 function placester_admin_menu() {
     // Add separator

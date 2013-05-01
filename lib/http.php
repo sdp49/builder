@@ -5,15 +5,6 @@ Class PL_HTTP {
 	
 	static $timeout = 10;
 
-	/*
-	 * Sends HTTP request and parses genercic elements of API response
-	 *
-	 * @param string $url
-	 * @param array $request
-	 * @param string $method
-	 * @return array
-	 */
-
 	public static function add_amp($str) {
 		return ( strlen($str) > 0 ? '&' : '' );
 	}
@@ -21,10 +12,6 @@ Class PL_HTTP {
 	public static function build_request($request, $allow_empty_values = false) {
 		// What is returned...
 		$str = '';
-
-		// ob_start();
-		// 	pls_dump($request);
-		// error_log(ob_get_clean());
 
 		foreach ($request as $key => $value) {
 			/* Value is an array... */
@@ -65,8 +52,15 @@ Class PL_HTTP {
 
 	    return $str;
 	}
-
-
+	
+	/*
+	 * Sends HTTP request and parses generic elements of API response
+	 *
+	 * @param string $url
+	 * @param array $request
+	 * @param string $method
+	 * @return array
+	 */
 	public static function send_request($url, $request, $method = 'GET', $allow_cache = true, $allow_empty_values = false, $force_return = false, $use_ecoding = true) {
 
 	    $request_string = self::build_request($request, $allow_empty_values);
@@ -76,7 +70,7 @@ Class PL_HTTP {
 	    	$request_string = urldecode($request_string);
 	    }
 
-	    PL_Debug::add_msg('Endpoint Logged As: ' . $method . ' ' . $url . '?' . $request_string);
+	    error_log("Endpoint Logged As: {$method} {$url}?{$request_string}");
 
 		switch ($method) {
 			case 'POST':
@@ -106,16 +100,12 @@ Class PL_HTTP {
 				if ($allow_cache && $transient = $cache->get($url . $request_string)) {
 					// error_log('Cached!!!!!:  ' . $url . $request_string);
 					return $transient;
-				} else {
-	        		// pls_dump($url . '?' . $request_string);
-	        		// error_log($url . '?' . $request_string);
-	            	
-	            	$response = wp_remote_get($url . '?' . $request_string, array('timeout' => self::$timeout));
-					PL_Debug::add_msg('------- NO CACHE FOUND --------');    	    		
-	        		PL_Debug::add_msg($url . '?' . $request_string);    	
+				}
+				else {
+	            	$response = wp_remote_get($url . '?' . $request_string, array('timeout' => self::$timeout));   	    		
 
-	        		// error_log(serialize($response));
-	        		// pls_dump($response);
+	            	// error_log($url . "?" . $request_string);
+	        		// error_log(var_export($response, true));
 					
 					if ( (is_array($response) && isset($response['headers']) && isset($response['headers']['status']) && $response['headers']['status'] == 200) || $force_return) {
 						if (!empty($response['body'])) {
@@ -125,8 +115,9 @@ Class PL_HTTP {
 						} else {
 							return false;
 						}
-					} else {
-						PL_Debug::add_msg('------- ERROR VALIDATING REQUEST. --------');    	    		
+					}
+					else {
+						// error_log("------- ERROR VALIDATING REQUEST. --------");    	    		
 						return false;
 					}
 	        	}
@@ -134,9 +125,8 @@ Class PL_HTTP {
 		}
 	}
 
-
 	/*
-	 * Sends multipart HTTP request and parses genercic elements of API response.
+	 * Sends multipart HTTP request and parses generic elements of API response.
 	 * Used to upload file
 	 *
 	 * @param string $url
@@ -177,20 +167,6 @@ Class PL_HTTP {
 
 	    $o = json_decode($response, true);
 	    return $o;
-
-	    /** TODO: This code is never called...clean it up! **/
-	    // if (!isset($o['code'])){
-	    // 	return false;	
-	    // } else if ($o['code'] == '201') {
-	    // 	return false;
-	    // } else if ($o['code'] == '300') {
-	    // 	return false;
-	    // } else {
-	    // 	return false;
-	    // }
-
-	    // return $o; 
-
 	}
 
 	public static function clear_cache() {
