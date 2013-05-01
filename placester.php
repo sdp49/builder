@@ -199,7 +199,7 @@ function placester_admin_menu() {
     $menu['3a'] = array( '', 'read', 'separator1', '', 'wp-menu-separator' );
 
     // Add Placester Menu
-    add_menu_page('Placester','Placester','edit_pages','placester',array('PL_Router','my_listings'), plugins_url('/placester/images/icons/logo_16.png'), '3b' /* position between 3 and 4 */ );
+    add_menu_page('Placester','Placester','edit_pages','placester',array('PL_Router','my_listings'), plugins_url('images/icons/logo_16.png', __FILE__ ), '3b' /* position between 3 and 4 */ );
 
     // Avoid submenu to start with menu function
     global $submenu;
