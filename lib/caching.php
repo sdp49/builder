@@ -4,7 +4,10 @@ PL_Cache::init();
 
 class PL_Cache {
 
-	const TTL_LOW  = 900; // 15 minutes
+	const TTL_LOW  = 1800; // 30 minutes
+	const TTL_HOUR = 3600; // 1 hour
+	const TTL_MID = 43200; // 12 hours
+	const TTL_DAY = 86400; // 24 hours
 	const TTL_HIGH = 172800; // 48 hours
 
 	private static $key_prefix = 'pl_';
@@ -51,6 +54,12 @@ class PL_Cache {
 
 		// Do not cache if it is not allowed OR if escape mechanism is set...
 		if ( !self::allow_caching() || $cache_escape) {
+			// error_log("Cache bypassed...");
+			// error_log("group: {$this->group}");
+			// error_log("Is AJAX: " . (defined('DOING_AJAX') ? "YES" : "NO"));
+			// error_log("Is user logged in: " . (is_user_logged_in() ? "YES" : "NO"));
+			// error_log("Is admin: " . (is_admin() ? "YES" : "NO") . "\n");
+			// error_log("key/id/args: " . var_export(func_get_args(), true) . "\n");
 			return false;
 		}
 	

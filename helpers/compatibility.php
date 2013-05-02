@@ -1,16 +1,18 @@
-<?php 
-
+<?php
 
 function placester_get_api_key () { return PL_Option_Helper::api_key(); }
+
 function placester_post_slug () { return PL_Option_Helper::post_slug(); }
-function placester_register_filter_form() {return;}
+
 function placester_location_list () {
 	$locations->city = array();
 	$locations->state = array();
 	$locations->zip = array();
  	return $locations;
 }
+
 function placester_listings_list () {}
+
 function placester_get_user_details() {
 	$whoami = PL_Helper_User::whoami();
 	if ($whoami['user']) {
@@ -21,7 +23,8 @@ function placester_get_user_details() {
 		$user_object->phone = $user['phone'];
 		$user_object->logo_url = $user['headshot'];
 		$user_object->description = '';
-	} else {
+	} 
+	else {
 		$user_object->first_name = '';
 		$user_object->last_name = '';
 		$user_object->phone = '';
@@ -29,8 +32,10 @@ function placester_get_user_details() {
 		$user_object->logo_url = '';
 		$user_object->description = '';
 	}
+
 	return $user_object;
 }
+
 function get_company_details () {
 	$whoami = PL_Helper_User::whoami();
 	$company_object->description = $whoami['slogan'];
@@ -40,7 +45,9 @@ function get_company_details () {
 	$company_object->email = $whoami['email'];
 	return $company_object;
 }
-function placester_get_property_url ($placester_id) {return PL_Page_Helper::get_url($placester_id); }
+
+function placester_get_property_url ($placester_id) { return PL_Page_Helper::get_url($placester_id); }
+
 function placester_property_list () {
 	$featured_listings->properties = array();
 	$api_response = PL_Listing_Helper::results(array());
@@ -55,3 +62,5 @@ function placester_property_list () {
 	}
 	return $featured_listings;
 }
+
+?>
