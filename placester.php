@@ -35,6 +35,9 @@ define( 'PL_PARENT_URL', plugin_dir_url(__FILE__) );
 define( 'PL_VIEWS_DIR', trailingslashit(PL_PARENT_DIR) . 'views/' );
 define( 'PL_VIEWS_URL', trailingslashit(PL_PARENT_URL) . 'views/' );
 
+define( 'PL_FRONTEND_DIR', trailingslashit(PL_VIEWS_DIR) . 'frontend/' );
+define( 'PL_FRONTEND_URL', trailingslashit(PL_VIEWS_URL) . 'frontend/' );
+
 define( 'PL_VIEWS_ADMIN_DIR', trailingslashit(PL_VIEWS_DIR) . 'admin/' );
 define( 'PL_VIEWS_ADMIN_URL', trailingslashit(PL_VIEWS_URL) . 'admin/' );
 
@@ -159,6 +162,7 @@ include_once('helpers/wordpress.php');
 include_once('helpers/education-com.php');
 include_once('helpers/caching.php');
 include_once('helpers/membership.php');
+include_once('helpers/saved-search.php');
 include_once('helpers/snippet.php');
 include_once('helpers/template.php');
 include_once('helpers/customizer.php');

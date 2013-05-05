@@ -19,8 +19,6 @@ class PL_Membership {
         add_action( 'wp_ajax_nopriv_add_favorite_property', array(__CLASS__,'ajax_add_favorite_property'));
         add_action( 'wp_ajax_remove_favorite_property', array(__CLASS__,'ajax_remove_favorite_property'));
         
-        add_action( 'wp_ajax_save_search', array(__CLASS__,'ajax_save_search'));
-
         add_shortcode('favorite_link_toggle', array(__CLASS__,'placester_favorite_link_toggle'));
         add_shortcode('lead_user_navigation', array(__CLASS__,'placester_lead_control_panel'));
         
@@ -39,23 +37,7 @@ class PL_Membership {
 			  return $ids;
     }
     
-    public static function ajax_save_search() {
-    	// irrelevant data to the search form filters
-    	$internal_params = array( 'action', 'submit', 'address_match' );
-    	foreach( $internal_params as $internal ) {
-    		if( isset( $_POST[$internal] ) ) unset($_POST[$internal]);
-    	}
-    	
-    	// add meta to user for searches
-    	if( ! empty( $_POST ) ) {
-    		$api_response = PL_People_Helper::add_member_saved_search( $_POST );
-    		echo json_encode( $api_response );
-    	} else {
-    		echo false;
-    	}
-
-    	die();
-    }
+    
 
     public function ajax_add_favorite_property () {
         // Check to see if user is an admin (at this point, we know the user is logged in...)
@@ -763,7 +745,6 @@ class PL_Membership {
             return $loginout_link . $extra;
         }
     }
-
 
     static function connect_fb_with_wp ($signed_request) {
         
