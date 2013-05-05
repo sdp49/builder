@@ -13,11 +13,6 @@
 		              <input type="text" tabindex="26" size="20" required="required" class="input" id="user_search_name" name="user_search_name" data-message="Name your search" placeholder="Name your Search">
 		            </p>
 
-		            <p class="reg_form_pass">
-		              <label for="user_password">Your Email Address</label>
-		              <input type="text" tabindex="26" size="20" required="required" class="input" id="user_search_email" name="user_search_name" data-message="Email Address" placeholder="Email Address">
-		            </p>
-
 		            <p class="reg_form_submit">
 		              <input type="submit" tabindex="28" class="submit button" value="Register" id="pl_submit" name="pl_register">
 		            </p>

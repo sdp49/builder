@@ -8,21 +8,10 @@ jQuery(document).ready(function($) {
       width: 450,
       autoOpen:false,
       open: function(event, ui){
-          dialog_opened = true;
+          
       },
       close: function (event, ui) {
-        jQuery(".contact-form-validator-error").remove();
         
-        var this_form = jQuery(element_id);
-        
-        // If form has invalide fields...
-        if (jQuery(this_form).find("input[name='form_submitted']").val() == 0) {
-          // If form value for forcing user back when they cancel the lead capture form
-          if (jQuery(this_form).find("input[name='back_on_lc_cancel']").val() == 1) {
-            // send them back to whatever page they came from
-            window.history.back();
-          };
-        }
       }
   });
 
@@ -40,16 +29,20 @@ jQuery(document).ready(function($) {
         var data = {};
 
         data.action = 'save_search';
-        data.email = $('#user_search_email').val();
+        data.link_to_search = document.URL;
         data.name_of_saved_search = $('#user_search_name').val();
         data.search_form_key_values = get_search_form_key_values();
 
         $.post(info.ajaxurl, data, function(response, textStatus, xhr) {
           console.log(response);
-
-          if (response === 1) {
+          if (response == 'true') {
             //success.
+
             //close dialog
+            $('#pl_saved_search_register_form').dialog('close');
+
+            show_saved_search_call_to_action();
+
             //show some success message
           } else {
             //failed, show the error messages
