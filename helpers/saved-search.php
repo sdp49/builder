@@ -90,6 +90,7 @@ class PL_Saved_Search {
 		return $response;
 	}
 
+	//returns the saved search form overlay
 	public static function get_saved_search_registration_form () {
 
         ob_start();
@@ -100,6 +101,12 @@ class PL_Saved_Search {
             // include( trailingslashit(PL_FRONTEND_DIR) . 'saved-search-authenticated.php');
         }
         return ob_get_clean();
+    }
+
+    public static function get_saved_search_button () {
+    	ob_start();
+            include( trailingslashit(PL_FRONTEND_DIR) . 'saved-search-button.php');
+        return ob_get_clean();	
     }
 
     private static function purge_unneeded_form_data ($form_data) {

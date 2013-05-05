@@ -41,16 +41,24 @@ jQuery(document).ready(function($) {
             //close dialog
             $('#pl_saved_search_register_form').dialog('close');
 
-            show_saved_search_call_to_action();
+            show_saved_search_success_message();
 
             //show some success message
           } else {
             //failed, show the error messages
           };
         });
-        
-
+      
     });
+
+
+    //show
+    function show_saved_search_success_message () {
+      $('#pls_successful_saved_search').show();
+      setTimeout(function () {
+        $('#pls_successful_saved_search').fadeOut();
+      }, 3000);
+    }
 
 
     //method to retrieve all the keys and values of the search form on the page.
