@@ -1,5 +1,5 @@
 <div style="display:none">
-	<form  method="post" id="pl_saved_search_register_form" action="#<?php echo $role; ?>" name="pl_saved_search_register_form" class="lead-capture-wrapper" autocomplete="off">
+	<form  method="post" id="pl_saved_search_register_form" action="#<?php echo $role; ?>" name="pl_saved_search_register_form" class="saved-search-wrapper" autocomplete="off">
 
       <div style="display:none" class="success">You have been successfully signed up. This page will refresh momentarily.</div>
 
@@ -14,8 +14,8 @@
               <input style="width: 250px" type="text" tabindex="26" size="20" required="required" class="input" id="user_search_name" name="user_search_name" data-message="Name your search" placeholder="Name your Search">
             </p>
 
-            <div id="saved_search_value_wrapper" style="float: left; clear: both;">
-            	<h3 style="margin-bottom: 10px">Your Search</h3>
+            <div id="saved_search_value_wrapper">
+            	<h3>Your Search</h3>
             	<div id="saved_search_values">
             		<ul>
             			<li>All Listings</li>
