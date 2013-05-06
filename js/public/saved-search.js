@@ -12,20 +12,20 @@ jQuery(document).ready(function($) {
       }
   });
 
-  $("#pl_saved_search_register_form").dialog({
-      modal: true,
-      draggable: false,
-      resizable: false,
-      dialogClass: 'lead-capture-wrapper',
-      width: 450,
-      autoOpen:false,
-      open: function(event, ui){
+  // $("#pl_saved_search_register_form").dialog({
+  //     modal: true,
+  //     draggable: false,
+  //     resizable: false,
+  //     dialogClass: 'lead-capture-wrapper',
+  //     width: 450,
+  //     autoOpen:false,
+  //     open: function(event, ui){
           
-      },
-      close: function (event, ui) {
+  //     },
+  //     close: function (event, ui) {
         
-      }
-  });
+  //     }
+  // });
 
     //show the saved search dialog on click of saved 
     //search button
