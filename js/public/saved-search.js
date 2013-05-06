@@ -4,36 +4,13 @@ jQuery(document).ready(function($) {
   $(".pls_save_search").fancybox({
       'hideOnContentClick': false,
       'scrolling' : true,
-      onOpen : function () {
+      onStart : function () {
         append_search_terms_to_saved_search_form();
       },
       onClosed : function () {
         $(".login-form-validator-error").remove();
       }
   });
-
-  // $("#pl_saved_search_register_form").dialog({
-  //     modal: true,
-  //     draggable: false,
-  //     resizable: false,
-  //     dialogClass: 'lead-capture-wrapper',
-  //     width: 450,
-  //     autoOpen:false,
-  //     open: function(event, ui){
-          
-  //     },
-  //     close: function (event, ui) {
-        
-  //     }
-  // });
-
-    //show the saved search dialog on click of saved 
-    //search button
-    // $('.pls_save_search').on('click', function (event) {
-    //   event.preventDefault();
-    //   append_search_terms_to_saved_search_form();
-    //   $('#pl_saved_search_register_form').dialog('open');
-    // });
 
     $('#pl_submit').on('click', function (event) {
         //prevent the submit 
