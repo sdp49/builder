@@ -1,8 +1,6 @@
- <div style="display:none;">
 
- 	<div id="pl_saved_search_register_form">
  		
-          <form method="post" action="#<?php echo $role; ?>" name="pl_saved_search_register_form" class="lead-capture-wrapper" autocomplete="off">
+          <form method="post" id="pl_saved_search_register_form" action="#<?php echo $role; ?>" name="pl_saved_search_register_form" class="lead-capture-wrapper" autocomplete="off">
 
 	          <div style="display:none" class="success">You have been successfully signed up. This page will refresh momentarily.</div>
 
@@ -28,8 +26,6 @@
 
 	          </div>		
 	      </form>
-      </div>
-</div>
 
  <?php
 
