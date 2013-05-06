@@ -224,6 +224,9 @@ function placester_admin_menu() {
     foreach ($settings_subpages as $name => $page_url) {
         add_submenu_page( 'placester', '', $name, 'edit_pages', 'placester_settings' . $page_url, array('PL_Router','settings' . $page_url) );    
     }
+    
+    add_submenu_page( 'placester', 'Lead Capture', 'Lead Capture', 'edit_pages', 'placester_lead_capture', array('PL_Router','lead_capture') );
+
     add_submenu_page( 'placester', 'Widgets', 'Widgets', 'edit_pages', 'edit.php?post_type=pl_general_widget' );
     
     /* Social Integration functionality... */
