@@ -29,7 +29,8 @@ jQuery(document).ready(function($) {
             //success.
 
             //close dialog
-            $('#pl_saved_search_register_form').dialog('close');
+            $.fancybox.close();
+            // $('#pl_saved_search_register_form').dialog('close');
 
             show_saved_search_success_message();
 
@@ -118,7 +119,19 @@ jQuery(document).ready(function($) {
     //An array that translates search form keys into 
     //human readable form.
     var form_key_translations = {
-      "location[locality]": "City"
+      "location[locality]": "City",
+      "location[postal]": "Zip",
+      "location[address]": "Street",
+      "location[neighborhood]": "Street",
+      "location[region]": "State",
+      "property_type" : "Property Type",
+      "purchase_types[]" : "Available for",
+      "metadata[min_price]" : "Min Price",
+      "metadata[min_sqft]" : "Min Sqft",
+      "metadata[min_beds]" : "Min Beds",
+      "metadata[min_baths]" : "Min Baths",
+      "metadata[min_price]" : "Min Price",
+      "metadata[max_price]" : "Max Price"
     }
 
 });
