@@ -19,7 +19,21 @@ class PL_Lead_Capture_Helper {
 	}
 
 	public static function get_lead_forwarding_addresses () {
-		return get_option(self::$forward_address_options_key);
+		return get_option(self::$forward_address_options_key, array());
+	}
+
+	// used as a quick way of always including the right email addresses 
+	// in outgoing mail based on the users forwarding settings.
+	// reference: http://codex.wordpress.org/Function_Reference/wp_mail
+	public static function merge_bcc_forwarding_addresses_for_sending ( $headers = array() ) {
+
+		$email_addresses = self:: get_lead_forwarding_addresses();
+		
+		foreach ($email_addresses as $email) {
+			$headers[] = 'Bcc: ' . $email;
+		}
+
+		return $headers;
 	}
 
 }
