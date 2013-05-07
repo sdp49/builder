@@ -158,6 +158,7 @@ include_once('helpers/wordpress.php');
 include_once('helpers/education-com.php');
 include_once('helpers/caching.php');
 include_once('helpers/membership.php');
+include_once('helpers/lead-capture.php');
 include_once('helpers/snippet.php');
 include_once('helpers/template.php');
 include_once('helpers/customizer.php');
@@ -227,7 +228,7 @@ function placester_admin_menu() {
     
     add_submenu_page( 'placester', 'Lead Capture', 'Lead Capture', 'edit_pages', 'placester_lead_capture', array('PL_Router','lead_capture') );
 
-    add_submenu_page( 'placester', 'Widgets', 'Widgets', 'edit_pages', 'edit.php?post_type=pl_general_widget' );
+    add_submenu_page( 'placester', 'Shortcodes / Widgets', 'Shortcodes / Widgets', 'edit_pages', 'edit.php?post_type=pl_general_widget' );
     
     /* Social Integration functionality... */
     add_submenu_page( 'placester', 'Social', 'Social', 'edit_pages', 'placester_social', array('PL_Social_Networks','add_social_settings_cb') );

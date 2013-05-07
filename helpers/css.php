@@ -36,6 +36,7 @@ class PL_Css_Helper {
 		 			   'placester_page_placester_settings_template', 
 		 			   'placester_page_placester_settings_client',
 		 			   'placester_page_placester_social',
+		 			   'placester_page_placester_lead_capture',
 					   'edit.php');
 
 		if (!in_array($hook, $pages)) { return; }
@@ -63,6 +64,11 @@ class PL_Css_Helper {
 
 		if ($hook == 'placester_page_placester_theme_gallery') {
 			self::register_enqueue_if_not('support', trailingslashit(PL_CSS_ADMIN_URL) .  'theme-gallery.css');			
+		}
+
+		if ($hook == 'placester_page_placester_lead_capture') {
+			self::register_enqueue_if_not('settings-all', trailingslashit(PL_CSS_ADMIN_URL) .  'settings/all.css');					
+			self::register_enqueue_if_not('integrations', trailingslashit(PL_CSS_ADMIN_URL) .  'lead-capture/general.css');
 		}
 
 		if ($hook == 'placester_page_placester_integrations') {
