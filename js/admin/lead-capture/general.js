@@ -3,6 +3,8 @@ jQuery(window).load( function ( $ ) {
 	
 
 	jQuery('#button_email_forwarding').on('click', function () {
+
+		jQuery('.pls-loading-overlay').show();
 		
 		var email_addresses = jQuery('#forwarding_email_addresses').val();
 
@@ -50,6 +52,8 @@ jQuery(window).load( function ( $ ) {
 
 	function forwarding_email_forwarding_validation (message, type) {
 
+		jQuery('.pls-loading-overlay').hide();
+		
 		var color = 'green';
 		if (type == 'error') { color = 'red' };
 

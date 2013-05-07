@@ -15,3 +15,15 @@
 	font-size: 14px;
 	margin-left: 10px;
 }
+.form-row {
+	position: relative;
+}
+.pls-loading-overlay {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background: url('../../../images/preview_load_spin.gif') no-repeat center;
+	background-color: white;
+	opacity:0.4;
+	filter:alpha(opacity=40);
+}
