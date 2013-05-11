@@ -319,6 +319,7 @@ class PL_Listing_Helper {
 
 	public function add_temp_image() {
 		$api_response = array();
+		$response = array();
 		if (isset($_FILES['files'])) {
 			foreach ($_FILES as $key => $image) {
 				if (isset($image['name']) && is_array($image['name']) && (count($image['name']) == 1))  {
@@ -333,15 +334,11 @@ class PL_Listing_Helper {
 				if (isset($image['size']) && is_array($image['size']) && (count($image['size']) == 1))  {
 					$image['size'] = implode($image['size']);
 				}
-				$api_response[$key] = PL_Listing::temp_image($_POST, $image['name'], $image['type'], $image['tmp_name']);
-				$api_response[$key]['orig_name'] = $image['name'];
-			}
-			$response = array();
-			if (!empty($api_response)) {
-				foreach ($api_response as $key => $value) {
-					$response[$key]['name']	= $value['filename'];
-					$response[$key]['orig_name'] = $value['orig_name'];
-					$response[$key]['url'] = $value['url'];
+				$api_response = PL_Listing::temp_image($_POST, $image['name'], $image['type'], $image['tmp_name']);
+				$response[$key] = wp_parse_args( $api_response, array('name'=>'','url'=>'','message'=>'') );
+				$response[$key]['orig_name'] = $image['name'];
+				if (!$response[$key]['name'] && isset($api_response['filename'])) {
+					$response[$key]['name'] = $api_response['filename'];
 				}
 			}
 		}		
