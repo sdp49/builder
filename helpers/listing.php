@@ -349,10 +349,12 @@ class PL_Listing_Helper {
 				}
 				
 				$api_response = PL_Listing::temp_image($_POST, $image['name'], $image['type'], $image['tmp_name']);
+				$api_response = wp_parse_args( $api_response, array('filename'=>'','url'=>'','message'=>'') );
 				
 				$response[$key]['name'] = $api_response['filename'];
 				$response[$key]['orig_name'] = $image['name'];
 				$response[$key]['url'] = $api_response['url'];
+				$response[$key]['message'] = $api_response['message'];
 			}
 		}		
 		header('Vary: Accept');
