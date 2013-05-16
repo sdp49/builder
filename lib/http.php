@@ -3,12 +3,21 @@ if( !class_exists( 'WP_Http' ) )
 	include_once( ABSPATH . WPINC. '/class-http.php' );
 
 /**
- * Base on WP_Http so we can extend Curl to support our certs.
+ * Base on WP_Http so we can extend cUrl to support our certs.
  *
  */
 Class PL_HTTP extends WP_Http {
 
-	static $timeout = 10;
+	private static $timeout = 10;
+	private static $http = null;
+
+	private static function _get_object() {
+		// Enforces a singleton paradigm...
+		if ( is_null(self::$http) )
+			$http = new PL_Http();
+
+		return $http;
+	}
 
 	public static function add_amp($str) {
 		return ( strlen($str) > 0 ? '&' : '' );
@@ -130,7 +139,7 @@ Class PL_HTTP extends WP_Http {
 	/*
 	 * Sends multipart HTTP request and parses generic elements of API response.
 	 * Used to upload file
-	 * NOTE: will only work if Curl is installed
+	 * NOTE: will only work if cUrl is installed
 	 *
 	 * @param string $url
 	 * @param array $request
@@ -142,7 +151,7 @@ Class PL_HTTP extends WP_Http {
 	public static function send_request_multipart($url, $request, $file_name, $file_mime_type, $file_tmpname) {
 		
 		if (! function_exists( 'curl_init' ) || ! function_exists( 'curl_exec' ) ) {
-			return array('message' => "You cannot upload pictures because Curl is not installed on your server.\n\nPlease ask your hosting provider to install the PHP Curl module.");
+			return array('message' => "You cannot upload pictures because cURL is not installed on your server.\n\nPlease ask your hosting provider to install the PHP cURL module.");
 		}
 
 		unset($request['action']);
@@ -186,17 +195,8 @@ Class PL_HTTP extends WP_Http {
 	    PL_Cache::clear();
 	}
 
-	private static function _get_object() {
-		static $http;
-
-		if ( is_null($http) )
-			$http = new PL_Http();
-
-		return $http;
-	}
-
 	/**
-	 * Override the WP_Http version so we can insert our Curl class
+	 * Override the WP_Http version so we can insert our cURL class
 	 * @see WP_Http::_get_first_available_transport()
 	 */
 	function _get_first_available_transport( $args, $url = null ) {
@@ -216,7 +216,7 @@ Class PL_HTTP extends WP_Http {
 		return false;
 	}
 
-	function delete($url, $args = array()) {
+	private function delete($url, $args = array()) {
 		$defaults = array('method' => 'DELETE');
 		$r = wp_parse_args( $args, $defaults );
 		return $this->request($url, $r);
@@ -227,7 +227,7 @@ Class PL_HTTP extends WP_Http {
 /**
  * Modified from WP_Http_Curl to support local certificate and delete
  *
- * Requires the Curl extension to be installed.
+ * Requires the cURL extension to be installed.
  *
  * @package WordPress
  * @subpackage HTTP
@@ -313,7 +313,7 @@ class WP_Http_PL_Curl {
 		// use a local cert to make sure we have a valid one
 		curl_setopt( $handle, CURLOPT_CAINFO, PL_PARENT_DIR.'/config/cacert.pem');
 		// The option doesn't work with safe mode or when open_basedir is set, and there's a
-		// bug #17490 with redirected POST requests, so handle redirections outside Curl.
+		// bug #17490 with redirected POST requests, so handle redirections outside cURL.
 		curl_setopt( $handle, CURLOPT_FOLLOWLOCATION, false );
 
 		switch ( $r['method'] ) {
@@ -345,7 +345,7 @@ class WP_Http_PL_Curl {
 
 		curl_setopt( $handle, CURLOPT_HEADER, false );
 
-		// If streaming to a file open a file handle, and setup our curl streaming handler
+		// If streaming to a file open a file handle, and setup our cURL streaming handler
 		if ( $r['stream'] ) {
 			if ( ! WP_DEBUG )
 				$stream_handle = @fopen( $r['filename'], 'w+' );
