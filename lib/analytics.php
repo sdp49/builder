@@ -94,7 +94,7 @@ class PL_Analytics {
 	}
 
 	public static function listing_search ($args = array()) {
-		error_log(var_export($args, true));
+		// error_log(var_export($args, true));
 		// return self::produce_data("listing_search", $args);
 	}
 
