@@ -55,11 +55,7 @@ class PL_Listing_Helper {
 	    // error_log(var_export($args, true));
 
 		// Respect block address setting...
-		if (PL_Option_Helper::get_block_address()) {
-			$args['address_mode'] = 'exact';
-		} else {
-			$args['address_mode'] = 'polygon';
-		}
+		$args['address_mode'] = ( PL_Option_Helper::get_block_address() ? 'exact' : 'polygon' );
 
 		/* TODO: Deal with sold status... */
 		// if ( isset($args['sold_status']) ) {
@@ -97,9 +93,9 @@ class PL_Listing_Helper {
 		
 		// Add options and pass below
 		// TODO: see if we could send the entire $args
-		if( isset( $sort_by ) ) $args_get['sort_by'] = $sort_by;
-		if( isset( $sort_type ) ) $args_get['sort_type'] = $sort_type;
-		if( isset( $limit ) ) $args_get['limit'] = $limit;
+		if (isset($sort_by)) $args_get['sort_by'] = $sort_by;
+		if (isset($sort_type)) $args_get['sort_type'] = $sort_type;
+		if (isset($limit)) $args_get['limit'] = $limit;
 
 		// Try to retrieve details for all the listings...
 		$listings = PL_Listing::get($args_get);
@@ -164,7 +160,7 @@ class PL_Listing_Helper {
 	public static function get_listing_in_loop () {
 		global $post;
         
-        // If the current $post is of type 'property', it's 'post_name' will be set to that listing's unique property ID (as set by the API)...
+		// If the current $post is of type 'property', it's 'post_name' will be set to that listing's unique property ID (as set by the API)...
 		$args = array('listing_ids' => array($post->post_name), 'address_mode' => 'exact');
 		$response = PL_Listing::get($args);
 		
@@ -433,7 +429,8 @@ class PL_Listing_Helper {
 			$options = array('false' => 'Any') + $options;
 			
 			return $options;	
-		} else {
+		} 
+		else {
 			return array();	
 		}
 	}
