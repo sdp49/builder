@@ -93,14 +93,14 @@ Class PL_HTTP extends WP_Http {
 			case 'PUT':
 				$response = $wp_http->post($url, array('body' => $request_string, 'timeout' => self::$timeout, 'method' => $method));
 				if ( is_array($response) && isset($response['body']) ) {
-					return json_decode($response['body'], TRUE);
+					return json_decode($response['body'], true);
 				}
 				return false;
 
 			case 'DELETE':
 				$response = $wp_http->delete($url, array('body' => $request_string, 'timeout' => self::$timeout));
 				if ( is_array($response) && isset($response['body']) ) {
-					return json_decode($response['body'], TRUE);
+					return json_decode($response['body'], true);
 				}
 				return false;
 
@@ -119,7 +119,7 @@ Class PL_HTTP extends WP_Http {
 
 					if ( (is_array($response) && isset($response['headers']) && isset($response['headers']['status']) && $response['headers']['status'] == 200) || $force_return) {
 						if (!empty($response['body'])) {
-							$body = json_decode($response['body'], TRUE);
+							$body = json_decode($response['body'], true);
 							$cache->save($body);
 							return $body;
 						} else {
@@ -172,7 +172,7 @@ Class PL_HTTP extends WP_Http {
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, ( $ssl_verify === true ) ? 2 : false );
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $ssl_verify );
 		// use a local cert to make sure we have a valid one
-		curl_setopt($ch, CURLOPT_CAINFO, PL_PARENT_DIR.'/config/cacert.pem');
+		curl_setopt($ch, CURLOPT_CAINFO, trailingslashit(PL_PARENT_DIR) . 'config/cacert.pem');
 		// most important: curl assumes @field as file field
 		$post_array = array(
 			"file"=>"@".$file_location
@@ -182,8 +182,7 @@ Class PL_HTTP extends WP_Http {
 		$response = curl_exec($ch);
 		curl_close($ch);
 		if ($response === false) {
-			// dumps error
-			// var_dump(curl_error($ch));
+			// error_log(var_export(curl_error($ch), true));
 			return false;
 		}
 		
@@ -311,7 +310,7 @@ class WP_Http_PL_Curl {
 		curl_setopt( $handle, CURLOPT_SSL_VERIFYPEER, $ssl_verify );
 		curl_setopt( $handle, CURLOPT_USERAGENT, $r['user-agent'] );
 		// use a local cert to make sure we have a valid one
-		curl_setopt( $handle, CURLOPT_CAINFO, PL_PARENT_DIR.'/config/cacert.pem');
+		curl_setopt( $handle, CURLOPT_CAINFO, trailingslashit(PL_PARENT_DIR) . 'config/cacert.pem');
 		// The option doesn't work with safe mode or when open_basedir is set, and there's a
 		// bug #17490 with redirected POST requests, so handle redirections outside cURL.
 		curl_setopt( $handle, CURLOPT_FOLLOWLOCATION, false );

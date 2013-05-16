@@ -347,12 +347,12 @@ class PL_Listing_Helper {
 				if (isset($image['size']) && is_array($image['size']) && (count($image['size']) == 1))  {
 					$image['size'] = implode($image['size']);
 				}
+				
 				$api_response = PL_Listing::temp_image($_POST, $image['name'], $image['type'], $image['tmp_name']);
-				$response[$key] = wp_parse_args( $api_response, array('name'=>'','url'=>'','message'=>'') );
+				
+				$response[$key]['name'] = $api_response['filename'];
 				$response[$key]['orig_name'] = $image['name'];
-				if (!$response[$key]['name'] && isset($api_response['filename'])) {
-					$response[$key]['name'] = $api_response['filename'];
-				}
+				$response[$key]['url'] = $api_response['url'];
 			}
 		}		
 		header('Vary: Accept');
