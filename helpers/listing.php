@@ -297,9 +297,7 @@ class PL_Listing_Helper {
 		$api_response = PL_Listing::create($_POST);
 		echo json_encode($api_response);
 		if (isset($api_response['id'])) {
-			PL_HTTP::clear_cache();
 			PL_Listing::get( array('listing_ids' => array($api_response['id'])) );
-			
 			// If on, turn off demo data...
 			PL_Option_Helper::set_demo_data_flag(false);
 		}
@@ -312,7 +310,6 @@ class PL_Listing_Helper {
 		$api_response = PL_Listing::update($_POST);
 		echo json_encode($api_response);
 		if (isset($api_response['id'])) {
-			PL_HTTP::clear_cache();
 			PL_Pages::delete_by_name($api_response['id']);
 			PL_Listing::get( array('listing_ids' => array($api_response['id'])) );
 		}
@@ -372,8 +369,7 @@ class PL_Listing_Helper {
 		$api_response = PL_Listing::delete($_POST);
 		//api returns empty, with successful header. Return actual message so js doesn't explode trying to check empty.
 		if (empty($api_response)) { 
-			echo json_encode(array('response' => true, 'message' => 'Listing successfully deleted. This page will reload momentarily.'));	
-			PL_HTTP::clear_cache();
+			echo json_encode(array('response' => true, 'message' => 'Listing successfully deleted. This page will reload momentarily.'));
 		} elseif ( isset($api_response['code']) && $api_response['code'] == 1800 ) {
 			echo json_encode(array('response' => false, 'message' => 'Cannot find listing. Try <a href="'.admin_url().'?page=placester_settings">emptying your cache</a>.'));
 		}

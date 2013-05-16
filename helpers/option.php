@@ -25,7 +25,7 @@ class PL_Option_Helper {
 			$option_result = PL_Options::set('placester_api_key', $new_api_key);
 			if ($option_result) {
 				// Nuke the cache if they change their API Key
-				PL_HTTP::clear_cache();
+				PL_Cache::invalidate();
 				return array('result' => true,'message' => 'You\'ve successfully changed your Placester API Key. This page will reload in momentarily.');
 			} else {
 				return array('result' => false,'message' => 'There was an error. Are you sure that\'s a valid Placester API key?');

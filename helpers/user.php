@@ -192,7 +192,6 @@ class PL_Helper_User {
 		}
 		$api_response = PL_Option_Helper::set_block_address($block_address);
 		if ($api_response) {
-			PL_Http::clear_cache();
 			PL_Pages::delete_all();		
 			if ($block_address) {
 				echo json_encode(array('result' => true, 'message' => 'You successfully turned on block addresses'));
