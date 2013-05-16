@@ -11,7 +11,7 @@ Class PL_HTTP extends WP_Http {
 	private static $timeout = 10;
 	private static $http = null;
 
-	private static function _get_object() {
+	private static function _get_object () {
 		// Enforces a singleton paradigm...
 		if ( is_null(self::$http) )
 			$http = new PL_Http();
@@ -19,11 +19,11 @@ Class PL_HTTP extends WP_Http {
 		return $http;
 	}
 
-	public static function add_amp($str) {
+	public static function add_amp ($str) {
 		return ( strlen($str) > 0 ? '&' : '' );
 	}
 
-	public static function build_request($request, $allow_empty_values = false) {
+	public static function build_request ($request, $allow_empty_values = false) {
 		// What is returned...
 		$str = '';
 
@@ -75,7 +75,7 @@ Class PL_HTTP extends WP_Http {
 	 * @param string $method
 	 * @return array
 	 */
-	public static function send_request($url, $request, $method = 'GET', $allow_cache = true, $allow_empty_values = false, $force_return = false, $use_ecoding = true) {
+	public static function send_request ($url, $request, $method = 'GET', $allow_cache = true, $allow_empty_values = false, $force_return = false, $use_ecoding = true) {
 
 		$request_string = self::build_request($request, $allow_empty_values);
 	    // error_log($url);
@@ -148,7 +148,7 @@ Class PL_HTTP extends WP_Http {
 	 * @param string $file_tmpname
 	 * @return array
 	 */
-	public static function send_request_multipart($url, $request, $file_name, $file_mime_type, $file_tmpname) {
+	public static function send_request_multipart ($url, $request, $file_name, $file_mime_type, $file_tmpname) {
 		
 		if (! function_exists( 'curl_init' ) || ! function_exists( 'curl_exec' ) ) {
 			return array('message' => "You cannot upload pictures because cURL is not installed on your server.\n\nPlease ask your hosting provider to install the PHP cURL module.");
@@ -191,7 +191,7 @@ Class PL_HTTP extends WP_Http {
 		return $o;
 	}
 
-	public static function clear_cache() {
+	public static function clear_cache () {
 	    PL_Cache::clear();
 	}
 
@@ -199,7 +199,7 @@ Class PL_HTTP extends WP_Http {
 	 * Override the WP_Http version so we can insert our cURL class
 	 * @see WP_Http::_get_first_available_transport()
 	 */
-	function _get_first_available_transport( $args, $url = null ) {
+	public function _get_first_available_transport ($args, $url = null) {
 		$request_order = array( 'pl_curl', 'streams', 'fsockopen' );
 
 		// Loop over each transport on each HTTP request looking for one which will serve this request's needs
@@ -216,7 +216,7 @@ Class PL_HTTP extends WP_Http {
 		return false;
 	}
 
-	private function delete($url, $args = array()) {
+	private function delete ($url, $args = array()) {
 		$defaults = array('method' => 'DELETE');
 		$r = wp_parse_args( $args, $defaults );
 		return $this->request($url, $r);
@@ -254,7 +254,7 @@ class WP_Http_PL_Curl {
 	 * @param str|array $args Optional. Override the defaults.
 	 * @return array 'headers', 'body', 'response', 'cookies' and 'filename' keys.
 	 */
-	function request($url, $args = array()) {
+	public function request ($url, $args = array()) {
 
 		$defaults = array(
 			'method' => 'GET', 'timeout' => 5,
@@ -432,7 +432,7 @@ class WP_Http_PL_Curl {
 	 * @access private
 	 * @return int
 	 */
-	private function stream_headers( $handle, $headers ) {
+	private function stream_headers ($handle, $headers) {
 		$this->headers .= $headers;
 		return strlen( $headers );
 	}
@@ -445,7 +445,7 @@ class WP_Http_PL_Curl {
 	 *
 	 * @return boolean False means this class can not be used, true means it can.
 	 */
-	public static function test( $args = array() ) {
+	public static function test ($args = array()) {
 		if ( ! function_exists( 'curl_init' ) || ! function_exists( 'curl_exec' ) )
 			return false;
 
