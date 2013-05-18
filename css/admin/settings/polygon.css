@@ -1,4 +1,6 @@
-
+.customBox {
+	position:absolute;
+}
 .polygon_wrapper {
 	position: relative;
 }
