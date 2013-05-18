@@ -139,6 +139,10 @@ class PL_Taxonomy_Helper {
 			if (is_array($id)) {
 				$term = get_term($id['term_id'], $polygon['tax']);
 				$polygon['slug'] = $term->slug;
+			} else if ( is_wp_error($id) ) {
+				$existing_term_id = $id->get_error_data();
+				$term = get_term($existing_term_id, $polygon['tax']);
+				$polygon['slug'] = $term->slug;
 			}
 		}
 		$response = PL_Option_Helper::set_polygons($polygon);
