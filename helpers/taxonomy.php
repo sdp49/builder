@@ -270,7 +270,7 @@ class PL_Taxonomy_Helper {
 		?>
 		<?php foreach ($taxonomies as $slug => $label): ?>
 			<select class="poly_taxonmy_values" name="<?php echo $slug ?>" style="display: none;" id="<?php echo $slug ?>">
-					<option value="custom">Custom</option>
+					<option value="custom">Create New Area</option>
 				<?php foreach (self::get_taxonomy_items($slug, array('hide_empty' => false)) as $item): ?>
 					<option value="<?php echo $item['slug'] ?>"><?php echo $item['name'] ?></option>
 				<?php endforeach ?>

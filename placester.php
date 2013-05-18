@@ -218,7 +218,7 @@ function placester_admin_menu() {
     $settings_subpages = array('Settings' => '',
                                'Client Settings' => '_client',
                                'Global Property Filtering' => '_filtering', 
-                               'Polygon Controls' => '_polygons', 
+                               'Custom Drawn Areas' => '_polygons', 
                                'Property Pages' => '_property_pages', 
                                // 'Template Controls' => '_template', 
                                'International Settings' => '_international' );

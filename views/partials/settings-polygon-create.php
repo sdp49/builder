@@ -1,8 +1,8 @@
 <div style="display:none" class="polygon_controls">
-				<h3>Neighborhoods Create Controls</h3>
+				<h3>Custom Drawn Area Controls</h3>
 					<form>
 						<div class="form-item">
-							<label for="name">Neighborhood Name</label>
+							<label for="name">Area Name</label>
 							<input type="text" name="name" id="name">	
 						</div>
 						<div class="form-item">
@@ -61,22 +61,22 @@
 							</div>
 						</div>
 						<div class="form-item">
-							<label for="">Polygon Type</label>
+							<label for="">Area Type</label>
 							<?php echo PL_Taxonomy_Helper::types_as_selects(); ?>
 						</div>
 						<div class="form-item">
-							<label for="">Associated Taxonomy</label>
+							<label for="">Attached to existing area?</label>
 							<?php echo PL_Taxonomy_Helper::taxonomies_as_selects(); ?>
 						</div>
 						<div class="form-item" id="custom_name" style="display: none">
-							<label for="name">Custom Taxonomy Name</label>
+							<label for="name">New Area Name</label>
 							<input type="text" name="custom_taxonomy_name" id="custom_taxonomy_name">	
 						</div>
 						<input type="hidden" id="edit_id" name="id">
 						<div class="form-item buttons">
 							<a id="polygon_clear_drawing" class="button" href="#">Cancel</a>
 							<a id="polygon_edit_drawing" class="button" href="#">Edit Drawing</a>
-							<a id="polygon_save_drawing" class="button-primary" href="#">Save as Neighborhood</a>	
+							<a id="polygon_save_drawing" class="button-primary" href="#">Save as Custom Area</a>	
 						</div>
 						
 					</form>
