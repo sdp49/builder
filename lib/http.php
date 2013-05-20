@@ -14,9 +14,9 @@ Class PL_HTTP extends WP_Http {
 	private static function _get_object () {
 		// Enforces a singleton paradigm...
 		if ( is_null(self::$http) )
-			$http = new PL_Http();
+			self::$http = new PL_Http();
 
-		return $http;
+		return self::$http;
 	}
 
 	public static function add_amp ($str) {
