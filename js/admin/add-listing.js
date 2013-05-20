@@ -119,21 +119,6 @@ jQuery(document).ready(function($) {
         selectOtherMonths: true,
         dateFormat: "yy-mm-dd"
 	});
-
-	// duplicates the custom attribute form.
-	// $('button#custom_data').live('click', function (event) {
-	// 	event.preventDefault();
-	// 	var html = $(this).closest('section').clone();
-	// 	$(this).html('Remove').attr('id', 'custom_data_remove');
-	// 	$(this).closest(".form_group").append(html);
-	// });	
-
-	// $('button#custom_data_remove').live('click', function (event) {
-	// 	event.preventDefault();
-	// 	$(this).closest('section').remove();
-	// });	
-
-	
 	    
 	//create listing
 	$('#add_listing_publish').live('click', function(event) {
