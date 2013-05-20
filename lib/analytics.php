@@ -102,6 +102,10 @@ class PL_Analytics {
 		return self::produce_data("home_view");	
 	}
 
+	public static function page_view () {
+		return self::produce_data("page_view");	
+	}
+
 	public static function log_snippet_js ($data) {
 	  	ob_start();
 	  	?>
@@ -118,9 +122,9 @@ class PL_Analytics {
 	public static function print_footer_scripts () {
 		global $i_am_a_placester_theme;
 
-		// Functionality specifically for the home page's footer...
-		if (is_home() && $i_am_a_placester_theme === true) {
-			$data = self::home_view();
+		// If the site is using a Placester theme, add footer script...
+		if ($i_am_a_placester_theme === true) {
+			$data = ( is_home() ? self::home_view() : self::page_view() );
 			echo self::log_snippet_js($data);
 		}
 	}
