@@ -19,7 +19,7 @@ class PL_Router {
 		if ($return) {
 			return ob_get_clean();
 		} else {
-			echo ob_get_clean();	
+			echo ob_get_clean();
 		}
 	}
 
@@ -140,5 +140,22 @@ class PL_Router {
 		self::router('integrations.php', array(), false);
 	}
 
-//end of class
+	public static function shortcodes() {
+		self::load_builder_view('shortcodes/general.php');
+		//self::router('shortcodes/general.php', array(), false);
+	}
+	public static function shortcodes_shortcode_edit() {
+		self::router('shortcodes/shortcode_edit.php', array(), false);
+	}
+	public static function shortcodes_template_edit() {
+		self::router('shortcodes/template_edit.php', array(), false);
+	}
+	public static function shortcodes_property_details() {
+		self::router('shortcodes/property_details.php', array(), false);
+	}
+	public static function shortcodes_options() {
+		self::router('shortcodes/options.php', array(), false);
+	}
+	
+	//end of class
 }

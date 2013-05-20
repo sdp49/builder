@@ -400,7 +400,7 @@ h3.hndle {
 /*****/
 
 .settings_sub_nav {
-  float: left; }
+  overflow: hidden; }
   .settings_sub_nav ul {
     float: left; }
     .settings_sub_nav ul li {
@@ -423,6 +423,9 @@ h3.hndle {
   width: 100%; 
 }
 
+.settings_option_wrapper .subtitle {
+	padding: 0;
+}
 
 .bar1 {
   -moz-transform: rotate(0deg) translate(0, -20px);
@@ -589,4 +592,17 @@ h3.hndle {
   border: none !important;
   color: red;
   font-size: 12px;
+}
+
+
+
+.metabox-holder label {
+	display: block;
+	float: left;
+	width: 10em;
+}
+
+.meta_section {
+	padding-bottom: 1em;
+	border-bottom: 2px solid #afafaf;
 }

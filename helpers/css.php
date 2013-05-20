@@ -21,25 +21,8 @@ class PL_Css_Helper {
 		if( $hook == 'post-new.php' || $hook == 'post.php' || ( $hook == 'edit.php' && isset( $_GET['post_type'] ) && $_GET['post_type'] == 'pl_general_widget' ) ) {
 			self::register_enqueue_if_not('post-screens', trailingslashit(PL_CSS_ADMIN_URL) .  'post-screens.css');
 		}
-		
-		$pages = array('placester_page_placester_properties', 
-					   'placester_page_placester_property_add', 
-					   'placester_page_placester_settings', 
-					   'placester_page_placester_support', 
-					   'placester_page_placester_theme_gallery', 
-					   'placester_page_placester_integrations',
-		 			   'placester_page_placester_settings_polygons', 
-		 			   'placester_page_placester_settings_property_pages', 
-		 			   'placester_page_placester_settings_international', 
-		 			   'placester_page_placester_settings_neighborhood', 
-		 			   'placester_page_placester_settings_filtering', 
-		 			   'placester_page_placester_settings_template', 
-		 			   'placester_page_placester_settings_client',
-		 			   'placester_page_placester_social',
-		 			   'placester_page_placester_lead_capture',
-					   'edit.php');
 
-		if (!in_array($hook, $pages)) { return; }
+		if ($hook!='edit.php' && strpos($hook, '_page_placester_')===false) { return; }
 
 		//always load these
 		self::register_enqueue_if_not('global-css', trailingslashit(PL_CSS_URL) .  'global.css');		

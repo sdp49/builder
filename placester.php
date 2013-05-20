@@ -221,15 +221,27 @@ function placester_admin_menu() {
                                'Polygon Controls' => '_polygons', 
                                'Property Pages' => '_property_pages', 
                                // 'Template Controls' => '_template', 
-                               'International Settings' => '_international' );
+    						'International Settings' => '_international' );
     foreach ($settings_subpages as $name => $page_url) {
         add_submenu_page( 'placester', '', $name, 'edit_pages', 'placester_settings' . $page_url, array('PL_Router','settings' . $page_url) );    
     }
     
     add_submenu_page( 'placester', 'Lead Capture', 'Lead Capture', 'edit_pages', 'placester_lead_capture', array('PL_Router','lead_capture') );
 
-    add_submenu_page( 'placester', 'Shortcodes / Widgets', 'Shortcodes / Widgets', 'edit_pages', 'edit.php?post_type=pl_general_widget' );
-    
+add_submenu_page( 'placester', 'Shortcodes / Widgets', 'Shortcodes / Widgets', 'edit_pages', 'edit.php?post_type=pl_general_widget' );
+    global $shortcode_subpages;
+    $shortcode_subpages = array('All Shortcodes' => '',
+					    		'Create Shortcode' => '_shortcode_edit',
+					    		'Create Template' => '_template_edit',
+					    		'Property Details' => '_property_details',
+					    		'Options' => '_options');
+    foreach ($shortcode_subpages as $name => $page_url) {
+    	// leave parent slug empty to add pages without adding them to the menu
+    	PL_Helper_Header::add_sub_page('placester_shortcodes', 'placester_shortcodes' . $page_url, add_submenu_page( 'placester', '', $name, 'edit_pages', 'placester_shortcodes' . $page_url, array('PL_Router','shortcodes' . $page_url)));
+		//add_submenu_page( '', '', $name, 'edit_pages', 'placester_shortcodes' . $page_url, array('PL_Router','shortcodes' . $page_url));
+    }
+    add_submenu_page('placester', '', 'Shortcodes / Widgets', 'edit_pages', 'placester_shortcodes', array('PL_Router','shortcodes'));
+
     /* Social Integration functionality... */
     add_submenu_page( 'placester', 'Social', 'Social', 'edit_pages', 'placester_social', array('PL_Social_Networks','add_social_settings_cb') );
     

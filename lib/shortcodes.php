@@ -416,6 +416,34 @@ class PL_Shortcodes
 	    <?php
 	    echo ob_get_clean();		    
 	}
+	
+	/*** Admin Functions ***/
+	
+	public static function admin_set_base($page) {
+		add_action('load-'.$page, array(__CLASS__, 'admin_header'));
+		add_action('admin_footer-'.$page, array(__CLASS__, 'admin_footer'));
+	}	
+
+	public static function admin_header() {
+		global $parent_file, $submenu_file;
+		$parent_file = 'admin.php?page=placester_properties'; 
+		$submenu_file = 'admin.php?page=placester_shortcodes'; 
+		ob_start();
+	}	
+	
+	public static function admin_footer() {
+		ob_end_flush();
+	}
+	
+	public static function debug($var, $lines = 1) {
+		echo '<pre>';
+		$traces = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+		for ($trace=1; $trace<=$lines; $trace++) {
+			echo $traces[$trace]['file'].':'.(!empty($traces[$trace]['class'])?$traces[$trace]['class'].':':'').$traces[$trace]['function'].':'.(!empty($traces[$trace]['line'])?$traces[$trace]['line'].':':'')."\n";
+		}
+		var_dump($var);
+		echo '</pre>';
+	}
 }
 
 ?>
