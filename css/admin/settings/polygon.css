@@ -1,3 +1,10 @@
+.advanced_area_controls {
+	display: none;
+}
+#show_advanced_styles {
+	float: right;
+	clear: both;
+}
 .customBox {
 	position:absolute;
 }
@@ -60,6 +67,7 @@
 	float: left;
 	clear: both;
 	height: 35px;
+	margin-top: 10px;
 }
 .form-item label {
 	float: left;
