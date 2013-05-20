@@ -237,9 +237,9 @@ jQuery(document).ready(function($) {
 		};
 		$.post(ajaxurl, polygon_info, function(data, textStatus, xhr) {
 			if (data && data.message) {
+				window.location.href = window.location;
 				$('#polygon_ajax_messages').html(data.message);
 				clearPolyLine();
-				polygon_listings_datatable.fnDraw();
 				show_neighborhood_areas();
 				setTimeout(function () {
 					$('#polygon_ajax_messages').html('');
