@@ -1,6 +1,5 @@
 <?php
 global $pagenow, $shortcode_subpages, $submenu_file;
-
 if(!class_exists('PL_Posts_List_Table')){
 	require_once( PL_LIB_DIR . 'posts-table.php' );
 }
@@ -42,7 +41,7 @@ PL_Router::load_builder_view('header.php');
 		if ( isset( $_REQUEST['trashed'] ) && $trashed = absint( $_REQUEST['trashed'] ) ) {
 			$messages[] = sprintf( _n( 'Item moved to the Trash.', '%s items moved to the Trash.', $trashed ), number_format_i18n( $trashed ) );
 			$ids = isset($_REQUEST['ids']) ? $_REQUEST['ids'] : 0;
-			$messages[] = '<a href="' . esc_url( wp_nonce_url( "admin.php?page=placester_shortcodes&doaction=undo&action=untrash&ids=$ids", "bulk-posts" ) ) . '">' . __('Undo') . '</a>';
+			$messages[] = '<a href="' . esc_url( wp_nonce_url( "edit.php?post_type=$post_type&doaction=undo&action=untrash&ids=$ids", "bulk-posts" ) ) . '">' . __('Undo') . '</a>';
 		}
 		
 		if ( isset( $_REQUEST['untrashed'] ) && $untrashed = absint( $_REQUEST['untrashed'] ) ) {

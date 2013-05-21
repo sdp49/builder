@@ -419,15 +419,12 @@ class PL_Shortcodes
 	
 	/*** Admin Functions ***/
 	
-	public static function admin_set_base($page) {
-		add_action('load-'.$page, array(__CLASS__, 'admin_header'));
-		add_action('admin_footer-'.$page, array(__CLASS__, 'admin_footer'));
+	public static function admin_buffer_op($page_hook) {
+		add_action('load-'.$page_hook, array(__CLASS__, 'admin_header'));
+		add_action('admin_footer-'.$page_hook, array(__CLASS__, 'admin_footer'));
 	}	
 
 	public static function admin_header() {
-		global $parent_file, $submenu_file;
-		$parent_file = 'admin.php?page=placester_properties'; 
-		$submenu_file = 'admin.php?page=placester_shortcodes'; 
 		ob_start();
 	}	
 	

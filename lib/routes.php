@@ -145,6 +145,10 @@ class PL_Router {
 		//self::router('shortcodes/general.php', array(), false);
 	}
 	public static function shortcodes_shortcode_edit() {
+		if (isset($_REQUEST['trashed'])) {
+			wp_redirect(admin_url('admin.php?page=placester_shortcodes'));
+			exit;
+		}
 		self::router('shortcodes/shortcode_edit.php', array(), false);
 	}
 	public static function shortcodes_template_edit() {
