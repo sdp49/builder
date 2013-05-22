@@ -173,12 +173,12 @@ jQuery(document).ready(function() {
 		};
 	});
 
-	if ( $('#before-widget').val() ) {
-		$('#before-widget').addClass('is-visible');
+	if ( $('#before-widget-textarea').val() ) {
+		$('#before-widget-wrapper').addClass('is-visible');
 	};
 	
-	if ( $('#after-widget').val() ) {
-		$('#after-widget').addClass('is-visible');
+	if ( $('#after-widget-textarea').val() ) {
+		$('#after-widget-wrapper').addClass('is-visible');
 	};
 
 });
@@ -219,49 +219,52 @@ jQuery(document).ready(function($) {
 // Textarea -> CodeMirror
 ////////////////////////////////////////
 
-if (jQuery.isFunction('CodeMirror')) {
-	console.log("YELL");
-	var html_editor = CodeMirror.fromTextArea(document.getElementById("html-textarea"), {
-	  mode: 'text/html',
-	  lineNumbers: true,
-	  viewportMargin: Infinity,
-	  styleActiveLine: true,
-	  autoCloseBrackets: true,
-	  autoCloseTags: true,
-	  placeholder: "Put your HTML with sub-shortcodes code here...",
-	  highlightSelectionMatches: true
-	});
+jQuery(window).load( function() {
+	
+	if (jQuery.isFunction(CodeMirror)) {
+		
+		var html_editor = CodeMirror.fromTextArea(document.getElementById("html-textarea"), {
+		  mode: 'text/html',
+		  lineNumbers: true,
+		  viewportMargin: Infinity,
+		  styleActiveLine: true,
+		  autoCloseBrackets: true,
+		  autoCloseTags: true,
+		  placeholder: "Put your HTML with sub-shortcodes code here...",
+		  highlightSelectionMatches: true
+		});
 
-	var css_editor = CodeMirror.fromTextArea(document.getElementById("css-textarea"), {
-	  mode: 'text/css',
-	  lineNumbers: true,
-	  viewportMargin: Infinity,
-	  styleActiveLine: true,
-	  autoCloseBrackets: true,
-	  autoCloseTags: true,
-	  placeholder: "Put your CSS code here...",
-	  highlightSelectionMatches: true
-	});
+		var css_editor = CodeMirror.fromTextArea(document.getElementById("css-textarea"), {
+		  mode: 'text/css',
+		  lineNumbers: true,
+		  viewportMargin: Infinity,
+		  styleActiveLine: true,
+		  autoCloseBrackets: true,
+		  autoCloseTags: true,
+		  placeholder: "Put your CSS code here...",
+		  highlightSelectionMatches: true
+		});
 
-	var html_editor = CodeMirror.fromTextArea(document.getElementById("before-widget-textarea"), {
-	  mode: 'text/html',
-	  lineNumbers: true,
-	  viewportMargin: Infinity,
-	  styleActiveLine: true,
-	  autoCloseBrackets: true,
-	  autoCloseTags: true,
-	  placeholder: "Put HTML here that will appear before your shortcode....",
-	  highlightSelectionMatches: true
-	});
+		var html_editor = CodeMirror.fromTextArea(document.getElementById("before-widget-textarea"), {
+		  mode: 'text/html',
+		  lineNumbers: true,
+		  viewportMargin: Infinity,
+		  styleActiveLine: true,
+		  autoCloseBrackets: true,
+		  autoCloseTags: true,
+		  placeholder: "Put HTML here that will appear before your shortcode....",
+		  highlightSelectionMatches: true
+		});
 
-	var html_editor = CodeMirror.fromTextArea(document.getElementById("after-widget-textarea"), {
-	  mode: 'text/html',
-	  lineNumbers: true,
-	  viewportMargin: Infinity,
-	  styleActiveLine: true,
-	  autoCloseBrackets: true,
-	  autoCloseTags: true,
-	  placeholder: "Put HTML here that will appear after your shortcode....",
-	  highlightSelectionMatches: true
-	});
-};
+		var html_editor = CodeMirror.fromTextArea(document.getElementById("after-widget-textarea"), {
+		  mode: 'text/html',
+		  lineNumbers: true,
+		  viewportMargin: Infinity,
+		  styleActiveLine: true,
+		  autoCloseBrackets: true,
+		  autoCloseTags: true,
+		  placeholder: "Put HTML here that will appear after your shortcode....",
+		  highlightSelectionMatches: true
+		});
+	};
+});

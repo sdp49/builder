@@ -82,7 +82,6 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		parent::__construct();
 		
 		add_action( 'save_post', array( $this, 'meta_box_save' ) );
-		// add_action( 'admin_enqueue_scripts', array( $this, 'admin_styles' ) );
 		add_action( 'admin_head', array( $this, 'admin_head_plugin_path' ) );
 		add_filter( 'manage_edit-pl_general_widget_columns' , array( $this, 'widget_edit_columns' ) );
  		add_filter( 'manage_pl_general_widget_posts_custom_column', array( $this, 'widget_custom_columns' ) );
@@ -266,24 +265,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		} 
 		// Silence is gold.
 	}
-	
-	// public function admin_styles( $hook ) {
-	// 	global $plugin_page, $post;
-
-	// 	if( (!empty( $post ) && $post->post_type === 'pl_general_widget' &&
-	// 			( $hook === 'post.php' && ! empty( $_GET['post'] ) )
-	// 			|| ( $hook === 'post-new.php' && ! empty( $_GET['post_type'] ) && $_GET['post_type'] == 'pl_general_widget' ))
-	// 		|| $plugin_page == 'placester_shortcodes_shortcode_edit' 
-	// 		|| $plugin_page == 'placester_shortcodes_template_edit') {
-	// 		wp_enqueue_script('settings-template', trailingslashit(PL_JS_URL) .  'admin/settings/template.js', array( 'jquery'));
-	// 		wp_enqueue_style( 'placester-widget', trailingslashit( PL_CSS_ADMIN_URL ) . 'placester-widget.css' );
-	// 		wp_enqueue_style( 'placester-widget-chosen', trailingslashit( PL_JS_URL ) . 'lib/chosen/chosen.css' );
-	// 		wp_enqueue_script( 'placester-widget-chosen', trailingslashit( PL_JS_URL ) . 'lib/chosen/chosen.jquery.min.js', array( 'jquery' ), NULL, false );
-	// 		wp_enqueue_script( 'placester-widget-code-mirror', trailingslashit( PL_JS_URL ) . 'lib/code-mirror/code-mirror.js' );
-	// 		wp_enqueue_script( 'placester-widget-script', trailingslashit( PL_JS_URL ) . 'admin/widget-handler.js', array( 'jquery' ), '1.1.8' );
-	// 	}
-	// }
-		
+			
 	public function admin_head_plugin_path( ) {
 	?>
 		<script type="text/javascript">

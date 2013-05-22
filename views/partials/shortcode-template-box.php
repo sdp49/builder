@@ -67,14 +67,16 @@ $current_type = '';
 				<textarea id="css-textarea"></textarea>
 
 				<!-- Add Content Before Widget -->
-				<a href="#" id="toggle-before-widget" class="clearfix">Add content
-					before the widget</a>
-				<textarea id="before-widget"></textarea>
-
+				<a href="#" id="toggle-before-widget" class="clearfix">Add content before the widget</a>
+				<div id="before-widget-wrapper">
+					<textarea id="before-widget-textarea"></textarea>
+				</div>
+				
 				<!-- Add Content After Widget -->
-				<a href="#" id="toggle-after-widget" class="clearfix">Add content
-					after the widget</a>
-				<textarea id="after-widget"></textarea>
+				<a href="#" id="toggle-after-widget" class="clearfix">Add content after the widget</a>
+				<div id="after-widget-wrapper">
+					<textarea id="after-widget-textarea"></textarea>
+				</div>
 
 				<!-- Save Button -->
 				<button id="save-template" class="green">Save</button>
