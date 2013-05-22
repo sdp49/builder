@@ -1,3 +1,5 @@
+$=jQuery;
+
 widget_autosave = function() {
 	
 	var post_id = jQuery("#post_ID").val();
@@ -144,15 +146,15 @@ function pls_get_shortcode_by_post_type( post_type ) {
 // Activate Chosen
 ////////////////////////////////////////
 jQuery(window).load( function() {
-	jQuery("select.chosen").chosen({no_results_text: "No results matched"});
+	jQuery("select.chosen").chosen();
 });
 
 
 ////////////////////////////////////////
 // Toggle Before/After Widget Textarea views
 ////////////////////////////////////////
-jQuery(document).ready(function($) {
-
+jQuery(document).ready(function() {
+	
 	$('#toggle-before-widget').click(function() {
 		event.preventDefault();
 		if ($('#before-widget').hasClass('is-visible')) {
@@ -218,6 +220,7 @@ jQuery(document).ready(function($) {
 ////////////////////////////////////////
 
 if (jQuery.isFunction('CodeMirror')) {
+	console.log("YELL");
 	var html_editor = CodeMirror.fromTextArea(document.getElementById("html-textarea"), {
 	  mode: 'text/html',
 	  lineNumbers: true,

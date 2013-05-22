@@ -92,6 +92,13 @@ class PL_Css_Helper {
 			self::register_enqueue_if_not('settings-filtering', trailingslashit(PL_CSS_ADMIN_URL) .  'settings/filtering.css');					
 		}
 
+		if ($hook == 'placester_page_placester_shortcodes_template_edit' ||
+				$hook ==  'placester_page_placester_shortcodes' ||
+				$hook == 'placester_page_placester_shortcodes_shortcode_edit') {
+
+			wp_enqueue_style( 'placester-widget', trailingslashit( PL_CSS_ADMIN_URL ) . 'placester-widget.css' );
+			wp_enqueue_style( 'placester-widget-chosen', trailingslashit( PL_JS_URL ) . 'lib/chosen/chosen.css' );
+		}
 	}
 
 	public static function customizer() {

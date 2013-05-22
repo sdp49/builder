@@ -53,7 +53,11 @@ class PL_Js_Helper {
 					   'placester_page_placester_settings_filtering', 
 					   'placester_page_placester_settings_client',
 					   'placester_page_placester_lead_capture',
-					   'placester_page_placester_settings_template');
+					   'placester_page_placester_settings_template',
+					   'placester_page_placester_shortcodes_template_edit',
+						 'placester_page_placester_shortcodes',
+						 'placester_page_placester_shortcodes_shortcode_edit'
+					   );
 
 		if (!in_array($hook, $pages)) { return; }
 		
@@ -127,6 +131,18 @@ class PL_Js_Helper {
 		if ($hook == 'placester_page_placester_settings_template') {
 			self::register_enqueue_if_not('settings-template', trailingslashit(PL_JS_URL) . 'admin/settings/template.js', array('jquery'));	
 		}
+
+		// Shortcodes and Shortcode Templates
+		if ($hook == 'placester_page_placester_shortcodes_template_edit' ||
+				$hook ==  'placester_page_placester_shortcodes' ||
+				$hook == 'placester_page_placester_shortcodes_shortcode_edit') {
+			
+			wp_enqueue_script('settings-template', trailingslashit(PL_JS_URL) .  'admin/settings/template.js', array( 'jquery'));
+			wp_enqueue_script( 'placester-widget-chosen', trailingslashit( PL_JS_URL ) . 'lib/chosen/chosen.jquery.min.js', array( 'jquery' ), NULL, false );
+			wp_enqueue_script( 'placester-widget-code-mirror', trailingslashit( PL_JS_URL ) . 'lib/code-mirror/code-mirror.js' );
+			wp_enqueue_script( 'placester-widget-script', trailingslashit( PL_JS_URL ) . 'admin/widget-handler.js', array( 'jquery' ), '1.1.8' );
+		}
+
 	}
 
 	public static function admin_menu_url() {

@@ -4150,6 +4150,7 @@
         visibility: hidden; } }
 
 .chzn-drop .chzn-search input {
+  display: none !important;
   width: 100% !important;
   height: 25px !important;
   margin: 0 !important; }
