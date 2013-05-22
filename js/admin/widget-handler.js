@@ -138,3 +138,127 @@ function pls_get_shortcode_by_post_type( post_type ) {
 			return post_type;
 	}	
 }
+
+
+////////////////////////////////////////
+// Activate Chosen
+////////////////////////////////////////
+jQuery(window).load( function() {
+	jQuery("select.chosen").chosen({no_results_text: "No results matched"});
+});
+
+
+////////////////////////////////////////
+// Toggle Before/After Widget Textarea views
+////////////////////////////////////////
+jQuery(document).ready(function($) {
+
+	$('#toggle-before-widget').click(function() {
+		event.preventDefault();
+		if ($('#before-widget').hasClass('is-visible')) {
+			$('#before-widget').removeClass('is-visible');
+		} else {
+			$('#before-widget').addClass('is-visible');
+		};
+	});
+
+	$('#toggle-after-widget').click(function() {
+		event.preventDefault();
+		if ($('#after-widget').hasClass('is-visible')) {
+			$('#after-widget').removeClass('is-visible');
+		} else {
+			$('#after-widget').addClass('is-visible');
+		};
+	});
+
+	if ( $('#before-widget').val() ) {
+		$('#before-widget').addClass('is-visible');
+	};
+	
+	if ( $('#after-widget').val() ) {
+		$('#after-widget').addClass('is-visible');
+	};
+
+});
+
+
+////////////////////////////////////////
+// Add/Remove Options/Filters Key/Value Pairs
+////////////////////////////////////////
+jQuery(document).ready(function($) {
+
+	// Add option/filter
+	$('#add-new-option').click(function() {
+
+		var k = $('#sc-add-option-key select').val();
+		var v = $('#sc-add-option-value .active').val();
+
+		$('#added-filters').append(
+			'<div class="row-fluid added-filters-single added-kv-pair">' +
+				'<div class="span6 unified-row">' + k + '</div>' +
+			  '<div class="span4 unified-row">' + v + '</div>' +
+			  '<input type="hidden" name="' + k + '" value="' + v + '">' +
+			  '<div class="span1"><button class="btn btn-danger delete-option">x</button></div>' +
+			'</div>'
+		);
+
+	});
+
+	// Remove option/filter
+	$('.delete-option').click(function() {
+		$(this).parent().parent().remove();
+	});
+
+
+});
+
+
+////////////////////////////////////////
+// Textarea -> CodeMirror
+////////////////////////////////////////
+
+if (jQuery.isFunction('CodeMirror')) {
+	var html_editor = CodeMirror.fromTextArea(document.getElementById("html-textarea"), {
+	  mode: 'text/html',
+	  lineNumbers: true,
+	  viewportMargin: Infinity,
+	  styleActiveLine: true,
+	  autoCloseBrackets: true,
+	  autoCloseTags: true,
+	  placeholder: "Put your HTML with sub-shortcodes code here...",
+	  highlightSelectionMatches: true
+	});
+
+	var css_editor = CodeMirror.fromTextArea(document.getElementById("css-textarea"), {
+	  mode: 'text/css',
+	  lineNumbers: true,
+	  viewportMargin: Infinity,
+	  styleActiveLine: true,
+	  autoCloseBrackets: true,
+	  autoCloseTags: true,
+	  placeholder: "Put your CSS code here...",
+	  highlightSelectionMatches: true
+	});
+
+	var html_editor = CodeMirror.fromTextArea(document.getElementById("before-widget-textarea"), {
+	  mode: 'text/html',
+	  lineNumbers: true,
+	  viewportMargin: Infinity,
+	  styleActiveLine: true,
+	  autoCloseBrackets: true,
+	  autoCloseTags: true,
+	  placeholder: "Put HTML here that will appear before your shortcode....",
+	  highlightSelectionMatches: true
+	});
+
+	var html_editor = CodeMirror.fromTextArea(document.getElementById("after-widget-textarea"), {
+	  mode: 'text/html',
+	  lineNumbers: true,
+	  viewportMargin: Infinity,
+	  styleActiveLine: true,
+	  autoCloseBrackets: true,
+	  autoCloseTags: true,
+	  placeholder: "Put HTML here that will appear after your shortcode....",
+	  highlightSelectionMatches: true
+	});
+};

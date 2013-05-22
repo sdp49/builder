@@ -277,6 +277,9 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			|| $plugin_page == 'placester_shortcodes_template_edit') {
 			wp_enqueue_script('settings-template', trailingslashit(PL_JS_URL) .  'admin/settings/template.js', array( 'jquery'));
 			wp_enqueue_style( 'placester-widget', trailingslashit( PL_CSS_ADMIN_URL ) . 'placester-widget.css' );
+			wp_enqueue_style( 'placester-widget-chosen', trailingslashit( PL_JS_URL ) . 'lib/chosen/chosen.css' );
+			wp_enqueue_script( 'placester-widget-chosen', trailingslashit( PL_JS_URL ) . 'lib/chosen/chosen.jquery.min.js', array( 'jquery' ), NULL, false );
+			wp_enqueue_script( 'placester-widget-code-mirror', trailingslashit( PL_JS_URL ) . 'lib/code-mirror/code-mirror.js' );
 			wp_enqueue_script( 'placester-widget-script', trailingslashit( PL_JS_URL ) . 'admin/widget-handler.js', array( 'jquery' ), '1.1.8' );
 		}
 	}

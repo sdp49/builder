@@ -10,13 +10,11 @@ foreach ( PL_General_Widget_CPT::$codes as $code=>$name ) {
 $pl_active_snippets = PL_Snippet_Helper::get_active_snippet_map();
 $pl_snippet_types = array('default' => 'Default', 'custom' => 'Custom'); // Order matters, here...
 
-
-$select_name = '';
-
-
+$select_class = ( !empty($select_class) ) ? $select_class : '';
+$select_name = ( !empty($select_name) ) ? 'name="'. $select_name : '';
 ?>
-<select id="cpt_template" class="snippet_list"
-<?php if( ! empty( $select_name ) ) { echo 'name="'. $select_name . '"'; } ?>>
+
+<select id="cpt_template" class="snippet_list <?php echo $select_class; ?>" name="<?php echo $select_name; ?>">
 	<?php foreach ($pl_snippet_types as $curr_type => $title_type): ?>
 		<optgroup label="<?php echo $title_type?>">
 			<?php foreach ($pl_snippet_list[$code] as $snippet => $type): ?>

@@ -59,46 +59,60 @@ if( ! $is_post_new ) {
 	
 	<h3>Create Shortcode</h3>
 	
-	<div class="inside">	
+	<div id="edit-sc-metabox-inner" class="inside">	
 
 		<!-- Type and Template -->
 		<div id="post_types_list" class="meta_section">
-			
+
+    <!-- </section> -->
+
 			<!-- Type -->
-			<div class="post_types_list_wrapper" style="clear: both; padding-top: 10px;">
+			<section id="edit-sc-choose-type" class="post_types_list_wrapper row-fluid" style="clear: both; padding-top: 10px;">
 				
-				<label for="pl_post_type_dropdown">Type:</label>
-				
-				<select id="pl_post_type_dropdown" name="pl_post_type_dropdown">
-					
-					<option id="pl_post_type_undefined" value="pl_post_type_undefined">Select</option>
-					
-					<?php 
-					$num_of_post_types = count( $pl_shortcode_types );
-					$i = 0;
-		
-					foreach( $pl_shortcode_types as $post_type => $label ):
-						$i++;
-						$link_class = ($post_type == $pl_post_type) ? 'selected_type' : '';
-						$selected = ( !empty($link_class) ) ? 'selected="selected"' : '';
-						?>
-						<option id="pl_post_type_<?php echo $post_type; ?>" class="<?php echo $link_class; ?>" value="pl_post_type_<?php echo $post_type; ?>" <?php echo $selected; ?>>
-							<?php echo $label; ?>
-						</option>
-						<?php
-						echo ( $i < $num_of_post_types ) ? '<span class="pl_type_separator"> |</span>' : '';
-					endforeach;
-					?>
-				</select>
+				<div class="span2">
+        	<p class="section-label">Type:</p>
+      	</div>
+
+      	<div class="span9">
+
+					<select id="pl_post_type_dropdown" name="pl_post_type_dropdown" class="chosen">
+						
+						<option id="pl_post_type_undefined" value="pl_post_type_undefined">Select</option>
+						
+						<?php 
+						$num_of_post_types = count( $pl_shortcode_types );
+						$i = 0;
 			
-			</div><!-- /.post_types_list_wrapper -->
+						foreach( $pl_shortcode_types as $post_type => $label ):
+							$i++;
+							$link_class = ($post_type == $pl_post_type) ? 'selected_type' : '';
+							$selected = ( !empty($link_class) ) ? 'selected="selected"' : '';
+							?>
+							<option id="pl_post_type_<?php echo $post_type; ?>" class="<?php echo $link_class; ?>" value="pl_post_type_<?php echo $post_type; ?>" <?php echo $selected; ?>>
+								<?php echo $label; ?>
+							</option>
+							<?php
+							echo ( $i < $num_of_post_types ) ? '<span class="pl_type_separator"> |</span>' : '';
+						endforeach;
+						?>
+					</select>
+
+				</div>
+			
+			</section><!-- /.post_types_list_wrapper -->
 
 			<!-- Template / Layout -->
-			<div>
-				<label for="layout">Layout:</label>
-				<?php PL_Router::load_builder_partial('shortcode-template-list.php', array('post'=>$post));?>
-				<a href="<?php echo admin_url('admin.php?page=placester_shortcodes_template_edit')?>">(create new)</a>
-			</div>
+			<section id="edit-sc-choose-template" class="row-fluid">
+	      <div class="span2">
+	        <p class="section-label">Template:</p>
+  	    </div>
+				<div class="span6">
+					<?php PL_Router::load_builder_partial('shortcode-template-list.php', array('post'=>$post, 'select_class'=>'chosen'));?>
+				</div>
+				<div class="offset1 span3">
+					<a href="<?php echo admin_url('admin.php?page=placester_shortcodes_template_edit')?>" id="create-new-template-link">(create new)</a>
+				</div>
+			</section><!-- /edit-sc-choose-template -->
 
 		</div><!-- /#post_types_list -->
 
@@ -145,7 +159,7 @@ if( ! $is_post_new ) {
 			<section class="featured_listings">
 				<h2>Pick a Listing</h2>
 			</section>
-			
+
 			<div id="pl-fl-meta">
 				<div style="width: 400px;">
 					<div id="pl_featured_listing_block" class="featured_listings pl_slideshow" style="min-height: 40px;">
