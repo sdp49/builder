@@ -27,6 +27,8 @@ class PL_Listing_Helper {
 		// Respect global filters...
 		$global_filters = PL_Helper_User::get_global_filters();
 
+		// pls_dump($global_filters);
+
 		// error_log("GLOBAL \n");
 		// error_log(var_export($global_filters, true));
 
@@ -38,18 +40,29 @@ class PL_Listing_Helper {
 	  			} 
 	  			else if ( is_array($value) ) {
 	  				//this whole thing basically traverses down the arrays for global filters
+	  				
 	  				foreach ($value as $k => $v) {
 	  				  // Check to see if this value is already set
-	  				  if ( empty($args[$attribute][$k]) ) {
+	  				  if ( empty($args[$attribute][$k]) && !is_array($v) ) {
+	  				  	pls_dump($attribute, $v);
 	  					$args[$attribute][$k] = $v;
-		  			  }	  
+		  			  } elseif ( empty($args[$attribute][$k]) && is_array($v) ) {
+		  			  	$args[$attribute][$k] = implode('',$v);
+		  			  }
 	  				}
 	  			} 
 	  			else {
-	  				$args[$attribute] = $value;
+	  				if (is_array($value)) {
+	  					$args[$attribute] = implode('',$value);
+	  				} else {
+	  					$args[$attribute] = $value;
+	  				}
+	  				
 	  			}
 	  		}
 	    }
+
+	    pls_dump($args);
 
 	    // error_log("MERGED \n");
 	    // error_log(var_export($args, true));
@@ -539,7 +552,9 @@ class PL_Listing_Helper {
 
 	public static function get_listing_attributes() {
 		$options = array();
-		$attributes = PL_Config::bundler('PL_API_LISTINGS', array('get', 'args'), array('listing_types','property_type', 'zoning_types', 'purchase_types', 'agency_only', 'non_import', array('location' => array('region', 'locality', 'postal', 'neighborhood', 'county'))));
+		// $attributes = PL_Config::bundler('PL_API_LISTINGS', array('get', 'args'), array('listing_types','property_type', 'zoning_types', 'purchase_types', 'agency_only', 'non_import', array('location' => array('region', 'locality', 'postal', 'neighborhood', 'county'))));
+		$attributes = PL_Config::PL_API_LISTINGS('get', 'args');
+		// pls_dump($attributes);
 		foreach ($attributes as $key => $attribute) {
 			if ( isset($attribute['label']) ) {
 				$options['basic'][$key] = $attribute['label'];
