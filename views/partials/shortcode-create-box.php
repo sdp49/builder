@@ -56,48 +56,54 @@ if( ! $is_post_new ) {
 }
 ?>
 <div id="pl-controls-metabox-id" class="postbox ">
+	
 	<h3>Create Shortcode</h3>
-	<div class="inside">
 	
-		<script type="text/javascript"></script>
-	
+	<div class="inside">	
+
+		<!-- Type and Template -->
 		<div id="post_types_list" class="meta_section">
-			<div class="post_types_list_wrapper"
-				style="clear: both; padding-top: 10px;">
-				<label for="pl_post_type_dropdown">Type:</label> <select
-					id="pl_post_type_dropdown" name="pl_post_type_dropdown">
+			
+			<!-- Type -->
+			<div class="post_types_list_wrapper" style="clear: both; padding-top: 10px;">
+				
+				<label for="pl_post_type_dropdown">Type:</label>
+				
+				<select id="pl_post_type_dropdown" name="pl_post_type_dropdown">
+					
 					<option id="pl_post_type_undefined" value="pl_post_type_undefined">Select</option>
+					
 					<?php 
 					$num_of_post_types = count( $pl_shortcode_types );
 					$i = 0;
 		
 					foreach( $pl_shortcode_types as $post_type => $label ):
 						$i++;
-						$link_class = '';
-						if( $post_type == $pl_post_type ) {
-							$link_class = 'selected_type';
-						}
+						$link_class = ($post_type == $pl_post_type) ? 'selected_type' : '';
+						$selected = ( !empty($link_class) ) ? 'selected="selected"' : '';
 						?>
-						<option id="pl_post_type_<?php echo $post_type; ?>"
-							class="<?php echo $link_class; ?>"
-							value="pl_post_type_<?php echo $post_type; ?>"
-							<?php if( ! empty( $link_class ) ) echo ' selected="selected"'  ?>>
+						<option id="pl_post_type_<?php echo $post_type; ?>" class="<?php echo $link_class; ?>" value="pl_post_type_<?php echo $post_type; ?>" <?php echo $selected; ?>>
 							<?php echo $label; ?>
 						</option>
 						<?php
-						if( $i < $num_of_post_types ):
-							echo '<span class="pl_type_separator"> |</span>';
-						endif;
+						echo ( $i < $num_of_post_types ) ? '<span class="pl_type_separator"> |</span>' : '';
 					endforeach;
 					?>
 				</select>
-			</div>
+			
+			</div><!-- /.post_types_list_wrapper -->
+
+			<!-- Template / Layout -->
 			<div>
 				<label for="layout">Layout:</label>
 				<?php PL_Router::load_builder_partial('shortcode-template-list.php', array('post'=>$post));?>
 				<a href="<?php echo admin_url('admin.php?page=placester_shortcodes_template_edit')?>">(create new)</a>
 			</div>
-		</div>
+
+		</div><!-- /#post_types_list -->
+
+
+		<!-- Options / Filters -->
 		<div id="widget-meta-wrapper" style="display: none; min-height: 370px">
 			<?php
 			// read width/height and slideshow values
@@ -116,7 +122,9 @@ if( ! $is_post_new ) {
 				$iframe = '<iframe src="' . $permalink . '"'. $style . $widget_class .'></iframe>';
 				$iframe_controller = '<script id="plwidget-' . $post->ID . '" src="' . PL_PARENT_URL . 'js/fetch-widget.js?id=' . $_GET['post'] . '"'  . $style . ' ' . $widget_class . '></script>';
 			endif; ?>
+
 			<div class="pl_widget_block">
+				
 				<section class="pl_map pl_form pl_search_listings pl_slideshow pl_neighborhood featured_listings static_listings">
 					<label>Options</label>
 				</section>
@@ -132,11 +140,12 @@ if( ! $is_post_new ) {
 						echo PL_Form::item($field, $arguments, 'POST', false, 'general_widget_');
 					}
 					?>
-			</div>
-			
+			</div><!-- /.pl_widget_block -->
+
 			<section class="featured_listings">
 				<h2>Pick a Listing</h2>
 			</section>
+			
 			<div id="pl-fl-meta">
 				<div style="width: 400px;">
 					<div id="pl_featured_listing_block" class="featured_listings pl_slideshow" style="min-height: 40px;">
