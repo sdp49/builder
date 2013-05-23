@@ -21,16 +21,23 @@ class PL_Listing_Helper {
 			$args = $_GET;
 		}
 
-		// error_log("SEARCH FILTERS \n");
-		// error_log(var_export($args, true));
+		$args = self::merge_global_filters($args);
 
-		// Respect global filters...
+		$args['address_mode'] = ( PL_Option_Helper::get_block_address() ? 'exact' : 'polygon' );
+
+		$listings = PL_Listing::get($args);	
+		foreach ($listings['listings'] as $key => $listing) {
+			$listings['listings'][$key]['cur_data']['url'] = PL_Page_Helper::get_url($listing['id']);
+			$listings['listings'][$key]['location']['full_address'] = $listing['location']['address'] . ' ' . $listing['location']['locality'] . ' ' . $listing['location']['region'];
+		}
+		return $listings;
+	}
+
+	private static function merge_global_filters ($args) {
+		
+		// comes back as an associative array. 
+		//false if empty.
 		$global_filters = PL_Helper_User::get_global_filters();
-
-		// pls_dump($global_filters);
-
-		// error_log("GLOBAL \n");
-		// error_log(var_export($global_filters, true));
 
 	    if (is_array($global_filters)) {
 	  		foreach ($global_filters as $attribute => $value) {
@@ -42,45 +49,42 @@ class PL_Listing_Helper {
 	  				//this whole thing basically traverses down the arrays for global filters
 	  				
 	  				foreach ($value as $k => $v) {
+  					  $v = self::handle_boolean_values($v);
 	  				  // Check to see if this value is already set
+
 	  				  if ( empty($args[$attribute][$k]) && !is_array($v) ) {
-	  				  	pls_dump($attribute, $v);
-	  					$args[$attribute][$k] = $v;
+	  				  	// sometimes $value is an array, but we actually want to implode it. 
+	  				  	// Like non_import and other boolean fields.
+	  				  	if (is_int($k)) {
+	  				  		$args[$attribute] = $v;
+	  				  	} else {
+	  				  		$args[$attribute][$k] = $v;
+	  				  	}
+	  					
 		  			  } elseif ( empty($args[$attribute][$k]) && is_array($v) ) {
 		  			  	$args[$attribute][$k] = implode('',$v);
 		  			  }
 	  				}
 	  			} 
 	  			else {
-	  				if (is_array($value)) {
-	  					$args[$attribute] = implode('',$value);
-	  				} else {
-	  					$args[$attribute] = $value;
-	  				}
-	  				
+					$args[$attribute] = $value;
 	  			}
 	  		}
 	    }
+	    // pls_dump($args);
+	    return $args;
+	}
 
-	    pls_dump($args);
-
-	    // error_log("MERGED \n");
-	    // error_log(var_export($args, true));
-
-		// Respect block address setting...
-		$args['address_mode'] = ( PL_Option_Helper::get_block_address() ? 'exact' : 'polygon' );
-
-		/* TODO: Deal with sold status... */
-		// if ( isset($args['sold_status']) ) {
-		// 	$args['sold_status'] = false;
-		// }
-
-		$listings = PL_Listing::get($args);	
-		foreach ($listings['listings'] as $key => $listing) {
-			$listings['listings'][$key]['cur_data']['url'] = PL_Page_Helper::get_url($listing['id']);
-			$listings['listings'][$key]['location']['full_address'] = $listing['location']['address'] . ' ' . $listing['location']['locality'] . ' ' . $listing['location']['region'];
+	//updates boolean values so they are
+	//properly respected by rails.
+	private static function handle_boolean_values ($value) {
+		if ($value === 'true') {
+			return 1;
+		} elseif ($value === 'false') {
+			return 0;
+		} else {
+			return $value;
 		}
-		return $listings;
 	}
 
 	public static function many_details($args) { 
@@ -550,10 +554,33 @@ class PL_Listing_Helper {
 		die();
 	}
 
+	private static function generate_global_filter_key_from_value ($value) {
+		$value = str_replace(' ', '_', $value);
+		$value = str_replace('.', '', $value);
+		$value = str_replace('-', '', $value);
+		$value = strtolower($value);
+		return $value;
+	}
+
 	public static function get_listing_attributes() {
 		$options = array();
-		// $attributes = PL_Config::bundler('PL_API_LISTINGS', array('get', 'args'), array('listing_types','property_type', 'zoning_types', 'purchase_types', 'agency_only', 'non_import', array('location' => array('region', 'locality', 'postal', 'neighborhood', 'county'))));
+
 		$attributes = PL_Config::PL_API_LISTINGS('get', 'args');
+
+		$form_types = PL_Config::PL_API_CUST_ATTR('get');
+		$form_types = $form_types['args']['attr_type']['options'];
+
+		if (isset($attributes['custom']) && is_array($attributes['custom'])) {
+			$custom_attributes = call_user_func( array($attributes['custom']['bound']['class'], $attributes['custom']['bound']['method'] ) );
+							
+			foreach ($custom_attributes as $key => $option) {
+				$attributes[$option['cat']][] = array('label' => $option['name'], 'type' => $form_types[$option['attr_type']] );
+			} 
+
+			unset($attributes['custom']);
+
+			// pls_dump('custom_attributes',$response);
+		}
 		// pls_dump($attributes);
 		foreach ($attributes as $key => $attribute) {
 			if ( isset($attribute['label']) ) {
@@ -561,11 +588,18 @@ class PL_Listing_Helper {
 			} else {
 				foreach ($attribute as $k => $v) {
 					if (isset( $v['label'])) {
-						$options[$key][$k] = $v['label'];
+						if (is_int($k)) {
+							$options[$key][self::generate_global_filter_key_from_value($v['label'])] = $v['label'];
+						} else {
+							$options[$key][$k] = $v['label'];
+						}
+						
 					}
 				}
 			}
 		}
+		// pls_dump($attributes);
+		// pls_dump($options);
 		$option_html = '';
 		foreach ($options as $group => $value) {
 			ob_start();
