@@ -9,7 +9,6 @@ class PL_Listing_Helper {
 		add_action('wp_ajax_add_listing', array(__CLASS__, 'add_listing_ajax' ) );
 		add_action('wp_ajax_update_listing', array(__CLASS__, 'update_listing_ajax' ) );
 		add_action('wp_ajax_add_temp_image', array(__CLASS__, 'add_temp_image' ) );
-		add_action('wp_ajax_filter_options', array(__CLASS__, 'filter_options' ) );
 		add_action('wp_ajax_delete_listing', array(__CLASS__, 'delete_listing_ajax' ) );
 	}
 	

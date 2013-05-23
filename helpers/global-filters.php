@@ -4,8 +4,9 @@ PL_Global_Filters::init();
 class PL_Global_Filters {
 	
 	public static function init() {
-		add_action( 'wp_ajax_user_save_global_filters', array(__CLASS__, 'set_global_filters') );
-		add_action( 'wp_ajax_user_remove_all_global_filters', array(__CLASS__, 'remove_all_global_filters') );
+		add_action('wp_ajax_user_save_global_filters', array(__CLASS__, 'set_global_filters'));
+		add_action('wp_ajax_user_remove_all_global_filters', array(__CLASS__, 'remove_all_global_filters'));
+		add_action('wp_ajax_filter_options', array(__CLASS__, 'filter_options'));
 	}
 
 	public static function merge_global_filters ($args) {
