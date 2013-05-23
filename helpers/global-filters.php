@@ -22,26 +22,34 @@ class PL_Global_Filters {
 	  			elseif (is_array($value)) {
 	  				// This whole thing basically traverses down the arrays for global filters
 	  				foreach ($value as $k => $v) {
-	  				  // Check to see if this value is already set
-
-	  				  if ( empty($args[$attribute][$k]) && !is_array($v) ) {
-	  				  	// sometimes $value is an array, but we actually want to implode it. 
-	  				  	// Like non_import and other boolean fields.
-	  				  	if (is_int($k) & count($k) > 1) {
-	  				  		$args[$attribute] = self::handle_boolean_values($v);
-	  				  	} else {
-	  				  		$args[$attribute][$k] = self::handle_boolean_values($v);
-	  				  	}
+	  				  	// // Check to see if this value is already set
+	  				  	// if ( empty($args[$attribute][$k]) && !is_array($v) ) {
+	  				  	// 	// sometimes $value is an array, but we actually want to implode it. 
+	  				  	// 	// Like non_import and other boolean fields.
+	  				  	// 	if (is_int($k) & count($k) > 1) {
+	  				  	// 		$args[$attribute] = self::handle_boolean_values($v);
+	  				  	// 	} 
+	  				  	// 	else {
+	  				  	// 		$args[$attribute][$k] = self::handle_boolean_values($v);
+	  				  	// 	}
 	  					
-		  			  } elseif ( empty($args[$attribute][$k]) && is_array($v) ) {
-		  			  	if (is_int($k) & count($k) > 1) {
-	  				  		$args[$attribute][$k] = self::handle_boolean_values(implode('',$v));
-	  				  	} else {
-			  			  	$args[$attribute][$k] = self::handle_boolean_values($v);
-	  				  	}
-		  			  }
+		  			  	// } 
+		  			  	// elseif ( empty($args[$attribute][$k]) && is_array($v) ) {
+		  			  	// 	if (is_int($k) & count($k) > 1) {
+	  				  	// 		$args[$attribute][$k] = self::handle_boolean_values(implode('',$v));
+	  				  	// 	} 
+	  				  	// 	else {
+			  			  // 		$args[$attribute][$k] = self::handle_boolean_values($v);
+	  				  	// 	}
+		  			  	// }
+
+		  			  	### Old 'stable' version...what's above NEEDS to be fixed and re-incorporated! ###
+		  				// Check to see if this value is already set
+		  				if ( empty($args[$attribute][$k]) ) {
+		  					$args[$attribute][$k] = $v;
+			  			}
 	  				}
-	  			} 
+ 	  			} 
 	  			else {
 					$args[$attribute] = self::handle_boolean_values($value);
 	  			}
