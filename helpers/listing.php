@@ -21,7 +21,7 @@ class PL_Listing_Helper {
 			$args = $_GET;
 		}
 
-		$args = self::merge_global_filters($args);
+		$args = PL_Global_Filters::merge_global_filters($args);
 
 		$args['address_mode'] = ( PL_Option_Helper::get_block_address() ? 'exact' : 'polygon' );
 
@@ -33,59 +33,6 @@ class PL_Listing_Helper {
 		return $listings;
 	}
 
-	private static function merge_global_filters ($args) {
-		
-		// comes back as an associative array. 
-		//false if empty.
-		$global_filters = PL_Helper_User::get_global_filters();
-
-	    if (is_array($global_filters)) {
-	  		foreach ($global_filters as $attribute => $value) {
-	  			// Special handling for property type, comes in as property_type-{type} since it differs on listing_type
-	  			if (strpos($attribute, 'property_type') !== false ) {
-	  				$args['property_type'] = is_array($value) ? implode('', $value) : $value;
-	  			} 
-	  			else if ( is_array($value) ) {
-	  				//this whole thing basically traverses down the arrays for global filters
-	  				
-	  				foreach ($value as $k => $v) {
-  					  $v = self::handle_boolean_values($v);
-	  				  // Check to see if this value is already set
-
-	  				  if ( empty($args[$attribute][$k]) && !is_array($v) ) {
-	  				  	// sometimes $value is an array, but we actually want to implode it. 
-	  				  	// Like non_import and other boolean fields.
-	  				  	if (is_int($k)) {
-	  				  		$args[$attribute] = $v;
-	  				  	} else {
-	  				  		$args[$attribute][$k] = $v;
-	  				  	}
-	  					
-		  			  } elseif ( empty($args[$attribute][$k]) && is_array($v) ) {
-		  			  	$args[$attribute][$k] = implode('',$v);
-		  			  }
-	  				}
-	  			} 
-	  			else {
-					$args[$attribute] = $value;
-	  			}
-	  		}
-	    }
-	    // pls_dump($args);
-	    return $args;
-	}
-
-	//updates boolean values so they are
-	//properly respected by rails.
-	private static function handle_boolean_values ($value) {
-		if ($value === 'true') {
-			return 1;
-		} elseif ($value === 'false') {
-			return 0;
-		} else {
-			return $value;
-		}
-	}
 
 	public static function many_details($args) { 
 		extract(wp_parse_args($args, array('property_ids' => array(), 'limit' => '50', 'offset' => '0')));
@@ -414,7 +361,7 @@ class PL_Listing_Helper {
 		$response = null;
 		
 		// If global filters related to location are set, incorporate those and use aggregates API...
-		$global_filters = PL_Helper_User::get_global_filters();
+		$global_filters = PL_Global_Filters::get_global_filters();
 		if ( $allow_globals && !empty($global_filters) && !empty($global_filters['location']) ) {
 			// TODO: Move these to a global var or constant...
 			$global_filters['keys'] = array('location.locality', 'location.region', 'location.postal', 'location.neighborhood', 'location.county');
