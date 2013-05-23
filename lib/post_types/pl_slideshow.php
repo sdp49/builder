@@ -56,7 +56,11 @@ class PL_Slideshow_CPT extends PL_Post_Base {
 	
 		// if our current user can't edit this post, bail
 		// if( !current_user_can( 'edit_post' ) ) return;
-	
+
+		if ( empty($_POST['post_type']) || $_POST['post_type'] != 'pl_slideshow') {
+			return;
+		}
+		
 		foreach( $this->fields as $field => $values ) {
 			if( isset( $_POST[$field] ) ) {
 				update_post_meta( $post_id, $field, $_POST[$field] );

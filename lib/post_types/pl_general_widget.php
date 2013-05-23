@@ -4,33 +4,27 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 
 	// Leverage the PL_Form class and it's fields format (and implement below)
 	public static $codes = array(
-				'search_map' => 'Search Map',
-				'search_form' => 'Search Form',
-				'search_listings' => 'Search Listings',
-				'pl_neighborhood' => 'Neighborhood',
-				'listing_slideshow' => 'Listings Slideshow',
-				'featured_listings' => 'Featured Listings',
-				'static_listings' => 'List of Listings'
-			);
+			'search_map' => 'Search Map',
+			'search_form' => 'Search Form',
+			'search_listings' => 'Search Listings',
+			'pl_neighborhood' => 'Neighborhood',
+			'listing_slideshow' => 'Listings Slideshow',
+			'featured_listings' => 'Featured Listings',
+			'static_listings' => 'List of Listings'
+		);
 	
 	public static $post_types =  array(
-				'pl_map' => 'Map',
-				'pl_form' => 'Search Form',
-				'pl_search_listings' => 'Search Listings',
-				'pl_slideshow' => 'Slideshow',
-				'pl_neighborhood' => 'Neighborhood',
-//  				'featured_listings' => 'Featured Listings',
-				'static_listings' => 'List of Listings'
-	);
+			'pl_map' => 'Map',
+			'pl_form' => 'Search Form',
+			'pl_search_listings' => 'Search Listings',
+			'pl_slideshow' => 'Slideshow',
+			'pl_neighborhood' => 'Neighborhood',
+			'static_listings' => 'List of Listings'
+		);
 	
 	public static $default_post_type = 'pl_map';
 	 
 	public static $fields = array(
-// 			'map_type' => array( 'type' => 'select', 'label' => 'Map Type', 'options' => array( 
-// 																	'listings' => 'listings',
-// 																	 'lifestyle' => 'lifestyle',
-// 																	'lifestyle_poligon' => 'lifestyle_poligon' 
-// 							), 'css' => 'pl_map' ),
 			'width' => array( 'type' => 'text', 'label' => 'Width', 'css' => 'pl_map pl_form pl_search_listings pl_slideshow pl_neighborhood featured_listings static_listings' ),
 			'height' => array( 'type' => 'text', 'label' => 'Height', 'css' => 'pl_map pl_form pl_search_listings pl_slideshow pl_neighborhood featured_listings static_listings' ),
 			'animation' => array( 'type' => 'select', 'label' => 'Animation', 'options' => array(
@@ -38,7 +32,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 					'horizontal-slide' => 'horizontal-slide',
 					'vertical-slide' => 'vertical-slide',
 					'horizontal-push' => 'horizontal-push',
-			), 'css' => 'pl_slideshow' ),
+				), 'css' => 'pl_slideshow' ),
 			'animationSpeed' => array( 'type' => 'text', 'label' => 'Animation Speed', 'css' => 'pl_slideshow' ),
 			'timer' => array( 'type' => 'checkbox', 'label' => 'Timer', 'css' => 'pl_slideshow' ),
 			'pauseOnHover' => array( 'type' => 'checkbox', 'label' => 'Pause on hover', 'css' => 'pl_slideshow' ),
@@ -48,31 +42,31 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			'hide_num_results' => array( 'type' => 'checkbox', 'label' => 'Hide Show Number of Results', 'css' => 'pl_static_listings' ),
  			'num_results_shown' => array( 'type' => 'text', 'label' => 'Number of Results Displayed', 'css' => 'pl_static_listings' ),
 			'widget_class' => array( 'type' => 'text', 'label' => 'Widget Class', 'css' => 'pl_map pl_form pl_search_listings pl_slideshow pl_neighborhood featured_listings static_listings' ),
-	);
+		);
 	
 	public function register_post_type() {
 		$args = array(
-				'labels' => array(
-						'name' => __( 'Placester Widget', 'pls' ),
-						'singular_name' => __( 'pl_map', 'pls' ),
-						'add_new_item' => __('Add New Placester Widget', 'pls'),
-						'edit_item' => __('Edit Placester Widget', 'pls'),
-						'new_item' => __('New Placester Widget', 'pls'),
-						'all_items' => __('All Placester Widgets', 'pls'),
-						'view_item' => __('View Placester Widgets', 'pls'),
-						'search_items' => __('Search Placester Widgets', 'pls'),
-						'not_found' =>  __('No widgets found', 'pls'),
-						'not_found_in_trash' => __('No widgets found in Trash', 'pls')),
-				'menu_icon' => trailingslashit(PL_IMG_URL) . 'logo_16.png',
-				'public' => true,
-				'publicly_queryable' => true,
-				'show_ui' => true,
-				'show_in_menu' => false,
-				'query_var' => true,
-				'capability_type' => 'post',
-				'hierarchical' => false,
-				'menu_position' => null,
-				'supports' => array('title'),
+			'labels' => array(
+				'name' => __( 'Placester Widget', 'pls' ),
+				'singular_name' => __( 'pl_map', 'pls' ),
+				'add_new_item' => __('Add New Placester Widget', 'pls'),
+				'edit_item' => __('Edit Placester Widget', 'pls'),
+				'new_item' => __('New Placester Widget', 'pls'),
+				'all_items' => __('All Placester Widgets', 'pls'),
+				'view_item' => __('View Placester Widgets', 'pls'),
+				'search_items' => __('Search Placester Widgets', 'pls'),
+				'not_found' =>  __('No widgets found', 'pls'),
+				'not_found_in_trash' => __('No widgets found in Trash', 'pls')),
+			'menu_icon' => trailingslashit(PL_IMG_URL) . 'logo_16.png',
+			'public' => true,
+			'publicly_queryable' => true,
+			'show_ui' => true,
+			'show_in_menu' => false,
+			'query_var' => true,
+			'capability_type' => 'post',
+			'hierarchical' => false,
+			'menu_position' => null,
+			'supports' => array('title'),
 		);
 
 		register_post_type('pl_general_widget', $args );
@@ -82,6 +76,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		parent::__construct();
 		
 		add_action( 'save_post', array( $this, 'meta_box_save' ) );
+		add_action( 'admin_enqueue_scripts', array( $this, 'admin_styles' ) );
 		add_action( 'admin_head', array( $this, 'admin_head_plugin_path' ) );
 		add_filter( 'manage_edit-pl_general_widget_columns' , array( $this, 'widget_edit_columns' ) );
  		add_filter( 'manage_pl_general_widget_posts_custom_column', array( $this, 'widget_custom_columns' ) );
@@ -168,7 +163,6 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		
 		// Fetch the context template
 		$context_template = self::get_context_template( $pl_post_type );
-		
 		if( isset( $_POST['pl_template_' . $context_template ] ) ) {
 			update_post_meta( $post_id, 'pl_cpt_template', $_POST['pl_template_' . $context_template] );
 		} else if( isset( $_POST['pl_cpt_template'] ) && ! empty( $_POST['pl_cpt_template'] ) ) {
@@ -266,6 +260,18 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		// Silence is gold.
 	}
 			
+	public function admin_styles( $hook ) {
+		if( ( $hook === 'post.php' && ! empty( $_GET['post'] ) )
+			|| ( $hook === 'post-new.php' && ! empty( $_GET['post_type'] ) && $_GET['post_type'] == 'pl_general_widget' ) ) {
+			global $post;
+			if( ! empty( $post ) && $post->post_type === 'pl_general_widget' ) {
+				wp_enqueue_script('settings-template', trailingslashit(PL_JS_URL) .  'admin/settings/template.js', array( 'jquery'));
+				wp_enqueue_style( 'placester-widget', trailingslashit( PL_CSS_ADMIN_URL ) . 'placester-widget.css' );
+				wp_enqueue_script( 'placester-widget-script', trailingslashit( PL_JS_URL ) . 'admin/widget-handler.js', array( 'jquery' ), '1.1.8' );
+			}
+		}
+	}
+		
 	public function admin_head_plugin_path( ) {
 	?>
 		<script type="text/javascript">
@@ -314,27 +320,6 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			 
 			$this->meta_box_save( $id );
 		}	
-	}
-	
-	public static function print_template_blocks( ) {
-		
-	   foreach( self::$codes as $code => $label ) {
-			echo '<div class="pl_template_block" id="' .$code  . '_template_block" style="display: none;">';
-
-			PL_Snippet_Template::prepare_template(
-				array(
-						'codes' => array( $code ),
-						'p_codes' => array(
-							$code => $label
-						),
-						'select_name' => 'pl_template_' . $code
-				)
-			);
-			
-			echo '</div>';
-			
-		    add_action( 'pl_template_extra_styles', array( $this, 'update_template_block_styles' ) );
-		}
 	}
 	
 	// Helper function for featured listings

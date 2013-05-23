@@ -47,6 +47,10 @@ class PL_Search_Listing_CPT extends PL_Post_Base {
 		// if our current user can't edit this post, bail
 		// if( !current_user_can( 'edit_post' ) ) return;
 	
+		if ( empty($_POST['post_type']) || $_POST['post_type'] != 'pl_search_listing') {
+			return;
+		}
+		
 		foreach( $this->fields as $field => $values ) {
 			if( !empty( $_POST ) ) {
 				if( !empty( $_POST[$field] ) ) {
