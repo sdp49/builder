@@ -63,7 +63,6 @@ $nonce_action = 'update-post_' . $post_ID;
       </div><!-- /post-body -->
     </div>
   </form>
-  
   <div id="ajax-response"></div>
   <br class="clear" />
 </div>

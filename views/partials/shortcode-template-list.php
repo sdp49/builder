@@ -24,8 +24,8 @@ $pd_enabled = get_option(PL_Shortcodes::$prop_details_enabled_key);
   <div class="shortcode_container">
     <input type="hidden" class="shortcode" value="<?php echo $code ?>" />
     <input type="hidden" class="active_snippet" value="<?php echo $pl_active_snippets[$code] ?>" />
-    <section id="shortcode_ref">
-      <select id="cpt_template" class="snippet_list <?php echo $class;?>"
+    <section class="shortcode_ref">
+      <select class="snippet_list <?php echo $class;?>"
       <?php if( ! empty( $select_name ) ) { echo 'name="'. $select_name . '"'; } ?>>
         <?php foreach ($pl_snippet_types as $curr_type => $title_type): ?>
           <optgroup label="<?php echo $title_type?>">
@@ -34,10 +34,10 @@ $pd_enabled = get_option(PL_Shortcodes::$prop_details_enabled_key);
                 continue;
               } ?>
               <?php if( empty( $value ) ): ?>
-                <option id="<?php echo $snippet ?>" value="<?php echo $snippet ?>" class="<?php echo $type ?>"
+                <option value="<?php echo $snippet ?>" class="<?php echo $type ?>"
                   <?php echo $pl_active_snippets[$code] == $snippet ? 'selected="selected"' : '' ?>>
               <?php else: ?>
-                <option id="<?php echo $snippet ?>" value="<?php echo $snippet ?>" class="<?php echo $type ?>"
+                <option value="<?php echo $snippet ?>" class="<?php echo $type ?>"
                   <?php echo $value == $snippet ? 'selected="selected"' : '' ?>>
               <?php endif; ?>
                 <?php echo $snippet ?>

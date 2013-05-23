@@ -15,6 +15,7 @@ $values = get_post_custom( $post->ID );
 $pl_post_type = isset( $values['pl_post_type'] ) ? $values['pl_post_type'][0] : '';
 
 $pl_shortcode_types = PL_General_Widget_CPT::$post_types; 
+$pl_shortcode_fields = PL_General_Widget_CPT::$fields;
 
 // manage featured and static listing form values
 $pl_featured_meta_value = '';
@@ -71,7 +72,7 @@ if( ! $is_post_new ) {
 
         <div class="span9">
 
-          <select id="pl_post_type_dropdown" name="pl_post_type_dropdown" class="chosen">
+          <select id="pl_post_type_dropdown" name="pl_post_type_dropdown" class="">
             
             <option id="pl_post_type_undefined" value="pl_post_type_undefined">Select</option>
             
@@ -102,9 +103,9 @@ if( ! $is_post_new ) {
           <p class="section-label">Template:</p>
         </div>
         <div class="span6">
-          <?php
-             foreach( PL_General_Widget_CPT::$codes as $code => $label ) {
-              echo '<div class="pl_template_block" id="' .$code  . '_template_block" style="display: none;">';
+          <?php foreach( PL_General_Widget_CPT::$codes as $code => $label ): ?>
+            <div class="pl_template_block" id="<?php echo $code;?>_template_block" style="display: none;">
+              <?php
               PL_Router::load_builder_partial('shortcode-template-list.php', array(
                     'codes' => array( $code ),
                     'p_codes' => array(
@@ -115,10 +116,10 @@ if( ! $is_post_new ) {
                     'value' => $values['pl_cpt_template'][0],
                 )
               );
-              echo '</div>';
-                add_action( 'pl_template_extra_styles', array( $this, 'update_template_block_styles' ) );
-            }
-          ?>        
+              ?>
+            </div>
+            <?php add_action( 'pl_template_extra_styles', array( $this, 'update_template_block_styles' ) );?>
+          <?php endforeach;?>
         </div>
         <div class="offset1 span3">
           <a href="<?php echo admin_url('admin.php?page=placester_shortcodes_template_edit')?>" id="create-new-template-link">(create new)</a>
@@ -143,28 +144,30 @@ if( ! $is_post_new ) {
       $style = ' style="width: ' . $width . 'px;height: ' . $height . 'px"';
       
       // for post edits, prepare the frame related variables (iframe and script)
-      if( ! empty( $permalink ) ):
+      if( ! empty( $permalink ) ) {
         $iframe = '<iframe src="' . $permalink . '"'. $style . $widget_class .'></iframe>';
         $iframe_controller = '<script id="plwidget-' . $post->ID . '" src="' . PL_PARENT_URL . 'js/fetch-widget.js?id=' . $_GET['post'] . '"'  . $style . ' ' . $widget_class . '></script>';
-      endif; ?>
+      } 
+      ?>
 
       <div class="pl_widget_block">
         
         <section class="pl_map pl_form pl_search_listings pl_slideshow pl_neighborhood featured_listings static_listings">
           <label>Options:</label>
         </section>
-          <?php // get meta values from custom fields
-          // fill POST array for the forms (required after new widget is created)
-          foreach( $pl_shortcode_types as $field => $arguments ) {
-            $value = isset( $values[$field] ) ? $values[$field][0] : '';
+        <?php
+        // get meta values from custom fields
+        // fill POST array for the forms (required after new widget is created)
+        foreach( $pl_shortcode_fields as $field => $arguments ) {
+          $value = isset( $values[$field] ) ? $values[$field][0] : '';
       
-            if( !empty( $value ) && empty( $_POST[$field] ) ) {
-              $_POST[$field] = $value;
-            }
-      
-            echo PL_Form::item($field, $arguments, 'POST', false, 'general_widget_');
+          if( !empty( $value ) && empty( $_POST[$field] ) ) {
+            $_POST[$field] = $value;
           }
-          ?>
+      
+          echo PL_Form::item($field, $arguments, 'POST', false, 'general_widget_');
+        }
+        ?>
       </div><!-- /.pl_widget_block -->
 
       <section class="featured_listings">
@@ -174,7 +177,7 @@ if( ! $is_post_new ) {
       <div id="pl-fl-meta">
         <div style="width: 400px;">
           <div id="pl_featured_listing_block" class="featured_listings pl_slideshow" style="min-height: 40px;">
-            <?php 
+            <?php
               include PLS_OPTRM_DIR . '/views/featured-listings.php';
               // Enqueue all required stylings and scripts
               wp_enqueue_style('featured-listings', OPTIONS_FRAMEWORK_DIRECTORY.'css/featured-listings.css');
@@ -197,10 +200,11 @@ if( ! $is_post_new ) {
                       ) ,
                       $pl_featured_meta_value,
                       'pl_featured_listing_meta');
+                   
             ?>
           </div><!-- end of #pl_featured_listing_block -->
           <section id="pl_static_listing_block" class="static_listings pl_search_listings">
-            <?php 
+            <?php
               $static_list_form = PL_Form::generate_form(
                     PL_Config::PL_API_LISTINGS('get', 'args'),
                     array('method' => "POST", 
@@ -346,7 +350,6 @@ if( ! $is_post_new ) {
           e.preventDefault();
   
           var iframe_content = $('#preview-meta-widget').html();
-  
           var options_width = jQuery('#widget-meta-wrapper input#width').val() || 750;
           var options_height = jQuery('#widget-meta-wrapper input#height').val() || 500;
           
@@ -366,7 +369,7 @@ if( ! $is_post_new ) {
         $('#pl_static_listing_block #custom').css('display', 'none');
         $('<a href="#basic" id="pl_show_advanced" style="line-height: 50px;">Show Advanced filters</a>').insertBefore('#pl_static_listing_block #advanced');
         $('<a href="#basic" id="pl_hide_advanced" style="line-height: 50px; display: none;">Hide Advanced filters</a>').insertAfter('#pl_static_listing_block #custom');
-  
+       
         $('#pl_show_advanced').on('click', function() {
           $(this).hide();
           $('#pl_static_listing_block #advanced').css('display', 'block');
@@ -430,24 +433,21 @@ if( ! $is_post_new ) {
       </section>
     
       <section class="pl_widget_block pl_neighborhood">
-      <?php
-      $taxonomies = PL_Taxonomy_Helper::$location_taxonomies;
-      foreach( $taxonomies as $slug => $label ) {
-        $terms = PL_Taxonomy_Helper::get_taxonomy_items( $slug );
-          
-        echo "<div id='nb-taxonomy-$slug' class='nb-taxonomy' style='display: none;'>";
-        echo "<select id='nb-id-select-$slug' name='nb-select-$slug'>";
-        foreach( $terms as $term ) {
-          echo "<option value='" . $term['term_id'] . "'>" . $term['name'] . "</option>";
-        }
-          echo "</select>";
-        echo "</div>";
-      }
-      ?>
+      <?php $taxonomies = PL_Taxonomy_Helper::$location_taxonomies;?>
+      <?php foreach( $taxonomies as $slug => $label ): ?>
+        <?php $terms = PL_Taxonomy_Helper::get_taxonomy_items( $slug ); ?>
+        <div id="nb-taxonomy-<?php echo $slug;?>" class="nb-taxonomy" style="display: none;">
+	        <select id="nb-id-select-<?php echo $slug;?>" name="nb-select-<?php echo $slug;?>">
+	        <?php foreach( $terms as $term ): ?>
+	          <option value="<?php echo $term['term_id']?>"><?php echo $term['name'] ?></option>
+	        <?php endforeach;?>
+	        </select>
+        </div>
+      <?php endforeach;?>
       </section>
       
       <div class="clear"></div>
     
-    </div>
-  </div>
-</div>
+    </div> <!-- /#widget-meta-wrapper -->
+  </div><!-- /.inside -->
+</div><!-- /.postbox -->
