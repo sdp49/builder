@@ -50,6 +50,11 @@ class PL_Global_Filters {
 	    return $args;
 	}
 
+	function report_filters () {
+		$response = PL_WordPress::set(array_merge(self::get_global_filters(), array('url' => site_url() ) ) );
+		return $response;
+	}
+
 
 	//updates boolean values so they are
 	//properly respected by rails.
@@ -219,7 +224,7 @@ class PL_Global_Filters {
 		} else {
 			echo json_encode(array('result' => false, 'message' => 'Change not saved or no change detected. Please try again.'));
 		}
-		echo json_encode(PL_WordPress_Helper::report_filters());
+		echo json_encode(self::report_filters());
 		die();
 	}
 
