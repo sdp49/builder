@@ -19,30 +19,28 @@ class PL_Global_Filters {
 	  			// Special handling for property type, comes in as property_type-{type} since it differs on listing_type
 	  			if (strpos($attribute, 'property_type') !== false ) {
 	  				$args['property_type'] = is_array($value) ? implode('', $value) : $value;
-	  			} 
-	  			else if ( is_array($value) ) {
+	  			} else if ( is_array($value) ) {
 	  				//this whole thing basically traverses down the arrays for global filters
 	  				
 	  				foreach ($value as $k => $v) {
-  					  $v = self::handle_boolean_values($v);
 	  				  // Check to see if this value is already set
 
 	  				  if ( empty($args[$attribute][$k]) && !is_array($v) ) {
 	  				  	// sometimes $value is an array, but we actually want to implode it. 
 	  				  	// Like non_import and other boolean fields.
 	  				  	if (is_int($k)) {
-	  				  		$args[$attribute] = $v;
+	  				  		$args[$attribute] = self::handle_boolean_values($v);
 	  				  	} else {
-	  				  		$args[$attribute][$k] = $v;
+	  				  		$args[$attribute][$k] = self::handle_boolean_values($v);
 	  				  	}
 	  					
 		  			  } elseif ( empty($args[$attribute][$k]) && is_array($v) ) {
-		  			  	$args[$attribute][$k] = implode('',$v);
+		  			  	$args[$attribute][$k] = self::handle_boolean_values(implode('',$v));
 		  			  }
 	  				}
 	  			} 
 	  			else {
-					$args[$attribute] = $value;
+					$args[$attribute] = self::handle_boolean_values($value);
 	  			}
 	  		}
 	    }
