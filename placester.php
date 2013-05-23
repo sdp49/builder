@@ -156,6 +156,7 @@ include_once('helpers/taxonomy.php');
 include_once('helpers/google-places.php');
 include_once('helpers/wordpress.php');
 include_once('helpers/education-com.php');
+include_once('helpers/global-filters.php');
 include_once('helpers/caching.php');
 include_once('helpers/membership.php');
 include_once('helpers/lead-capture.php');

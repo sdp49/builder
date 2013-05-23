@@ -25,7 +25,7 @@
 			<div class="clear"></div>
 			<div class="search_filter_content">
 				<div class="global_filter_col">
-					<?php PL_Listing_Helper::get_listing_attributes(); ?>	
+					<?php PL_Global_Filters::get_listing_attributes(); ?>	
 				</div>
 				<div class="global_filter_col form_item">
 					<form action="" id="global_filter_form">
