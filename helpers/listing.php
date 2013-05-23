@@ -4,7 +4,7 @@ PL_Listing_Helper::init();
 
 class PL_Listing_Helper {
 
-	public function init() {
+	public static function init() {
 		add_action('wp_ajax_datatable_ajax', array(__CLASS__, 'datatable_ajax' ) );
 		add_action('wp_ajax_add_listing', array(__CLASS__, 'add_listing_ajax' ) );
 		add_action('wp_ajax_update_listing', array(__CLASS__, 'update_listing_ajax' ) );
@@ -13,16 +13,19 @@ class PL_Listing_Helper {
 		add_action('wp_ajax_delete_listing', array(__CLASS__, 'delete_listing_ajax' ) );
 	}
 	
-	public static function results($args = array()) {
-		if (!is_array($args)) {
-			$args = wp_parse_args($args);
-		} 
-		elseif (empty($args)) {
-			$args = $_GET;
+	public static function results($args = array(), $global_filters = true) {
+		// Handle edge-case $args formatting and value...
+		if (!is_array($args)) 
+		  { $args = wp_parse_args($args); } 
+		elseif (empty($args)) 
+		  { $args = $_GET; }
+
+		// Respect the ability for this function to return results that do NOT respect global filters..
+		if ($global_filters) {
+			$args = PL_Global_Filters::merge_global_filters($args);
 		}
 
-		$args = PL_Global_Filters::merge_global_filters($args);
-
+		// Respect block address setting...
 		$args['address_mode'] = ( PL_Option_Helper::get_block_address() ? 'exact' : 'polygon' );
 
 		$listings = PL_Listing::get($args);	
@@ -30,6 +33,7 @@ class PL_Listing_Helper {
 			$listings['listings'][$key]['cur_data']['url'] = PL_Page_Helper::get_url($listing['id']);
 			$listings['listings'][$key]['location']['full_address'] = $listing['location']['address'] . ' ' . $listing['location']['locality'] . ' ' . $listing['location']['region'];
 		}
+
 		return $listings;
 	}
 

@@ -9,9 +9,7 @@ class PL_Global_Filters {
 	}
 
 	public static function merge_global_filters ($args) {
-		
-		// comes back as an associative array. 
-		//false if empty.
+		// Comes back as an associative array -- false if empty.
 		$global_filters = self::get_global_filters();
 
 	    if (is_array($global_filters)) {
@@ -19,24 +17,23 @@ class PL_Global_Filters {
 	  			// Special handling for property type, comes in as property_type-{type} since it differs on listing_type
 	  			if (strpos($attribute, 'property_type') !== false ) {
 	  				$args['property_type'] = is_array($value) ? implode('', $value) : $value;
-	  			} else if ( is_array($value) ) {
-	  				//this whole thing basically traverses down the arrays for global filters
-	  				
+	  			} 
+	  			elseif (is_array($value)) {
+	  				// This whole thing basically traverses down the arrays for global filters
 	  				foreach ($value as $k => $v) {
-	  				  // Check to see if this value is already set
-
-	  				  if ( empty($args[$attribute][$k]) && !is_array($v) ) {
-	  				  	// sometimes $value is an array, but we actually want to implode it. 
-	  				  	// Like non_import and other boolean fields.
-	  				  	if (is_int($k)) {
-	  				  		$args[$attribute] = self::handle_boolean_values($v);
-	  				  	} else {
-	  				  		$args[$attribute][$k] = self::handle_boolean_values($v);
-	  				  	}
-	  					
-		  			  } elseif ( empty($args[$attribute][$k]) && is_array($v) ) {
-		  			  	$args[$attribute][$k] = self::handle_boolean_values(implode('',$v));
-		  			  }
+	  				  	// Check to see if this value is already set
+	  				  	if (empty($args[$attribute][$k]) && !is_array($v)) {
+	  				  		// Sometimes $value is an array, but we actually want to implode it (i.e, non_import and other boolean fields)
+	  				  		if (is_int($k)) {
+	  				  			$args[$attribute] = self::handle_boolean_values($v);
+	  				  		} 
+	  				  		else {
+	  				  			$args[$attribute][$k] = self::handle_boolean_values($v);
+	  				  		}
+		  			  	} 
+		  			  	elseif (empty($args[$attribute][$k]) && is_array($v)) {
+		  			  		$args[$attribute][$k] = self::handle_boolean_values(implode('', $v));
+		  			  	}
 	  				}
 	  			} 
 	  			else {
@@ -44,29 +41,18 @@ class PL_Global_Filters {
 	  			}
 	  		}
 	    }
-	    // pls_dump($args);
+
 	    return $args;
 	}
 
-	function report_filters () {
-		$response = PL_WordPress::set(array_merge(self::get_global_filters(), array('url' => site_url() ) ) );
-		return $response;
-	}
-
-
-	//updates boolean values so they are
-	//properly respected by rails.
+	/* Updates boolean values so they are properly respected by Rails */
 	private static function handle_boolean_values ($value) {
-		if ($value === 'true') {
-			return 1;
-		} elseif ($value === 'false') {
-			return 0;
-		} else {
-			return $value;
-		}
+		$val = ($value === 'true') ? 1 : $value;
+		$val = ($value === 'false') ? 0 : $value;
+		return $val;
 	}
 
-	function display_global_filters () {
+	public static function display_global_filters () {
 		$filters = self::get_global_filters();
 		// pls_dump($filters);
 		$html = '';
@@ -118,7 +104,8 @@ class PL_Global_Filters {
 		if (isset($_POST['filter']) && isset($_POST['value']) && $options) {
 			$options[$_POST['filter']] = $_POST['value'];
 			update_option($option_name, $options);
-		} elseif (isset($_POST['filter']) && isset($_POST['value']) && !$options) {
+		} 
+		elseif (isset($_POST['filter']) && isset($_POST['value']) && !$options) {
 			$options = array($_POST['filter'] => $_POST['value']);
 			add_option($option_name, $options);
 		}
@@ -142,7 +129,6 @@ class PL_Global_Filters {
 			} 
 
 			unset($attributes['custom']);
-
 			// pls_dump('custom_attributes',$response);
 		}
 		// pls_dump($attributes);
@@ -168,11 +154,11 @@ class PL_Global_Filters {
 		foreach ($options as $group => $value) {
 			ob_start();
 			?>
-			<optgroup label="<?php echo ucwords($group) ?>">
-				<?php foreach ($value as $value => $label): ?>
-					<option value="<?php echo $value ?>"><?php echo $label ?></option>
-				<?php endforeach ?>
-			</optgroup>
+				<optgroup label="<?php echo ucwords($group) ?>">
+					<?php foreach ($value as $value => $label): ?>
+						<option value="<?php echo $value ?>"><?php echo $label ?></option>
+					<?php endforeach ?>
+				</optgroup>
 			<?php
 			$option_html .= ob_get_clean();
 		}
@@ -211,7 +197,8 @@ class PL_Global_Filters {
 			foreach ($filter as $subkey => $subfilter) {
 				if (!is_array($subfilter) && (count($filter) > 1) ) {
 					$global_search_filters[$key . '_match'] = 'in';
-				} elseif (count($subfilter) > 1) {
+				} 
+				elseif (count($subfilter) > 1) {
 					$global_search_filters[$key][$subkey . '_match'] = 'in';
 				}
 			}
@@ -226,6 +213,11 @@ class PL_Global_Filters {
 		die();
 	}
 
+	private static function report_filters () {
+		$response = PL_WordPress::set(array_merge(self::get_global_filters(), array('url' => site_url())));
+		return $response;
+	}
+
 	private static function generate_global_filter_key_from_value ($value) {
 		$value = str_replace(' ', '_', $value);
 		$value = str_replace('.', '', $value);
@@ -233,6 +225,5 @@ class PL_Global_Filters {
 		$value = strtolower($value);
 		return $value;
 	}
-
-
 }
+?>
