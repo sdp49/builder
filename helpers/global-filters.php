@@ -23,18 +23,23 @@ class PL_Global_Filters {
 	  				// This whole thing basically traverses down the arrays for global filters
 	  				foreach ($value as $k => $v) {
 	  				  	// Check to see if this value is already set
-	  				  	if (empty($args[$attribute][$k]) && !is_array($v)) {
-	  				  		if (is_int($k)) {
-	  				  			$args[$attribute] = self::handle_boolean_values($v);
-	  				  		} 
-	  				  		else {
-	  				  			$args[$attribute][$k] = self::handle_boolean_values($v);
-	  				  		}
-		  			  	} 
-		  			  	elseif (empty($args[$attribute][$k]) && is_array($v)) {
-		  			  		// Sometimes $value is an array, but we actually want to implode it (i.e, non_import and other boolean fields)
-		  			  		$args[$attribute][$k] = self::handle_boolean_values(implode('', $v));
-		  			  	}
+	  				  	// if (empty($args[$attribute][$k]) && !is_array($v)) {
+	  				  	// 	if (is_int($k)) {
+	  				  	// 		$args[$attribute] = self::handle_boolean_values($v);
+	  				  	// 	} 
+	  				  	// 	else {
+	  				  	// 		$args[$attribute][$k] = self::handle_boolean_values($v);
+	  				  	// 	}
+		  			  	// } 
+		  			  	// elseif (empty($args[$attribute][$k]) && is_array($v)) {
+		  			  	// 	// Sometimes $value is an array, but we actually want to implode it (i.e, non_import and other boolean fields)
+		  			  	// 	$args[$attribute][$k] = self::handle_boolean_values(implode('', $v));
+		  			  	// }
+
+		  			  	// Check to see if this value is already set
+	  				  	if (empty($args[$attribute][$k])) {
+	  						$args[$attribute][$k] = $v;
+		  			  	}	
 	  				}
 	  			} 
 	  			else {
