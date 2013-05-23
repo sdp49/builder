@@ -23,7 +23,6 @@ class PL_Global_Filters {
 	  				foreach ($value as $k => $v) {
 	  				  	// Check to see if this value is already set
 	  				  	if (empty($args[$attribute][$k]) && !is_array($v)) {
-	  				  		// Sometimes $value is an array, but we actually want to implode it (i.e, non_import and other boolean fields)
 	  				  		if (is_int($k)) {
 	  				  			$args[$attribute] = self::handle_boolean_values($v);
 	  				  		} 
@@ -32,6 +31,7 @@ class PL_Global_Filters {
 	  				  		}
 		  			  	} 
 		  			  	elseif (empty($args[$attribute][$k]) && is_array($v)) {
+		  			  		// Sometimes $value is an array, but we actually want to implode it (i.e, non_import and other boolean fields)
 		  			  		$args[$attribute][$k] = self::handle_boolean_values(implode('', $v));
 		  			  	}
 	  				}
