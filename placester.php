@@ -151,7 +151,6 @@ include_once('helpers/logging.php');
 include_once('helpers/compliance.php');
 include_once('helpers/integrations.php');
 include_once('helpers/custom_attributes.php');
-include_once('helpers/settings.php');
 include_once('helpers/taxonomy.php');
 include_once('helpers/google-places.php');
 include_once('helpers/wordpress.php');
