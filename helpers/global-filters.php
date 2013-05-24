@@ -9,62 +9,90 @@ class PL_Global_Filters {
 		add_action('wp_ajax_filter_options', array(__CLASS__, 'filter_options'));
 	}
 
+
+	//
+	// Parses and merged incoming args with the current global filters
+	//
 	public static function merge_global_filters ($args) {
 		// Comes back as an associative array -- false if empty.
 		$global_filters = self::get_global_filters();
 
+		//will be "false" if empty
 	    if (is_array($global_filters)) {
-	  		foreach ($global_filters as $attribute => $value) {
-	  			// Special handling for property type, comes in as property_type-{type} since it differs on listing_type
-	  			if (strpos($attribute, 'property_type') !== false ) {
-	  				$args['property_type'] = is_array($value) ? implode('', $value) : $value;
-	  			} 
-	  			elseif (is_array($value)) {
-	  				// This whole thing basically traverses down the arrays for global filters
-	  				foreach ($value as $k => $v) {
-	  				  	// // Check to see if this value is already set
-	  				  	// if ( empty($args[$attribute][$k]) && !is_array($v) ) {
-	  				  	// 	// sometimes $value is an array, but we actually want to implode it. 
-	  				  	// 	// Like non_import and other boolean fields.
-	  				  	// 	if (is_int($k) & count($k) > 1) {
-	  				  	// 		$args[$attribute] = self::handle_boolean_values($v);
-	  				  	// 	} 
-	  				  	// 	else {
-	  				  	// 		$args[$attribute][$k] = self::handle_boolean_values($v);
-	  				  	// 	}
-	  					
-		  			  	// } 
-		  			  	// elseif ( empty($args[$attribute][$k]) && is_array($v) ) {
-		  			  	// 	if (is_int($k) & count($k) > 1) {
-	  				  	// 		$args[$attribute][$k] = self::handle_boolean_values(implode('',$v));
-	  				  	// 	} 
-	  				  	// 	else {
-			  			  // 		$args[$attribute][$k] = self::handle_boolean_values($v);
-	  				  	// 	}
-		  			  	// }
 
-		  			  	### Old 'stable' version...what's above NEEDS to be fixed and re-incorporated! ###
-		  				// Check to see if this value is already set
-		  				if ( empty($args[$attribute][$k]) ) {
-		  					$args[$attribute][$k] = $v;
-			  			}
-	  				}
- 	  			} 
-	  			else {
-					$args[$attribute] = self::handle_boolean_values($value);
+	  		foreach ($global_filters as $attribute => $value) {
+
+	  			if (strpos($attribute, 'property_type') !== false ) {
+	  				//to be honest, not really sure why this is here. 
+	  				// I don't believe we currently support "property_type"
+	  				$args['property_type'] = self::handle_property_type_filter($value);
+	  			} elseif ($attribute === 'zoning_types' || $attribute === 'purchase_types' ) {
+	  				// zoning and purchase types come in as an array
+	  				// which is fine since that's what the rails app expects
+	  				$args[$attribute] = $value;
+	  			} elseif ( $attribute === 'location' || $attribute === 'metadata' ) {
+	  				// error_log(var_export($value, true));
+	  				$args = self::handle_group_filters($args, $attribute, $value);
+	  			} else {
+	  				//since the rails api doesn't like the strings "true" and "false"
+	  				//convert it into a 1 or 0
+	  				$args[$attribute] = self::handle_generic_values($value);
 	  			}
+
 	  		}
 	    }
-
 	    return $args;
+	}
+
+	// method that handles all "other" values.
+	// designed to handle some oddities in a catch all style.
+	private static function handle_generic_values ($value) {
+		//we'll still get random arrays in here. Like non_import, etc..
+		if ( is_array($value) ) {
+			$value = implode('', $value);
+		} 
+		return self::handle_boolean_values($value);
+	}
+
+	private static function handle_property_type_filter ($property_type_value) {
+		if (is_array($property_type_value)) {
+			$property_type_value = implode('', $property_type_value);
+		} 
+		return $property_type_value;
+	}
+
+	private static function handle_group_filters ($args, $attribute, $value ) {
+		//when an array in a location or metadata group has 
+		//more then 1 item, then we need to collect all values
+		//so they can be sentout as:
+		// metadata[$attribute][] = $value[0]
+		// metadata[$attribute][] = $value[1]
+		// etc..
+		if ( is_array($value) && count($value) > 1 ) {
+			$args[$attribute] = $value;	
+		} else {
+			// if there's only a single value for an attribute, then we need to 
+			// prepend it as a non-array value. The easiest way to do this is to
+			// iterate through.
+			foreach ($value as $attribute_key => $attribute_value_as_array) {
+				$args[$attribute][$attribute_key] = implode('',$attribute_value_as_array);
+			}
+		}
+		return $args;
 	}
 
 	/* Updates boolean values so they are properly respected by Rails */
 	private static function handle_boolean_values ($value) {
-		$val = ($value === 'true') ? 1 : $value;
-		$val = ($value === 'false') ? 0 : $value;
+		$val = $value;
+		if ($value === 'true') {
+			$val = 1;
+		} elseif($value === false ) {
+			$val = 0;
+		}
 		return $val;
 	}
+
+
 
 	public static function display_global_filters () {
 		$filters = self::get_global_filters();
