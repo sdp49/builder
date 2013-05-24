@@ -151,11 +151,11 @@ include_once('helpers/logging.php');
 include_once('helpers/compliance.php');
 include_once('helpers/integrations.php');
 include_once('helpers/custom_attributes.php');
-include_once('helpers/settings.php');
 include_once('helpers/taxonomy.php');
 include_once('helpers/google-places.php');
 include_once('helpers/wordpress.php');
 include_once('helpers/education-com.php');
+include_once('helpers/global-filters.php');
 include_once('helpers/caching.php');
 include_once('helpers/membership.php');
 include_once('helpers/lead-capture.php');
@@ -218,7 +218,7 @@ function placester_admin_menu() {
     $settings_subpages = array('Settings' => '',
                                'Client Settings' => '_client',
                                'Global Property Filtering' => '_filtering', 
-                               'Polygon Controls' => '_polygons', 
+                               'Custom Drawn Areas' => '_polygons', 
                                'Property Pages' => '_property_pages', 
                                // 'Template Controls' => '_template', 
                                'International Settings' => '_international' );

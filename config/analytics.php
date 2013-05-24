@@ -39,6 +39,10 @@ $PL_ANALYTICS_CONFIG = array(
 	"home_view" => array(
 		"category" => "home",
 		"allowed_params" => array()
+	),
+	"page_view" => array(
+		"category" => "none",
+		"allowed_params" => array()
 	)
 );
 
