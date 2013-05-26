@@ -1,0 +1,52 @@
+@CHARSET "UTF-8";
+
+#widget-meta-wrapper h3 {
+	margin-bottom: .4em;
+	background: none;
+	padding-left: 0;
+}
+
+#widget-meta-wrapper .pl_widget_block {
+	width: 100%;
+}
+
+.pl-sc-wrap section,
+#widget-meta-wrapper .pl_widget_block section,
+#widget-meta-wrapper #pl_static_listing_block section {
+	overflow: hidden;
+	margin-bottom: 0;
+}
+
+#pl-fl-meta div {
+	width: 100%;
+}
+
+.pl-sc-wrap .postbox label {
+	width: 20em;
+	height: 2em;
+	line-height: 2em;
+}
+
+#widget-meta-wrapper input,
+#widget-meta-wrapper select,
+#widget-meta-wrapper #pl_static_listing_block input, 
+#widget-meta-wrapper #pl_static_listing_block select {
+    float: left;
+	margin: 0 .5em .5em 0;
+	height: 2em;
+}
+
+#pl_location_tax {
+	float: left;
+	width: 20em;
+}
+
+#pl_location_tax label {
+	width: auto;
+}
+
+#widget-meta-wrapper .pl_neighborhood.pl_widget_block {
+	float: left;
+	width: auto;
+}
+

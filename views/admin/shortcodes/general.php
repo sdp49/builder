@@ -13,10 +13,10 @@ $search = (!empty($_REQUEST['s']) ? esc_attr($_REQUEST['s']) : '');
 
 PL_Router::load_builder_view('header.php');
 ?>
-<div class="wrap pl-wrap">
+<div class="wrap pl-sc-wrap">
   <?php echo PL_Helper_Header::pl_subpages('placester_shortcodes', $shortcode_subpages, 'Shortcode Settings'); ?>
   
-  <div class="settings_option_wrapper">
+  <div id="pl_shortcode_all">
     <h2><?php
     if ($search) 
       printf( ' <span class="subtitle">' . __('Search results for &#8220;%s&#8221;') . '</span>', $search );

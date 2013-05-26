@@ -261,15 +261,6 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	}
 			
 	public function admin_styles( $hook ) {
-		if( ( $hook === 'post.php' && ! empty( $_GET['post'] ) )
-			|| ( $hook === 'post-new.php' && ! empty( $_GET['post_type'] ) && $_GET['post_type'] == 'pl_general_widget' ) ) {
-			global $post;
-			if( ! empty( $post ) && $post->post_type === 'pl_general_widget' ) {
-				wp_enqueue_script('settings-template', trailingslashit(PL_JS_URL) .  'admin/settings/template.js', array( 'jquery'));
-				wp_enqueue_style( 'placester-widget', trailingslashit( PL_CSS_ADMIN_URL ) . 'placester-widget.css' );
-				wp_enqueue_script( 'placester-widget-script', trailingslashit( PL_JS_URL ) . 'admin/widget-handler.js', array( 'jquery' ), '1.1.8' );
-			}
-		}
 	}
 		
 	public function admin_head_plugin_path( ) {
@@ -317,8 +308,6 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 					</script>
 				<?php 
 			endif;
-			 
-			$this->meta_box_save( $id );
 		}	
 	}
 	
@@ -387,14 +376,20 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			$post_id = (int) $_POST['post_id'];
 			$pl_post_type = ! empty( $_POST['pl_post_type'] ) ? $_POST['pl_post_type'] : self::$default_post_type;
 
-			if( $pl_post_type === 'featured_listings' ||  $pl_post_type === 'static_listings' || 
-					$pl_post_type === 'pl_static_listings' || $pl_post_type === 'pl_search_listings') {			
+			if( $pl_post_type === 'featured_listings' 
+				|| $pl_post_type === 'static_listings' 
+				|| $pl_post_type === 'pl_static_listings'
+				|| $pl_post_type === 'pl_search_listings') {			
 				pl_featured_listings_meta_box_save( $post_id );
 			}
 // 			if( $pl_post_type === 'pl_neighborhood' ) {
-				$this->meta_box_save( $post_id );
+//				$this->meta_box_save( $post_id );
 // 			}
 
+			if ( isset( $_POST['post_title'] )) {
+				wp_insert_post( array( 'ID'=>$post_id, 'post_type'=>'pl_general_widget', 'post_title'=>$_POST['post_title'] ) );
+			}
+				
 			update_post_meta( $post_id, 'pl_post_type', $pl_post_type );
 		}
 
@@ -433,7 +428,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	
 	public function filter_form_section_after( $form, $index, $count ) {
 		if( $index < $count ) {
-			return $form . '<div style="border-bottom: 1px solid white;"></div>';
+			return $form . '<div class="section-after"></div>';
 		}
 		return $form;
 	}

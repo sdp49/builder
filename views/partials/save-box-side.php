@@ -23,27 +23,9 @@ else {
 	<div class="inside">
 		<div class="submitbox" id="submitpost">
 		
-			<div id="minor-publishing">
-		
-				<?php // Hidden submit button early on so that the browser chooses the right button when form is submitted with Return key ?>
-				<div style="display:none;">
-				<?php submit_button( __( 'Save' ), 'button', 'save' ); ?>
-				</div>
-		
-				<div id="minor-publishing-actions">
-					<div id="save-action">
-						<?php if ( 'publish' != $post->post_status && 'future' != $post->post_status && 'pending' != $post->post_status ) { ?>
-						<input <?php if ( 'private' == $post->post_status ) { ?>style="display:none"<?php } ?> type="submit" name="save" id="save-post" value="<?php esc_attr_e('Save Draft'); ?>" class="button" />
-						<?php } elseif ( 'pending' == $post->post_status && $can_publish ) { ?>
-						<input type="submit" name="save" id="save-post" value="<?php esc_attr_e('Save as Pending'); ?>" class="button" />
-						<?php } ?>
-						<span class="spinner"></span>
-					</div>
-					<div class="clear"></div>
-				</div><!-- #minor-publishing-actions -->
-		
-				<div class="clear"></div>
-		
+			<?php // Hidden submit button early on so that the browser chooses the right button when form is submitted with Return key ?>
+			<div style="display:none;">
+			<?php submit_button( __( 'Save' ), 'button', 'save' ); ?>
 			</div>
 		
 			<div id="major-publishing-actions">

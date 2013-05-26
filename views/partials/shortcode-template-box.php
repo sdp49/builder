@@ -13,17 +13,17 @@ $current_type = '';
   class="postbox ">
   <h3>Create Shortcode Template</h3>
 
-  <div id="edit-template-metabox-inner" class="inside">
+  <div id="edit-template-metabox-inner" class="inside shortcode_container">
 
     <!-- Template Name -->
     <section id="edit-template-choose-name" class="row-fluid">
 
       <div class="span2">
-        <p class="section-label">Template Name:</p>
+        <label for="edit-template-name" class="section-label">Template Name:</label>
       </div>
 
       <div class="span10">
-        <input type="text" id="edit-template-name" />
+        <input type="text" id="title" class="snippet_name new_snippet_name" title="<?php _e('Please enter a name for this shortcode template.')?>" />
       </div>
 
     </section>
@@ -33,14 +33,26 @@ $current_type = '';
     <section id="edit-template-choose-template" class="row-fluid">
 
       <div class="span2">
-        <p class="section-label">Template Type:</p>
+        <label for="edit-template-name" class="section-label">Template Type:</label>
       </div>
 
       <div class="span10">
-        <select class="chosen">
-          <?php foreach($pl_shortcode_types as $type=>$name):?>
-          <option <?php echo ($current_type==$type?'selected="selected"':'')?>><?php echo $name?></option>
-          <?php endforeach;?>
+        <select id="template-type" class="chosen">
+            <?php 
+            $num_of_post_types = count( $pl_shortcode_types );
+            $i = 0;
+      
+            foreach( $pl_shortcode_types as $post_type => $label ):
+              $i++;
+              $link_class = ($post_type == $pl_post_type) ? 'selected_type' : '';
+              $selected = ( !empty($link_class) ) ? 'selected="selected"' : '';
+              ?>
+              <option id="pl_post_type_<?php echo $post_type; ?>" class="<?php echo $link_class; ?>" value="pl_post_type_<?php echo $post_type; ?>" <?php echo $selected; ?>>
+                <?php echo $label; ?>
+              </option>
+              <?php
+            endforeach;
+            ?>
         </select>
       </div>
 
@@ -53,7 +65,7 @@ $current_type = '';
     <section id="edit-template-contents" class="row-fluid">
 
       <!-- Template HTML/CSS -->
-      <div id="edit-html-css" class="span8">
+      <div id="edit-html-css" class="span8 area_snippet">
 
         <!-- Use existing template lightbox -->
         <a href="#">Use existing template as a base for this new template</a>
@@ -79,7 +91,7 @@ $current_type = '';
         </div>
 
         <!-- Save Button -->
-        <button id="save-template" class="green">Save</button>
+        <input type="button" tabindex="2" value="Create" class="button-primary save_snippet" />
 
       </div>
 
@@ -99,34 +111,3 @@ $current_type = '';
   <!-- /edit-template-metabox-inner -->
 
 </div>
-<script type="text/javascript">
-jQuery("select.chosen").chosen({no_results_text: "No results matched"});
-
-jQuery(document).ready(function() {
-
-  $('#toggle-before-widget').click(function() {
-    if ($('textarea#before-widget').hasClass('is-visible')) {
-      $('textarea#before-widget').removeClass('is-visible');
-    } else {
-      $('textarea#before-widget').addClass('is-visible');
-    };
-  });
-
-  $('#toggle-after-widget').click(function() {
-    if ($('textarea#after-widget').hasClass('is-visible')) {
-      $('textarea#after-widget').removeClass('is-visible');
-    } else {
-      $('textarea#after-widget').addClass('is-visible');
-    };
-  });
-
-  if ( $('textarea#before-widget').val() ) {
-    $('textarea#before-widget').addClass('is-visible');
-  };
-  
-  if ( $('textarea#after-widget').val() ) {
-    $('textarea#after-widget').addClass('is-visible');
-  };
-
-});
-</script>

@@ -16,51 +16,51 @@ class PL_Js_Helper {
 		if ($hook == 'themes.php' && defined('HOSTED_PLUGIN_KEY')) {
 			self::register_enqueue_if_not('premium', trailingslashit(PL_JS_URL) . 'admin/premium.js', array('jquery'));
 			self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) . 'admin/free-trial.js', array('jquery-ui-core', 'jquery-ui-dialog'));
-			
+
 			// Print global JS var containing premium theme list...
 			global $PL_CUSTOMIZER_THEMES;
 			ob_start();
-			?> 
-			  <script type="text/javascript"> 
-			    var pl_premThemes = [];
-			    <?php foreach ( $PL_CUSTOMIZER_THEMES['Premium'] as $name => $template ): ?>
-			      pl_premThemes.push("<?php echo $template; ?>");
-			    <?php endforeach; ?>
-			  </script>
+			?>
+			<script type="text/javascript"> 
+				var pl_premThemes = [];
+				<?php foreach ( $PL_CUSTOMIZER_THEMES['Premium'] as $name => $template ): ?>
+					pl_premThemes.push("<?php echo $template; ?>");
+				<?php endforeach; ?>
+			</script>
 			<?php
 			echo ob_get_clean();
-
+			
 			// Launch dialog after theme is switched...
 			if ( PL_Bootup::is_theme_switched() ) {
-	    		self::register_enqueue_if_not('theme-switch', trailingslashit(PL_JS_URL) . 'admin/theme-switch.js', array('jquery-ui-core', 'jquery-ui-dialog'));  
-	    	}
+				self::register_enqueue_if_not('theme-switch', trailingslashit(PL_JS_URL) . 'admin/theme-switch.js', array('jquery-ui-core', 'jquery-ui-dialog'));
+			}
 
-	    	// Don't load any other scripts...
+			// Don't load any other scripts...
 			return;
-		} 
+		}
 
 		// Handle plugin admin pages...
-		$pages = array('placester_page_placester_properties', 
-					   'placester_page_placester_property_add', 
-					   'placester_page_placester_settings', 
-					   'placester_page_placester_support', 
-					   'placester_page_placester_theme_gallery', 
-					   'placester_page_placester_integrations',
-					   'placester_page_placester_settings_polygons', 
-					   'placester_page_placester_settings_property_pages', 
-					   'placester_page_placester_settings_international', 
-					   'placester_page_placester_settings_neighborhood',
-					   'placester_page_placester_settings_filtering', 
-					   'placester_page_placester_settings_client',
-					   'placester_page_placester_lead_capture',
-					   'placester_page_placester_settings_template',
-					   'placester_page_placester_shortcodes_template_edit',
-						 'placester_page_placester_shortcodes',
-						 'placester_page_placester_shortcodes_shortcode_edit'
-					   );
+		$pages = array( 'placester_page_placester_properties',
+						'placester_page_placester_property_add',
+						'placester_page_placester_settings',
+						'placester_page_placester_support',
+						'placester_page_placester_theme_gallery',
+						'placester_page_placester_integrations',
+						'placester_page_placester_settings_polygons',
+						'placester_page_placester_settings_property_pages',
+						'placester_page_placester_settings_international',
+						'placester_page_placester_settings_neighborhood',
+						'placester_page_placester_settings_filtering',
+						'placester_page_placester_settings_client',
+						'placester_page_placester_lead_capture',
+						'placester_page_placester_settings_template',
+						'placester_page_placester_shortcodes_template_edit',
+						'placester_page_placester_shortcodes',
+						'placester_page_placester_shortcodes_shortcode_edit'
+		);
 
 		if (!in_array($hook, $pages)) { return; }
-		
+
 		// Load JS available to all of the plugin's pages...
 		self::register_enqueue_if_not('global', trailingslashit(PL_JS_URL) . 'admin/global.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 
@@ -68,21 +68,21 @@ class PL_Js_Helper {
 		if (!PL_Option_Helper::api_key()) {
 			self::register_enqueue_if_not('sign-up', trailingslashit(PL_JS_URL) . 'admin/sign-up.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 		}
-		
+
 		if ($hook == 'placester_page_placester_properties') {
-			self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) . 'datatables/jquery.dataTables.js', array('jquery'));			
+			self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) . 'datatables/jquery.dataTables.js', array('jquery'));
 			self::register_enqueue_if_not('my-listings', trailingslashit(PL_JS_URL) . 'admin/my-listings.js', array('jquery', 'jquery-ui-datepicker'));
 		}
 
-		if ($hook == 'placester_page_placester_property_add') {						
-			self::register_enqueue_if_not('blueimp-iframe', trailingslashit(PL_JS_LIB_URL) . 'blueimp/js/jquery.iframe-transport.js', array('jquery'));			
-			self::register_enqueue_if_not('blueimp-file-upload', trailingslashit(PL_JS_LIB_URL) . 'blueimp/js/jquery.fileupload.js', array('jquery'));			
-			self::register_enqueue_if_not('add-listing', trailingslashit(PL_JS_URL) . 'admin/add-listing.js', array('jquery', 'jquery-ui-datepicker'));			
+		if ($hook == 'placester_page_placester_property_add') {
+			self::register_enqueue_if_not('blueimp-iframe', trailingslashit(PL_JS_LIB_URL) . 'blueimp/js/jquery.iframe-transport.js', array('jquery'));
+			self::register_enqueue_if_not('blueimp-file-upload', trailingslashit(PL_JS_LIB_URL) . 'blueimp/js/jquery.fileupload.js', array('jquery'));
+			self::register_enqueue_if_not('add-listing', trailingslashit(PL_JS_URL) . 'admin/add-listing.js', array('jquery', 'jquery-ui-datepicker'));
 		}
 
-		if ($hook == 'placester_page_placester_theme_gallery') {						
+		if ($hook == 'placester_page_placester_theme_gallery') {
 			self::register_enqueue_if_not('theme-gallery', trailingslashit(PL_JS_URL) . 'admin/theme-gallery.js', array('jquery'));
-			self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) . 'admin/free-trial.js', array('jquery-ui-core', 'jquery-ui-dialog'));	
+			self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) . 'admin/free-trial.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 		}
 
 		if ($hook == 'placester_page_placester_integrations') {
@@ -91,83 +91,87 @@ class PL_Js_Helper {
 		}
 
 		if ($hook == 'placester_page_placester_lead_capture') {
-			self::register_enqueue_if_not('lead-capture', trailingslashit(PL_JS_URL) . 'admin/lead-capture/general.js', array('jquery-ui-core', 'jquery-ui-dialog'));	
+			self::register_enqueue_if_not('lead-capture', trailingslashit(PL_JS_URL) . 'admin/lead-capture/general.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 		}
 
 		if ($hook == 'placester_page_placester_settings') {
-			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings/general.js', array('jquery-ui-core', 'jquery-ui-dialog'));	
+			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings/general.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 		}
 
 		if ($hook == 'placester_page_placester_settings_polygons') {
-			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings/polygon.js', array('jquery'));	
-			self::register_enqueue_if_not('new-colorpicker', trailingslashit(PL_JS_URL) . 'lib/colorpicker/js/colorpicker.js', array('jquery'));	
-			self::register_enqueue_if_not('google-maps', 'http://maps.googleapis.com/maps/api/js?sensor=false', array('jquery'));	
-			self::register_enqueue_if_not('text-overlay', trailingslashit(PL_JS_URL) . 'lib/google-maps/text-overlay.js', array('jquery'));	
-			self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) . 'datatables/jquery.dataTables.js', array('jquery'));	
+			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings/polygon.js', array('jquery'));
+			self::register_enqueue_if_not('new-colorpicker', trailingslashit(PL_JS_URL) . 'lib/colorpicker/js/colorpicker.js', array('jquery'));
+			self::register_enqueue_if_not('google-maps', 'http://maps.googleapis.com/maps/api/js?sensor=false', array('jquery'));
+			self::register_enqueue_if_not('text-overlay', trailingslashit(PL_JS_URL) . 'lib/google-maps/text-overlay.js', array('jquery'));
+			self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) . 'datatables/jquery.dataTables.js', array('jquery'));
 		}
 
 		if ($hook == 'placester_page_placester_settings_property_pages') {
-			self::register_enqueue_if_not('settings-property', trailingslashit(PL_JS_URL) . 'admin/settings/property.js', array('jquery'));	
-			self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) . 'datatables/jquery.dataTables.js', array('jquery'));	
+			self::register_enqueue_if_not('settings-property', trailingslashit(PL_JS_URL) . 'admin/settings/property.js', array('jquery'));
+			self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) . 'datatables/jquery.dataTables.js', array('jquery'));
 		}
-		
+
 		if ($hook == 'placester_page_placester_settings_international') {
-			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings/international.js', array('jquery'));	
-			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings.js', array('jquery'));	
+			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings/international.js', array('jquery'));
+			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings.js', array('jquery'));
 		}
-		
+
 		if ($hook == 'placester_page_placester_settings_neighborhood') {
-			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings.js', array('jquery'));	
+			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings.js', array('jquery'));
 		}
-		
+
 		if ($hook == 'placester_page_placester_settings_filtering') {
-			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings/filtering.js', array('jquery'));	
+			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings/filtering.js', array('jquery'));
 		}
-		
+
 		if ($hook == 'placester_page_placester_settings_client') {
-			self::register_enqueue_if_not('settings-client', trailingslashit(PL_JS_URL) . 'admin/settings/client.js', array('jquery'));	
+			self::register_enqueue_if_not('settings-client', trailingslashit(PL_JS_URL) . 'admin/settings/client.js', array('jquery'));
 		}
-		
+
 		if ($hook == 'placester_page_placester_settings_template') {
-			self::register_enqueue_if_not('settings-template', trailingslashit(PL_JS_URL) . 'admin/settings/template.js', array('jquery'));	
+			self::register_enqueue_if_not('settings-template', trailingslashit(PL_JS_URL) . 'admin/settings/template.js', array('jquery'));
 		}
 
 		// Shortcodes and Shortcode Templates
-		if ($hook == 'placester_page_placester_shortcodes_template_edit' ||
-				$hook ==  'placester_page_placester_shortcodes' ||
-				$hook == 'placester_page_placester_shortcodes_shortcode_edit') {
-			
-			wp_enqueue_script('settings-template', trailingslashit(PL_JS_URL) .  'admin/settings/template.js', array( 'jquery'));
-			wp_enqueue_script( 'placester-widget-chosen', trailingslashit( PL_JS_URL ) . 'lib/chosen/chosen.jquery.min.js', array( 'jquery' ), NULL, false );
-			wp_enqueue_script( 'placester-widget-code-mirror', trailingslashit( PL_JS_URL ) . 'lib/code-mirror/code-mirror.js' );
-			wp_enqueue_script( 'placester-widget-script', trailingslashit( PL_JS_URL ) . 'admin/widget-handler.js', array( 'jquery' ), '1.1.8' );
+		if ($hook == 'placester_page_placester_shortcodes_shortcode_edit') {
+			wp_enqueue_script('shortcodes-template', trailingslashit(PL_JS_URL) .  'admin/shortcodes/all.js', array('jquery'));
+			wp_enqueue_script('placester-widget-chosen', trailingslashit( PL_JS_URL ) . 'lib/chosen/chosen.jquery.min.js', array('jquery'), NULL, false );
+			wp_enqueue_style('jquery-ui-datepicker');
+			wp_enqueue_script('jquery-ui-datepicker');
+			wp_enqueue_script('datatable', trailingslashit( PLS_JS_URL ) . 'libs/datatables/jquery.dataTables.js' , array('jquery'), NULL, true );
+			wp_enqueue_style('featured-listings', OPTIONS_FRAMEWORK_DIRECTORY.'css/featured-listings.css');
+			wp_enqueue_script('featured-listing', OPTIONS_FRAMEWORK_DIRECTORY.'js/featured-listing.js', array('jquery'));
 		}
-
+		if ($hook == 'placester_page_placester_shortcodes_template_edit') {
+			wp_enqueue_script('shortcodes-template', trailingslashit(PL_JS_URL) .  'admin/shortcodes/all.js', array('jquery'));
+			wp_enqueue_script('placester-widget-chosen', trailingslashit( PL_JS_URL ) . 'lib/chosen/chosen.jquery.min.js', array('jquery'), NULL, false );
+			wp_enqueue_script('placester-widget-code-mirror', trailingslashit( PL_JS_URL ) . 'lib/code-mirror/code-mirror.js');
+		}
+		
 	}
 
 	public static function admin_menu_url() {
 		?>
-			<script type="text/javascript">
-				var adminurl = '<?php echo ADMIN_MENU_URL; ?>';
-				var siteurl = '<?php echo site_url(); ?>';
-			</script>
+		<script type="text/javascript">
+			var adminurl = '<?php echo ADMIN_MENU_URL; ?>';
+			var siteurl = '<?php echo site_url(); ?>';
+		</script>
 		<?php
-
 	}
 
 	public static function frontend() {
-		self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) . 'datatables/jquery.dataTables.js', array('jquery'));			
+		self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) . 'datatables/jquery.dataTables.js', array('jquery'));
 		self::register_enqueue_if_not('leads', trailingslashit(PL_JS_PUB_URL) . 'leads.js', array('jquery'));
 		self::register_enqueue_if_not('membership', trailingslashit(PL_JS_PUB_URL) . 'membership.js', array('jquery'));
 		self::register_enqueue_if_not('general', trailingslashit(PL_JS_PUB_URL) . 'general.js', array('jquery'));
-		
+
 		if ( PL_Option_Helper::get_demo_data_flag() && current_user_can('manage_options') ) {
 			self::register_enqueue_if_not('infobar', trailingslashit(PL_JS_PUB_URL) . 'infobar.js', array('jquery'));
 		}
 
 		if ( defined('PL_ANALYTICS_SCRIPT_URL') && PL_Analytics::can_collect() ) {
 			self::register_enqueue_if_not('infobar', PL_ANALYTICS_SCRIPT_URL);
-		}		
+		}
 	}
 
 	public static function customizer() {
@@ -179,20 +183,20 @@ class PL_Js_Helper {
 		self::register_enqueue_if_not('global', trailingslashit(PL_JS_URL) . 'admin/global.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 		self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) . 'admin/free-trial.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 
-	    if ( PL_Bootup::is_theme_switched() && !PL_Customizer_Helper::is_onboarding() ) {
-	    	self::register_enqueue_if_not('theme-switch', trailingslashit(PL_JS_URL) . 'admin/theme-switch.js', array('jquery-ui-core', 'jquery-ui-dialog'));  
-	    }
+		if ( PL_Bootup::is_theme_switched() && !PL_Customizer_Helper::is_onboarding() ) {
+			self::register_enqueue_if_not('theme-switch', trailingslashit(PL_JS_URL) . 'admin/theme-switch.js', array('jquery-ui-core', 'jquery-ui-dialog'));
+		}
 	}
 
 	public static function register_enqueue_if_not($name, $path, $dependencies = array(), $version = null, $in_footer = false) {
 		if (!wp_script_is($name, 'registered')) {
-			wp_register_script($name, $path, $dependencies, $version, $in_footer);		
+			wp_register_script($name, $path, $dependencies, $version, $in_footer);
 		}
 
 		if (!wp_script_is($name, 'queue')) {
-			wp_enqueue_script($name);		
-		}	
+			wp_enqueue_script($name);
+		}
 	}
 
-//end class
+	//end class
 }

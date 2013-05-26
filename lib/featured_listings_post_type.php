@@ -119,7 +119,7 @@ function pl_featured_listings_meta_box_cb( $post ) {
 	</script>
 	<h2>Pick a Listing</h2>
 	<div id="pl-fl-meta">
-		<div style="width: 400px; min-height: 200px">
+		<div>
 		
 			<p><?php _e('Listing Type:', 'pls'); ?></p>
 			<p><?php _e('Featured Listing', 'pls'); ?> <input id="pl_featured_radio" type="radio" name="pl_listing_type" value="featured" checked="checked" /></p>
