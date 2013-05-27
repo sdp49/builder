@@ -4481,3 +4481,23 @@ button.green, input[type="submit"].green {
     #edit-template-metabox-inner #subshortcodes select {
       min-height: 200px;
       font-size: 12px; }
+
+      
+#preview-wrapper {
+	width: 100%;
+	overflow: hidden;
+	position: relative;
+}
+
+#preview_load_spinner {
+	width: 100%;
+	overflow: hidden;
+	z-index: 50;
+}
+
+#preview_load_spinner img {
+	display: block;
+	width: 30px;
+	height: 30px;
+	margin: 100px auto;
+}

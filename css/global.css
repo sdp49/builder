@@ -594,15 +594,3 @@ h3.hndle {
   font-size: 12px;
 }
 
-
-
-.metabox-holder label {
-	display: block;
-	float: left;
-	width: 10em;
-}
-
-.meta_section {
-	padding-bottom: 1em;
-	border-bottom: 2px solid #afafaf;
-}

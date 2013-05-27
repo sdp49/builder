@@ -1,4 +1,13 @@
-@CHARSET "UTF-8";
+.metabox-holder label {
+	display: block;
+	float: left;
+	width: 10em;
+}
+
+.meta_section {
+	padding-bottom: 1em;
+	border-bottom: 2px solid #afafaf;
+}
 
 #widget-meta-wrapper h3 {
 	margin-bottom: .4em;
@@ -50,3 +59,23 @@
 	width: auto;
 }
 
+
+
+#preview-wrapper {
+	width: 100%;
+	overflow: hidden;
+	position: relative;
+}
+
+#preview_load_spinner {
+	width: 100%;
+	overflow: hidden;
+	z-index: 50;
+}
+
+#preview_load_spinner img {
+	display: block;
+	width: 30px;
+	height: 30px;
+	margin: 100px auto;
+}

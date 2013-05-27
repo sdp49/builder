@@ -11,7 +11,7 @@ if (!$post) {
 if ( $post ) {
 	$post_type_object = get_post_type_object( $post_type );
 	$post_ID = $post->ID;
-} 
+}
 
 
 $notice = '';
@@ -24,7 +24,7 @@ $nonce_action = 'update-post_' . $post_ID;
 ?>
 <div class="wrap pl-sc-wrap">
 	<?php echo PL_Helper_Header::pl_subpages('placester_shortcodes', $shortcode_subpages, 'Shortcode Settings'); ?>
-	
+
 	<div id="pl_shortcode_template_edit">
 		<?php if ( $notice ) : ?>
 		<div id="notice" class="error"><p><?php echo $notice ?></p></div>
@@ -32,22 +32,31 @@ $nonce_action = 'update-post_' . $post_ID;
 		<?php if ( $message ) : ?>
 		<div id="message" class="updated"><p><?php echo $message; ?></p></div>
 		<?php endif; ?>
+
 		<form name="post" action="<?php echo $form_link?>" method="post" id="post"<?php do_action('post_edit_form_tag'); ?>>
 			<?php wp_nonce_field($nonce_action); ?>
 			<input type="hidden" id="hiddenaction" name="action" value="<?php echo esc_attr( $form_action ) ?>" />
 			<input type="hidden" id="originalaction" name="originalaction" value="<?php echo esc_attr( $form_action ) ?>" />
+			<input type="hidden" id="post_ID" name="post_ID" value="<?php echo esc_attr($post_ID) ?>" />
+			<input type="hidden" id="post_type" name="post_type" value="pl_general_widget" />
 			<div id="poststuff">
-				<div id="post-body" class="metabox-holder columns-3">
+				<div id="post-body" class="metabox-holder columns-2">
 					<div id="post-body-content">
 						<?php wp_nonce_field( 'samplepermalink', 'samplepermalinknonce', false );?>
 						<div id="normal-sortables" class="meta-box-sortables">
 							<?php PL_Router::load_builder_partial('shortcode-template-box.php', array('post'=>$post));?>
 						</div>
 					</div>
+					<div id="postbox-container-1" class="postbox-container">
+						<?php
+						PL_Router::load_builder_partial('save-box-side.php', array('post'=>$post));
+						PL_Router::load_builder_partial('shortcode-preview.php', array('post'=>$post));
+						?>
+					</div>
 				</div><!-- /post-body -->
 			</div>
 		</form>
-		
+	
 		<div id="ajax-response"></div>
 	</div>
 </div>

@@ -4,7 +4,10 @@
 
 jQuery(document).ready(function($){
 
-	wptitlehint = function(id) {
+	/**
+	 * Put hint text into a text input
+	 */
+	function wptitlehint(id) {
 		id = id || 'title';
 
 		var title = $('#' + id), titleprompt = $('#' + id + '-prompt-text');
@@ -27,7 +30,6 @@ jQuery(document).ready(function($){
 			$(this).unbind(e);
 		});
 	}
-	wptitlehint();
 	
 	function validate_title() {
         var $title = $('input#title');
@@ -45,7 +47,7 @@ jQuery(document).ready(function($){
 	}
 
 	/**
-	 * Any time we change a field call this to save changes, which updates the preview window
+	 * Any time we change a field on the shortcode edit page call this to save changes, which updates the preview window
 	 */
 	function widget_autosave() {
 
@@ -53,6 +55,8 @@ jQuery(document).ready(function($){
 			return;
 		}
 
+		$('#preview_load_spinner').show();
+		
 		var post_id = $("#post_ID").val();
 		var post_type = $('#pl_post_type').val() || "";
 		var shortcode_type = pls_get_shortcode_by_post_type( post_type );
@@ -67,6 +71,16 @@ jQuery(document).ready(function($){
 
 			featured[element_key] = $(this).val();
 		});
+		
+		// set a limit on max widget size
+		var $width = $('#widget-meta-wrapper input#width');
+		if ($width.val() > 1024 ) {
+			$width.val('1024');
+		}
+		var $height = $('#widget-meta-wrapper input#height');
+		if ($height.val() > 1024 ) {
+			$height.val('1024');
+		}
 
 		var static_listings = {};
 		static_listings.location = {};
@@ -171,12 +185,43 @@ jQuery(document).ready(function($){
 					}
 
 					$('#preview-meta-widget').html("<iframe src='" + siteurl + "/?p=" + post_id + "&preview=true' width='" + frame_width + "px' height='" + frame_height + "px' " + widget_class + "></iframe>");
+					$('#preview-meta-widget iframe').load( function() {
+						$('#preview_load_spinner').hide();
+					});
 					// $('#preview-meta-widget').css('height', post_data['height']);
 					$('#pl-review-link').show();
 				}, 800);
 			}
 		});
-	};
+	}
+	
+	/**
+	 * Save for the template edit page
+	 */
+	function widget_template_autosave() {
+		var post_id = $("#post_ID").val();
+		var post_type = $('#pl_post_type').val() || "";
+		var post_data = {
+				'post_id': post_id,
+                'action': 'autosave_widget',
+                'pl_post_type': post_type,
+                'pl_cpt_template': $(tpl_selector).parent().find('option:selected').val(),
+                'pl_template_before_block': $('pl_template_before_block').val(),
+                'pl_template_after_block': $('pl_template_after_block').val(),
+                'meta_box_nonce': $('#meta_box_nonce').val(),
+                'form_action_url': $('#form_action_url').val(),
+		};
+
+		$.ajax({
+			data: post_data,
+			// beforeSend: doAutoSave ? autosave_loading : null,
+			type: "POST",
+			url: ajaxurl,
+			success: function( response ) {
+			}
+		});
+	}
+	
 
 	function pls_get_shortcode_by_post_type( post_type ) {
 		switch( post_type ) {
@@ -185,9 +230,7 @@ jQuery(document).ready(function($){
 		case 'pl_form':					return 'search_form';
 		case 'pl_slideshow':			return 'listing_slideshow';
 		case 'pl_static_listings':		return 'static_listings';
-
-		default:
-			return post_type;
+		default:						return post_type;
 		}
 	}
 
@@ -242,33 +285,6 @@ jQuery(document).ready(function($){
 	if ( $('#after-widget-textarea').val() ) {
 		$('#after-widget-wrapper').addClass('is-visible');
 	};
-
-
-	////////////////////////////////////////
-	//Add/Remove Options/Filters Key/Value Pairs
-	////////////////////////////////////////
-
-	// Add option/filter
-	$('#add-new-option').click(function() {
-
-		var k = $('#sc-add-option-key select').val();
-		var v = $('#sc-add-option-value .active').val();
-
-		$('#added-filters').append(
-				'<div class="row-fluid added-filters-single added-kv-pair">' +
-				'<div class="span6 unified-row">' + k + '</div>' +
-				'<div class="span4 unified-row">' + v + '</div>' +
-				'<input type="hidden" name="' + k + '" value="' + v + '">' +
-				'<div class="span1"><button class="btn btn-danger delete-option">x</button></div>' +
-				'</div>'
-		);
-
-	});
-
-	// Remove option/filter
-	$('.delete-option').click(function() {
-		$(this).parent().parent().remove();
-	});
 
 
 	////////////////////////////////////////
@@ -340,11 +356,13 @@ jQuery(document).ready(function($){
 		$('#metadata-min_avail_on_picker').datepicker();
 	}
 
-	// click a new post type as a widget type
+	
+	////////////////////////////////////////
+	// Changing shortcode type
+	////////////////////////////////////////
 	$('#edit-sc-choose-type select').change(function() {
 
-		//var selected_cpt = $(this).attr('id').substring('pl_post_type_'.length);
-		var selected_cpt = $(this).parent().find(':selected').val().substring('pl_post_type_'.length);
+		var selected_cpt = $(this).val().substring('pl_post_type_'.length);
 		if( selected_cpt == 'undefined' ) {
 			// clicking "Select" shouldn't reflect the choice
 			$('#widget-meta-wrapper').hide();
@@ -357,7 +375,7 @@ jQuery(document).ready(function($){
 		$('#pl_post_type').val(selected_cpt);
 
 		// hide values not related to the post type and reveal the ones to be used
-		$('#widget-meta-wrapper .pl_widget_block > section, #pl_location_tax').each(function() {
+		$('#widget-meta-wrapper .pl_widget_block > section').each(function() {
 			var section_class = $(this).attr('class');
 			if( section_class !== undefined  ) {
 				if( section_class.indexOf( selected_cpt ) !== -1  ) {
@@ -412,20 +430,35 @@ jQuery(document).ready(function($){
 			$('#pl_static_listing_block').show();
 		}
 
-		$('#preview-meta-widget').html(previewPlaceholderHtml);
-
 		$('#widget-meta-wrapper input, #widget-meta-wrapper select').css('background', '#ffffff');
 		$('#widget-meta-wrapper input:disabled, #widget-meta-wrapper select:disabled').css('background', '#dddddd');
 	});
 
-	// call the custom autosave for every changed input and select
-	$('#pl_shortcode_edit input, #pl_shortcode_edit select').change(function() {
-		widget_autosave();
+	// hide advanced values for static listings area
+	$('#pl_static_listing_block #advanced').css('display', 'none');
+	$('#pl_static_listing_block #amenities').css('display', 'none');
+	$('#pl_static_listing_block #custom').css('display', 'none');
+	$('<a href="#basic" id="pl_show_advanced" style="line-height: 50px;">Show Advanced filters</a>').insertBefore('#pl_static_listing_block #advanced');
+	$('<a href="#basic" id="pl_hide_advanced" style="line-height: 50px; display: none;">Hide Advanced filters</a>').insertAfter('#pl_static_listing_block #custom');
+	$('#pl_show_advanced').click(function() {
+		$(this).hide();
+		$('#pl_static_listing_block #advanced').css('display', 'block');
+		$('#pl_static_listing_block #amenities').css('display', 'block');
+		$('#pl_static_listing_block #custom').css('display', 'block');
+		$('#pl_hide_advanced').show();
+	});
+	$('#pl_hide_advanced').click(function() {
+		$(this).hide();
+		$('#pl_static_listing_block #advanced').css('display', 'none');
+		$('#pl_static_listing_block #amenities').css('display', 'none');
+		$('#pl_static_listing_block #custom').css('display', 'none');
+		$('#pl_show_advanced').show();
 	});
 	$('#save-featured-listings').click(function() {
 		setTimeout( widget_autosave, 1000 );
 	});
 
+	// popup preview dialog
 	$('#pl-review-link').click(function(e) {
 		e.preventDefault();
 
@@ -443,47 +476,38 @@ jQuery(document).ready(function($){
 		});
 	});
 
-	// hide advanced values for static listings area
-	$('#pl_static_listing_block #advanced').css('display', 'none');
-	$('#pl_static_listing_block #amenities').css('display', 'none');
-	$('#pl_static_listing_block #custom').css('display', 'none');
-	$('<a href="#basic" id="pl_show_advanced" style="line-height: 50px;">Show Advanced filters</a>').insertBefore('#pl_static_listing_block #advanced');
-	$('<a href="#basic" id="pl_hide_advanced" style="line-height: 50px; display: none;">Hide Advanced filters</a>').insertAfter('#pl_static_listing_block #custom');
-
-	$('#pl_show_advanced').click(function() {
-		$(this).hide();
-		$('#pl_static_listing_block #advanced').css('display', 'block');
-		$('#pl_static_listing_block #amenities').css('display', 'block');
-		$('#pl_static_listing_block #custom').css('display', 'block');
-		$('#pl_hide_advanced').show();
-	});
-
-	$('#pl_hide_advanced').click(function() {
-		$(this).hide();
-		$('#pl_static_listing_block #advanced').css('display', 'none');
-		$('#pl_static_listing_block #amenities').css('display', 'none');
-		$('#pl_static_listing_block #custom').css('display', 'none');
-		$('#pl_show_advanced').show();
-	});
-
 	// reset before the view, hide everything
 	$('#widget-meta-wrapper section, #pl_featured_listing_block').hide();
 	$('.pl_template_block section').show();
-	$('#widget-meta-wrapper').show();
+	var $selected_cpt = $('#edit-sc-choose-type select');
+	if ($selected_cpt.length && $selected_cpt.val().substring('pl_post_type_'.length) != 'undefined' ) {
+		$('#widget-meta-wrapper').show();
+	}
 
+	// call the custom autosave for every changed input and select in the shortcode edit view
+	$('#pl_shortcode_edit input, #pl_shortcode_edit select').change(function() {
+		widget_autosave();
+	});
+
+
+	////////////////////////////////////////
+	// Template editor
+	////////////////////////////////////////
+	
 	// Update preview when creating a new template
 	$('.save_snippet').click(function() {
 		$('#pl_post_type_dropdown').trigger('change');
 	});
-
-	$('#pl-previewer-metabox-id .handlediv').click(function() {
-		if ( $('#pl-previewer-metabox-id').hasClass('closed') ){
-			$('#pl-previewer-metabox-id').css('min-height', '350px');
-		} else {
-			$('#pl-previewer-metabox-id').css('min-height', '0');
-		}
+	
+	// call the custom autosave for every changed input and select in the template edit view
+	$('#pl_shortcode_template_edit input, #pl_shortcode_template_edit select, #pl_shortcode_template_edit textarea').change(function() {
+		widget_template_autosave();
 	});
 
+	
+	
+	wptitlehint();
+	
 	try{
 //		$('#title').focus();
 		$('.pl-sc-wrap').find('input,select,button').not('#title').click(function(e){
@@ -493,4 +517,5 @@ jQuery(document).ready(function($){
 			}
 		});
 	}catch(e){}
+	
 });
