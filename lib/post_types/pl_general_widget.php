@@ -82,6 +82,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
  		add_filter( 'manage_pl_general_widget_posts_custom_column', array( $this, 'widget_custom_columns' ) );
 		add_action( 'wp_ajax_autosave', array( $this, 'autosave_refresh_iframe' ), 1 );
 		add_action( 'wp_ajax_autosave_widget', array( $this, 'autosave_save_post_for_iframe' ) );
+		add_action( 'wp_ajax_autosave_widget_template', array( $this, 'autosave_save_post_for_iframe' ) );
 		add_action( 'wp_ajax_handle_widget_script', array( $this, 'handle_iframe_cross_domain' ) );
 		add_action( 'wp_ajax_nopriv_handle_widget_script', array( $this, 'handle_iframe_cross_domain' ) );
 		add_filter( 'pl_form_section_after', array( $this, 'filter_form_section_after' ), 10, 3 );

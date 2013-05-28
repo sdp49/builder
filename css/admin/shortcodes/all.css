@@ -60,6 +60,14 @@
 }
 
 
+/* Featured Listings */
+
+#options-filters .button {
+	height: auto;
+}
+
+
+/* Preview metabox */
 
 #preview-wrapper {
 	width: 100%;
@@ -68,6 +76,7 @@
 }
 
 #preview_load_spinner {
+	margin-bottom: -230px;
 	width: 100%;
 	overflow: hidden;
 	z-index: 50;

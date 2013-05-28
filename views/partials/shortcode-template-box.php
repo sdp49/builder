@@ -9,8 +9,7 @@ $pl_shortcode_codes = PL_General_Widget_CPT::$codes;
 $current_type = '';
 ?>
 
-<div id="pl-controls-metabox-id"
-	class="postbox ">
+<div id="pl-controls-metabox-id" class="postbox ">
 	<h3>Create Shortcode Template</h3>
 
 	<div id="edit-template-metabox-inner" class="inside shortcode_container">
@@ -37,7 +36,7 @@ $current_type = '';
 			</div>
 
 			<div class="span10">
-				<select id="pl_post_type" class="chosen">
+				<select id="pl_post_type_dropdown" class="chosen">
 						<?php 
 						$num_of_post_types = count( $pl_shortcode_types );
 						$i = 0;
@@ -97,17 +96,22 @@ $current_type = '';
 
 			<!-- Search Sub-Shortcodes -->
 			<div id="subshortcodes" class="span4">
-
+			
 				<label for="search-subshortcodes">Sub-Shortcodes</label> 
 				<input type="text" placeholder="search sub-shortcodes" />
 				<select multiple>
 				</select>
+				
 			</div>
 			
-		</section>
-		<!-- /#edit-template-html-css -->
+		</section><!-- /#edit-template-html-css -->
 
-	</div>
-	<!-- /edit-template-metabox-inner -->
+		<input type="hidden" name="pl_post_type" id="pl_post_type" value="pl_map" />
+			
+		<?php wp_nonce_field( 'pl_cpt_meta_box_nonce', 'meta_box_nonce' );?>
+		
+		<div class="clear"></div>
+			
+	</div><!-- /#edit-template-metabox-inner -->
 
-</div>
+</div><!-- /.postbox -->
