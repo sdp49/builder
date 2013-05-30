@@ -72,11 +72,7 @@ class PL_Listing_Helper {
 			foreach ($listings['listings'] as $listing) {
 				// Move on if no listing info is found...
 				if (empty($listing)) { continue; }
-
-				// Rename cur_data to metadata due to API weirdness...
-				$listing['metadata'] = $listing['cur_data'];
 				// error_log(var_export($listing, true));
-				// unset($listing['cur_data']);
 
 				$listing['cur_data']['url'] = PL_Page_Helper::get_url($listing['id']);
 				$listing['location']['full_address'] = $listing['location']['address'] . ' ' . $listing['location']['locality'] . ' ' . $listing['location']['region'];
@@ -393,20 +389,14 @@ class PL_Listing_Helper {
 	public static function polygon_locations ($return_only = false) {
 		$response = array();
 		$polygons = PL_Option_Helper::get_polygons();
-		if ($return_only) {
-			foreach ($polygons as $polygon) {
-				if ($polygon['tax'] == $return_only) {
-					$response[] = $polygon['name'];
-				}
-			}
-			return $response;	
-		} else {
-			foreach ($polygons as $polygon) {
+
+		foreach ($polygons as $polygon) {
+			if (!$return_only || $polygon['tax'] == $return_only) {
 				$response[] = $polygon['name'];
 			}
-			return $response;	
 		}
 		
+		return $response;
 	}
 
   /*
@@ -458,11 +448,8 @@ class PL_Listing_Helper {
 
 	public static function convert_default_country () {
 		$country_array = PL_Helper_User::get_default_country();
-		if ($country_array['default_country']) {
-			return $country_array['default_country'];
-		} else {
-			return 'US';
-		}
+		$country = (isset($country_array['default_country']) ? $country_array['default_country'] : 'US');
+		return $country;
 	}
 
 	public static function supported_countries () {
