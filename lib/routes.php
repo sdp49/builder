@@ -70,34 +70,33 @@ class PL_Router {
 			// Fetch listing and store it in the POST global...
 			$_POST = PL_Listing_Helper::get_single_listing($_GET['id']);
 		}
-		
+		// error_log(var_export($_POST, true));
 		self::router('add-listing.php', array(), false);
 	}
 
 	public static function load_snippet($shortcode, $snippet, $type) {
 		ob_start();
-			// Add parameter validation code...
-		  switch ($type) 
-		  {
-		  	case 'custom' :
-		  	  $snippet_DB_key = ('pls_' . $shortcode . '_' . $snippet);
-		  	  $snippet_body = get_option($snippet_DB_key, 'Cannot find custom snippet...');
-		  	  echo html_entity_decode($snippet_body, ENT_QUOTES);
-		  	  break;                                                                                                     
-		  	case 'default' :
-		  	default :
-		  	  $filename = (trailingslashit(PL_VIEWS_SHORT_DIR) . trailingslashit($shortcode) . $snippet . '.php');
-		  	  //echo $filename;
-		  	  include $filename;
-		  }
+		// Add parameter validation code...
+		switch ($type) {
+		  	case 'custom':
+		  	  	$snippet_DB_key = ('pls_' . $shortcode . '_' . $snippet);
+		  	  	$snippet_body = get_option($snippet_DB_key, 'Cannot find custom snippet...');
+		  	  	echo html_entity_decode($snippet_body, ENT_QUOTES);
+		  	  	break;                                                                                                     
+		  	case 'default':
+		  	default:
+		  	  	$filename = (trailingslashit(PL_VIEWS_SHORT_DIR) . trailingslashit($shortcode) . $snippet . '.php');
+		  	  	//echo $filename;
+		  	  	include $filename;
+		}
 		return ob_get_clean();
 	}
 
 	public static function theme_gallery() {
 		if (isset($_GET['theme_url'])) {
-			self::router('install-theme.php', array('test'=>'donkey'), false);	
+			self::router('install-theme.php', array(), false);	
 		} else {
-			self::router('theme-gallery.php', array('test'=>'donkey'), false);	
+			self::router('theme-gallery.php', array(), false);	
 		}
 	}
 

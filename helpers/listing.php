@@ -19,69 +19,51 @@ class PL_Listing_Helper {
 		elseif (empty($args)) 
 		  { $args = $_GET; }
 
+		// If a list of specific property IDs was passed in, handle acccordingly...
+		if (!empty($args['property_ids']))
+			{ $args['listing_ids'] = $args['property_ids']; }
+
 		// Respect the ability for this function to return results that do NOT respect global filters..
-		if ($global_filters) {
-			$args = PL_Global_Filters::merge_global_filters($args);
-		}
+		if ($global_filters) 
+			{ $args = PL_Global_Filters::merge_global_filters($args); }
 
 		// Respect block address setting...
 		$args['address_mode'] = ( PL_Option_Helper::get_block_address() ? 'exact' : 'polygon' );
 
+		// Call the API with the given args...
 		$listings = PL_Listing::get($args);
-		foreach ($listings['listings'] as $key => $listing) {
-			$listings['listings'][$key]['cur_data']['url'] = PL_Page_Helper::get_url($listing['id']);
-			$listings['listings'][$key]['location']['full_address'] = $listing['location']['address'] . ' ' . $listing['location']['locality'] . ' ' . $listing['location']['region'];
-		}
+
+		// Make sure it contains listings, then process accordingly...
+		if (!empty($listings['listings'])) {
+			foreach ($listings['listings'] as $key => $listing) {
+				$listings['listings'][$key]['cur_data']['url'] = PL_Page_Helper::get_url($listing['id']);
+				$listings['listings'][$key]['location']['full_address'] = $listing['location']['address'] . ' ' . $listing['location']['locality'] . ' ' . $listing['location']['region'];
+			}
+		}			
 
 		return $listings;
 	}
 
-
-	public static function many_details ($args) { 
-		extract(wp_parse_args($args, array('property_ids' => array(), 'limit' => '50', 'offset' => '0')));
-		$response = array();
-		$response['listings'] = array();
-
-		if (empty($property_ids)) {
-			return array('listings' => array(), 'total' => 0);
+	public static function details ($args) {
+		if (empty($args['property_ids'])) { 
+			return array('listings' => array(), 'total' => 0); 
 		}
-		
-		// Respect the offset and limit...
-		$use_property_ids = array_slice($property_ids, $offset, $limit);
 
-		// New args array for 'get' listings call...
-		$args_get = array();
+		// Global filters should be ignored if a specific set of property IDs are requested...
+		return self::results($args, false);
+	}
 
-		// Respect block address setting
-		$args_get['address_mode'] = ( PL_Option_Helper::get_block_address() ? 'exact' : 'polygon' );
+	public static function single_listing ($property_id = null) {
+		// Sanity check...
+		if (empty($property_id)) { return null; }
 
-		// Transfer property IDs...
-		$args_get['listing_ids'] = $args['property_ids'];
-		
-		// Add options and pass below
-		// TODO: see if we could send the entire $args
-		if (isset($sort_by)) $args_get['sort_by'] = $sort_by;
-		if (isset($sort_type)) $args_get['sort_type'] = $sort_type;
-		if (isset($limit)) $args_get['limit'] = $limit;
+		// Response is always bundled...
+		$listings = self::details(array('property_ids' => array($property_id)));
 
-		// Try to retrieve details for all the listings...
-		$listings = PL_Listing::get($args_get);
-		
-		// Make sure it contains listings, then process accordingly...
-		if ( !empty($listings['listings']) ) {
-			foreach ($listings['listings'] as $listing) {
-				// Move on if no listing info is found...
-				if (empty($listing)) { continue; }
-				// error_log(var_export($listing, true));
+		// If the listings key isn't empty, return it's first value (there should only be a single listing...)
+		$listing = empty($listings['listings']) ? null : $listings['listings'][0];
 
-				$listing['cur_data']['url'] = PL_Page_Helper::get_url($listing['id']);
-				$listing['location']['full_address'] = $listing['location']['address'] . ' ' . $listing['location']['locality'] . ' ' . $listing['location']['region'];
-				$response['listings'][] = $listing;
-			}	
-		}
-		
-		$response['total'] = count($response['listings']);
-		return $response;
+		return $listing;
 	}
 
 	/*
@@ -100,28 +82,6 @@ class PL_Listing_Helper {
 		}
 		
 		return $listing_data;		
-	}
-
-	/* 
-	 * To be used specifically when a single listing's data is needed -- do NOT loop over calls to this function
-	 * to get N listings for performance reasons ('results()' and 'many_details()' in this class should be used).
-     *
-     * NOTE: Does NOT respect global filters!
-	 */
-	public static function get_single_listing ($property_id = null) {
-		// Sanity check...
-		if ( empty($property_id) ) { return null; }
-
-		// Response is always bundled...
-		$listings = PL_Listing::get( array('listing_ids' => array($property_id)) );
-
-		$listing = null;
-		if ( !empty($listings['listings']) ) {
-			// There should be only one result...
-			$listing = $listings['listings'][0];
-		}
-
-		return $listing;
 	}
 
 	public static function custom_attributes ($args = array()) {
