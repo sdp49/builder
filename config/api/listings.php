@@ -9,18 +9,19 @@ $PL_API_LISTINGS = array(
 		),
 		'args' => array(
 			'listing_ids'  => array(),
-			'listing_types' => array(
-				'label' => 'Listing Types',
-				'group' => 'listing types',
+			'compound_type' => array(
+				'label' => 'Listing Type',
+				'group' => 'Basic Details',
 				'type' => 'select',
 				'options' => array(
-					'false' => 'Any',
-					'Sublet' => 'Sublet',
-					'Residential Sale' => 'Residential Sale',
-					'Vacation Rental' => 'Vacation Rental',
-					'Residential Rental' => 'Residential Rental',
-					'Commercial Rental' => 'Commercial Rental',
-					'Commercial Sale' => 'Commercial Sale',
+					'false' => 'Not Set',
+					'res_sale' => 'Residential Sale',
+					'res_rental' => 'Residential Rental',
+					'vac_rental' => 'Vacation Rental',
+					'park_rental' => 'Parking',
+					'comm_rental' => 'Commercial Rental',
+					'comm_sale' => 'Commercial Sale',
+					'sublet' => 'Sublet'
 				)
 			),
 			'zoning_types' => array(
@@ -254,6 +255,7 @@ $PL_API_LISTINGS = array(
 		),
 		'returns' => array(
 			'id' => false,
+			'compound_type' => false,
 			'property_type' => array(),
 			'zoning_types' => array(),
 			'purchase_types' => array(),
