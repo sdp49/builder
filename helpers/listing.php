@@ -193,7 +193,7 @@ class PL_Listing_Helper {
 	          	$_POST['purchase_types'] = false;
 	      }
 		}
-		error_log(var_export($_POST, true));
+		
 		// Get listings from model
 		$api_response = PL_Listing::get($_POST);
 		
@@ -718,6 +718,4 @@ class PL_Listing_Helper {
 			"ZW" => "Zimbabwe (ZW)"
 		);
 	}
-
-//end of class
-}
+} // end of class
