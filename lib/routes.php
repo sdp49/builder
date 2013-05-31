@@ -70,7 +70,7 @@ class PL_Router {
 			// Fetch listing and store it in the POST global...
 			$_POST = PL_Listing_Helper::single_listing($_GET['id']);
 		}
-		// error_log(var_export($_POST, true));
+		
 		self::router('add-listing.php', array(), false);
 	}
 
