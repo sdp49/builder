@@ -14,10 +14,8 @@ class PL_Listing_Helper {
 	
 	public static function results ($args = array(), $global_filters = true) {
 		// Handle edge-case $args formatting and value...
-		if (!is_array($args)) 
-		  { $args = wp_parse_args($args); } 
-		elseif (empty($args)) 
-		  { $args = $_GET; }
+		if (!is_array($args)) { $args = wp_parse_args($args); } 
+		elseif (empty($args)) { $args = $_GET; }
 
 		// If a list of specific property IDs was passed in, handle acccordingly...
 		if (!empty($args['property_ids']))
@@ -39,7 +37,12 @@ class PL_Listing_Helper {
 				$listings['listings'][$key]['cur_data']['url'] = PL_Page_Helper::get_url($listing['id']);
 				$listings['listings'][$key]['location']['full_address'] = $listing['location']['address'] . ' ' . $listing['location']['locality'] . ' ' . $listing['location']['region'];
 			}
-		}			
+		}
+
+		// Make sure result is structured accordingly if empty/false/invalid...
+		if (!is_array($listings) || !is_array($listings['listings'])) { 
+			$listings = array('listings' => array(), 'total' => 0); 
+		}
 
 		return $listings;
 	}
@@ -183,7 +186,18 @@ class PL_Listing_Helper {
 		die();
 	}
 	
-	public function add_listing_ajax () {
+	private static function prepare_post_array () {
+		foreach ($_POST as $key => $value) {
+			if (is_int(strpos($key, 'property_type'))) {
+				unset( $_POST[$key] );
+				if( $value !== 'false' && ! empty( $value ) ) {
+					$_POST['metadata']['prop_type'] = $value;
+				}
+			}
+		}
+	}
+
+	public static function add_listing_ajax () {
 		self::prepare_post_array();
 		
 		$api_response = PL_Listing::create($_POST);
@@ -206,17 +220,17 @@ class PL_Listing_Helper {
 			PL_Listing::get( array('listing_ids' => array($api_response['id'])) );
 		}
 		die();
-	}	
-	
-	private static function prepare_post_array () {
-		foreach ($_POST as $key => $value) {
-			if (is_int(strpos($key, 'property_type'))) {
-				unset( $_POST[$key] );
-				if( $value !== 'false' && ! empty( $value ) ) {
-					$_POST['metadata']['prop_type'] = $value;
-				}
-			}
+	}
+
+	public static function delete_listing_ajax () {
+		$api_response = PL_Listing::delete($_POST);
+		//api returns empty, with successful header. Return actual message so js doesn't explode trying to check empty.
+		if (empty($api_response)) { 
+			echo json_encode(array('response' => true, 'message' => 'Listing successfully deleted. This page will reload momentarily.'));
+		} elseif ( isset($api_response['code']) && $api_response['code'] == 1800 ) {
+			echo json_encode(array('response' => false, 'message' => 'Cannot find listing. Try <a href="'.admin_url().'?page=placester_settings">emptying your cache</a>.'));
 		}
+		die();
 	}
 
 	public static function add_temp_image () {
@@ -254,17 +268,6 @@ class PL_Listing_Helper {
 		header('Vary: Accept');
 		header('Content-type: application/json');
 		echo json_encode($response);
-		die();
-	}
-
-	public static function delete_listing_ajax () {
-		$api_response = PL_Listing::delete($_POST);
-		//api returns empty, with successful header. Return actual message so js doesn't explode trying to check empty.
-		if (empty($api_response)) { 
-			echo json_encode(array('response' => true, 'message' => 'Listing successfully deleted. This page will reload momentarily.'));
-		} elseif ( isset($api_response['code']) && $api_response['code'] == 1800 ) {
-			echo json_encode(array('response' => false, 'message' => 'Cannot find listing. Try <a href="'.admin_url().'?page=placester_settings">emptying your cache</a>.'));
-		}
 		die();
 	}
 
