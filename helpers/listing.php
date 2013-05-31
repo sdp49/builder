@@ -53,6 +53,9 @@ class PL_Listing_Helper {
 		return self::results($args, false);
 	}
 
+	/* For backwards compatibility with older themes stuck on old versions of Blueprint */
+	public static function many_details ($args) { self::details($args); }
+
 	public static function single_listing ($property_id = null) {
 		// Sanity check...
 		if (empty($property_id)) { return null; }
