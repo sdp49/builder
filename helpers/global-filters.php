@@ -1,57 +1,68 @@
 <?php 
 
 PL_Global_Filters::init();
+
 class PL_Global_Filters {
 	
-	public static function init() {
+	public static function init () {
 		add_action('wp_ajax_user_save_global_filters', array(__CLASS__, 'set_global_filters'));
 		add_action('wp_ajax_user_remove_all_global_filters', array(__CLASS__, 'remove_all_global_filters'));
 		add_action('wp_ajax_filter_options', array(__CLASS__, 'filter_options'));
 	}
 
-
-	//
-	// Parses and merged incoming args with the current global filters
-	//
+	/*
+	 * Parses and merged incoming args with the current global filters
+	 */
 	public static function merge_global_filters ($args) {
 		// Comes back as an associative array -- false if empty.
 		$global_filters = self::get_global_filters();
 
-		//will be "false" if empty
 	    if (is_array($global_filters)) {
-
 	  		foreach ($global_filters as $attribute => $value) {
-
+	  			// Special handling for property type, comes in as property_type-{type} since it differs on listing_type
 	  			if (strpos($attribute, 'property_type') !== false ) {
-	  				//to be honest, not really sure why this is here. 
-	  				// I don't believe we currently support "property_type"
-	  				$args['property_type'] = self::handle_property_type_filter($value);
-	  			} elseif ($attribute === 'zoning_types' || $attribute === 'purchase_types' ) {
-	  				// zoning and purchase types come in as an array
-	  				// which is fine since that's what the rails app expects
-	  				$args[$attribute] = $value;
-	  			} elseif ( $attribute === 'location' || $attribute === 'metadata' ) {
-	  				// error_log(var_export($value, true));
-	  				$args = self::handle_group_filters($args, $attribute, $value);
-	  			} else {
-	  				//since the rails api doesn't like the strings "true" and "false"
-	  				//convert it into a 1 or 0
-	  				$args[$attribute] = self::handle_generic_values($value);
+	  				$args['property_type'] = is_array($value) ? implode('', $value) : $value;
+	  			} 
+	  			elseif (is_array($value)) {
+	  				// This whole thing basically traverses down the arrays for global filters
+	  				foreach ($value as $k => $v) {
+		  				// Check to see if this value is already set
+		  				if (empty($args[$attribute][$k])) {
+		  					$args[$attribute][$k] = $v;
+			  			}
+	  				}
+ 	  			} 
+	  			else {
+					$args[$attribute] = self::handle_boolean_values($value);
 	  			}
 
+	  			/*
+	  			// To be honest, not really sure why this is here -- I don't believe we currently support "property_type"
+	  			if (strpos($attribute, 'property_type') !== false ) {
+	  				$args['property_type'] = self::handle_property_type_filter($value);
+	  				continue; // move on to next attribute...
+	  			} 
+
+	  			// Handle all possible attribute types...
+	  			switch ($attribute) {
+	  				case 'zoning_types':
+	  				case 'purchase_types':
+	  					// Zoning and purchase types come in as an array, which is fine since that's what the rails app expects
+		  				$args[$attribute] = $value;
+		  				break;
+		  			case 'location':
+		  			case 'metadata':
+		  				// error_log(var_export($value, true));
+		  				$args = self::handle_group_filters($args, $attribute, $value);
+		  				break;
+		  			default:
+		  				// Since the rails api doesn't like the strings "true" and "false", convert it into a 1 or 0
+		  				$args[$attribute] = self::handle_generic_values($value);
+	  			}
+	  			*/
 	  		}
 	    }
 	    return $args;
-	}
-
-	// method that handles all "other" values.
-	// designed to handle some oddities in a catch all style.
-	private static function handle_generic_values ($value) {
-		//we'll still get random arrays in here. Like non_import, etc..
-		if ( is_array($value) ) {
-			$value = implode('', $value);
-		} 
-		return self::handle_boolean_values($value);
 	}
 
 	private static function handle_property_type_filter ($property_type_value) {
@@ -62,37 +73,47 @@ class PL_Global_Filters {
 	}
 
 	private static function handle_group_filters ($args, $attribute, $value ) {
-		//when an array in a location or metadata group has 
-		//more then 1 item, then we need to collect all values
-		//so they can be sentout as:
+		// When an array in a location or metadata group has more then 1 item, 
+		// we need to collect all values so they can be sentout as:
+		//
 		// metadata[$attribute][] = $value[0]
 		// metadata[$attribute][] = $value[1]
-		// etc..
-		if ( is_array($value) && count($value) > 1 ) {
+		//
+		if (is_array($value) && count($value) > 1) {
 			$args[$attribute] = $value;	
-		} else {
-			// if there's only a single value for an attribute, then we need to 
+		} 
+		else {
+			// If there's only a single value for an attribute, then we need to 
 			// prepend it as a non-array value. The easiest way to do this is to
 			// iterate through.
 			foreach ($value as $attribute_key => $attribute_value_as_array) {
-				$args[$attribute][$attribute_key] = implode('',$attribute_value_as_array);
+				$args[$attribute][$attribute_key] = implode('', $attribute_value_as_array);
 			}
 		}
 		return $args;
 	}
+
+	/* Method that handles all "other" values -- designed to handle some oddities in a catch all style */
+	private static function handle_generic_values ($value) {
+		// We'll still get random arrays in here, like non_import, etc..
+		if (is_array($value)) {
+			$value = implode('', $value);
+		} 
+		return self::handle_boolean_values($value);
+	}
+
 
 	/* Updates boolean values so they are properly respected by Rails */
 	private static function handle_boolean_values ($value) {
 		$val = $value;
 		if ($value === 'true') {
 			$val = 1;
-		} elseif($value === false ) {
+		} 
+		elseif ($value === 'false' ) {
 			$val = 0;
 		}
 		return $val;
 	}
-
-
 
 	public static function display_global_filters () {
 		$filters = self::get_global_filters();
@@ -116,7 +137,8 @@ class PL_Global_Filters {
 								</span>
 							<?php
 							$html .= ob_get_clean();
-						} else {
+						} 
+						else {
 							foreach ($item as $k => $value) {
 								if ($value == 'in') { continue; }
 								$label = is_int($subkey) ? $key : $key . '-' . $subkey;
@@ -155,7 +177,7 @@ class PL_Global_Filters {
 		die();
 	}
 
-	public static function get_listing_attributes() {
+	public static function get_listing_attributes () {
 		$options = array();
 
 		$attributes = PL_Config::PL_API_LISTINGS('get', 'args');
@@ -190,8 +212,6 @@ class PL_Global_Filters {
 				}
 			}
 		}
-		// pls_dump($attributes);
-		// pls_dump($options);
 		$option_html = '';
 		foreach ($options as $group => $value) {
 			ob_start();
@@ -213,7 +233,7 @@ class PL_Global_Filters {
 	 * Functionality for Global Filters
 	 */
 
-	public static function remove_all_global_filters() {
+	public static function remove_all_global_filters () {
 		$response = PL_Option_Helper::set_global_filters(array('filters' => array()));
 		if ($response) {
 			echo json_encode(array('result' => true, 'message' => 'You successfully removed all global search filters'));
@@ -223,7 +243,7 @@ class PL_Global_Filters {
 		die();
 	}
 
-	public static function get_global_filters() {
+	public static function get_global_filters () {
 		$response = PL_Option_Helper::get_global_filters();
 		return $response;
 	}
