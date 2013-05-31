@@ -14,8 +14,10 @@ class PL_Listing_Helper {
 	
 	public static function results ($args = array(), $global_filters = true) {
 		// Handle edge-case $args formatting and value...
-		if (!is_array($args)) { $args = wp_parse_args($args); } 
-		elseif (empty($args)) { $args = $_GET; }
+		if (!is_array($args)) 
+			{ $args = wp_parse_args($args); } 
+		elseif (empty($args)) 
+			{ $args = $_GET; }
 
 		// If a list of specific property IDs was passed in, handle acccordingly...
 		if (!empty($args['property_ids']))
@@ -40,7 +42,7 @@ class PL_Listing_Helper {
 		}
 
 		// Make sure result is structured accordingly if empty/false/invalid...
-		if (!is_array($listings) || !is_array($listings['listings'])) { 
+		if (!is_array($listings) || !is_array($listings['listings'])) {
 			$listings = array('listings' => array(), 'total' => 0); 
 		}
 
