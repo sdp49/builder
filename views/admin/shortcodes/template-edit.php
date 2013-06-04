@@ -15,7 +15,7 @@ else {
 }
 
 // create a temprary post that we can use to preview the template
-$post_ID = wp_insert_post( array('post_type'=>$pl_post_type));
+$post_ID = wp_insert_post(array('post_type'=>'pl_general_widget'));
 $post = get_post($post_ID);
 
 $notice = '';
@@ -26,10 +26,7 @@ $form_action = 'editpost';
 $nonce_action = 'update-post_' . $post_ID;
 
 // get link for iframe
-$permalink = '';
-if( ! $is_post_new ) {
-	$permalink = get_permalink($post->ID);
-}
+$permalink = get_permalink($post->ID);
 
 ?>
 <div class="wrap pl-sc-wrap">
@@ -79,7 +76,7 @@ if( ! $is_post_new ) {
 						// for post edits, prepare the frame related variables (iframe and script)
 						if( ! empty( $permalink ) ) {
 							$iframe = '<iframe src="' . $permalink . '"'. $style . $widget_class .'></iframe>';
-							$iframe_controller = '<script id="plwidget-' . $post->ID . '" src="' . PL_PARENT_URL . 'js/fetch-widget.js?id=' . $_GET['post'] . '"'	. $style . ' ' . $widget_class . '></script>';
+							$iframe_controller = '<script id="plwidget-' . $post->ID . '" src="' . PL_PARENT_URL . 'js/fetch-widget.js?id=' . $post->ID . '"'	. $style . ' ' . $widget_class . '></script>';
 						} 
 						PL_Router::load_builder_partial('shortcode-preview.php', array('post'=>$post));
 						?>

@@ -58,12 +58,12 @@ jQuery(document).ready(function($){
 		var selected_tpl_type = selected.parent().prop('label');
 		
 		if (selected_tpl_type=='Default') {
-			$('#edit_sc_template_create').attr("href", pl_sc_template_url+'&type='+selected_sc).show();
+			$('#edit_sc_template_create').attr("href", pl_sc_template_url+'&type='+selected_cpt).show();
 			$('#edit_sc_template_edit').hide();
 		}
 		else {
 			$('#edit_sc_template_create').hide();
-			$('#edit_sc_template_edit').attr("href", pl_sc_template_url+'&type='+selected_sc+'&id='+selected_tpl).show();
+			$('#edit_sc_template_edit').attr("href", pl_sc_template_url+'&type='+selected_cpt+'&id='+selected_tpl).show();
 		}
 	}
 
