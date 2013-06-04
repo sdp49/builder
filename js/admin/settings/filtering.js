@@ -24,41 +24,48 @@ jQuery(document).ready(function($) {
 		$.each($('#active_filters').serializeArray(), function(i, field) {
 			if (current_form_values[field.name] && current_form_values[field.name] instanceof Array) {
 				current_form_values[field.name].push(field.value);
-			} else {
+			} 
+			else {
 				current_form_values[field.name] = [field.value];	
 			};
         });
         if (current_form_values[key] == value ) {
         	$('#global_filter_message').html('That filter is already active. Select another one.');
         	$('#global_filter_message').addClass('red');
-        } else {
+        } 
+        else {
 	        if (value != 'false') {
-				$('form#active_filters').append('<span id="active_filter_item"><a href="#"  id="remove_filter"></a><span class="global_dark_label">'+key.replace('_', ' ')+'</span>: '+value.replace('_', ' ')+'<input type="hidden" name="'+key+'" value="'+value+'"></span>');	
-				
-				console.log(current_form_values[key]);
+				// console.log(current_form_values[key]);
 				if (current_form_values[key] && current_form_values[key] instanceof Array) {
 					current_form_values[key].push(value);
-				} else {
+				} 
+				else {
 					current_form_values[key] = [value];
 				}
 
 				current_form_values['action'] = 'user_save_global_filters';
-				console.log(current_form_values);
+				// console.log(current_form_values);
 				$.post(ajaxurl, current_form_values, function(data, textStatus, xhr) {
-					console.log(data);
+					// console.log(data);
 					if (data && data.result) {
 						$('#global_filter_message').removeClass('red');
 						$('#global_filter_message').html(data.message);
 						$('#global_filter_message').addClass('green');
+
+						// Add newly added filter to "Active Filters" UI...
+						$('form#active_filters').append('<span id="active_filter_item"><a href="#"  id="remove_filter"></a><span class="global_dark_label">'+key.replace('_', ' ')+'</span>: '+value.replace('_', ' ')+'<input type="hidden" name="'+key+'" value="'+value+'"></span>');
+
 						are_global_filters_active();
-					} else {
+					} 
+					else {
 						$('#global_filter_message').removeClass('green');
 						$('#global_filter_message').html(data.message);
 						$('#global_filter_message').addClass('red');					
 					};
 				}, 'json');
 				
-			} else {
+			} 
+			else {
 				console.log($('#global_filter_message'));
 				$('#global_filter_message').html('Select a value for your filter.').addClass('red');
 				$('#global_filter_message').addClass('red');
@@ -76,7 +83,8 @@ jQuery(document).ready(function($) {
 		$.each($('#active_filters').serializeArray(), function(i, field) {
 			if (current_form_values[field.name] && current_form_values[field.name] instanceof Array) {
 				current_form_values[field.name].push(field.value);
-			} else {
+			} 
+			else {
 				current_form_values[field.name] = [field.value];	
 			};
         });
@@ -88,7 +96,8 @@ jQuery(document).ready(function($) {
 				$('#global_filter_message').html(data.message);
 				$('#global_filter_message').addClass('green');
 				are_global_filters_active();
-			} else {
+			} 
+			else {
 				$('#global_filter_message').removeClass('green');
 				$('#global_filter_message').html(data.message);
 				$('#global_filter_message').addClass('red');					
@@ -112,7 +121,8 @@ jQuery(document).ready(function($) {
 				setTimeout(function () {
 					window.location.href = window.location.href;
 				}, 750);
- 			} else {
+ 			} 
+ 			else {
  				$('#global_filter_message_remove').removeClass('green');
 				$('#global_filter_message_remove').html(data.message);
 				$('#global_filter_message_remove').addClass('red');	
@@ -126,7 +136,8 @@ jQuery(document).ready(function($) {
  	function are_global_filters_active () {
  		if ($('#active_filters #active_filter_item').length > 0) {
  			$('#global_filter_wrapper').addClass('filters_active');
- 		} else {
+ 		} 
+ 		else {
  			$('#global_filter_wrapper').removeClass('filters_active');
  			$('#global_filter_active').html('');
  			$('.global_filters.tagchecklist p.label').remove();

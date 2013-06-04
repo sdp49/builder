@@ -190,10 +190,6 @@ Class PL_HTTP extends WP_Http {
 		return $o;
 	}
 
-	public static function clear_cache () {
-	    PL_Cache::clear();
-	}
-
 	/**
 	 * Override the WP_Http version so we can insert our cURL class
 	 * @see WP_Http::_get_first_available_transport()

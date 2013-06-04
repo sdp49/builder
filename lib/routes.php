@@ -62,14 +62,13 @@ class PL_Router {
 	}
 
 	public static function my_listings() {
-		self::router('my-listings.php', array('test'=>'donkey'), false);
+		self::router('my-listings.php', array(), false);
 	}
 
 	public static function add_listings() {
 		if (isset($_GET['id'])) {
-			// Fetch listing and process it...
-			$listing = PL_Listing_Helper::get_single_listing($_GET['id']);
-			$_POST = PL_Listing_Helper::process_details($listing);
+			// Fetch listing and store it in the POST global...
+			$_POST = PL_Listing_Helper::single_listing($_GET['id']);
 		}
 
 		self::router('add-listing.php', array(), false);
@@ -94,9 +93,9 @@ class PL_Router {
 
 	public static function theme_gallery() {
 		if (isset($_GET['theme_url'])) {
-			self::router('install-theme.php', array('test'=>'donkey'), false);
+			self::router('install-theme.php', array(), false);
 		} else {
-			self::router('theme-gallery.php', array('test'=>'donkey'), false);
+			self::router('theme-gallery.php', array(), false);
 		}
 	}
 

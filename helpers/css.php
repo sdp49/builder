@@ -75,11 +75,11 @@ class PL_Css_Helper {
 		}
 		
 		if ($hook == 'placester_page_placester_settings_international') {
-			self::register_enqueue_if_not('settings', trailingslashit(PL_CSS_ADMIN_URL) .  'settings.css');					
+			// self::register_enqueue_if_not('settings', trailingslashit(PL_CSS_ADMIN_URL) .  'settings/all.css');					
 		}
 		
 		if ($hook == 'placester_page_placester_settings_neighborhood') {
-			self::register_enqueue_if_not('settings', trailingslashit(PL_CSS_ADMIN_URL) .  'settings.css');					
+			// self::register_enqueue_if_not('settings', trailingslashit(PL_CSS_ADMIN_URL) .  'settings/all.css');					
 		}
 		
 		if ($hook == 'placester_page_placester_settings_client') {
