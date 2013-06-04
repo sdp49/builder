@@ -13,17 +13,17 @@ $pl_shortcode_types = PL_General_Widget_CPT::$post_types;
 $pl_shortcode_fields = PL_General_Widget_CPT::$fields;
 
 ?>
-<div id="pl-controls-metabox-id" class="postbox ">
+<div class="postbox">
 	
 	<h3>Create Shortcode</h3>
 	
-	<div id="edit-sc-metabox-inner" class="inside">	
+	<div class="inside">	
 
 		<!-- Type and Template -->
-		<div class="meta_section">
+		<div>
 
 			<!-- Type -->
-			<section id="edit-sc-choose-type" class="post_types_list_wrapper row-fluid">
+			<section class="post_types_list_wrapper row-fluid">
 				
 				<div class="span2">
 					<label class="section-label" for="pl_post_type_dropdown">Type:</label>
@@ -57,7 +57,7 @@ $pl_shortcode_fields = PL_General_Widget_CPT::$fields;
 			</section><!-- /.post_types_list_wrapper -->
 
 			<!-- Template / Layout -->
-			<section id="edit-sc-choose-template" class="row-fluid">
+			<section id="choose_template" style="display:none;">
 				<div class="span2">
 					<label class="section-label" for="pl_template">Template:</label>
 				</div>
@@ -79,9 +79,10 @@ $pl_shortcode_fields = PL_General_Widget_CPT::$fields;
 						</div>
 						<?php add_action( 'pl_template_extra_styles', array( $this, 'update_template_block_styles' ) );?>
 					<?php endforeach;?>
-				</div>
-				<div class="offset1 span3">
-					<a href="<?php echo admin_url('admin.php?page=placester_shortcodes_template_edit')?>" id="create-new-template-link">(create new)</a>
+					<div class="edit-sc-template-edit">
+						<a id="edit_sc_template_create" href="" id="create-new-template-link">(create new)</a>
+						<a id="edit_sc_template_edit" href="" id="create-new-template-link" style="display:none;">(edit)</a>
+					</div>
 				</div>
 			</section><!-- /edit-sc-choose-template -->
 
@@ -89,7 +90,7 @@ $pl_shortcode_fields = PL_General_Widget_CPT::$fields;
 
 
 		<!-- Options / Filters -->
-		<div id="widget-meta-wrapper" style="display: none;">
+		<div id="widget_meta_wrapper"  class="sc-meta-section" style="display: none;">
 
 			<div class="pl_widget_block">
 				<div class="pl_map pl_form pl_search_listings pl_slideshow pl_neighborhood featured_listings static_listings">
@@ -156,6 +157,21 @@ $pl_shortcode_fields = PL_General_Widget_CPT::$fields;
 					?>
 				</section><!-- end of #pl_featured_listing_block -->
 				
+				<section id="pl_static_listing_block" class="static_listings pl_search_listings">
+					<?php 
+						$static_list_form = PL_Form::generate_form(
+									PL_Config::PL_API_LISTINGS('get', 'args'),
+									array('method' => "POST", 
+											'title' => true,
+											'wrap_form' => false, 
+									 		'echo_form' => false, 
+											'include_submit' => false, 
+											'id' => 'pls_admin_my_listings'),
+									'general_widget_');
+
+						echo $static_list_form;
+					 ?>
+				</section><!-- end of #pl_static_listing_block -->
 				
 			</div><!-- /.pl_widget_block -->
 

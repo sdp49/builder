@@ -31,19 +31,40 @@ jQuery(document).ready(function($){
 		});
 	}
 	
-	function validate_title() {
-        var $title = $('input#title');
+	function validate_title(field_id) {
+		if (!field_id) {
+			field_id = '#title';
+		}
+        var $title = $(field_id);
         if ($title.val() == '') {
-                var prompt = $title.attr('title');
-                if (prompt) {
-                        alert(prompt);
-                }
-                else {
-                        alert('Please enter a title first.');
-                }
-                return false;
+            var prompt = $title.attr('title');
+            if (prompt) {
+                alert(prompt);
+            }
+            else {
+                alert('Please enter a title first.');
+            }
+            return false;
         }
 		return true;
+	}
+
+	function update_template_links() {
+		var selected_cpt = $('#pl_post_type_dropdown').val().substring('pl_post_type_'.length);
+		var selected_sc = pls_get_shortcode_by_post_type(selected_cpt);
+		var $tpl_select = $('select[name="pl_template_'+selected_sc+'"]');
+		var selected = $tpl_select.find(':selected');
+		var selected_tpl = $tpl_select.val();
+		var selected_tpl_type = selected.parent().prop('label');
+		
+		if (selected_tpl_type=='Default') {
+			$('#edit_sc_template_create').attr("href", pl_sc_template_url+'&type='+selected_sc).show();
+			$('#edit_sc_template_edit').hide();
+		}
+		else {
+			$('#edit_sc_template_create').hide();
+			$('#edit_sc_template_edit').attr("href", pl_sc_template_url+'&type='+selected_sc+'&id='+selected_tpl).show();
+		}
 	}
 
 	/**
@@ -73,11 +94,11 @@ jQuery(document).ready(function($){
 		});
 		
 		// set a limit on max widget size
-		var $width = $('#widget-meta-wrapper input#width');
+		var $width = $('#widget_meta_wrapper input#width');
 		if ($width.val() > 1024 ) {
 			$width.val('1024');
 		}
-		var $height = $('#widget-meta-wrapper input#height');
+		var $height = $('#widget_meta_wrapper input#height');
 		if ($height.val() > 1024 ) {
 			$height.val('1024');
 		}
@@ -87,8 +108,10 @@ jQuery(document).ready(function($){
 		static_listings.metadata = {};
 
 		// manage static listings form params
-		if( post_type === 'static_listings' || post_type === 'search_listings'
-			|| post_type === 'pl_static_listings' || post_type === 'pl_search_listings' ) {
+		if( post_type === 'static_listings' 
+			|| post_type === 'search_listings'
+			|| post_type === 'pl_static_listings' 
+			|| post_type === 'pl_search_listings' ) {
 			$('#pl_static_listing_block .form_group input, #pl_static_listing_block .form_group select').each(function() {
 				// omit blank values and not filled ones
 				var value = $(this).val();
@@ -137,8 +160,8 @@ jQuery(document).ready(function($){
 				'pl_cpt_template': $(tpl_selector).parent().find('option:selected').val(),
 				'pl_template_before_block': $('pl_template_before_block').val(),
 				'pl_template_after_block': $('pl_template_after_block').val(),
-				'width': $('#widget-meta-wrapper input#width').val() || "250",
-				'height': $('#widget-meta-wrapper input#height').val() || "250",
+				'width': $('#widget_meta_wrapper input#width').val() || "250",
+				'height': $('#widget_meta_wrapper input#height').val() || "250",
 				'pl_featured_listing_meta': JSON.stringify(featured),
 				'radio-type': radio_type,
 				'meta_box_nonce': $('#meta_box_nonce').val(),
@@ -204,12 +227,12 @@ jQuery(document).ready(function($){
 
 		var post_type = $('#pl_post_type').val() || "";
 		var shortcode_type = pls_get_shortcode_by_post_type(post_type);
-		
+		var snippets = $('textarea.snippet').serialize();
 		var post_data = {
-				'action': 'save_custom_snippet',
-				'shortcode': shortcode_type, 
-				'snippet': $('#title').val(),
-				'snippet_body': $('#html-textarea').val(),
+				'action': 'autosave_widget_template',
+				'shortcode': shortcode_type,
+				'title': $('#title').val(),
+				'snippets': snippets,
 		};
 
 		$.ajax({
@@ -302,104 +325,25 @@ jQuery(document).ready(function($){
 
 
 	////////////////////////////////////////
-	//Activate Chosen
-	////////////////////////////////////////
-
-	$("select.chosen").chosen({no_results_text: "No results matched"});
-
-
-	////////////////////////////////////////
 	//Toggle Before/After Widget Textarea views
 	////////////////////////////////////////
 
-	$('#toggle-before-widget').click(function() {
+	$('.toggle').click(function(event) {
 		event.preventDefault();
-		if ($('#before-widget').hasClass('is-visible')) {
-			$('#before-widget').removeClass('is-visible');
-		} else {
-			$('#before-widget').addClass('is-visible');
-		};
+		var n = $(this).attr('id').lastIndexOf('_toggle'), $target;
+		if (n && ($target = $('#'+$(this).attr('id').substr(0,n)))) {
+			$target.toggle();
+		}
 	});
 
-	$('#toggle-after-widget').click(function() {
-		event.preventDefault();
-		if ($('#after-widget').hasClass('is-visible')) {
-			$('#after-widget').removeClass('is-visible');
-		} else {
-			$('#after-widget').addClass('is-visible');
-		};
-	});
-
-	if ( $('#before-widget-textarea').val() ) {
-		$('#before-widget-wrapper').addClass('is-visible');
+	if ( $('#before_widget').val() ) {
+		$('#before_widget_wrapper').show();
 	};
 
-	if ( $('#after-widget-textarea').val() ) {
-		$('#after-widget-wrapper').addClass('is-visible');
+	if ( $('#after_widget').val() ) {
+		$('#after_widget_wrapper').show();
 	};
 
-
-	////////////////////////////////////////
-	//Textarea -> CodeMirror
-	////////////////////////////////////////
-
-	if (window.CodeMirror!==undefined && $.isFunction(CodeMirror)) {
-		var el = document.getElementById("html-textarea");
-		if (el) {
-			CodeMirror.fromTextArea(el, {
-				mode: 'text/html',
-				lineNumbers: true,
-				viewportMargin: Infinity,
-				styleActiveLine: true,
-				autoCloseBrackets: true,
-				autoCloseTags: true,
-				placeholder: "Put your HTML with sub-shortcodes code here...",
-				highlightSelectionMatches: true
-			});
-		}
-
-		el = document.getElementById("css-textarea");
-		if (el) {
-			CodeMirror.fromTextArea(el, {
-				mode: 'text/css',
-				lineNumbers: true,
-				viewportMargin: Infinity,
-				styleActiveLine: true,
-				autoCloseBrackets: true,
-				autoCloseTags: true,
-				placeholder: "Put your CSS code here...",
-				highlightSelectionMatches: true
-			});
-		}
-
-		el = document.getElementById("before-widget-textarea");
-		if (el) {
-			CodeMirror.fromTextArea(el, {
-				mode: 'text/html',
-				lineNumbers: true,
-				viewportMargin: Infinity,
-				styleActiveLine: true,
-				autoCloseBrackets: true,
-				autoCloseTags: true,
-				placeholder: "Put HTML here that will appear before your shortcode....",
-				highlightSelectionMatches: true
-			});
-		}
-
-		el = document.getElementById("after-widget-textarea");
-		if (el) {
-			CodeMirror.fromTextArea(el, {
-				mode: 'text/html',
-				lineNumbers: true,
-				viewportMargin: Infinity,
-				styleActiveLine: true,
-				autoCloseBrackets: true,
-				autoCloseTags: true,
-				placeholder: "Put HTML here that will appear after your shortcode....",
-				highlightSelectionMatches: true
-			});
-		}
-	};
 
 	$('#pl_location_tax input:radio').click(radioClicks);
 
@@ -412,22 +356,26 @@ jQuery(document).ready(function($){
 	////////////////////////////////////////
 	// Changing shortcode type
 	////////////////////////////////////////
-	$('#edit-sc-choose-type select').change(function() {
+	$('#pl_post_type_dropdown').change(function() {
 
 		var selected_cpt = $(this).val().substring('pl_post_type_'.length);
 		if( selected_cpt == 'undefined' ) {
 			// clicking "Select" shouldn't reflect the choice
-			$('#widget-meta-wrapper').hide();
+			$('#choose_template').hide();
+			$('#widget_meta_wrapper').hide();
 			return;
 		}
-		$('#widget-meta-wrapper').show();
+		update_template_links();
+		
+		$('#choose_template').show();
+		$('#widget_meta_wrapper').show();
 
 		// $('#post_types_list a').removeClass('selected_type');
 		// $(this).addClass('selected_type');
 		$('#pl_post_type').val(selected_cpt);
 
 		// hide values not related to the post type and reveal the ones to be used
-		$('#widget-meta-wrapper .pl_widget_block > section').each(function() {
+		$('#widget_meta_wrapper .pl_widget_block > section').each(function() {
 			var section_class = $(this).attr('class');
 			if( section_class !== undefined  ) {
 				if( section_class.indexOf( selected_cpt ) !== -1  ) {
@@ -482,8 +430,12 @@ jQuery(document).ready(function($){
 			$('#pl_static_listing_block').show();
 		}
 
-		$('#widget-meta-wrapper input, #widget-meta-wrapper select').css('background', '#ffffff');
-		$('#widget-meta-wrapper input:disabled, #widget-meta-wrapper select:disabled').css('background', '#dddddd');
+		$('#widget_meta_wrapper input, #widget_meta_wrapper select').css('background', '#ffffff');
+		$('#widget_meta_wrapper input:disabled, #widget_meta_wrapper select:disabled').css('background', '#dddddd');
+	});
+	
+	$('#pl_sc_edit .snippet_list').change(function(){
+		update_template_links();
 	});
 
 	// hide advanced values for static listings area
@@ -515,8 +467,8 @@ jQuery(document).ready(function($){
 		e.preventDefault();
 
 		var iframe_content = $('#preview-meta-widget').html();
-		var options_width = $('#widget-meta-wrapper input#width').val() || 750;
-		var options_height = $('#widget-meta-wrapper input#height').val() || 500;
+		var options_width = $('#widget_meta_wrapper input#width').val() || 750;
+		var options_height = $('#widget_meta_wrapper input#height').val() || 500;
 
 		$('#pl-review-popup').html( iframe_content );
 		$('#pl-review-popup iframe').css('width', options_width + 'px');
@@ -529,18 +481,34 @@ jQuery(document).ready(function($){
 	});
 
 	// reset before the view, hide everything
-	$('#widget-meta-wrapper section, #pl_featured_listing_block').hide();
+	$('#widget_meta_wrapper section, #pl_featured_listing_block').hide();
 	$('.pl_template_block section').show();
+	
 	var $selected_cpt = $('#edit-sc-choose-type select');
 	if ($selected_cpt.length && $selected_cpt.val().substring('pl_post_type_'.length) != 'undefined' ) {
-		$('#widget-meta-wrapper').show();
+		$('#widget_meta_wrapper').show();
 	}
 
 	// call the custom autosave for every changed input and select in the shortcode edit view
-	$('#pl_shortcode_edit input, #pl_shortcode_edit select').change(function() {
+	$('#pl_sc_edit input, #pl_sc_edit select').change(function() {
 		widget_autosave();
 	});
 
+	wptitlehint();
+	
+	try{
+		//$('#title').focus();
+		// force a title in shortcode edit page
+		// TODO not working on safari
+		$('#pl_sc_edit').find('input,select,button').not('#title').click(function(e){
+			if (!validate_title()) {
+				e.preventDefault();
+				$('#title').focus();
+				return;
+			}
+		});
+		type_selected();
+	}catch(e){}
 
 	////////////////////////////////////////
 	// Template editor
@@ -548,31 +516,26 @@ jQuery(document).ready(function($){
 	
 	// Update preview when creating a new template
 	$('.save_snippet').click(function() {
-		$('#pl_post_type_dropdown').trigger('change');
+		$('#tpl_post_type').trigger('change');
 	});
 
-	$('#pl_post_type_dropdown').change(function(){
-		var selected_cpt = $(this).val().substring('pl_post_type_'.length);
+	function type_selected() {
+		var selected_cpt = $('#tpl_post_type').val().substring('pl_post_type_'.length);
 		$('#pl_post_type').val(selected_cpt);
-	});
+		var selected_shortcode = pls_get_shortcode_by_post_type(selected_cpt);
+		if ($('#shortcodes').length) {
+			var ref = $('#'+selected_shortcode+'_ref').html();
+			$('#shortcodes').html(ref);
+		}
+	}
+	
+	$('#tpl_post_type').change(type_selected);
 
 	// call the custom autosave for every changed input and select in the template edit view
-	$('#pl_shortcode_template_edit input, #pl_shortcode_template_edit select, #pl_shortcode_template_edit textarea').change(function() {
+	$('#pl_sc_tpl_edit').find('input, select, textarea').change(function() {
 		widget_template_autosave();
 	});
-
 	
-	
-	wptitlehint();
-	
-	try{
-//		$('#title').focus();
-		$('.pl-sc-wrap').find('input,select,button').not('#title').click(function(e){
-			if (!validate_title()) {
-				e.preventDefault();
-				$('#title').focus();
-			}
-		});
-	}catch(e){}
-	
+	// trigger an event to set up the preview pane on page load 
+	$('#tpl_post_type').trigger('change');
 });

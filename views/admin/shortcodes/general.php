@@ -1,5 +1,5 @@
 <?php
-global $pagenow, $shortcode_subpages, $submenu_file;
+global $shortcode_subpages;
 if(!class_exists('PL_Posts_List_Table')){
 	require_once( PL_LIB_DIR . 'posts-table.php' );
 }

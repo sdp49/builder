@@ -1,5 +1,5 @@
 <?php
-global $pagenow, $shortcode_subpages, $submenu_file, $parent_file, $plugin_page;
+global $shortcode_subpages;
 
 $post_ID = (int)(!empty($_REQUEST['post'])?$_REQUEST['post']:0);
 $post = get_post($post_ID);
@@ -64,7 +64,7 @@ if( ! $is_post_new ) {
 <div class="wrap pl-sc-wrap">
 	<?php echo PL_Helper_Header::pl_subpages('placester_shortcodes', $shortcode_subpages, 'Shortcode Settings'); ?>
  
-	<div id="pl_shortcode_edit" class="shortcode_option_wrapper">
+	<div id="pl_sc_edit">
 		<?php if ( $notice ) : ?>
 		<div id="notice" class="error"><p><?php echo $notice ?></p></div>
 		<?php endif; ?>
@@ -86,8 +86,7 @@ if( ! $is_post_new ) {
 								<input type="text" name="post_title" size="30" value="<?php echo esc_attr( htmlspecialchars( $post->post_title ) ); ?>" id="title" autocomplete="off" title="<?php _e('Please enter a title for this shortcode.')?>" />
 							</div>
 							<div class="inside">
-								<div id="edit-slug-box" class="hide-if-no-js">
-								</div>
+								<div id="edit-slug-box" class="hide-if-no-js"></div>
 							</div>
 							<?php wp_nonce_field( 'samplepermalink', 'samplepermalinknonce', false );?>
 						</div><!-- /titlediv -->
@@ -127,6 +126,7 @@ if( ! $is_post_new ) {
 								// $('#pl_post_type_dropdown').trigger('change');
 								$('#preview-meta-widget').html('<?php echo isset($iframe) ? $iframe : '' ?>');
 							});
+							var pl_sc_template_url = '<?php echo admin_url('admin.php?page=placester_shortcodes_template_edit')?>';
 						</script>	
 					</div>
 				</div><!-- /post-body -->
@@ -134,21 +134,19 @@ if( ! $is_post_new ) {
 		</form>
 		
 		<div id="pl-fl-meta" style="display: none;">
-			<section id="pl_static_listing_block" class="static_listings pl_search_listings">
-				<?php
-					$static_list_form = PL_Form::generate_form(
-								PL_Config::PL_API_LISTINGS('get', 'args'),
-								array('method' => "POST", 
-										'title' => true,
-										'wrap_form' => false, 
-										 'echo_form' => false, 
-										'include_submit' => false, 
-										'id' => 'pls_admin_my_listings'),
-								'general_widget_');
+			<?php
+				$static_list_form = PL_Form::generate_form(
+							PL_Config::PL_API_LISTINGS('get', 'args'),
+							array(	'method' => "POST",
+									'title' => true,
+									'wrap_form' => false,
+									'echo_form' => false,
+									'include_submit' => false,
+									'id' => 'pls_admin_my_listings'),
+							'general_widget_');
 
-					echo $static_list_form;
-				 ?>
-			</section><!-- end of #pl_static_listing_block -->
+				echo $static_list_form;
+			 ?>
 		</div>
 		
 		<div id="ajax-response"></div>

@@ -96,10 +96,9 @@ class PL_Css_Helper {
 			|| $hook == 'placester_page_placester_shortcodes_shortcode_edit') {
 			wp_enqueue_style('featured-listings', OPTIONS_FRAMEWORK_DIRECTORY.'css/featured-listings.css');
 			wp_enqueue_style( 'placester-widget', trailingslashit( PL_CSS_ADMIN_URL ) . 'shortcodes/all.css' );
-//			wp_enqueue_style( 'placester-widget-chosen', trailingslashit( PL_JS_URL ) . 'lib/chosen/chosen.css' );
 		}
 		if ( $hook == 'placester_page_placester_shortcodes_template_edit') {
-			wp_enqueue_style( 'placester-widget', trailingslashit( PL_CSS_ADMIN_URL ) . 'shortcodes/template_edit.css' );
+			wp_enqueue_style( 'placester-widget', trailingslashit( PL_CSS_ADMIN_URL ) . 'shortcodes/all.css' );
 			wp_enqueue_style( 'placester-widget-chosen', trailingslashit( PL_JS_URL ) . 'lib/chosen/chosen.css' );
 		}
 	}

@@ -3,44 +3,49 @@
  * Displays meta box used in the shortcode template edit view
  */
 
+$title = empty($title)?'':$title;
+$pl_post_type = empty($pl_post_type)?'':$pl_post_type;
+$data = empty($data)?array():$data;
+$data = wp_parse_args($data, array('before_widget'=>'', 'after_widget'=>'', 'snippet_body'=>'', 'widget_css'=>''));
+
 $pl_shortcode_types = PL_General_Widget_CPT::$post_types; 
 $pl_shortcode_codes = PL_General_Widget_CPT::$codes;
 
-$current_type = '';
 ?>
 
-<div id="pl-controls-metabox-id" class="postbox ">
+<div class="postbox ">
 	<h3>Create Shortcode Template</h3>
 
-	<div id="edit-template-metabox-inner" class="inside shortcode_container">
+	<div class="inside">
 
 		<!-- Template Name -->
-		<section id="edit-template-choose-name" class="row-fluid">
+		<section class="row-fluid">
 
 			<div class="span2">
 				<label for="edit-template-name" class="section-label">Template Name:</label>
 			</div>
 
 			<div class="span10">
-				<input type="text" id="title" class="snippet_name new_snippet_name" title="<?php _e('Please enter a name for this shortcode template.')?>" />
+				<input type="text" id="title" class="snippet_name new_snippet_name" title="<?php _e('Please enter a name for this shortcode template.')?>" value="<?php echo $title?>" />
 			</div>
 
 		</section>
-		<!-- /#edit-template-choose-name -->
+		<!-- /Template Name -->
 
-		<!-- Template Name -->
-		<section id="edit-template-choose-template" class="row-fluid">
+		<!-- Template Type -->
+		<section class="row-fluid">
 
 			<div class="span2">
-				<label for="pl_post_type" class="section-label">Template Type:</label>
+				<label for="tpl_post_type" class="section-label">Template Type:</label>
 			</div>
 
 			<div class="span10">
-				<select id="pl_post_type_dropdown" class="chosen">
+				<select id="tpl_post_type">
 						<?php 
 						$num_of_post_types = count( $pl_shortcode_types );
 						$i = 0;
-			
+						$shortcode_ref = array();
+
 						foreach( $pl_shortcode_types as $post_type => $label ):
 							$i++;
 							$link_class = ($post_type == $pl_post_type) ? 'selected_type' : '';
@@ -50,61 +55,68 @@ $current_type = '';
 								<?php echo $label; ?>
 							</option>
 							<?php
+							$shortcode_ref[$post_type] = PL_Router::load_builder_partial('shortcode-ref.php', array('shortcode' => $code), true);
 						endforeach;
 						?>
 				</select>
 			</div>
 
 		</section>
-		<!-- /#edit-template-choose-template -->
-
-		<hr class="clearfix" />
+		<!-- /Template Type -->
 
 		<!-- Template Contents -->
-		<section id="edit-template-contents" class="row-fluid">
+		<section class="row-fluid sc-meta-section">
 
 			<!-- Template HTML/CSS -->
-			<div id="edit-html-css" class="span8 area_snippet">
+			<div class="span6">
 
 				<!-- Use existing template lightbox -->
 				<a href="#">Use existing template as a base for this new template</a>
 
 				<!-- Add HTML -->
-				<label for="html-textarea">HTML</label>
-				<textarea id="html-textarea"></textarea>
+				<label for="area_snippet">HTML</label>
+				<div class="edit-box">
+					<textarea id="area_snippet" name="snippet_body" class="snippet"><?php echo $data['snippet_body']?></textarea>
+				</div>
 
 				<!-- Add CSS -->
-				<label for="css-textarea">CSS</label>
-				<textarea id="css-textarea"></textarea>
+				<label for="widget_css">CSS</label>
+				<div class="edit-box">
+					<textarea id="widget_css" name="widget_css" class="snippet"><?php echo $data['widget_css']?></textarea>
+				</div>
 
 				<!-- Add Content Before Widget -->
-				<a href="#" id="toggle-before-widget" class="clearfix">Add content before the widget</a>
-				<div id="before-widget-wrapper">
-					<textarea id="before-widget-textarea"></textarea>
+				<a href="#" id="before_widget_wrapper_toggle" class="toggle clearfix">Add content before the widget</a>
+				<div id="before_widget_wrapper" class="edit-box" style="display:none;">
+					<textarea id="before_widget" name="before_widget" class="snippet"><?php echo $data['before_widget']?></textarea>
 				</div>
 				
 				<!-- Add Content After Widget -->
-				<a href="#" id="toggle-after-widget" class="clearfix">Add content after the widget</a>
-				<div id="after-widget-wrapper">
-					<textarea id="after-widget-textarea"></textarea>
+				<a href="#" id="after_widget_wrapper_toggle" class="toggle clearfix">Add content after the widget</a>
+				<div id="after_widget_wrapper" class="edit-box" style="display:none;">
+					<textarea id="after_widget" name="after_widget" class="snippet"><?php echo $data['after_widget']?></textarea>
 				</div>
-
-				<!-- Save Button -->
-				<input type="button" tabindex="2" value="Create" class="button-primary save_snippet" />
 
 			</div>
 
 			<!-- Search Sub-Shortcodes -->
 			<div id="subshortcodes" class="span4">
-			
-				<label for="search-subshortcodes">Sub-Shortcodes</label> 
-				<input type="text" placeholder="search sub-shortcodes" />
-				<select multiple>
-				</select>
-				
+				<script type="text/javascript">
+					var shortcode_ref = <?php echo json_encode($shortcode_ref);?>
+				</script>
+				<div style="display: none;">
+					<label for="search-subshortcodes">Sub-Shortcodes</label> 
+					<input type="text" placeholder="search sub-shortcodes" />
+				</div>			
+				<div id="shortcodes"></div>
 			</div>
+			<?php foreach( PL_General_Widget_CPT::$codes as $code => $label ): ?>
+				<div class="pl_template_block" id="<?php echo $code.'_template_block';?>" style="display: none;">
+				<?php echo PL_Router::load_builder_partial('shortcode-ref.php', array('shortcode' => $code), true); ?>
+				</div>
+			<?php endforeach;?>
 			
-		</section><!-- /#edit-template-html-css -->
+		</section><!-- /Template Contents -->
 
 		<input type="hidden" name="pl_post_type" id="pl_post_type" value="pl_map" />
 			
@@ -112,6 +124,6 @@ $current_type = '';
 		
 		<div class="clear"></div>
 			
-	</div><!-- /#edit-template-metabox-inner -->
+	</div><!-- /.inside -->
 
 </div><!-- /.postbox -->

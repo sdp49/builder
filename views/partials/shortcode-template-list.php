@@ -11,7 +11,7 @@ extract(PL_Page_Helper::get_types());
 
 $pl_snippet_list = array();
 foreach ( $codes as $code ) {
-	$pl_snippet_list[$code] = PL_Snippet_Helper::get_shortcode_snippet_list($code);
+	$pl_snippet_list[$code] = PL_General_Widget_CPT::template_list($code);
 }
 $pl_active_snippets = PL_Snippet_Helper::get_active_snippet_map();
 $pl_snippet_types = array('default' => 'Default', 'custom' => 'Custom'); // Order matters, here...

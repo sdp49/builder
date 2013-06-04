@@ -1,16 +1,29 @@
 <?php
-global $pagenow, $shortcode_subpages, $submenu_file, $parent_file, $plugin_page;
+global $shortcode_subpages;
 
-$post_ID = wp_insert_post( array('post_type'=>$post_type));
+$title = (empty($_REQUEST['id'])?'':$_REQUEST['id']);
+$pl_post_type = ( empty($_REQUEST['type'])?'pl_map':$_REQUEST['type']);
+$shortcode = PL_General_Widget_CPT::get_context_template($pl_post_type);
+
+if ($shortcode) {
+	// load snippets
+	$snippets = PL_General_Widget_CPT::load_shortcode_template($shortcode, $title);
+}
+else {
+	$pl_post_type = 'pl_map';
+	$snippets = array();
+}
+
+// create a temprary post that we can use to preview the template
+$post_ID = wp_insert_post( array('post_type'=>$pl_post_type));
 $post = get_post($post_ID);
-
 
 $notice = '';
 $message = '';
+
 $form_link = '';
 $form_action = 'editpost';
 $nonce_action = 'update-post_' . $post_ID;
-
 
 // get link for iframe
 $permalink = '';
@@ -22,7 +35,7 @@ if( ! $is_post_new ) {
 <div class="wrap pl-sc-wrap">
 	<?php echo PL_Helper_Header::pl_subpages('placester_shortcodes', $shortcode_subpages, 'Shortcode Settings'); ?>
 
-	<div id="pl_shortcode_template_edit">
+	<div id="pl_sc_tpl_edit">
 		<?php if ( $notice ) : ?>
 		<div id="notice" class="error"><p><?php echo $notice ?></p></div>
 		<?php endif; ?>
@@ -41,7 +54,12 @@ if( ! $is_post_new ) {
 					<div id="post-body-content">
 						<?php wp_nonce_field( 'samplepermalink', 'samplepermalinknonce', false );?>
 						<div id="normal-sortables" class="meta-box-sortables">
-							<?php PL_Router::load_builder_partial('shortcode-template-box.php', array('post'=>$post));?>
+							<?php PL_Router::load_builder_partial('shortcode-template-box.php', array(
+									'post'=>$post, 
+									'title'=>$title,
+									'pl_post_type'=>$pl_post_type,
+									'data'=>$snippets,
+								));?>
 						</div>
 					</div>
 					<div id="postbox-container-1" class="postbox-container">
@@ -65,18 +83,6 @@ if( ! $is_post_new ) {
 						} 
 						PL_Router::load_builder_partial('shortcode-preview.php', array('post'=>$post));
 						?>
-						<script type="text/javascript">
-							jQuery(document).ready(function($) {
-								// populate slug box for the edit screen
-								<?php if( ! $is_post_new ) { ?>
-									$('#edit-slug-box').after('<div class="iframe-link"><strong>Embed Code:</strong> <?php echo esc_html( $iframe_controller ); ?></div><div class="shortcode-link"></div>');
-									$('#pl_post_type_dropdown').trigger('change');
-								<?php }	?>
-								
-								// $('#pl_post_type_dropdown').trigger('change');
-								$('#preview-meta-widget').html('<?php echo isset($iframe) ? $iframe : '' ?>');
-							});
-						</script>	
 					</div>
 				</div><!-- /post-body -->
 			</div>

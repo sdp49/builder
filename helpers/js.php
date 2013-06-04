@@ -135,7 +135,6 @@ class PL_Js_Helper {
 		// Shortcodes and Shortcode Templates
 		if ($hook == 'placester_page_placester_shortcodes_shortcode_edit') {
 			wp_enqueue_script('shortcodes-template', trailingslashit(PL_JS_URL) .  'admin/shortcodes/all.js', array('jquery'));
-			wp_enqueue_script('placester-widget-chosen', trailingslashit( PL_JS_URL ) . 'lib/chosen/chosen.jquery.min.js', array('jquery'), NULL, false );
 			wp_enqueue_style('jquery-ui-datepicker');
 			wp_enqueue_script('jquery-ui-datepicker');
 			wp_enqueue_script('datatable', trailingslashit( PLS_JS_URL ) . 'libs/datatables/jquery.dataTables.js' , array('jquery'), NULL, true );
@@ -143,8 +142,6 @@ class PL_Js_Helper {
 		}
 		if ($hook == 'placester_page_placester_shortcodes_template_edit') {
 			wp_enqueue_script('shortcodes-template', trailingslashit(PL_JS_URL) .  'admin/shortcodes/all.js', array('jquery'));
-			wp_enqueue_script('placester-widget-chosen', trailingslashit( PL_JS_URL ) . 'lib/chosen/chosen.jquery.min.js', array('jquery'), NULL, false );
-//			wp_enqueue_script('placester-widget-code-mirror', trailingslashit( PL_JS_URL ) . 'lib/code-mirror/code-mirror.js');
 		}
 		
 	}
