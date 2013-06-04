@@ -71,12 +71,12 @@ $pl_shortcode_codes = PL_General_Widget_CPT::$codes;
 			<div class="span6">
 
 				<!-- Use existing template lightbox -->
-				<a href="#">Use existing template as a base for this new template</a>
+				<a id="popup_existing_template" href="#">Use existing template as a base for this new template</a>
 
 				<!-- Add HTML -->
-				<label for="area_snippet">HTML</label>
+				<label for="snippet_body">HTML</label>
 				<div class="edit-box">
-					<textarea id="area_snippet" name="snippet_body" class="snippet"><?php echo $data['snippet_body']?></textarea>
+					<textarea id="snippet_body" name="snippet_body" class="snippet"><?php echo $data['snippet_body']?></textarea>
 				</div>
 
 				<!-- Add CSS -->

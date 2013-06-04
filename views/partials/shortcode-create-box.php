@@ -8,6 +8,7 @@ $values = get_post_custom( $post->ID );
 
 // read the post type
 $pl_post_type = isset( $values['pl_post_type'] ) ? $values['pl_post_type'][0] : '';
+$pl_cpt_template = isset( $values['pl_cpt_template'] ) ? $values['pl_cpt_template'][0] : '';
 
 $pl_shortcode_types = PL_General_Widget_CPT::$post_types; 
 $pl_shortcode_fields = PL_General_Widget_CPT::$fields;
@@ -72,12 +73,11 @@ $pl_shortcode_fields = PL_General_Widget_CPT::$fields;
 										),
 										'select_name' => 'pl_template_' . $code,
 										'class' => '',
-										'value' => $values['pl_cpt_template'][0],
+										'value' => $pl_cpt_template,
 								)
 							);
 							?>
 						</div>
-						<?php add_action( 'pl_template_extra_styles', array( $this, 'update_template_block_styles' ) );?>
 					<?php endforeach;?>
 					<div class="edit-sc-template-edit">
 						<a id="edit_sc_template_create" href="" id="create-new-template-link">(create new)</a>

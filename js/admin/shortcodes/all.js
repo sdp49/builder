@@ -523,6 +523,7 @@ jQuery(document).ready(function($){
 		var selected_cpt = $('#tpl_post_type').val().substring('pl_post_type_'.length);
 		$('#pl_post_type').val(selected_cpt);
 		var selected_shortcode = pls_get_shortcode_by_post_type(selected_cpt);
+		// update the shortcode hints
 		if ($('#shortcodes').length) {
 			var ref = $('#'+selected_shortcode+'_ref').html();
 			$('#shortcodes').html(ref);
@@ -534,6 +535,11 @@ jQuery(document).ready(function($){
 	// call the custom autosave for every changed input and select in the template edit view
 	$('#pl_sc_tpl_edit').find('input, select, textarea').change(function() {
 		widget_template_autosave();
+	});
+	
+	$('#popup_existing_template').click(function(e){
+		e.preventDefault();
+		
 	});
 	
 	// trigger an event to set up the preview pane on page load 
