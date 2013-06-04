@@ -177,6 +177,13 @@ function pl_featured_listings_meta_box_cb( $post ) {
 
 add_action( 'save_post', 'pl_featured_listings_meta_box_save' );
 function pl_featured_listings_meta_box_save( $post_id ) {
+
+	$pl_post_type = ! empty( $_POST['pl_post_type'] ) ? $_POST['pl_post_type'] : '';
+	
+	if( $pl_post_type && ($pl_post_type != 'featured_listings' && $pl_post_type != 'static_listings')) {
+		return;
+	}
+
 	// Avoid autosaves
 	if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
 	
@@ -204,7 +211,7 @@ function pl_featured_listings_meta_box_save( $post_id ) {
 			$location_arr = $post_location;
 		} else {
 			$post_location = str_replace('\\', '', $post_location); 
-			$location_arr = json_decode( $post_location );
+			$location_arr = (array)json_decode( $post_location );
 		}
 		
 		
@@ -226,7 +233,7 @@ function pl_featured_listings_meta_box_save( $post_id ) {
 		}
 		else {
 			$post_metadata = str_replace( '\\', '', $post_metadata );
-			$metadata_arr = json_decode( $post_metadata );
+			$metadata_arr = (array)json_decode( $post_metadata );
 		}
 
 		foreach( $metadata_arr as $key => $value ) {
@@ -241,12 +248,6 @@ function pl_featured_listings_meta_box_save( $post_id ) {
 		update_post_meta( $post_id, 'pl_listing_type', $_POST['pl_listing_type'] );
 	}
 
-	$pl_post_type = ! empty( $_POST['pl_post_type'] ) ? $_POST['pl_post_type'] : '';
-	
-	if( $pl_post_type === 'pl_general_widget' ) {
-		return;
-	}
-	
 	update_post_meta( $post_id, 'pl_post_type', $pl_post_type );
 	
 	if( $pl_post_type === 'featured_listings' && ! empty( $_POST['pl_template_featured_listings'] ) ) {
