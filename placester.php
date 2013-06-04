@@ -86,6 +86,16 @@ define( 'DEMO_API_KEY', '7e63514ebfad7608bbe7b4469ab470ecef4dc651099ae06fc1df680
 // Theme skin directory
 define( 'PL_THEME_SKIN_DIR', trailingslashit(PL_PARENT_DIR) . 'config/customizer/theme-skins/' );
 
+
+if (is_admin()) {
+
+	$prev_ver = get_option('pl_plugin_version', PL_PLUGIN_VERSION);
+	if ($prev_ver != PL_PLUGIN_VERSION) {
+		include_once('updater.php');
+	}
+}
+
+
 //config
 include_once('config/toggle_form_sections.php');
 include_once('config/api/custom_attributes.php');
