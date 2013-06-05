@@ -63,7 +63,7 @@ jQuery(document).ready(function($){
 		}
 		else {
 			$('#edit_sc_template_create').hide();
-			$('#edit_sc_template_edit').attr("href", pl_sc_template_url+'&type='+selected_cpt+'&id='+selected_tpl).show();
+			$('#edit_sc_template_edit').attr("href", pl_sc_template_url+'&type='+selected_cpt+'&title='+selected_tpl).show();
 		}
 	}
 

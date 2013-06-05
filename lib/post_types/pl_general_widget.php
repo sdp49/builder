@@ -540,7 +540,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	/* Template storage functions */
 
 
-	public static function save_shortcode_template($shortcode, $title, $data, $id = null) {
+	public static function save_shortcode_template($shortcode, $title, $data) {
 		if (empty(self::$codes[$shortcode])) {
 			return '';
 		}
@@ -551,13 +551,30 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		// Add to the list of custom snippet IDs for this shortcode...
 		$snippet_list_DB_key = ('pls_' . $shortcode . '_list');
 		$snip_arr = get_option($snippet_list_DB_key, array()); // If it doesn't exist, create a blank array to append...
-		$snip_arr[] = $_POST['title'];
+		$snip_arr[] = $title;
 		$snip_arr = array_unique($snip_arr);
 
 		// Update (or add) list in (to) DB...
 		update_option($snippet_list_DB_key, $snip_arr);
 
 		return $snippet_DB_key;
+	}
+
+	public static function delete_shortcode_template($id) {
+		$parts = explode('-', $id, 2);
+		if (count($parts) != 2 || empty(self::$codes[$parts[0]])) {
+			return '';
+		}
+		$snippet_DB_key = ('pls_' . $parts[0] . '__' . $parts[1]);
+		delete_option($snippet_DB_key);
+
+		// Add to the list of custom snippet IDs for this shortcode...
+		$snippet_list_DB_key = ('pls_' . $parts[0] . '_list');
+		$snip_arr = get_option($snippet_list_DB_key, array()); // If it doesn't exist, create a blank array to append...
+		unset($snip_arr[$parts[1]]);
+
+		// Update (or add) list in (to) DB...
+		update_option($snippet_list_DB_key, $snip_arr);
 	}
 
 	public static function load_shortcode_template($shortcode, $title) {

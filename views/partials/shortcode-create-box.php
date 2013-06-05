@@ -7,11 +7,31 @@
 $values = get_post_custom( $post->ID );
 
 // read the post type
-$pl_post_type = isset( $values['pl_post_type'] ) ? $values['pl_post_type'][0] : '';
-$pl_cpt_template = isset( $values['pl_cpt_template'] ) ? $values['pl_cpt_template'][0] : '';
+$pl_post_type = empty( $values['pl_post_type'] ) ? '' : $values['pl_post_type'][0];
+$pl_cpt_template = empty( $values['pl_cpt_template'] ) ? '' : $values['pl_cpt_template'][0];
+// manage featured and static listing form values
+$pl_featured_meta_value = '';
+if( ! empty( $values['pl_featured_listing_meta'] ) ) {
+	if( is_array( $values['pl_featured_listing_meta'] ) ) {
+		$pl_featured_meta_value = $values['pl_featured_listing_meta'][0];
+		$pl_featured_meta_value = @unserialize( $pl_featured_meta_value );
+
+		if( false === $pl_featured_meta_value ) {
+			$pl_featured_meta_value = @json_decode( $values['pl_featured_listing_meta'][0], true );
+		} else if( is_array( $pl_featured_meta_value ) && isset( $pl_featured_meta_value[0] ) ) {
+			$pl_featured_meta_value = $pl_featured_meta_value[0];
+		}
+		if(is_array( $pl_featured_meta_value ) && isset( $pl_featured_meta_value['featured-listings-type'] )) {
+			$pl_featured_meta_value = $pl_featured_meta_value['featured-listings-type'];
+		}
+	} else if(isset( $values['pl_featured_listing_meta']['featured-listings-type'] )) {
+		$pl_featured_meta_value = $values['pl_featured_listing_meta']['featured-listings-type'];
+	}
+}
 
 $pl_shortcode_types = PL_General_Widget_CPT::$post_types; 
 $pl_shortcode_fields = PL_General_Widget_CPT::$fields;
+
 
 ?>
 <div class="postbox">
