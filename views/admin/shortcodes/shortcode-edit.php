@@ -21,7 +21,15 @@ $notice = '';
 $message = '';
 $form_link = 'post.php';
 $form_action = 'editpost';
-$nonce_action = 'update-post_' . $post_ID;
+$nonce_action = 'update-' . $post_type . '_' . $post_ID;
+
+$user = wp_get_current_user();
+if ( $user->exists() ) {
+	$user_ID = $user->ID;
+}
+else {
+	$user_ID = 0;
+}
 
 // manage featured and static listing form values
 $pl_featured_meta_value = '';
@@ -73,6 +81,7 @@ if( ! $is_post_new ) {
 		<?php endif; ?>
 		<form name="post" action="<?php echo $form_link?>" method="post" id="post"<?php do_action('post_edit_form_tag'); ?>>
 			<?php wp_nonce_field($nonce_action); ?>
+			<input type="hidden" id="user-id" name="user_ID" value="<?php echo $user_ID; ?>" />
 			<input type="hidden" id="hiddenaction" name="action" value="<?php echo esc_attr( $form_action ) ?>" />
 			<input type="hidden" id="originalaction" name="originalaction" value="<?php echo esc_attr( $form_action ) ?>" />
 			<input type="hidden" id="post_ID" name="post_ID" value="<?php echo esc_attr($post_ID) ?>" />

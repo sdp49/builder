@@ -217,9 +217,9 @@ class PL_Posts_List_Table extends WP_List_Table {
 
 	public function pagination( $which ) {
 		global $mode;
-		
+
 		parent::pagination( $which );
-		if ( 'top' == $which && ! is_post_type_hierarchical( $this->screen->post_type ) ) {
+		if ( 'top' == $which && ! is_post_type_hierarchical( $this->post_type ) ) {
 		?>
 			<input type="hidden" name="mode" value="list" />
 		<?php
@@ -435,12 +435,13 @@ class PL_Posts_List_Table extends WP_List_Table {
 		unset( $children_pages[$parent] ); //required in order to keep track of orphans
 	}
 
-	public function single_row( $post, $level = 0 ) {
-		global $mode;
+	public function single_row( $a_post, $level = 0 ) {
+		global $post, $mode;
 		static $alternate;
-
-		$global_post = get_post();
-		$GLOBALS['post'] = $post;
+		
+		$global_post = $post;
+		$post = $a_post;
+		
 		setup_postdata( $post );
 
 		$edit_link = get_edit_post_link( $post->ID );
@@ -553,13 +554,8 @@ class PL_Posts_List_Table extends WP_List_Table {
 					$t_time = get_the_time( __( 'Y/m/d g:i:s A' ) );
 					$m_time = $post->post_date;
 					$time = get_post_time( 'G', true, $post );
-
 					$time_diff = time() - $time;
-
-					if ( $time_diff > 0 && $time_diff < DAY_IN_SECONDS )
-						$h_time = sprintf( __( '%s ago' ), human_time_diff( $time ) );
-					else
-						$h_time = mysql2date( __( 'Y/m/d' ), $m_time );
+					$h_time = mysql2date( __( 'Y/m/d' ), $m_time );
 				}
 
 				echo '<td ' . $attributes . '>';
@@ -658,7 +654,7 @@ class PL_Posts_List_Table extends WP_List_Table {
 	?>
 		</tr>
 	<?php
-		$GLOBALS['post'] = $global_post;
+		$post = $global_post;
 	}
 
 	/**
