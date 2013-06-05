@@ -121,6 +121,9 @@ include_once('lib/customizer.php');
 include_once('lib/customizer_entities.php');
 include_once('lib/social_networks.php');
 include_once('lib/analytics.php');
+include_once('lib/bootup.php');
+include_once('lib/global-filters.php');
+include_once('lib/logging.php');
 
 //post types
 include_once('lib/post_types/pl_post_type_manager.php');
@@ -147,7 +150,6 @@ include_once('helpers/header.php');
 include_once('helpers/user.php');
 include_once('helpers/pages.php');
 include_once('helpers/people.php');
-include_once('helpers/logging.php');
 include_once('helpers/compliance.php');
 include_once('helpers/integrations.php');
 include_once('helpers/custom_attributes.php');
@@ -155,14 +157,12 @@ include_once('helpers/taxonomy.php');
 include_once('helpers/google-places.php');
 include_once('helpers/wordpress.php');
 include_once('helpers/education-com.php');
-include_once('helpers/global-filters.php');
 include_once('helpers/caching.php');
 include_once('helpers/membership.php');
 include_once('helpers/lead-capture.php');
 include_once('helpers/snippet.php');
 include_once('helpers/template.php');
 include_once('helpers/customizer.php');
-include_once('helpers/bootup.php');
 
 
 //third-party scripts
