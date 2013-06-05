@@ -123,7 +123,6 @@ include_once('lib/social_networks.php');
 include_once('lib/analytics.php');
 include_once('lib/bootup.php');
 include_once('lib/global-filters.php');
-include_once('lib/logging.php');
 
 //post types
 include_once('lib/post_types/pl_post_type_manager.php');
@@ -163,7 +162,7 @@ include_once('helpers/lead-capture.php');
 include_once('helpers/snippet.php');
 include_once('helpers/template.php');
 include_once('helpers/customizer.php');
-
+include_once('helpers/logging.php');
 
 //third-party scripts
 include_once('third-party/tax-meta-class/tax-meta-class.php');
