@@ -33,6 +33,10 @@
 	line-height: 2em;
 }
 
+.inside section {
+	line-height: 2em;
+}
+
 .sc-meta-section input,
 .sc-meta-section select,
 .sc-meta-section #pl_static_listing_block input, 	/* required to override featured listings css */
