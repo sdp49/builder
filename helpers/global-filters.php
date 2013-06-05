@@ -13,152 +13,108 @@ class PL_Global_Filters {
 	/*
 	 * Parses and merged incoming args with the current global filters
 	 */
-	public static function merge_global_filters ($args) {
+	public static function merge_global_filters ($args = array()) {
 		// Comes back as an associative array -- false if empty.
 		$global_filters = self::get_global_filters();
 
-	    if (is_array($global_filters)) {
-	  		foreach ($global_filters as $attribute => $value) {
-	  			// Special handling for property type, comes in as property_type-{type} since it differs on listing_type
-	  			if (strpos($attribute, 'property_type') !== false ) {
-	  				$args['property_type'] = is_array($value) ? implode('', $value) : $value;
-	  			} 
-	  			elseif (is_array($value)) {
-	  				// This whole thing basically traverses down the arrays for global filters
-	  				foreach ($value as $k => $v) {
-		  				// Check to see if this value is already set
-		  				if (empty($args[$attribute][$k])) {
-		  					$args[$attribute][$k] = $v;
-			  			}
-	  				}
- 	  			} 
-	  			else {
-					$args[$attribute] = self::handle_boolean_values($value);
-	  			}
+		// No point in proceeding if $global_filters is not an array...
+		if (!is_array($global_filters)) { return $args; }
 
-	  			/*
-	  			// To be honest, not really sure why this is here -- I don't believe we currently support "property_type"
-	  			if (strpos($attribute, 'property_type') !== false ) {
-	  				$args['property_type'] = self::handle_property_type_filter($value);
-	  				continue; // move on to next attribute...
-	  			} 
+		// This whole thing basically traverses down the arrays for global filters...
+  		foreach ($global_filters as $attribute => $value) {
+  			if (is_array($value)) {
+  				// Used to determine whether or not $value is array of values representing filter type $attribute, or a subfilter 
+  				// (i.e, location => array("state" => "AZ", "postal" => "85215") -- location contains subfilters, not values)
+  				$keys_are_ints = true;
 
-	  			// Handle all possible attribute types...
-	  			switch ($attribute) {
-	  				case 'zoning_types':
-	  				case 'purchase_types':
-	  					// Zoning and purchase types come in as an array, which is fine since that's what the rails app expects
-		  				$args[$attribute] = $value;
-		  				break;
-		  			case 'location':
-		  			case 'metadata':
-		  				// error_log(var_export($value, true));
-		  				$args = self::handle_group_filters($args, $attribute, $value);
-		  				break;
-		  			default:
-		  				// Since the rails api doesn't like the strings "true" and "false", convert it into a 1 or 0
-		  				$args[$attribute] = self::handle_generic_values($value);
-	  			}
-	  			*/
-	  		}
-	    }
+  				foreach ($value as $k => $v) {
+	  				// Respect existing value if it is already set...
+	  				if (empty($args[$attribute][$k])) {
+	  					$args[$attribute][$k] = is_string($v) ? self::translate_string($v) : $v;
+	  					
+	  					if (is_array($v) && count($value) > 0) {
+	  						$args[$attribute]["{$k}_match"] = "in";
+	  					}
+		  			}
+		  			// If this key isn't an integer, make sure 'false' carries throughout the rest of the loop...
+		  			$keys_are_ints = $keys_are_ints && is_int($k);
+  				}
+
+  				// Check whether or not to add the match key...
+  				if ($keys_are_ints && count($value) > 0) {
+  					$args["{$attribute}_match"] = "in";
+  				}
+  			}
+  			// Respect existing value if it is already set...
+  			elseif (empty($args[$attribute])) {
+				$args[$attribute] = is_string($value) ? self::translate_string($value) : $value;
+  			}
+  		}
+
 	    return $args;
 	}
 
-	private static function handle_property_type_filter ($property_type_value) {
-		if (is_array($property_type_value)) {
-			$property_type_value = implode('', $property_type_value);
-		} 
-		return $property_type_value;
-	}
-
-	private static function handle_group_filters ($args, $attribute, $value ) {
-		// When an array in a location or metadata group has more then 1 item, 
-		// we need to collect all values so they can be sentout as:
-		//
-		// metadata[$attribute][] = $value[0]
-		// metadata[$attribute][] = $value[1]
-		//
-		if (is_array($value) && count($value) > 1) {
-			$args[$attribute] = $value;	
-		} 
-		else {
-			// If there's only a single value for an attribute, then we need to 
-			// prepend it as a non-array value. The easiest way to do this is to
-			// iterate through.
-			foreach ($value as $attribute_key => $attribute_value_as_array) {
-				$args[$attribute][$attribute_key] = implode('', $attribute_value_as_array);
-			}
-		}
-		return $args;
-	}
-
-	/* Method that handles all "other" values -- designed to handle some oddities in a catch all style */
-	private static function handle_generic_values ($value) {
-		// We'll still get random arrays in here, like non_import, etc..
-		if (is_array($value)) {
-			$value = implode('', $value);
-		} 
-		return self::handle_boolean_values($value);
-	}
-
-
-	/* Updates boolean values so they are properly respected by Rails */
-	private static function handle_boolean_values ($value) {
+	/* Updates strings that represent boolean values to the correct format for API calls */
+	private static function translate_string ($value) {
 		$val = $value;
-		if ($value === 'true') {
-			$val = 1;
-		} 
-		elseif ($value === 'false' ) {
-			$val = 0;
+
+		switch ($value) {
+			case "true": 
+				$val = 1;
+				break;
+			case "false": 
+				$val = 0;
+				break;
 		}
+		
 		return $val;
 	}
 
+	private static function render_active_filter ($key, $item, $subkey = null) {
+		// Do we need this...???
+		if ($item == 'in') { return ""; }
+		
+		$name = is_null($subkey) ? $key : "{$key}[{$subkey}]";
+		$label = is_int($subkey) ? $key : $name;
+		$value = $item;
+		
+		ob_start();
+		?>
+			<span id="active_filter_item">
+				<a href="#"  class="remove_filter"></a>
+				<span class="global_dark_label"><?php echo str_replace("_", " ", $label); ?></span> : <?php echo str_replace("_", " ", $value); ?>
+				<input type="hidden" name="<?php echo $name; ?>" value="<?php echo $value; ?>">	
+			</span>
+		<?php
+		
+		return ob_get_clean();
+	}
+
 	public static function display_global_filters () {
-		$filters = self::get_global_filters();
-		// pls_dump($filters);
 		$html = '';
-		if (!empty($filters)) {
-			foreach ($filters as $key => $filter) {
-				if (is_array($filter)) {
-					foreach ($filter as $subkey => $item) {
-						if (!is_array($item)) {
-							if ($item == 'in') { continue; }
-							$label = is_int($subkey) ? $key : $key . '-' . $subkey;
-							$value = $item;
-							$name = $key . '['.$subkey.']=';
-							ob_start();
-							?>
-								<span id="active_filter_item">
-									<a href="#"  id="remove_filter"></a>
-									<span class="global_dark_label"><?php echo $label ?></span> : <?php echo $value ?>
-									<input test="true" type="hidden" name="<?php echo $name ?>" value="<?php echo $value ?>">	
-								</span>
-							<?php
-							$html .= ob_get_clean();
-						} 
-						else {
-							foreach ($item as $k => $value) {
-								if ($value == 'in') { continue; }
-								$label = is_int($subkey) ? $key : $key . '-' . $subkey;
-								$value = $value;
-								$name = $key . '['.$subkey.'][]=';
-								ob_start();
-								?>
-									<span id="active_filter_item">
-										<a href="#"  id="remove_filter"></a>
-										<span class="global_dark_label"><?php echo $label ?></span> : <?php echo $value ?>
-										<input type="hidden" name="<?php echo $name ?>" value="<?php echo $value ?>">	
-									</span>
-								<?php
-								$html .= ob_get_clean();
-							}
+		$filters = self::get_global_filters();
+
+		// Sanity check...
+		if (empty($filters)) { return; }
+
+		foreach ($filters as $key => $filter) {
+			if (is_array($filter)) {
+				foreach ($filter as $subkey => $item) {
+					if (is_array($item)) {
+						foreach ($item as $k => $v) {
+							$html .= self::render_active_filter($key, $v, $subkey);
 						}
 					}
+					else {
+						$html .= self::render_active_filter($key, $item, $subkey);
+					} 
 				}
 			}
+			else {
+				$html .= self::render_active_filter($key, $filter);
+			}
 		}
+
 		echo $html;
 	}
 
@@ -179,7 +135,6 @@ class PL_Global_Filters {
 
 	public static function get_listing_attributes () {
 		$options = array();
-
 		$attributes = PL_Config::PL_API_LISTINGS('get', 'args');
 
 		$form_types = PL_Config::PL_API_CUST_ATTR('get');
@@ -193,18 +148,19 @@ class PL_Global_Filters {
 			} 
 
 			unset($attributes['custom']);
-			// pls_dump('custom_attributes',$response);
 		}
-		// pls_dump($attributes);
+		
 		foreach ($attributes as $key => $attribute) {
 			if ( isset($attribute['label']) ) {
 				$options['basic'][$key] = $attribute['label'];
-			} else {
+			} 
+			else {
 				foreach ($attribute as $k => $v) {
-					if (isset( $v['label'])) {
+					if (isset($v['label'])) {
 						if (is_int($k)) {
 							$options[$key][self::generate_global_filter_key_from_value($v['label'])] = $v['label'];
-						} else {
+						} 
+						else {
 							$options[$key][$k] = $v['label'];
 						}
 						
@@ -212,6 +168,7 @@ class PL_Global_Filters {
 				}
 			}
 		}
+		
 		$option_html = '';
 		foreach ($options as $group => $value) {
 			ob_start();
@@ -234,12 +191,14 @@ class PL_Global_Filters {
 	 */
 
 	public static function remove_all_global_filters () {
-		$response = PL_Option_Helper::set_global_filters(array('filters' => array()));
-		if ($response) {
-			echo json_encode(array('result' => true, 'message' => 'You successfully removed all global search filters'));
-		} else {
-			echo json_encode(array('result' => false, 'message' => 'Change not saved or no change detected. Please try again.'));
-		}
+		$filters_deleted = PL_Option_Helper::set_global_filters(array('filters' => array()));
+		$response = $filters_deleted
+					? array('result' => true, 'message' => 'You successfully removed all global search filters')
+					: array('result' => false, 'message' => 'Change not saved or no change detected. Please try again.');
+		
+		// Send response...
+		echo json_encode($response);
+		
 		die();
 	}
 
@@ -249,29 +208,27 @@ class PL_Global_Filters {
 	}
 
 	public static function set_global_filters ($args = array()) {
+		// error_log(var_export($_POST, true));
 		if (empty($args) ) {
 			unset($_POST['action']);
 			$args = $_POST;
 		}
 		
+		// Validate...
 		$global_search_filters = PL_Validate::request($args, PL_Config::PL_API_LISTINGS('get', 'args'));
-		foreach ($global_search_filters as $key => $filter) {
-			foreach ($filter as $subkey => $subfilter) {
-				if (!is_array($subfilter) && (count($filter) > 1) ) {
-					$global_search_filters[$key . '_match'] = 'in';
-				} 
-				elseif (count($subfilter) > 1) {
-					$global_search_filters[$key][$subkey . '_match'] = 'in';
-				}
-			}
-		}
-		$response = PL_Option_Helper::set_global_filters(array('filters' => $global_search_filters));
-		if ($response) {
-			echo json_encode(array('result' => true, 'message' => 'You successfully updated the global search filters'));
-		} else {
-			echo json_encode(array('result' => false, 'message' => 'Change not saved or no change detected. Please try again.'));
-		}
-		echo json_encode(self::report_filters());
+
+		// Try to save the new batch global filters...
+		$filters_saved = PL_Option_Helper::set_global_filters(array('filters' => $global_search_filters));
+		$response = $filters_saved // i.e., if filters were successfully saved...
+					? array('result' => true, 'message' => 'You successfully updated the global search filters')
+					: array('result' => false, 'message' => 'Change not saved or no change detected -- Please try again.');
+		
+		// Send response...
+		echo json_encode($response);
+
+		// Report filters to the API if necessary...
+		if ($filters_saved) { self::report_filters(); }
+
 		die();
 	}
 
