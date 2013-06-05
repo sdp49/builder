@@ -59,16 +59,22 @@ class PL_Updater {
 			foreach($results as $result) {
 				$matches = array();
 				if (preg_match('/^'.$template_opt.'_((?!list$)(.+))$/', $result->option_name, $matches)) {
-					$val = unserialize($result->option_value);
+					$val = get_option($result->option_name, '');
 					if (!is_array($val)) {
 						$val = array('snippet_body'=>$result->option_value);
+						$val = array_merge($fields, $val);
+						$query = "UPDATE ".$wpdb->prefix."options
+							SET option_name='".$template_opt."__".$matches[1]."',
+								option_value='".serialize($val)."'
+							WHERE option_name='".$result->option_name."'";
+						$results = $wpdb->get_results($query);
 					}
-					$val = array_merge($fields, $val);
-					$query = "UPDATE ".$wpdb->prefix."options
-						SET option_name='".$template_opt."__".$matches[1]."',
-							option_value='".serialize($val)."'
-						WHERE option_name='".$result->option_name."'";
-					$results = $wpdb->get_results($query);
+					else {
+						// probably been updated already
+						if (strpos($matches[1], '_')===0) {
+							$matches[1] = substr($matches[1], 1);
+						}
+					}
 					$list[] = $matches[1];
 				}
 			}
