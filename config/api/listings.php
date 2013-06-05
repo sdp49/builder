@@ -152,7 +152,7 @@ $PL_API_LISTINGS = array(
 					)
 	            ),
                 'max_baths' => array(),// => array('type' => 'text', 'group' => 'advanced', 'label' => 'Max Baths'),
-                'min_baths' => array(),//=> array('type' => 'text', 'group' => 'advanced', 'label' => 'Min Baths'),
+                'min_baths' => array(),// => array('type' => 'text', 'group' => 'advanced', 'label' => 'Min Baths'),
                 'half_baths' => array(
                 	'label' => 'Half Baths',
 	                'type' => 'select',
@@ -228,7 +228,7 @@ $PL_API_LISTINGS = array(
                 'ngb_pubsch' => array(),
 			),
 			'agency_only' => array('type' => 'checkbox', 'group' => 'advanced', 'label' => 'My Offices Listings'),
-			'non_import' => array('type' => 'checkbox',  'group' => 'advanced', 'label' => 'Non MLS Listigns'),
+			'non_import' => array('type' => 'checkbox',  'group' => 'advanced', 'label' => 'Non MLS Listings'),
 			'custom' => array(
 				'type' => 'bundle',
 				'group' => '',

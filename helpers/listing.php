@@ -5,11 +5,11 @@ PL_Listing_Helper::init();
 class PL_Listing_Helper {
 
 	public static function init () {
-		add_action('wp_ajax_datatable_ajax', array(__CLASS__, 'datatable_ajax' ) );
-		add_action('wp_ajax_add_listing', array(__CLASS__, 'add_listing_ajax' ) );
-		add_action('wp_ajax_update_listing', array(__CLASS__, 'update_listing_ajax' ) );
-		add_action('wp_ajax_add_temp_image', array(__CLASS__, 'add_temp_image' ) );
-		add_action('wp_ajax_delete_listing', array(__CLASS__, 'delete_listing_ajax' ) );
+		add_action('wp_ajax_datatable_ajax', array(__CLASS__, 'datatable_ajax'));
+		add_action('wp_ajax_add_listing', array(__CLASS__, 'add_listing_ajax'));
+		add_action('wp_ajax_update_listing', array(__CLASS__, 'update_listing_ajax'));
+		add_action('wp_ajax_add_temp_image', array(__CLASS__, 'add_temp_image'));
+		add_action('wp_ajax_delete_listing', array(__CLASS__, 'delete_listing_ajax'));
 	}
 	
 	public static function results ($args = array(), $global_filters = true) {
@@ -19,6 +19,12 @@ class PL_Listing_Helper {
 		elseif (empty($args)) 
 			{ $args = $_GET; }
 
+		/* REMOVE */
+		// if ($global_filters) {
+		// 	error_log("\n[[[BEFORE:]]]\n" . var_export($args, true));
+		// 	error_log("\n[[[FILTERS:]]]\n" . var_export(PL_Global_Filters::get_global_filters(), true));
+		// }
+
 		// If a list of specific property IDs was passed in, handle acccordingly...
 		if (!empty($args['property_ids']))
 			{ $args['listing_ids'] = $args['property_ids']; }
@@ -26,6 +32,11 @@ class PL_Listing_Helper {
 		// Respect the ability for this function to return results that do NOT respect global filters..
 		if ($global_filters) 
 			{ $args = PL_Global_Filters::merge_global_filters($args); }
+
+		/* REMOVE */
+		// if ($global_filters) {
+		// 	error_log("\n[[[AFTER:]]]\n" . var_export($args, true));
+		// }
 
 		// Respect block address setting...
 		$args['address_mode'] = ( PL_Option_Helper::get_block_address() ? 'exact' : 'polygon' );
@@ -293,8 +304,10 @@ class PL_Listing_Helper {
 		$options = array();
 		$response = null;
 		
+		// Use merge (with no arguments) to get the existing filters properly formatted for API calls...
+		$global_filters = PL_Global_Filters::merge_global_filters();
+
 		// If global filters related to location are set, incorporate those and use aggregates API...
-		$global_filters = PL_Global_Filters::get_global_filters();
 		if ( $allow_globals && !empty($global_filters) && !empty($global_filters['location']) ) {
 			// TODO: Move these to a global var or constant...
 			$global_filters['keys'] = array('location.locality', 'location.region', 'location.postal', 'location.neighborhood', 'location.county');
