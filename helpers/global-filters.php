@@ -46,7 +46,7 @@ class PL_Global_Filters {
   				}
   			}
   			// Respect existing value if it is already set...
-  			elseif ($args[$attribute]) {
+  			elseif (empty($args[$attribute])) {
 				$args[$attribute] = is_string($value) ? self::translate_string($value) : $value;
   			}
   		}
