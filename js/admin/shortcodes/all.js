@@ -155,6 +155,7 @@ jQuery(document).ready(function($){
 		var post_data = {
 				'post_id': post_id,
 				'action': 'autosave_widget',
+				'post_type': 'pl_general_widget',
 				'pl_post_type': post_type,
 				'post_title': $('#title').val(),
 				'pl_cpt_template': $(tpl_selector).parent().find('option:selected').val(),

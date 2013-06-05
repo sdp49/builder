@@ -223,7 +223,6 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	}
 
 	public function post_type_templating( $single ) {
-// 		global $post;
 
 		$post = get_queried_object();
 
@@ -350,13 +349,13 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 
 		if( ! empty( $post ) && $post->post_type === 'featured_listings' ) {
 			$meta = get_post_meta( $post->ID );
-			$template = '';
+			$args = '';
 
 			if( ! empty( $meta['pl_cpt_template'] ) ) {
-				$template = 'template="' . $meta['pl_cpt_template'][0] . '"';
+				$args .= 'template="' . $meta['pl_cpt_template'][0] . '"';
 			}
 
-			$shortcode = '[featured_listings id="' . $post->ID . '" '. $template . ']';
+			$shortcode = '[featured_listings id="' . $post->ID . '" '. $args . ']';
 			include PL_LIB_DIR . '/post_types/pl_post_types_template.php';
 
 			die();
@@ -368,20 +367,15 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	private function prepare_static_template( $single ) {
 		global $post;
 
-		$args = '';
-
 		if( ! empty( $post ) && $post->post_type === 'static_listings' ) {
 
 			$meta = get_post_meta( $post->ID );
-			$query_limit = '';
-			$template = '';
-			if( ! empty( $meta['pl_template_static_listings'] ) ) {
-				$args .= 'template="static_listings_' . $meta['pl_template_static_listings'][0] . '"';
-			} else if( ! empty( $meta['pl_cpt_template'] ) ) {
+			$args = '';
+				
+			if( ! empty( $meta['pl_cpt_template'] ) ) {
 				$args .= 'template="static_listings_' . $meta['pl_cpt_template'][0] . '"';
 			}
-
-			if( ! empty( $meta['num_results_shown'] ) ) {
+			if( ! empty( $meta['num_results_shown'] ) && $meta['num_results_shown'][0]) {
 				$args .= sprintf( ' query_limit="%s"', $meta['num_results_shown'][0] );
 			}
 			if( ! empty( $meta['hide_num_results'] ) ) {

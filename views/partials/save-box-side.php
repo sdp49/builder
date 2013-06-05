@@ -10,7 +10,7 @@ $post_type = $post->post_type;
 $post_type_object = get_post_type_object($post_type);
 $can_publish = current_user_can($post_type_object->cap->publish_posts);
 
-if ( !in_array( $post->post_status, array('publish', 'future', 'private') ) || 0 == $post->ID ) {
+if ( 0 == $post->ID ) {
 	$title = __('Create');
 }
 else {
@@ -42,13 +42,8 @@ else {
 			
 				<div id="publishing-action">
 					<span class="spinner"></span>
-					<?php if ( !in_array( $post->post_status, array('publish', 'future', 'private') ) || 0 == $post->ID ): ?>
-						<input name="original_publish" type="hidden" id="original_publish" value="<?php esc_attr_e('Publish') ?>" />
-						<?php submit_button( __( 'Create' ), 'primary button-large', 'publish', false, array( 'accesskey' => 'p' ) ); ?>
-					<?php else:?>
-						<input name="original_publish" type="hidden" id="original_publish" value="<?php esc_attr_e('Save') ?>" />
-						<input name="save" type="submit" class="button button-primary button-large" id="publish" accesskey="p" value="<?php esc_attr_e('Save') ?>" />
-					<?php endif; ?>
+					<input name="original_publish" type="hidden" id="original_publish" value="<?php esc_attr_e('Publish') ?>" />
+					<?php submit_button( $title, 'button button-primary button-large', 'publish', false, array( 'accesskey' => 'p' ) ); ?>
 				</div>
 				<div class="clear"></div>
 			</div>
