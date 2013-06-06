@@ -106,7 +106,7 @@ jQuery(document).ready(function($) {
 		}, 1500);
 	});
 
- 	$('.remove_filter').on('click', function (event) {
+ 	$('#active_filters').on('click', '.remove_filter', function (event) {
  		event.preventDefault();
  		$(this).closest('#active_filters span#active_filter_item').remove();
  		
