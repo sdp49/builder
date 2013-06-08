@@ -1,4 +1,7 @@
-<?php 
+<?php
+/**
+ * Generates the preview for a widget 
+ */
 $preview = ( ! empty ( $_GET['preview'] ) && $_GET['preview'] == 'true' ) ? true : false;
 
 if( $preview ) {

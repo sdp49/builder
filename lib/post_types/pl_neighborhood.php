@@ -1,13 +1,22 @@
 <?php
-
+/**
+ * Post type/Shortcode to display neighbourhood search form
+ *
+ */
 
 class PL_Neighborhood_CPT extends PL_Post_Base {
 
-	// Leverage the PL_Form class and it's fields format (and implement below)
-	public $fields = array(
-			'width' => array( 'type' => 'text', 'label' => 'Width' ),
-			'height' => array( 'type' => 'text', 'label' => 'Height' ),
-	);
+	protected static $post_type = 'pl_neighborhood';
+
+	protected static $shortcode = 'search_neighborhood';
+
+	protected static $options = array(
+			'width'		=> array( 'type' => 'text', 'label' => 'Width', 'default' => 250 ),
+			'height'	=> array( 'type' => 'text', 'label' => 'Height', 'default' => 250 ),
+		);
+
+
+
 
 	public function register_post_type() {
 		$args = array(
@@ -76,7 +85,8 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 		}
 	}
 	
-	public static function post_type_templating( $single, $skipdb = false ) {
+	public function post_type_templating($single, $skipdb = false) {
+return;		
 		global $post;
 		
 		unset( $_GET['skipdb'] );

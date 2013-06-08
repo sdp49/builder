@@ -92,6 +92,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		add_action( 'wp_ajax_autosave_widget_template', array( $this, 'autosave_save_template' ) );
 		add_action( 'wp_ajax_handle_widget_script', array( $this, 'handle_iframe_cross_domain' ) );
 		add_action( 'wp_ajax_nopriv_handle_widget_script', array( $this, 'handle_iframe_cross_domain' ) );
+		add_action( 'wp_ajax_pl_widget_preview', array( $this, 'widget_preview' ) );
 		// add_filter( 'pl_form_section_after', array( $this, 'filter_form_section_after' ), 10, 3 );
 		add_filter('post_row_actions', array( $this, 'remove_quick_edit_view'), 10, 1 );
 		add_action( 'restrict_manage_posts', array( $this, 'listing_posts_add_filter_widget_type' ) );
@@ -220,54 +221,6 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		if( isset( $_POST['pl_featured_listing_meta'] ) ) {
 			update_post_meta( $post_id, 'pl_featured_listing_meta',  $_POST['pl_featured_listing_meta'] );
 		}
-	}
-
-	public function post_type_templating( $single ) {
-
-		$post = get_queried_object();
-
-		if( empty( $post ) || ! isset( $post->post_type ) ) {
-			return $single;
-		}
-
-		if( ! in_array( $post->post_type, PL_Post_Type_Manager::$post_types )
-				&& 'pl_general_widget' !== $post->post_type ) {
-			return $single;
-		}
-
-		if( ! empty( $post ) ) {
-			// map the post type from the meta key (as we use a single widget here)
-			$post_type = get_post_meta($post->ID, 'pl_post_type', true);
-			$post->post_type = $post_type;
-		}
-		$skipdb = false;
-		// if( !empty ( $_GET['skipdb'] ) && $_GET['skipdb'] == 'true' ) {
-		if( isset( $_GET['action'] ) && isset( $_GET['id'] ) && count( $_GET ) > 3 ) {
-			$skipdb = true;
-		}
-
-		if( ! empty( $post ) ) {
-			// TODO: make a more thoughtful loop here, interfaces or so
-			if( $post->post_type == 'pl_map' ) {
-				PL_Map_CPT::post_type_templating( $single, $skipdb );
-			} else if( $post->post_type == 'pl_form' ) {
-				PL_Form_CPT::post_type_templating( $single, $skipdb );
-			} else if( $post->post_type == 'pl_slideshow' ) {
-				PL_Slideshow_CPT::post_type_templating( $single, $skipdb );
-			} else if( $post->post_type == 'pl_search_listings' ) {
-				PL_Search_Listing_CPT::post_type_templating( $single, $skipdb );
-			} else if( $post->post_type == 'pl_neighborhood' ) {
-				PL_Neighborhood_CPT::post_type_templating( $single, $skipdb );
-			} else if( $post->post_type == 'featured_listings' ) {
-				$this->prepare_featured_template( $single, $skipdb );
-			} else if( $post->post_type == 'static_listings' ) {
-				$this->prepare_static_template( $single, $skipdb );
-			}
-		}
-		// Silence is gold.
-	}
-
-	public function admin_styles( $hook ) {
 	}
 
 	public function admin_head_plugin_path( ) {
@@ -596,6 +549,11 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		}
 
 		return $snippet_type_map;
+	}
+	
+	public static function widget_preview() {
+		include PL_VIEWS_ADMIN_DIR . 'shortcodes/preview.php';
+		die;
 	}
 }
 
