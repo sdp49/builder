@@ -128,10 +128,6 @@ class PL_Js_Helper {
 			self::register_enqueue_if_not('settings-client', trailingslashit(PL_JS_URL) . 'admin/settings/client.js', array('jquery'));
 		}
 
-		if ($hook == 'placester_page_placester_settings_template') {
-			self::register_enqueue_if_not('settings-template', trailingslashit(PL_JS_URL) . 'admin/settings/template.js', array('jquery'));
-		}
-
 		// Shortcodes and Shortcode Templates
 		if ($hook == 'placester_page_placester_shortcodes_shortcode_edit') {
 			wp_enqueue_script('shortcodes-template', trailingslashit(PL_JS_URL) .  'admin/shortcodes/all.js', array('jquery'));
