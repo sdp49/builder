@@ -159,8 +159,8 @@ jQuery(document).ready(function($){
 				'pl_post_type': post_type,
 				'post_title': $('#title').val(),
 				'pl_cpt_template': $(tpl_selector).parent().find('option:selected').val(),
-				'pl_template_before_block': $('pl_template_before_block').val(),
-				'pl_template_after_block': $('pl_template_after_block').val(),
+				'pl_template_before_block': $('#before_widget').val(),
+				'pl_template_after_block': $('#after_widget').val(),
 				'width': $('#widget_meta_wrapper input#width').val() || "250",
 				'height': $('#widget_meta_wrapper input#height').val() || "250",
 				'pl_featured_listing_meta': JSON.stringify(featured),
@@ -225,77 +225,32 @@ jQuery(document).ready(function($){
 	function widget_template_autosave() {
 
 		$('#preview_load_spinner').show();
-
+		
 		var post_type = $('#pl_post_type').val() || "";
-		var shortcode_type = pls_get_shortcode_by_post_type(post_type);
-		var snippets = $('textarea.snippet').serialize();
+		var shortcode_type = pls_get_shortcode_by_post_type( post_type );
 		var post_data = {
-				'action': 'autosave_widget_template',
-				'shortcode': shortcode_type,
-				'title': $('#title').val(),
-				'snippets': snippets,
+				'before_widget': $('#before_widget').val(),
+				'after_widget': $('#after_widget').val(),
+				'snippet_body': $('#snippet_body').val(),
+				'widget_css': $('#widget_css').val(),
+				'width': "250",
+				'height': "250",
+				'meta_box_nonce': $('#meta_box_nonce').val(),
+				'listing_types': 'false',
+				'location': '',
+				'metadata': '',
+				'hide_sort_by': true,
+				'hide_sort_direction': true,
+				'hide_num_results': true,
 		};
 
-		$.ajax({
-			data: post_data,
-			// beforeSend: doAutoSave ? autosave_loading : null,
-			type: "POST",
-			url: ajaxurl,
-			success: function( response ) {
-				setTimeout(function() {
-					// update the preview window
-					var post_id = $("#post_ID").val();
-					var post_type = $('#pl_post_type').val() || "";
-					var post_data = {
-							'post_id': post_id,
-							'action': 'autosave_widget',
-							'pl_post_type': post_type,
-							'post_title': $('#title').val()+'-template-test',
-							'pl_cpt_template': $('#title').val(),
-							'pl_template_before_block': $('pl_template_before_block').val(),
-							'pl_template_after_block': $('pl_template_after_block').val(),
-							'width': "250",
-							'height': "250",
-							'meta_box_nonce': $('#meta_box_nonce').val(),
-							'listing_types': 'false',
-							'location': '',
-							'metadata': '',
-							'hide_sort_by': true,
-							'hide_sort_direction': true,
-							'hide_num_results': true,
-							'form_action_url': $('#form_action_url').val(),
-					};
+		var args = encodeURIComponent(JSON.stringify(post_data));
 
-					$.ajax({
-						data: post_data,
-						// beforeSend: doAutoSave ? autosave_loading : null,
-						type: "POST",
-						url: ajaxurl,
-						success: function( response ) {
-							setTimeout(function() {
-								// breaks the overall layout
-								// var frame_width = post_data['width'];
-								var frame_width = '250';
-								var frame_height = '250';
-								var post_id = $("#post_ID").val();
-
-								var widget_class = $('#widget_class').val() || '';
-								if( widget_class !== '' ) {
-									widget_class = 'class="' + widget_class + '"';
-								}
-
-								$('#preview-meta-widget').html("<iframe src='" + siteurl + "/?p=" + post_id + "&preview=true' width='" + frame_width + "px' height='" + frame_height + "px' " + widget_class + "></iframe>");
-								$('#preview-meta-widget iframe').load( function() {
-									$('#preview_load_spinner').hide();
-								});
-								// $('#preview-meta-widget').css('height', post_data['height']);
-								$('#pl-review-link').show();
-							}, 800);
-						}
-					});
-				}, 800);
-			}
+		$('#preview-meta-widget').html('<iframe src="'+ajaxurl+'?action=pl_widget_preview&shortcode='+shortcode_type+'&args='+args+'" width="250px" height="250px"></iframe>');
+		$('#preview-meta-widget iframe').load( function() {
+			$('#preview_load_spinner').hide();
 		});
+		$('#pl-review-link').show();
 	}
 	
 
