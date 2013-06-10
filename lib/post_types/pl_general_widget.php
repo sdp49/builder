@@ -422,12 +422,12 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		$snippet_type_map = array();
 
 		foreach ($default_snippets as $snippet) {
-			$snippet_type_map[$snippet] = 'default';
+			$snippet_type_map[$snippet] = array('type'=>'default', 'name'=>$snippet);
 		}
 
 		// Add Custom snippets..
 		foreach ($snip_arr as $snippet) {
-			$snippet_type_map[$snippet] = 'custom';
+			$snippet_type_map[$snippet] = array('type'=>'custom', 'name'=>$snippet);
 		}
 
 		return $snippet_type_map;

@@ -55,11 +55,6 @@
 	width: auto;
 }
 
-.sc-meta-section .pl_neighborhood.pl_widget_block {
-	float: left;
-	width: auto;
-}
-
 .pl_template_block, 
 .edit-sc-template-edit {
 	float: left;
@@ -123,19 +118,28 @@
 
 
 #preview-wrapper {
-	overflow: hidden;
+	position: relative;
 }
 
-#preview_load_spinner {
-	margin-bottom: -230px;
+.preview_load_spinner {
+	position: absolute;
 	width: 100%;
+	height: 250px;
 	overflow: hidden;
 	z-index: 50;
 }
 
-#preview_load_spinner img {
+.preview_load_spinner img {
 	display: block;
+	position: relative;
+	top: 50%;
+	left: 50%;
 	width: 30px;
 	height: 30px;
-	margin: 100px auto;
+	margin: -15px 0 0 -15px;
+}
+
+#preview_meta_widget {
+	width: 100%;
+	height: 250px;
 }

@@ -3,21 +3,20 @@
  * Displays meta box used in the shortcode template edit view
  */
 
-$title = empty($title)?'':$title;
-$pl_post_type = empty($pl_post_type)?'':$pl_post_type;
-$data = empty($data)?array():$data;
+$title = empty($title)?'':$title; // template name
+$pl_post_type = empty($pl_post_type)?'pl_form':$pl_post_type; // shortcode type we are making a template for
+$data = empty($data)?array():$data; // current template values
+
 $data = wp_parse_args($data, array('before_widget'=>'', 'after_widget'=>'', 'snippet_body'=>'', 'widget_css'=>''));
-
-$pl_shortcode_types = PL_General_Widget_CPT::$post_types; 
-$pl_shortcode_codes = PL_General_Widget_CPT::$codes;
-
+$shortcode = '';
+$pl_shortcode_types = PL_General_Widget_CPT::get_shortcodes(); 
 ?>
 
 <div class="postbox ">
 	<h3>Create Shortcode Template</h3>
 
 	<div class="inside">
-
+	
 		<!-- Template Name -->
 		<section class="row-fluid">
 
@@ -40,22 +39,23 @@ $pl_shortcode_codes = PL_General_Widget_CPT::$codes;
 			</div>
 
 			<div class="span10">
-				<select id="tpl_post_type">
+				<select id="pl_sc_tpl_post_type">
 						<?php 
-						$num_of_post_types = count( $pl_shortcode_types );
-						$i = 0;
 						$shortcode_ref = array();
-
-						foreach( $pl_shortcode_types as $post_type => $label ):
-							$i++;
-							$link_class = ($post_type == $pl_post_type) ? 'selected_type' : '';
-							$selected = ( !empty($link_class) ) ? 'selected="selected"' : '';
+						foreach( $pl_shortcode_types as $post_type => $values ):
+							$link_class = $selected = '';
+							if ($post_type == $pl_post_type) {
+								$link_class = 'selected_type';
+								$selected = 'selected="selected"';
+								$shortcode = $values['shortcode'];
+							}
 							?>
-							<option id="pl_post_type_<?php echo $post_type; ?>" class="<?php echo $link_class; ?>" value="pl_post_type_<?php echo $post_type; ?>" <?php echo $selected; ?>>
-								<?php echo $label; ?>
+							<option id="pl_sc_tpl_shortcode_<?php echo $values['shortcode']; ?>" class="<?php echo $link_class; ?>" value="<?php echo $values['post_type']; ?>" <?php echo $selected; ?>>
+								<?php echo $values['title']; ?>
 							</option>
 							<?php
-							$shortcode_ref[$post_type] = PL_Router::load_builder_partial('shortcode-ref.php', array('shortcode' => $code), true);
+							// get help text, use later
+							$shortcode_ref[$post_type] = PL_Router::load_builder_partial('shortcode-ref.php', array('shortcode' => $values['shortcode']), true);
 						endforeach;
 						?>
 				</select>
@@ -101,26 +101,21 @@ $pl_shortcode_codes = PL_General_Widget_CPT::$codes;
 
 			<!-- Search Sub-Shortcodes -->
 			<div id="subshortcodes" class="span4">
-				<script type="text/javascript">
-					var shortcode_ref = <?php echo json_encode($shortcode_ref);?>
-				</script>
 				<div style="display: none;">
 					<label for="search-subshortcodes">Sub-Shortcodes</label> 
 					<input type="text" placeholder="search sub-shortcodes" />
 				</div>			
-				<div id="shortcodes"></div>
+				<?php foreach($shortcode_ref as $post_type => $shortcode_help ): ?>
+					<div class="shortcode_block <?php echo $post_type?>" style="display: none;">
+					<?php echo $shortcode_help; ?>
+					</div>
+				<?php endforeach;?>
 			</div>
-			<?php foreach( PL_General_Widget_CPT::$codes as $code => $label ): ?>
-				<div class="pl_template_block" id="<?php echo $code.'_template_block';?>" style="display: none;">
-				<?php echo PL_Router::load_builder_partial('shortcode-ref.php', array('shortcode' => $code), true); ?>
-				</div>
-			<?php endforeach;?>
 			
 		</section><!-- /Template Contents -->
 
-		<input type="hidden" name="pl_post_type" id="pl_post_type" value="pl_map" />
-			
 		<?php wp_nonce_field( 'pl_cpt_meta_box_nonce', 'meta_box_nonce' );?>
+		<input type="hidden" name="shortcode" value="<?php echo $shortcode ?>" />
 		
 		<div class="clear"></div>
 			

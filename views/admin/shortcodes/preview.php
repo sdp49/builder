@@ -57,7 +57,6 @@ else {
 }
 
 add_filter('show_admin_bar', '__return_false');
-add_action('wp_enqueue_scripts', isset( $drop_modernizr ) ? 'pl_template_drop_modernizr': 'pl_template_add_modernizr' );
 
 ob_start();
 
@@ -91,26 +90,16 @@ $html_class = '';
 	</head>
 	<body>
 	
-		<script type="text/javascript">
-			jQuery(document).ready(function() {
-				try {
-					if (jQuery('.shortcode-link', window.parent.document).length ) {
-						jQuery('.shortcode-link', window.parent.document).html('<strong>Shortcode:</strong><?php echo str_replace( "'", "\'", $shortcode ); ?>');
-					}
-				} catch( exception ) {}  
-			});
-		</script>
 		<div class="pls_embedded_widget_wrapper">
 			<?php
 			echo $args['before_widget'];
 			echo do_shortcode( $shortcode );
 			echo $args['after_widget'];
-			echo $shortcode;
 			?>
 		<div>
 		
 		<?php wp_footer();?>
-</body>
+	</body>
 </html>
 <?php
 

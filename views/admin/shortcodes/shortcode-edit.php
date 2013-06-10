@@ -86,6 +86,7 @@ if( ! $is_post_new ) {
 			<input type="hidden" id="originalaction" name="originalaction" value="<?php echo esc_attr( $form_action ) ?>" />
 			<input type="hidden" id="post_ID" name="post_ID" value="<?php echo esc_attr($post_ID) ?>" />
 			<input type="hidden" id="post_type" name="post_type" value="pl_general_widget" />
+			<input type="hidden" name="shortcode" value="pl_general_widget" />
 			<div id="poststuff">
 				<div id="post-body" class="metabox-holder columns-2">
 					<div id="post-body-content">
@@ -95,7 +96,10 @@ if( ! $is_post_new ) {
 								<input type="text" name="post_title" size="30" value="<?php echo esc_attr( htmlspecialchars( $post->post_title ) ); ?>" id="title" autocomplete="off" title="<?php _e('Please enter a title for this shortcode.')?>" />
 							</div>
 							<div class="inside">
-								<div id="edit-slug-box" class="hide-if-no-js"></div>
+								<div id="sc_slug_box" class="hide-if-no-js">
+									<div class="iframe_link"></div>
+									<div class="shortcode_link"></div>
+								</div>
 							</div>
 							<?php wp_nonce_field( 'samplepermalink', 'samplepermalinknonce', false );?>
 						</div><!-- /titlediv -->
@@ -125,16 +129,6 @@ if( ! $is_post_new ) {
 						PL_Router::load_builder_partial('shortcode-preview.php', array('post'=>$post));
 						?>
 						<script type="text/javascript">
-							jQuery(document).ready(function($) {
-								// populate slug box for the edit screen
-								<?php if( ! $is_post_new ) { ?>
-									$('#edit-slug-box').after('<div class="iframe-link"><strong>Embed Code:</strong> <?php echo esc_html( $iframe_controller ); ?></div><div class="shortcode-link"></div>');
-									$('#pl_post_type_dropdown').trigger('change');
-								<?php }	?>
-								
-								// $('#pl_post_type_dropdown').trigger('change');
-								$('#preview-meta-widget').html('<?php echo isset($iframe) ? $iframe : '' ?>');
-							});
 							var pl_sc_template_url = '<?php echo admin_url('admin.php?page=placester_shortcodes_template_edit')?>';
 						</script>	
 					</div>

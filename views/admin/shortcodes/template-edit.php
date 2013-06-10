@@ -3,7 +3,7 @@ global $shortcode_subpages, $page_now, $plugin_page;
 
 $action = (empty($_REQUEST['action'])?'':$_REQUEST['action']);
 $title = (empty($_REQUEST['title'])?'':$_REQUEST['title']);
-$pl_post_type = ( empty($_REQUEST['type'])?'pl_map':$_REQUEST['type']);
+$pl_post_type = ( empty($_REQUEST['type'])?'pl_form':$_REQUEST['type']);
 $ID = (empty($_REQUEST['id'])?'':$_REQUEST['id']);
 
 $shortcode = PL_General_Widget_CPT::get_context_template($pl_post_type);
