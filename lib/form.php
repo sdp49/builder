@@ -99,11 +99,11 @@ class PL_Form {
 					</select>
 				</section>
 			<?php	
-		} elseif( $type == 'text' ) {
+		} elseif( $type == 'text' || $type == 'numeric' ) {
 			?>
 				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>">
 					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
-					<input id="<?php echo $id ?>" type="<?php echo $type ?>" name="<?php echo $name ?>" value="<?php echo $value ?>" />
+					<input id="<?php echo $id ?>" type="text" name="<?php echo $name ?>" value="<?php echo $value ?>" />
 				</section>
 			<?php
 		} elseif ( $type == 'date') {
