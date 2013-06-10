@@ -114,6 +114,9 @@ class PL_Community_Pages {
 	}
 	
 	public static function neighborhood_picker_box( $post ) {
+
+		// directions for how to use this
+		echo '<p>These neighborhoods are created in the Placester plugin\'s "Custom Drawn Areas" page.</p>';
 		
 		$page_neighborhoods = get_post_meta( $post->ID, 'community_neighborhoods', true );
 		if( empty( $page_neighborhoods ) ) {
