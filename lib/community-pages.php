@@ -21,6 +21,7 @@ class PL_Community_Pages {
 		add_action( 'created_neighborhood', array( __CLASS__, 'save_neighborhood' ), 10, 2 );
 	}
 	
+	// Add Neighborhood Picker to Community CPT Edit Page
 	public static function add_neighborhood_meta_box() {
 		add_meta_box(
 			'neighborhood_picker',
@@ -30,6 +31,7 @@ class PL_Community_Pages {
 		);
 	}
 	
+	// hook into save_post action with custom Community metadata to save
 	public static function save_community_page( $post_id ) {
 		// no autosaves
 		if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
@@ -43,9 +45,9 @@ class PL_Community_Pages {
 		if( ! current_user_can( 'manage_options' ) ) {
 			return; 
 		}
-		if( isset( $_POST['page_header_title'] ) ) {
-			update_post_meta( $post_id, 'page_header_title', $_POST['page_header_title'] );
-		}
+		// if( isset( $_POST['page_header_title'] ) ) {
+		// 	update_post_meta( $post_id, 'page_header_title', $_POST['page_header_title'] );
+		// }
 		
 		// Get old meta and clear neighborhoods
 		$old_neighborhoods = get_post_meta( $post_id, 'community_neighborhoods', true );
@@ -115,19 +117,40 @@ class PL_Community_Pages {
 	}
 	
 	public static function neighborhood_picker_box( $post ) {
+
+		// Page Header Title (custom title instead of post title)
+		// $page_header_title = get_post_meta( $post->ID, 'page_header_title', true );
 		
-		$page_header_title = get_post_meta( $post->ID, 'page_header_title', true );
+		// if( empty( $page_header_title ) ) $page_header_title = '';
 		
-		if( empty( $page_header_title ) ) $page_header_title = '';
-		
-		echo "<p>Page Header Title: <input type='text' name='page_header_title' value='$page_header_title' style='width: 150px'/></p>";
+		// echo "<p>Page Header Title: <input type='text' name='page_header_title' value='$page_header_title' style='width: 150px'/></p>";
 		
 		$page_neighborhoods = get_post_meta( $post->ID, 'community_neighborhoods', true );
 		if( empty( $page_neighborhoods ) ) {
 			$page_neighborhoods = array();
 		} 
 
+		// Get Neighborhood Polygons
+		$polygons = PL_Option_Helper::get_polygons();
+		foreach ($polygons as $key => $polygon) {
+			if ($polygon['tax'] == 'neighborhood') {
+				$neighborhood_polygons[] = $polygon;
+			}
+		}
+		pls_dump($neighborhood_polygons);
+
+		// Get neighborhoods and display them
 		$neighborhoods = get_terms( 'neighborhood', array( 'hide_empty' => false ) );
+
+		$hoodz = array();
+		foreach ($neighborhoods as $key => $hood_object) {
+			$hood_array = json_decode(json_encode($hood_object), true);	
+			array_push($hoodz, $hood_array);
+		}
+		pls_dump($hoodz);
+
+		$poly_hoods = array_intersect_assoc($hoodz, $neighborhood_polygons);
+		pls_dump($poly_hoods);
 
 		foreach( $neighborhoods as $neighborhood ) {
  			printf("<input type='checkbox' name='neighborhoods[]' id=n-".$neighborhood->term_id." value='%d' %s />", 
