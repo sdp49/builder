@@ -45,9 +45,6 @@ class PL_Community_Pages {
 		if( ! current_user_can( 'manage_options' ) ) {
 			return; 
 		}
-		// if( isset( $_POST['page_header_title'] ) ) {
-		// 	update_post_meta( $post_id, 'page_header_title', $_POST['page_header_title'] );
-		// }
 		
 		// Get old meta and clear neighborhoods
 		$old_neighborhoods = get_post_meta( $post_id, 'community_neighborhoods', true );
@@ -117,18 +114,14 @@ class PL_Community_Pages {
 	}
 	
 	public static function neighborhood_picker_box( $post ) {
-
-		// Page Header Title (custom title instead of post title)
-		// $page_header_title = get_post_meta( $post->ID, 'page_header_title', true );
-		
-		// if( empty( $page_header_title ) ) $page_header_title = '';
-		
-		// echo "<p>Page Header Title: <input type='text' name='page_header_title' value='$page_header_title' style='width: 150px'/></p>";
 		
 		$page_neighborhoods = get_post_meta( $post->ID, 'community_neighborhoods', true );
 		if( empty( $page_neighborhoods ) ) {
 			$page_neighborhoods = array();
 		} 
+
+		// Get neighborhoods and display them
+		$neighborhoods = get_terms( 'neighborhood', array( 'hide_empty' => false ) );
 
 		// Get Neighborhood Polygons
 		$polygons = PL_Option_Helper::get_polygons();
@@ -137,22 +130,21 @@ class PL_Community_Pages {
 				$neighborhood_polygons[] = $polygon;
 			}
 		}
-		pls_dump($neighborhood_polygons);
 
-		// Get neighborhoods and display them
-		$neighborhoods = get_terms( 'neighborhood', array( 'hide_empty' => false ) );
-
-		$hoodz = array();
+		// Match neighborhoods to polygons and save to $neighborhood_taxonomy_polygons
+		$neighborhood_taxonomy_polygons = array();
 		foreach ($neighborhoods as $key => $hood_object) {
-			$hood_array = json_decode(json_encode($hood_object), true);	
-			array_push($hoodz, $hood_array);
+			
+			foreach ($neighborhood_polygons as $key => $polygon) {
+				if ($polygon['name'] == $hood_object->name ) {
+					array_push($neighborhood_taxonomy_polygons, $hood_object);
+				}
+			}
+			
 		}
-		pls_dump($hoodz);
-
-		$poly_hoods = array_intersect_assoc($hoodz, $neighborhood_polygons);
-		pls_dump($poly_hoods);
-
-		foreach( $neighborhoods as $neighborhood ) {
+		
+		// Add $neighborhood_taxonomy_polygons to Edit Community Page
+		foreach( $neighborhood_taxonomy_polygons as $neighborhood ) {
  			printf("<input type='checkbox' name='neighborhoods[]' id=n-".$neighborhood->term_id." value='%d' %s />", 
 		 			$neighborhood->term_id, 
 		 			checked(in_array($neighborhood->term_id, array_values( $page_neighborhoods ) ), true, false) );
