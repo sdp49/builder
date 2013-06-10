@@ -5,6 +5,8 @@
  * come from a custom theme or are user defined using custom post type pl_widget_template 
  *
  */
+include_once(PL_LIB_DIR . 'post_types/pl_post_base.php');
+
 class PL_General_Widget_CPT extends PL_Post_Base {
 
 	protected static $title='Shortcodes/Widgets';

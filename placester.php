@@ -132,8 +132,9 @@ include_once('lib/customizer_entities.php');
 include_once('lib/social_networks.php');
 include_once('lib/analytics.php');
 
-//post types
-include_once('lib/post_types/pl_post_type_manager.php');
+//shortcode widgetizaton
+include_once('lib/post_types/pl_general_widget.php');
+
 
 //models
 include_once('models/listing.php');

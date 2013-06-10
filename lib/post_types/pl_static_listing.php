@@ -3,7 +3,7 @@
  * Post type/Shortcode to generate a list of listings
  *
  */
-include_once('pl_search_listing.php');
+include_once(PL_LIB_DIR . 'post_types/pl_post_base.php');
 
 class PL_Static_Listing_CPT extends PL_Search_Listing_CPT {
 
