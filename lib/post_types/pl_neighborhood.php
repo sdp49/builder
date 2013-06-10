@@ -10,10 +10,22 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 
 	protected static $shortcode = 'search_neighborhood';
 
+	protected static $title = 'Neighborhood';
+
 	protected static $options = array(
-			'width'		=> array( 'type' => 'text', 'label' => 'Width', 'default' => 250 ),
-			'height'	=> array( 'type' => 'text', 'label' => 'Height', 'default' => 250 ),
-		);
+		'pl_cpt_template'	=> array( 'type' => 'select', 'label' => 'Template', 'default' => ''),
+		'width'				=> array( 'type' => 'text', 'label' => 'Width(px)', 'default' => 250 ),
+		'height'			=> array( 'type' => 'text', 'label' => 'Height(px)', 'default' => 250 ),
+		'widget_class'		=> array( 'type' => 'text', 'label' => 'Widget Class', 'default' => '' ),
+	);
+
+	protected static $subcodes = array(
+			'nb_title',
+			'nb_featured_image',
+			'nb_description',
+			'nb_link',
+			'nb_map'
+	);
 
 
 

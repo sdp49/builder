@@ -1,57 +1,24 @@
 <?php
 /**
- * The custom shortcodes are stored as a custom post type of pl_general_widget.
+ * The custom shortcodes are stored as a custom post type of pl_general_widget. 
+ * Each references a shortcode template/layout that controls how its drawn. The templates
+ * come from a custom theme or are user defined using custom post type pl_widget_template 
  *
  */
 class PL_General_Widget_CPT extends PL_Post_Base {
 
-	private static $allowable_tags = "<a><p><script><div><span><section><label><br><h1><h2><h3><h4><h5><h6><scr'+'ipt><style><article><ul><ol><li><strong><em><button><aside><blockquote><footer><header><form><nav><input><textarea><select>";
+	protected static $title='Shortcodes/Widgets';
+	// holds the shortcodes we have installed
+	protected static $shortcodes = array(); 
+	// default widget type
+	protected $default_post_type = 'pl_map';
+	
 
-	// Leverage the PL_Form class and it's fields format (and implement below)
-	// map short codes to title
-	// IMPORTANT: shortcode name cannot be a substr of another shortcode name
-	public static $codes = array(
-			'search_map' => 'Search Map',
-			'search_form' => 'Search Form',
-			'search_listings' => 'Search Listings',
-//			'pl_neighborhood' => 'Neighborhood',
-			'listing_slideshow' => 'Listings Slideshow',
-			'featured_listings' => 'Featured Listings',
-			'static_listings' => 'List of Listings'
-		);
-	// map post sub type to title
-	public static $post_types =  array(
-			'pl_map' => 'Map',
-			'pl_form' => 'Search Form',
-			'pl_search_listings' => 'Search Listings',
-			'pl_slideshow' => 'Slideshow',
-	//		'pl_neighborhood' => 'Neighborhood',
-			'static_listings' => 'List of Listings'
-		);
-	// default
-	public static $default_post_type = 'pl_map';
 
-	public static $fields = array(
-			'width' => array( 'type' => 'text', 'label' => 'Width', 'css' => 'pl_map pl_form pl_search_listings pl_slideshow pl_neighborhood featured_listings static_listings' ),
-			'height' => array( 'type' => 'text', 'label' => 'Height', 'css' => 'pl_map pl_form pl_search_listings pl_slideshow pl_neighborhood featured_listings static_listings' ),
-			'animation' => array( 'type' => 'select', 'label' => 'Animation', 'options' => array(
-					'fade' => 'fade',
-					'horizontal-slide' => 'horizontal-slide',
-					'vertical-slide' => 'vertical-slide',
-					'horizontal-push' => 'horizontal-push',
-				), 'css' => 'pl_slideshow' ),
-			'animationSpeed' => array( 'type' => 'text', 'label' => 'Animation Speed', 'css' => 'pl_slideshow' ),
-			'timer' => array( 'type' => 'checkbox', 'label' => 'Timer', 'css' => 'pl_slideshow' ),
-			'pauseOnHover' => array( 'type' => 'checkbox', 'label' => 'Pause on hover', 'css' => 'pl_slideshow' ),
-			'hide_sort_by' => array( 'type' => 'checkbox', 'label' => 'Hide Sort By dropdown', 'css' => 'pl_static_listings' ),
-			'form_action_url' => array( 'type' => 'text', 'label' => 'Form Address', 'css' => 'pl_form' ),
-			'hide_sort_direction' => array( 'type' => 'checkbox', 'label' => 'Hide Sort Direction', 'css' => 'pl_static_listings' ),
-			'hide_num_results' => array( 'type' => 'checkbox', 'label' => 'Hide Show Number of Results', 'css' => 'pl_static_listings' ),
- 			'num_results_shown' => array( 'type' => 'text', 'label' => 'Number of Results Displayed', 'css' => 'pl_static_listings' ),
-			'widget_class' => array( 'type' => 'text', 'label' => 'Widget Class', 'css' => 'pl_map pl_form pl_search_listings pl_slideshow pl_neighborhood featured_listings static_listings' ),
-		);
 
 	public function register_post_type() {
+		
+		// custom post type to hold a customized shortcode
 		$args = array(
 			'labels' => array(
 				'name' => __( 'Placester Widget', 'pls' ),
@@ -78,28 +45,100 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 
 		register_post_type('pl_general_widget', $args );
 	}
-
+	
 	public function __construct() {
 		parent::__construct();
+		
+		// get list of shortcodes that can be widgetized:
+		$path = trailingslashit( PL_LIB_DIR ) . 'post_types/';
+		$ignore = array(
+				'pl_post_type_manager.php',
+				'pl_post_types_template.php',
+				'pl_post_base.php' );
+		if ($handle = opendir($path)) {
+			while (false !== ($file = readdir($handle))) {
+				if (pathinfo($file, PATHINFO_EXTENSION) == 'php' && !(in_array($file, $ignore))) {
+					$class = 'PL_'.ucfirst(substr(substr($file, 0, -4), 3)).'_CPT';
+					if (!class_exists($class)) {
+						include($path . $file);
+					}
+					if (class_exists($class)) {
+						$info = $class::get_type();
+						if ($info['shortcode'] && $info['post_type']) {
+							self::$shortcodes[$info['post_type']] = $info;
+						}
+					}
+				}
+			}
+			closedir($handle);
+		}
 
-		add_action( 'save_post', array( $this, 'meta_box_save' ) );
-		add_action( 'admin_enqueue_scripts', array( $this, 'admin_styles' ) );
-		add_action( 'admin_head', array( $this, 'admin_head_plugin_path' ) );
-		add_filter( 'manage_edit-pl_general_widget_columns' , array( $this, 'widget_edit_columns' ) );
- 		add_filter( 'manage_pl_general_widget_posts_custom_column', array( $this, 'widget_custom_columns' ) );
-		add_action( 'wp_ajax_autosave', array( $this, 'autosave_refresh_iframe' ), 1 );
-		add_action( 'wp_ajax_autosave_widget', array( $this, 'autosave_save_post_for_iframe' ) );
-		add_action( 'wp_ajax_autosave_widget_template', array( $this, 'autosave_save_template' ) );
-		add_action( 'wp_ajax_handle_widget_script', array( $this, 'handle_iframe_cross_domain' ) );
-		add_action( 'wp_ajax_nopriv_handle_widget_script', array( $this, 'handle_iframe_cross_domain' ) );
+		add_action( 'wp_ajax_pl_widget_changed', array( $this, 'widget_changed' ) );
 		add_action( 'wp_ajax_pl_widget_preview', array( $this, 'widget_preview' ) );
-		// add_filter( 'pl_form_section_after', array( $this, 'filter_form_section_after' ), 10, 3 );
-		add_filter('post_row_actions', array( $this, 'remove_quick_edit_view'), 10, 1 );
-		add_action( 'restrict_manage_posts', array( $this, 'listing_posts_add_filter_widget_type' ) );
-		add_filter( 'parse_query', array( $this, 'widget_type_posts_filter' ) );
-		add_filter( 'get_edit_post_link', array( $this, 'shortcode_edit_link' ), 10, 3);
+		
+		
+	//TODO: review:		
+	
+			//add_action( 'admin_enqueue_scripts', array( $this, 'admin_styles' ) );
+			add_action( 'admin_head', array( $this, 'admin_head_plugin_path' ) );
+			add_filter( 'manage_edit-pl_general_widget_columns' , array( $this, 'widget_edit_columns' ) );
+	 		add_filter( 'manage_pl_general_widget_posts_custom_column', array( $this, 'widget_custom_columns' ) );
+			add_action( 'wp_ajax_ve', array( $this, 'autosave_refresh_iframe' ), 1 );
+			add_action( 'wp_ajax_autosave_widget_template', array( $this, 'autosave_save_template' ) );
+			add_action( 'wp_ajax_handle_widget_script', array( $this, 'handle_iframe_cross_domain' ) );
+			add_action( 'wp_ajax_nopriv_handle_widget_script', array( $this, 'handle_iframe_cross_domain' ) );
+			// add_filter( 'pl_form_section_after', array( $this, 'filter_form_section_after' ), 10, 3 );
+			add_filter( 'post_row_actions', array( $this, 'remove_quick_edit_view'), 10, 1 );
+			add_action( 'restrict_manage_posts', array( $this, 'listing_posts_add_filter_widget_type' ) );
+			add_filter( 'parse_query', array( $this, 'widget_type_posts_filter' ) );
+			add_filter( 'get_edit_post_link', array( $this, 'shortcode_edit_link' ), 10, 3);
+		}
+	
+		
+
+	/**
+	 * Return an array of shortcode types that can be widgetized
+	 * @return array	: array of shortcode type arrays
+	 */
+	public static function get_shortcodes() {
+		return self::$shortcodes;
 	}
 
+	
+	/***************************************************
+	 * Admin pages
+	 ***************************************************/
+	
+	
+	/**
+	 * Called via wp_ajax when user changes some shortcode settings
+	 */
+	public function widget_changed( ) {
+		$response = array('shortcode'=>'');
+		if ( isset($_POST['shortcode_type']) && !empty($_POST[$_POST['shortcode_type']])) {
+			$args = array_merge($_POST, $_POST[$_POST['shortcode_type']]);
+			$record = $this::_save($_POST['post_ID'], $args, false);
+			$response['shortcode'] = $this::_generate_shortcode($_POST['shortcode_type'], $record);
+		}
+		header( "Content-Type: application/json" );
+		echo json_encode($response);
+		die;
+	}
+	
+	/**
+	 * Called via via wp_ajax to get a preview of a shortcode supplied by GET 
+	 */
+	public static function widget_preview() {
+		include(PL_VIEWS_ADMIN_DIR . 'shortcodes/preview.php');
+		die;
+	}
+	
+	
+	
+	
+	
+	
+	
 	/**
 	 * Handle cross-domain script insertion and pass back to the embedded script for the iwdget
 	 */
@@ -153,76 +192,6 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		echo $_GET['callback'] . '(' . json_encode( $args ) . ');';
 	}
 
-	public function meta_box_save( $post_id ) {
-		// Avoid autosaves
- 		if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
-
-		// Verify nonces for ineffective calls
-		if( !isset( $_POST['meta_box_nonce'] ) || !wp_verify_nonce( $_POST['meta_box_nonce'], 'pl_cpt_meta_box_nonce' ) ) return;
-
-		// if our current user can't edit this post, bail
-		// if( !current_user_can( 'edit_post' ) ) return;
-
-		$pl_post_type = $_POST['pl_post_type'];
-
-		// This should be a determined widget type already.
-		if( $pl_post_type === 'pl_general_widget' ) {
-			return;
-		}
-
-		// Fetch the context template
-		$context_template = self::get_context_template( $pl_post_type );
-		if( isset( $_POST['pl_template_' . $context_template ] ) ) {
-			update_post_meta( $post_id, 'pl_cpt_template', $_POST['pl_template_' . $context_template] );
-		} else if( isset( $_POST['pl_cpt_template'] ) && ! empty( $_POST['pl_cpt_template'] ) ) {
-			update_post_meta( $post_id, 'pl_cpt_template', $_POST['pl_cpt_template'] );
-		}
-
-		// Send the before/after snippets for the template
-		if( ! empty( $_POST['pl_template_before_block'] ) ) {
-	 		update_post_meta( $post_id, 'pl_template_before_block', $_POST['pl_template_before_block'] );
-		}
-		if( ! empty( $_POST['pl_template_after_block'] ) ) {
-			update_post_meta( $post_id, 'pl_template_after_block', $_POST['pl_template_after_block'] );
-		}
-
-		if( $pl_post_type === 'featured_listings' ||  $pl_post_type === 'static_listings') {
-			pl_featured_listings_meta_box_save( $post_id );
-		}
-
-		if( $pl_post_type === 'pl_slideshow') {
-			if( isset( $_POST['pl_featured_listing_meta'] ) ) {
-				update_post_meta( $post_id, 'pl_featured_listing_meta',  $_POST['pl_featured_listing_meta'] );
-			}
-		}
-
-		update_post_meta( $post_id, 'pl_post_type', $pl_post_type );
-
-		foreach( self::$fields as $field => $values ) {
-			if( $values['type'] === 'checkbox' && ! isset( $_POST[$field] ) ) {
-				update_post_meta( $post_id, $field, false );
-			} else if( isset( $_POST[$field] ) ) {
-				if( $field != 'pl_cpt_template' ) {
-					update_post_meta( $post_id, $field, $_POST[$field] );
-				}
-			}
-		}
-
-		if( isset( $_POST['radio-type'] ) ) {
-			$radio_type = $_POST['radio-type'];
-			$select_type = 'nb-id-select-' . $radio_type;
-			if( isset( $_POST[$select_type] ) ) {
-				// persist radio box storage based on what is saved
-				update_post_meta( $post_id, 'radio-type', $_POST['radio-type'] );
-				update_post_meta( $post_id, 'nb-select-' . $radio_type, $_POST[ $select_type ] );
-			}
-		}
-
-		if( isset( $_POST['pl_featured_listing_meta'] ) ) {
-			update_post_meta( $post_id, 'pl_featured_listing_meta',  $_POST['pl_featured_listing_meta'] );
-		}
-	}
-
 	public function admin_head_plugin_path( ) {
 	?>
 		<script type="text/javascript">
@@ -247,32 +216,25 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 
 		switch ($column) {
 			case "type":
-				if( ! empty( $widget_type ) ) {
-					echo PL_Post_Type_Manager::get_post_type_title_helper( $widget_type );
+				if ($widget_type) {
+					echo self::$shortcodes[$widget_type]['title'];
 				}
 				break;
 		}
 	}
 
- 	public function autosave_refresh_iframe( ) {
-		if ( isset($_POST['pl_post_type']) ) {
+ 	public function save_shortcode( ) {
+		if ( isset($_POST['shortcode_type']) ) {
 			$id = isset( $_POST['post_ID'] ) ? (int) $_POST['post_ID'] : 0;
 
 			if ( ! $id )
 				wp_die( -1 );
-
-			if( ! headers_sent() ):
-				?>
-					<script type="text/javascript">
-						jQuery('#post').trigger('submit');
-					</script>
-				<?php
-			endif;
+				
+			$this->_save($id, $_POST);
 		}
 	}
 
-	public static function autosave_save_template()
-	{
+	public static function autosave_save_template()	{
 		if ($_POST['shortcode'] && $_POST['title'] && $_POST['snippets']) {
 
 			// Format & sanitize snippet_body...
@@ -295,88 +257,6 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		die();
 	}
 
-	// Helper function for featured listings
-	// They are already available via other UI
-	private function prepare_featured_template( $single ) {
-		global $post;
-
-		if( ! empty( $post ) && $post->post_type === 'featured_listings' ) {
-			$meta = get_post_meta( $post->ID );
-			$args = '';
-
-			if( ! empty( $meta['pl_cpt_template'] ) ) {
-				$args .= 'template="' . $meta['pl_cpt_template'][0] . '"';
-			}
-
-			$shortcode = '[featured_listings id="' . $post->ID . '" '. $args . ']';
-			include PL_LIB_DIR . '/post_types/pl_post_types_template.php';
-
-			die();
-		}
-	}
-
-	// Helper function for static listings
-	// They are already available via other UI
-	private function prepare_static_template( $single ) {
-		global $post;
-
-		if( ! empty( $post ) && $post->post_type === 'static_listings' ) {
-
-			$meta = get_post_meta( $post->ID );
-			$args = '';
-				
-			if( ! empty( $meta['pl_cpt_template'] ) ) {
-				$args .= 'template="static_listings_' . $meta['pl_cpt_template'][0] . '"';
-			}
-			if( ! empty( $meta['num_results_shown'] ) && $meta['num_results_shown'][0]) {
-				$args .= sprintf( ' query_limit="%s"', $meta['num_results_shown'][0] );
-			}
-			if( ! empty( $meta['hide_num_results'] ) ) {
-				$args .= sprintf( ' hide_num_results="%s"', $meta['hide_num_results'][0] );
-			}
-			if( ! empty( $meta['hide_sort_by'] ) ) {
-				$args .= sprintf( ' hide_sort_by="%s"', $meta['hide_sort_by'][0] );
-			}
-			if( ! empty( $meta['hide_sort_direction'] ) ) {
-				$args .= sprintf( ' hide_sort_direction="%s"', $meta['hide_sort_direction'][0] );
-			}
-
-			$shortcode = '[static_listings id="' . $post->ID . '" ' . $args . ']';
-
-			include PL_LIB_DIR . '/post_types/pl_post_types_template.php';
-
-			die();
-		}
-	}
-
-	// Autosave function when any of the input fields is called
-	public function autosave_save_post_for_iframe( ) {
-		if( ! empty ($_POST['post_id'] ) ) {
-			$post_id = (int) $_POST['post_id'];
-			$pl_post_type = ! empty( $_POST['pl_post_type'] ) ? $_POST['pl_post_type'] : self::$default_post_type;
-
-			if( $pl_post_type === 'featured_listings'
-				|| $pl_post_type === 'static_listings'
-				|| $pl_post_type === 'pl_static_listings'
-				|| $pl_post_type === 'pl_search_listings') {
-				pl_featured_listings_meta_box_save( $post_id );
-			}
-// 			if( $pl_post_type === 'pl_neighborhood' ) {
-//				$this->meta_box_save( $post_id );
-// 			}
-
-			if ( isset( $_POST['post_title'] )) {
-				wp_insert_post( array( 'ID'=>$post_id, 'post_type'=>'pl_general_widget', 'post_title'=>$_POST['post_title'] ) );
-			}
-
-			update_post_meta($post_id, 'pl_post_type', $pl_post_type);
-			//TODO: update template list in view
-			$shortcode = self::get_context_template($pl_post_type);
-			echo json_encode(array('snippet_list'=>self::template_list($shortcode)));
-		}
-
- 		die();
-	}
 
 	public function update_template_block_styles( ) {
 		ob_start();
@@ -437,7 +317,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			return;
 		}
 
-		$values = array_flip( self::$post_types );
+		$values = $this->get_shortcodes();
 		?>
         <select name="pl_widget_type">
         <option value="">All widget types</option>
@@ -551,10 +431,6 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 		return $snippet_type_map;
 	}
 	
-	public static function widget_preview() {
-		include PL_VIEWS_ADMIN_DIR . 'shortcodes/preview.php';
-		die;
-	}
 }
 
 new PL_General_Widget_CPT();
