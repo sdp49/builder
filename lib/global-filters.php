@@ -71,9 +71,7 @@ class PL_Global_Filters {
 	}
 
 	private static function render_active_filter ($key, $item, $subkey = null) {
-		// Do we need this...???
-		if ($item == 'in') { return ""; }
-		
+		// Some translation...
 		$name = is_null($subkey) ? $key : "{$key}[{$subkey}]";
 		$label = is_int($subkey) ? $key : $name;
 		$value = $item;
