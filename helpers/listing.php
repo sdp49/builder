@@ -70,7 +70,7 @@ class PL_Listing_Helper {
 	}
 
 	/* For backwards compatibility with older themes stuck on old versions of Blueprint */
-	public static function many_details ($args) { self::details($args); }
+	public static function many_details ($args) { return self::details($args); }
 
 	public static function single_listing ($property_id = null) {
 		// Sanity check...
