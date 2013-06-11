@@ -69,7 +69,6 @@ abstract class PL_Post_Base {
 	 * Hook in where needed
 	 */
 	public function init() {
-		add_action( 'init', array( $this, 'register_post_type' ) );
 		add_action( 'add_meta_boxes', array( $this, 'meta_box' ), 99999 );
  		add_action( 'save_post', array( $this, 'meta_box_save' ) );
  		add_action( 'template_redirect', array( $this, 'post_type_templating' ) );
@@ -94,11 +93,6 @@ abstract class PL_Post_Base {
 	/*******************************************
 	 * Override the following as necessary
 	 *******************************************/
-	
-	/**
-	 * Register the post type if desired
-	 */
-	public function register_post_type() {}
 	
 	/**
 	 * Called when the admin form is being displayed for this post type

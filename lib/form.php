@@ -58,9 +58,12 @@ class PL_Form {
 		
 	}
 
-	public static function item($item, $attributes, $method, $parent = false, $section_prefix = '') {
+	public static function item($item, $attributes, $method, $parent = false, $section_prefix = '', $echo = false) {
+		$op = '';
 		extract(self::prepare_item($item, $attributes, $method, $parent), EXTR_SKIP);
-		ob_start();
+		if (!$echo) {
+			ob_start();
+		}
 		if ($type == 'checkbox') {
 			?>
 				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>">
@@ -147,8 +150,7 @@ class PL_Form {
 					<?php endforeach; ?>	
 				</section>
 			<?php	
-		}
-		 elseif ( $type == 'custom_data' ) {
+		} elseif ( $type == 'custom_data' ) {
 			?>
 				<section id="<?php echo $id ?>" class="pls_search_form <?php echo $css ?>">
 					<label for="">Category Name</label>
@@ -161,7 +163,10 @@ class PL_Form {
 				</section>
 			<?php
 		}
-		return trim(ob_get_clean());
+		if (!$echo) {
+			$op = trim(ob_get_clean());
+		}
+		return $op;
 	}
 
 	private function prepare_item($item, $attributes, $method, $parent) {

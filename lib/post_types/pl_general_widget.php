@@ -63,6 +63,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 					$class = 'PL_'.ucfirst(substr(substr($file, 0, -4), 3)).'_CPT';
 					if (!class_exists($class)) {
 						include($path . $file);
+						$obj = new $class();
 					}
 					if (class_exists($class)) {
 						$info = $class::get_type();
@@ -75,6 +76,7 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 			closedir($handle);
 		}
 
+		add_action( 'init', array( $this, 'register_post_type' ) );
 		add_action( 'wp_ajax_pl_widget_changed', array( $this, 'widget_changed' ) );
 		add_action( 'wp_ajax_pl_widget_preview', array( $this, 'widget_preview' ) );
 		

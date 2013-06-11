@@ -249,25 +249,17 @@ jQuery(document).ready(function($){
 			height: 600
 		});
 	});
-/*
-	// reset before the view, hide everything
-	$('#widget_meta_wrapper section, #pl_featured_listing_block').hide();
-	$('.pl_template_block section').show();
-	
-	var $selected_cpt = $('#edit-sc-choose-type select');
-	if ($selected_cpt.length && $selected_cpt.val().substring('pl_post_type_'.length) != 'undefined' ) {
-		$('#widget_meta_wrapper').show();
-	}
-*/
+
+	// setup view based on current shortcode type, etc
+	wptitlehint();
+	$('#pl_sc_shortcode_type').trigger('change');
+
 	// call the custom autosave for every changed input and select in the shortcode edit view
 	$('#pl_sc_edit input, #pl_sc_edit select').change(function() {
 		widget_autosave();
 	});
 
-	// setup view based on current shortcode type, etc
-	wptitlehint();
-	sc_shortcode_selected();
-	
+
 	try{
 		//$('#title').focus();
 		// force a title in shortcode edit page
@@ -282,7 +274,7 @@ jQuery(document).ready(function($){
 		type_selected();
 	}catch(e){}
 
-	
+
 	////////////////////////////////////////
 	// Template editor
 	////////////////////////////////////////

@@ -116,7 +116,7 @@ $options_class = $filters_class = '';
 							$_POST[$shortcode_type][$field] = $f_args['default'];
 						}
 						$f_args['css'] = (!empty($f_args['css']) ? $f_args['css'].' ' : '') . $shortcode_type;
-						echo PL_Form::item($field, $f_args, 'POST', $shortcode_type, 'general_widget_');
+						PL_Form::item($field, $f_args, 'POST', $shortcode_type, 'general_widget_', true);
 					}
 				}
 				?>
@@ -130,33 +130,39 @@ $options_class = $filters_class = '';
 				// get meta values from custom fields
 				// fill POST array for the forms (required after new widget is created)
 				foreach( $pl_shortcode_types as $shortcode_type => $sct_args ) {
-					foreach($sct_args['filters'] as $field => $f_args) {
-						if ($f_args['type'] == 'subgrp') {
-							echo '<h4>'.$f_args['label'].'</h4>';
-							$grpval = isset( $values[$field] ) ? $values[$field][0] : array();
-							foreach($f_args['subgrp'] as $subfield => $sf_args) {
-								$value = isset( $grpval[$subfield] ) ? $grpval[$subfield] : '';
-								if( !empty( $value ) && empty( $_POST[$field][$subfield] ) ) {
-									$_POST[$shortcode_type][$field][$subfield] = $value;
+					if (!empty($sct_args['filters'])) {
+						?>
+						<div class="pl_widget_block <?php echo $shortcode_type?>">
+						<?php foreach($sct_args['filters'] as $field => $f_args) {
+							if ($f_args['type'] == 'subgrp') {
+								echo '<h4>'.$f_args['label'].'</h4>';
+								$grpval = isset( $values[$field] ) ? $values[$field][0] : array();
+								foreach($f_args['subgrp'] as $subfield => $sf_args) {
+									$value = isset( $grpval[$subfield] ) ? $grpval[$subfield] : '';
+									if( !empty( $value ) && empty( $_POST[$field][$subfield] ) ) {
+										$_POST[$shortcode_type][$field][$subfield] = $value;
+									}
+									else {
+										$_POST[$shortcode_type][$field][$subfield] = $sf_args['default'];
+									}
+									$sf_args['css'] = (!empty($sf_args['css']) ? $sf_args['css'].' ' : '') . $shortcode_type;
+									PL_Form::item($subfield, $sf_args, 'POST', $shortcode_type.'['.$field.']', 'general_widget_', true);
 								}
-								else {
-									$_POST[$shortcode_type][$field][$subfield] = $sf_args['default'];
-								}
-								$sf_args['css'] = (!empty($sf_args['css']) ? $sf_args['css'].' ' : '') . $shortcode_type;
-								echo PL_Form::item($subfield, $sf_args, 'POST', $shortcode_type.'['.$field.']', 'general_widget_');
-							}
-						}
-						else {
-							$value = isset( $values[$field] ) ? $values[$field][0] : '';
-							if( !empty( $value ) && empty( $_POST[$field] ) ) {
-								$_POST[$shortcode_type][$field] = $value;
 							}
 							else {
-								$_POST[$shortcode_type][$field] = $f_args['default'];
+								$value = isset( $values[$field] ) ? $values[$field][0] : '';
+								if( !empty( $value ) && empty( $_POST[$field] ) ) {
+									$_POST[$shortcode_type][$field] = $value;
+								}
+								else {
+									$_POST[$shortcode_type][$field] = $f_args['default'];
+								}
+								$f_args['css'] = (!empty($f_args['css']) ? $f_args['css'].' ' : '') . $shortcode_type;
+								PL_Form::item($field, $f_args, 'POST', $shortcode_type, 'general_widget_', true);
 							}
-							$f_args['css'] = (!empty($f_args['css']) ? $f_args['css'].' ' : '') . $shortcode_type;
-							echo PL_Form::item($field, $f_args, 'POST', $shortcode_type, 'general_widget_');
-						}
+						}?>
+						</div>
+						<?php
 					}
 				}
 				?>				
