@@ -255,34 +255,8 @@ class PL_Component_Entity {
 	    echo PLS_Map::listings( $listings, array('width' => $atts['width'], 'height' => $atts['height']) );
 	  	return ob_get_clean();  
 	}
-	
-	public static function advanced_slideshow_entity( $atts ) {
-		$atts = wp_parse_args($atts, array(
-			'animation' => 'fade', 									// fade, horizontal-slide, vertical-slide, horizontal-push
-			'animationSpeed' => 800, 								// how fast animtions are
-			'timer' => true,											// true or false to have the timer
-			'pauseOnHover' => true,									// if you hover pauses the slider
-			'advanceSpeed' => 5000,									// if timer is enabled, time between transitions
-			'startClockOnMouseOut' => true,					// if clock should start on MouseOut
-			'startClockOnMouseOutAfter' => 1000,		// how long after MouseOut should the timer start again
-			'directionalNav' => true, 							// manual advancing directional navs
-			'captions' => true, 										// do you want captions?
-			'captionAnimation' => 'fade', 					// fade, slideOpen, none
-			'captionAnimationSpeed' => 800, 				// if so how quickly should they animate in
-			'afterSlideChange' => 'function(){}',		// empty function
-			'width' => 610,
-			'height' => 320,
-			'bullets' => 'false',
-			'context' => 'home',
-			'featured_option_id' => 'slideshow-featured-listings',
-			'listings' => 'limit=5&is_featured=true&sort_by=price'
-		));
-		ob_start();
-		echo PLS_Slideshow::slideshow($atts);
-		return ob_get_clean();
-	}
 		
-	public static function listing_slideshow( $atts ) {
+	public static function listing_slideshow( $atts, $advanced = false ) {
 		$atts = wp_parse_args($atts, array(
 			'animation' => 'fade', 									// fade, horizontal-slide, vertical-slide, horizontal-push
 			'animationSpeed' => 800, 								// how fast animtions are
@@ -305,22 +279,25 @@ class PL_Component_Entity {
 		));
 
 		ob_start();
-		?>
-		<style type="text/css">
-		.orbit-wrapper .orbit-caption { 
-			z-index: 999999 !important;
-			margin-top: -113px;
-			position: absolute;
-			right: 0;
-			bottom: 0;
-			width: 100%;
+		
+		if ($advanced) {
+			?>
+				<style type="text/css">
+				.orbit-wrapper .orbit-caption { 
+					z-index: 999999 !important;
+					margin-top: -113px;
+					position: absolute;
+					right: 0;
+					bottom: 0;
+					width: 100%;
+				}
+				.orbit-caption {
+					display: none;
+				}
+				</style>
+			<?php 
 		}
-		.orbit-caption {
-			display: none;
-		}
-		</style>
-
-		<?php
+		
 		echo PLS_Slideshow::slideshow($atts); 
 	
 		return ob_get_clean();

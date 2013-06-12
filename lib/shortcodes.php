@@ -209,7 +209,7 @@ class PL_Shortcodes
 		
 	}
 	public static function advanced_slideshow_shortcode_handler ($atts) {
-		$content = PL_Component_Entity::advanced_slideshow_entity( $atts );
+		$content = PL_Component_Entity::listing_slideshow( $atts, true );
 		
 		return self::wrap( 'advanced_slideshow', $content );
 	}
