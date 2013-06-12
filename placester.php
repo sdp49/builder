@@ -124,7 +124,6 @@ include_once('lib/membership.php');
 include_once('lib/caching.php');
 include_once('lib/component_entities.php');
 include_once('lib/shortcodes.php');
-include_once('lib/featured_listings_post_type.php');
 include_once('lib/demo_data.php');
 include_once('lib/customizer.php');
 include_once('lib/customizer_entities.php');
@@ -170,7 +169,6 @@ include_once('helpers/caching.php');
 include_once('helpers/membership.php');
 include_once('helpers/lead-capture.php');
 include_once('helpers/snippet.php');
-include_once('helpers/template.php');
 include_once('helpers/customizer.php');
 include_once('helpers/logging.php');
 
