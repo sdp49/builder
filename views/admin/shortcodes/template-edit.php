@@ -6,10 +6,10 @@ $title = (empty($_REQUEST['title'])?'':$_REQUEST['title']);
 $pl_post_type = ( empty($_REQUEST['type'])?'pl_form':$_REQUEST['type']);
 $ID = (empty($_REQUEST['id'])?'':$_REQUEST['id']);
 
-$shortcode = PL_General_Widget_CPT::get_context_template($pl_post_type);
+$shortcode = PL_Shortcode_CPT::get_context_template($pl_post_type);
 
 if ($action == 'delete' && $ID) {
-	PL_General_Widget_CPT::delete_shortcode_template($ID);
+	PL_Shortcode_CPT::delete_shortcode_template($ID);
 	wp_redirect('admin.php?page=placester_shortcodes');
 	die;		
 }
@@ -21,7 +21,7 @@ if ($action == 'edit') {
 
 if ($shortcode) {
 	// load snippets
-	$snippets = PL_General_Widget_CPT::load_shortcode_template($shortcode, $title);
+	$snippets = PL_Shortcode_CPT::load_shortcode_template($shortcode, $title);
 	if ($title) {
 		$ID = $shortcode.'-'.$title;
 	}

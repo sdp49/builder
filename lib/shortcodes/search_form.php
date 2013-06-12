@@ -4,7 +4,7 @@
  *
  */
 
-class PL_Form_CPT extends PL_Post_Base {
+class PL_Form_CPT extends PL_SC_Base {
 
 	protected static $post_type = 'pl_form';
 
@@ -47,3 +47,5 @@ class PL_Form_CPT extends PL_Post_Base {
 					'max_price_rental'	
 	);
 }
+
+PL_Form_CPT::init(__CLASS__);

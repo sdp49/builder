@@ -4,7 +4,7 @@
  *
  */
 
-class PL_Slideshow_CPT extends PL_Post_Base {
+class PL_Listing_Slideshow_CPT extends PL_SC_Base {
 
 	protected static $post_type = 'pl_slideshow';
 
@@ -38,3 +38,5 @@ class PL_Slideshow_CPT extends PL_Post_Base {
 		'ls_baths',
 	);
 }
+
+PL_Listing_Slideshow_CPT::init();

@@ -1,22 +1,63 @@
 <?php
 /**
  * The custom shortcodes are stored as a custom post type of pl_general_widget. 
- * Each references a shortcode template/layout that controls how its drawn. The templates
- * come from a custom theme or are user defined using custom post type pl_widget_template 
- *
+ * Each references a shortcode template/layout that controls how its drawn. 
+ * The templates come from a file in the (Placester aware) theme or are user defined. 
  */
-include_once(PL_LIB_DIR . 'post_types/pl_post_base.php');
 
-class PL_General_Widget_CPT extends PL_Post_Base {
+class PL_Shortcode_CPT {
 
-	protected static $title='Shortcodes/Widgets';
 	// holds the shortcodes we have installed
 	protected static $shortcodes = array(); 
+	// holds the shortcode classes we have installed
+	protected static $shortcode_config = array(); 
 	// default widget type
 	protected $default_post_type = 'pl_map';
 	
 
 
+	public static function register_shortcode($shortcode, $instance) {
+		self::$shortcodes[$shortcode] = $instance;
+	}
+
+	public function __construct() {
+		
+		// get list of shortcodes that can be widgetized:
+		$path = trailingslashit( PL_LIB_DIR ) . 'shortcodes/';
+		$ignore = array('sc_base.php');
+		include_once($path . 'sc_base.php');
+		if ($handle = opendir($path)) {
+			while (false !== ($file = readdir($handle))) {
+				if (pathinfo($file, PATHINFO_EXTENSION) == 'php' && !(in_array($file, $ignore))) {
+					include($path . $file);
+				}
+			}
+			closedir($handle);
+		}
+
+		add_action( 'init', array( $this, 'register_post_type' ) );
+		add_action( 'wp_ajax_pl_widget_changed', array( $this, 'widget_changed' ) );
+		add_action( 'wp_ajax_pl_widget_preview', array( $this, 'widget_preview' ) );
+		
+		
+	//TODO: review:		
+	
+			//add_action( 'admin_enqueue_scripts', array( $this, 'admin_styles' ) );
+			add_action( 'admin_head', array( $this, 'admin_head_plugin_path' ) );
+			add_filter( 'manage_edit-pl_general_widget_columns' , array( $this, 'widget_edit_columns' ) );
+	 		add_filter( 'manage_pl_general_widget_posts_custom_column', array( $this, 'widget_custom_columns' ) );
+			add_action( 'wp_ajax_ve', array( $this, 'autosave_refresh_iframe' ), 1 );
+			add_action( 'wp_ajax_autosave_widget_template', array( $this, 'autosave_save_template' ) );
+			add_action( 'wp_ajax_handle_widget_script', array( $this, 'handle_iframe_cross_domain' ) );
+			add_action( 'wp_ajax_nopriv_handle_widget_script', array( $this, 'handle_iframe_cross_domain' ) );
+			// add_filter( 'pl_form_section_after', array( $this, 'filter_form_section_after' ), 10, 3 );
+			add_filter( 'post_row_actions', array( $this, 'remove_quick_edit_view'), 10, 1 );
+			add_action( 'restrict_manage_posts', array( $this, 'listing_posts_add_filter_widget_type' ) );
+			add_filter( 'parse_query', array( $this, 'widget_type_posts_filter' ) );
+			add_filter( 'get_edit_post_link', array( $this, 'shortcode_edit_link' ), 10, 3);
+		}
+	
+		
 
 	public function register_post_type() {
 		
@@ -47,65 +88,20 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 
 		register_post_type('pl_general_widget', $args );
 	}
-	
-	public function __construct() {
-		parent::__construct();
-		
-		// get list of shortcodes that can be widgetized:
-		$path = trailingslashit( PL_LIB_DIR ) . 'post_types/';
-		$ignore = array(
-				'pl_post_type_manager.php',
-				'pl_post_types_template.php',
-				'pl_post_base.php' );
-		if ($handle = opendir($path)) {
-			while (false !== ($file = readdir($handle))) {
-				if (pathinfo($file, PATHINFO_EXTENSION) == 'php' && !(in_array($file, $ignore))) {
-					$class = 'PL_'.ucfirst(substr(substr($file, 0, -4), 3)).'_CPT';
-					if (!class_exists($class)) {
-						include($path . $file);
-						$obj = new $class();
-					}
-					if (class_exists($class)) {
-						$info = $class::get_type();
-						if ($info['shortcode'] && $info['post_type']) {
-							self::$shortcodes[$info['post_type']] = $info;
-						}
-					}
-				}
-			}
-			closedir($handle);
-		}
 
-		add_action( 'init', array( $this, 'register_post_type' ) );
-		add_action( 'wp_ajax_pl_widget_changed', array( $this, 'widget_changed' ) );
-		add_action( 'wp_ajax_pl_widget_preview', array( $this, 'widget_preview' ) );
-		
-		
-	//TODO: review:		
 	
-			//add_action( 'admin_enqueue_scripts', array( $this, 'admin_styles' ) );
-			add_action( 'admin_head', array( $this, 'admin_head_plugin_path' ) );
-			add_filter( 'manage_edit-pl_general_widget_columns' , array( $this, 'widget_edit_columns' ) );
-	 		add_filter( 'manage_pl_general_widget_posts_custom_column', array( $this, 'widget_custom_columns' ) );
-			add_action( 'wp_ajax_ve', array( $this, 'autosave_refresh_iframe' ), 1 );
-			add_action( 'wp_ajax_autosave_widget_template', array( $this, 'autosave_save_template' ) );
-			add_action( 'wp_ajax_handle_widget_script', array( $this, 'handle_iframe_cross_domain' ) );
-			add_action( 'wp_ajax_nopriv_handle_widget_script', array( $this, 'handle_iframe_cross_domain' ) );
-			// add_filter( 'pl_form_section_after', array( $this, 'filter_form_section_after' ), 10, 3 );
-			add_filter( 'post_row_actions', array( $this, 'remove_quick_edit_view'), 10, 1 );
-			add_action( 'restrict_manage_posts', array( $this, 'listing_posts_add_filter_widget_type' ) );
-			add_filter( 'parse_query', array( $this, 'widget_type_posts_filter' ) );
-			add_filter( 'get_edit_post_link', array( $this, 'shortcode_edit_link' ), 10, 3);
-		}
-	
-		
-
 	/**
-	 * Return an array of shortcode types that can be widgetized
+	 * Return an array of shortcodes with their respective arguments that can be used to
+	 * construct admin pages for creating a custom instance of a shortcode 
 	 * @return array	: array of shortcode type arrays
 	 */
 	public static function get_shortcodes() {
-		return self::$shortcodes;
+		if (empty(self::$shortcode_config)) {
+			foreach(self::$shortcodes as $shortcode => $instance){
+				self::$shortcode_config[$shortcode] = $instance->get_args();
+			}
+		}
+		return self::$shortcode_config;
 	}
 
 	
@@ -437,4 +433,4 @@ class PL_General_Widget_CPT extends PL_Post_Base {
 	
 }
 
-new PL_General_Widget_CPT();
+new PL_Shortcode_CPT();

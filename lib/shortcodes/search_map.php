@@ -4,7 +4,7 @@
  *
  */
 
-class PL_Map_CPT extends PL_Post_Base {
+class PL_Map_CPT extends PL_SC_Base {
 
 	protected static $post_type = 'pl_map';
 
@@ -22,3 +22,5 @@ class PL_Map_CPT extends PL_Post_Base {
 //				'default' => '' ),
 	);
 }
+
+PL_Map_CPT::init(__CLASS__);

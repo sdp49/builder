@@ -1,11 +1,10 @@
 <?php
 /**
- * Main Post Base class
- *
- * Defines a skeleton for displaying and configuring our shortcodes
+ * Base class for creating a custom post type based on a shortcode.
+ * Subclass this for each shortcode to provide an admin suitable for that shortcode. 
  */
 
-abstract class PL_Post_Base {
+abstract class PL_SC_Base {
 
 	// subclass should use this to set its post type
 	protected static $post_type = '';
@@ -59,40 +58,49 @@ abstract class PL_Post_Base {
 	// default layout template
 	protected static $template = 'twenty_eleven';
 
-
-
-	public function __construct() {
-		$this->init();
-	}
 	
+	
+
+
 	/**
-	 * Hook in where needed
+	 * Create an instance and register it with the shortcode manager
 	 */
-	public function init() {
+	public static function init() {
+		$class = get_called_class();
+ 		if (class_exists('PL_Shortcode_CPT')) {
+ 			PL_Shortcode_CPT::register_shortcode($class::$shortcode, new $class);
+ 		}
+	}	
+	
+	public function __construct() {
 		add_action( 'add_meta_boxes', array( $this, 'meta_box' ), 99999 );
  		add_action( 'save_post', array( $this, 'meta_box_save' ) );
  		add_action( 'template_redirect', array( $this, 'post_type_templating' ) );
-	}	
+	}
 	
 	/**
 	 * Return the parameters that describe this shortcode type
 	 * @return multitype:
 	 */
-	public static function get_type() {
-		$class = get_called_class();
+	public function get_args() {
+		if (empty($this::$filters)) {
+			$this::$filters = $this->_get_filters();
+		}
 		return array(
-				'shortcode'	=> $class::$shortcode,
-				'post_type'	=> $class::$post_type,
-				'title'		=> $class::$title,
-				'options'	=> $class::$options,
-				'filters'	=> $class::$filters,
-				'template'	=> $class::$template,
+				'shortcode'	=> $this::$shortcode,
+				'post_type'	=> $this::$post_type,
+				'title'		=> $this::$title,
+				'options'	=> $this::$options,
+				'filters'	=> $this::$filters,
+				'template'	=> $this::$template,
 		);
 	}
+
 	
 	/*******************************************
 	 * Override the following as necessary
 	 *******************************************/
+	
 	
 	/**
 	 * Called when the admin form is being displayed for this post type
@@ -189,6 +197,11 @@ abstract class PL_Post_Base {
 			}
 		}
 	}
+	
+	/**
+	 * Return array of filters used to configure this shortcode
+	 */
+	protected function _get_filters() {}
 	
 	
 	/*******************************************

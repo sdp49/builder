@@ -6,7 +6,7 @@ $selected = !empty($selected) ? $select_name : ''; // name of the drop list box
 $value = !empty($value) ? $value : ''; // current value
 $class = !empty($class) ? $class : ''; // css class for box
 
-$pl_snippet_list = PL_General_Widget_CPT::template_list($shortcode);
+$pl_snippet_list = PL_Shortcode_CPT::template_list($shortcode);
 $pl_snippet_types = array('default' => 'Default', 'custom' => 'Custom'); // Order matters, here...
 
 $curr_type = '';

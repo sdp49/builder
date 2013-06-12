@@ -135,7 +135,7 @@ include_once('lib/bootup.php');
 include_once('lib/global-filters.php');
 
 //shortcode widgetizaton
-include_once('lib/post_types/pl_general_widget.php');
+include_once('lib/shortcode-cpt.php');
 
 
 //models

@@ -9,7 +9,7 @@ $data = empty($data)?array():$data; // current template values
 
 $data = wp_parse_args($data, array('before_widget'=>'', 'after_widget'=>'', 'snippet_body'=>'', 'widget_css'=>''));
 $shortcode = '';
-$pl_shortcode_types = PL_General_Widget_CPT::get_shortcodes(); 
+$pl_shortcode_types = PL_Shortcode_CPT::get_shortcodes(); 
 ?>
 
 <div class="postbox ">

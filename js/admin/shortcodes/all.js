@@ -188,13 +188,8 @@ jQuery(document).ready(function($){
 			$(this).css('display', ($(this).hasClass(shortcode_type) ? 'block' : 'none'));
 		});
 		
-		// meta blocks not related to the post type and reveal the ones to be used
+		// hide meta blocks not related to the post type and reveal the ones to be used
 		$('#pl_sc_edit .pl_widget_block').each(function() {
-			$(this).css('display', ($(this).hasClass(shortcode_type) ? 'block' : 'none'));
-		});
-		
-		// hide values not related to the post type and reveal the ones to be used
-		$('#pl_sc_edit .pl_widget_block > section').each(function() {
 			$(this).css('display', ($(this).hasClass(shortcode_type) ? 'block' : 'none'));
 		});
 		

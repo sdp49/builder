@@ -79,7 +79,7 @@ class PL_Router {
 		// Add parameter validation code...
 		switch ($type) {
 			case 'custom' :
-				$template = PL_General_Widget_CPT::load_shortcode_template($shortcode, $snippet);
+				$template = PL_Shortcode_CPT::load_shortcode_template($shortcode, $snippet);
 				echo html_entity_decode($template['snippet_body'], ENT_QUOTES);
 				break;
 			case 'default' :

@@ -9,7 +9,7 @@ $values = get_post_custom( $post->ID );
 // read the post type
 $pl_post_type = empty( $values['pl_post_type'] ) ? '' : $values['pl_post_type'][0];
 $pl_cpt_template = empty( $values['pl_cpt_template'] ) ? '' : $values['pl_cpt_template'][0];
-$pl_shortcode_types = PL_General_Widget_CPT::get_shortcodes();
+$pl_shortcode_types = PL_Shortcode_CPT::get_shortcodes();
 
 $options_class = $filters_class = '';
 ?>
@@ -102,7 +102,9 @@ $options_class = $filters_class = '';
 				<?php
 				// get meta values from custom fields
 				// fill POST array for the forms (required after new widget is created)
-				foreach( $pl_shortcode_types as $shortcode_type => $sct_args ) {
+				foreach( $pl_shortcode_types as $shortcode_type => $sct_args ) {?>
+					<div class="pl_widget_block <?php echo $shortcode_type;?>">
+					<?php
 					foreach($sct_args['options'] as $field => $f_args) {
 						if ($field == 'pl_cpt_template') {
 							// template field already handled
@@ -117,7 +119,9 @@ $options_class = $filters_class = '';
 						}
 						$f_args['css'] = (!empty($f_args['css']) ? $f_args['css'].' ' : '') . $shortcode_type;
 						PL_Form::item($field, $f_args, 'POST', $shortcode_type, 'general_widget_', true);
-					}
+					}?>
+					</div>
+					<?php
 				}
 				?>
 			</div>
@@ -127,40 +131,21 @@ $options_class = $filters_class = '';
 					<h3>Filters:</h3>
 				</div>
 				<?php
-				// get meta values from custom fields
 				// fill POST array for the forms (required after new widget is created)
 				foreach( $pl_shortcode_types as $shortcode_type => $sct_args ) {
 					if (!empty($sct_args['filters'])) {
 						?>
 						<div class="pl_widget_block <?php echo $shortcode_type?>">
-						<?php foreach($sct_args['filters'] as $field => $f_args) {
-							if ($f_args['type'] == 'subgrp') {
-								echo '<h4>'.$f_args['label'].'</h4>';
-								$grpval = isset( $values[$field] ) ? $values[$field][0] : array();
-								foreach($f_args['subgrp'] as $subfield => $sf_args) {
-									$value = isset( $grpval[$subfield] ) ? $grpval[$subfield] : '';
-									if( !empty( $value ) && empty( $_POST[$field][$subfield] ) ) {
-										$_POST[$shortcode_type][$field][$subfield] = $value;
-									}
-									else {
-										$_POST[$shortcode_type][$field][$subfield] = $sf_args['default'];
-									}
-									$sf_args['css'] = (!empty($sf_args['css']) ? $sf_args['css'].' ' : '') . $shortcode_type;
-									PL_Form::item($subfield, $sf_args, 'POST', $shortcode_type.'['.$field.']', 'general_widget_', true);
-								}
-							}
-							else {
-								$value = isset( $values[$field] ) ? $values[$field][0] : '';
-								if( !empty( $value ) && empty( $_POST[$field] ) ) {
-									$_POST[$shortcode_type][$field] = $value;
-								}
-								else {
-									$_POST[$shortcode_type][$field] = $f_args['default'];
-								}
-								$f_args['css'] = (!empty($f_args['css']) ? $f_args['css'].' ' : '') . $shortcode_type;
-								PL_Form::item($field, $f_args, 'POST', $shortcode_type, 'general_widget_', true);
-							}
-						}?>
+						<?php PL_Form::generate_form($sct_args['filters'],
+								array('method' => "POST",
+									'title' => true,
+									'wrap_form' => false,
+									'echo_form' => false,
+									'include_submit' => false,
+									'id' => 'pls_admin_my_listings',
+									'echo_form' => true,
+								),
+								'general_widget_');?>
 						</div>
 						<?php
 					}

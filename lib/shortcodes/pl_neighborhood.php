@@ -4,7 +4,7 @@
  *
  */
 
-class PL_Neighborhood_CPT extends PL_Post_Base {
+class PL_Neighborhood_CPT extends PL_SC_Base {
 
 	protected static $post_type = 'pl_neighborhood';
 
@@ -27,8 +27,26 @@ class PL_Neighborhood_CPT extends PL_Post_Base {
 			'nb_map'
 	);
 
+	public function get_args() {
+		return array(
+				'shortcode'	=> $this::$shortcode,
+				'post_type'	=> $this::$post_type,
+				'title'		=> $this::$title,
+				'options'	=> $this::$options,
+				'filters'	=> $this::$filters,
+				'template'	=> $this::$template,
+		);
+	}
+	
 
-
+	
+	
+	
+	
+	
+	
+	
+	
 
 	public function meta_box_save( $post_id ) {
 	// Avoid autosaves
@@ -141,3 +159,5 @@ return;
 		}
 	}
 }
+
+PL_Neighborhood_CPT::init(__CLASS__);
