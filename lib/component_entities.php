@@ -827,14 +827,12 @@ class PL_Component_Entity {
 	
 	// Provide template layout for featured listings
 	public static function featured_listings_ajax_templates( $item_html, $listing, $context_var ) {
-		//PL_Shortcodes::get_active_snippet_body('listings', self::$featured_context);			
 		$shortcode = 'featured_listings';
 		self::$listing = $listing;
 
 		// get the template attached as a context arg, 33 is the length of the filter prefix
 		$template = substr(current_filter(), 33);
 		
-		//$template_body = self::get_active_snippet_body( 'featured_listings', $template );
 		$template_body = PL_Shortcodes::get_active_snippet_body($shortcode);
 		return do_shortcode( $template_body );
 	}
@@ -847,7 +845,6 @@ class PL_Component_Entity {
 		// get the template attached as a context arg, 33 is the length of the filter prefix
 		$template = substr(current_filter(), 31);
 	
-		//$snippet_body = self::get_active_snippet_body($shortcode, $template);
 		$snippet_body = PL_Shortcodes::get_active_snippet_body( $shortcode, $template );
 		return do_shortcode($snippet_body);
 	}
@@ -877,7 +874,6 @@ class PL_Component_Entity {
 		$template = $context;
 			
 		$snippet_body = PL_Shortcodes::get_active_snippet_body($shortcode, $template);
-		// $snippet_body = PL_Shortcodes::get_active_snippet_body($shortcode);
 		return do_shortcode($snippet_body . $html);
 	}
 	
@@ -898,7 +894,6 @@ class PL_Component_Entity {
 			$template = substr( $template, 16 );
 		}
 		
-		//$snippet_body = self::get_active_snippet_body($shortcode, $template);
 		$snippet_body = PL_Shortcodes::get_active_snippet_body($shortcode, $template);
 		return do_shortcode($snippet_body);
 	}
@@ -912,8 +907,7 @@ class PL_Component_Entity {
 			
 		// get the template attached as a context arg, 33 is the length of the filter prefix
 		$template = $context;
-			
-		//$snippet_body = self::get_active_snippet_body($shortcode, $template);
+		
 		$snippet_body = PL_Shortcodes::get_active_snippet_body($shortcode, $template);
 		return do_shortcode($snippet_body);
 	}
@@ -937,28 +931,6 @@ class PL_Component_Entity {
 		}
 	
 		return $snippet_type_map;
-	}
-	
-	public static function get_active_snippet_body($shortcode, $template_name = '')
-	{
-		// Get snippet ID currently associated with this shortcode...
-		$option_key = ('pls_' . $shortcode);
-		$snippet_name = get_option($option_key, self::$defaults[0]);
-	
-		// Determine if snippet is custom (in DB) or default (stored in flat-file)
-		$snippet_DB_key = ('pls_' . $shortcode . '_' . $snippet_name);
-		$type = ( get_option($snippet_DB_key) ? 'custom' : 'default' );
-	
-		// assign a template as a shortcode arg
-		if( ! empty( $template_name ) ) {
-			$snippet_name = $template_name;
-			$type = 'custom';
-			if( in_array( $template_name, self::$defaults ) ) {
-				$type = 'default';
-			} 
-		}
-		$snippet_body = PL_Router::load_snippet($shortcode, $snippet_name, $type);
-		return $snippet_body;
 	}
 	
 	public static function compliance_entity( $atts ) {

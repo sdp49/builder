@@ -14,12 +14,29 @@ class PL_Snippet_Helper {
 		add_action( 'wp_ajax_activate_snippet', array(__CLASS__, 'activate_snippet_ajax') );
 		add_action( 'wp_ajax_save_custom_snippet', array(__CLASS__, 'save_custom_snippet_ajax') );
 		add_action( 'wp_ajax_toggle_prop_details', array(__CLASS__, 'toggle_prop_details_enabled') );
-	}	
+	}
+
+	public static function load_snippet($shortcode, $snippet, $type) {
+		ob_start();
+		// Add parameter validation code...
+		switch ($type) {
+			case 'custom' :
+				$template = PL_Shortcode_CPT::load_shortcode_template($shortcode, $snippet);
+				echo html_entity_decode($template['snippet_body'], ENT_QUOTES);
+				break;
+			case 'default' :
+			default :
+				$filename = (trailingslashit(PL_VIEWS_SHORT_DIR) . trailingslashit($shortcode) . $snippet . '.php');
+				//echo $filename;
+				include $filename;
+		}
+		return ob_get_clean();
+	}
 
 	public static function get_snippet_body_ajax() 
 	{
 		if ($_POST['shortcode'] && $_POST['snippet'] && $_POST['type']) {
-			$snippet_body = html_entity_decode(PL_Router::load_snippet($_POST['shortcode'], $_POST['snippet'], $_POST['type']), ENT_QUOTES);
+			$snippet_body = html_entity_decode(self::load_snippet($_POST['shortcode'], $_POST['snippet'], $_POST['type']), ENT_QUOTES);
 			$response = array( 'snippet_body' =>  $snippet_body);
 			echo json_encode($response);
 		} else {

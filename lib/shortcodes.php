@@ -217,19 +217,6 @@ class PL_Shortcodes
 		
 		return self::wrap( 'static_listings', $content );
 	}
-	
-	public static function post_listing_shortcode_handler ( $atts ) {
-		// $shortcode = 'listings';
-		// self::$listing = $listing;
-
-		// // ob_start();
-		// //   echo pls_dump($listing);
-		// // return ob_get_clean();
-
-	 //  	$snippet_body = self::get_active_snippet_body($shortcode);
-	 //  	return do_shortcode($snippet_body);
-	}
-
 
 	public static function search_listings_shortcode_handler( $atts, $content )
 	{		
@@ -387,7 +374,7 @@ class PL_Shortcodes
 				$type = 'custom';
 			}
 		}
-		$snippet_body = PL_Router::load_snippet($shortcode, $snippet_name, $type);
+		$snippet_body = PL_Snippet_Helper::load_snippet($shortcode, $snippet_name, $type);
 		return $snippet_body;
 	}
 
