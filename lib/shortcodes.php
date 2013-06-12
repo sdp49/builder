@@ -151,39 +151,47 @@ class PL_Shortcodes
 	}
 
 
-	/*** Shortcode Handlers ***/	
+	/*** Shortcode Handlers ***/
+	public static function wrap( $shortcode, $content = '' ) {
+		ob_start();		
+		do_action( $shortcode . '_pre_header' );
+		// do some real shortcode work
+		echo $content;
+		do_action( $shortcode . '_post_footer' );
+		return ob_get_clean();
+	}
 	
 	public static function compliance_shortcode_handler( $atts ) {
 		$content = PL_Component_Entity::compliance_entity( $atts );
 		
-		return PL_Shortcode_Wrapper::create( 'compliance', $content );
+		return self::wrap( 'compliance', $content );
 		
 	} 
 	
 	public static function search_form_shortcode_handler($atts) {
 		$content = PL_Component_Entity::search_form_entity( $atts );
 		
-		return PL_Shortcode_Wrapper::create( 'search_form', $content );
+		return self::wrap( 'search_form', $content );
 	}
 	
 	public static function neighborhood_shortcode_handler($atts) {
 		//$content = PL_Component_Entity::search_form_entity( $atts );
 		$content = '';
 		
-		return PL_Shortcode_Wrapper::create( 'neighborhood', $content );
+		return self::wrap( 'neighborhood', $content );
 	}
 
 
 	public static function listing_slideshow_shortcode_handler ($atts) {
 		$content = PL_Component_Entity::listing_slideshow( $atts );
 		
-		return PL_Shortcode_Wrapper::create( 'listing_slideshow', $content );
+		return self::wrap( 'listing_slideshow', $content );
 		
 	}
 	public static function advanced_slideshow_shortcode_handler ($atts) {
 		$content = PL_Component_Entity::advanced_slideshow_entity( $atts );
 		
-		return PL_Shortcode_Wrapper::create( 'advanced_slideshow', $content );
+		return self::wrap( 'advanced_slideshow', $content );
 	}
 	
 	// Handle featured listings and filters
@@ -191,7 +199,7 @@ class PL_Shortcodes
 				
 		$content = PL_Component_Entity::featured_listings_entity( $atts );
 		
-		return PL_Shortcode_Wrapper::create( 'featured_listings', $content );	
+		return self::wrap( 'featured_listings', $content );	
 	}
 	
 	public static function static_listings_shortcode_handler ( $atts, $content = '' ) {
@@ -207,7 +215,7 @@ class PL_Shortcodes
 				
 		$content = PL_Component_Entity::static_listings_entity( $atts, $filters );
 		
-		return PL_Shortcode_Wrapper::create( 'static_listings', $content );
+		return self::wrap( 'static_listings', $content );
 	}
 	
 	public static function post_listing_shortcode_handler ( $atts ) {
@@ -241,20 +249,20 @@ class PL_Shortcodes
 		// the context func applies to each individual listing.
 		$content = PL_Component_Entity::search_listings_entity( $atts, $filters );
 		
-		return PL_Shortcode_Wrapper::create( 'search_listings', $content );
+		return self::wrap( 'search_listings', $content );
 	}
 
 	public static function search_map_shortcode_handler( $atts ) {
 		$content = PL_Component_Entity::search_map_entity( $atts );
 		
-		return PL_Shortcode_Wrapper::create( 'search_map', $content );
+		return self::wrap( 'search_map', $content );
 	}
 	
 
 	public static function pl_neighborhood_shortcode_handler( $atts ) {
 		$content = PL_Component_Entity::pl_neighborhood_entity( $atts );
 	
-		return PL_Shortcode_Wrapper::create( 'pl_neighborhood', $content );
+		return self::wrap( 'pl_neighborhood', $content );
 	}
 
 /*** Context Filter Handlers ***/	
@@ -309,19 +317,19 @@ class PL_Shortcodes
 	public static function listing_sub_shortcode_handler ($atts, $content, $tag) {
 		$content = PL_Component_Entity::listing_sub_entity( $atts, $content, $tag );
 		
-		return PL_Shortcode_Wrapper::create( 'listing_sub', $content );
+		return self::wrap( 'listing_sub', $content );
 	}
 	
 	public static function listing_slideshow_sub_shortcode_handler ($atts, $content, $tag) {
 		$content = PL_Component_Entity::listing_slideshow_sub_entity( $atts, $content, $tag );
 	
-		return PL_Shortcode_Wrapper::create( 'listing_slideshow_sub', $content );
+		return self::wrap( 'listing_slideshow_sub', $content );
 	}
 	
 	public static function neighborhood_sub_shortcode_handler ($atts, $content, $tag) {
 		$content = PL_Component_Entity::neighborhood_sub_entity( $atts, $content, $tag );
 	
-		return PL_Shortcode_Wrapper::create( 'neighborhood_sub', $content );
+		return self::wrap( 'neighborhood_sub', $content );
 	}
 	
 	/** Helpcode shortcode handler **/
