@@ -256,7 +256,7 @@ class PL_Component_Entity {
 	  	return ob_get_clean();  
 	}
 		
-	public static function listing_slideshow( $atts, $advanced = false ) {
+	public static function listing_slideshow( $atts, $default_style = true ) {
 		$atts = wp_parse_args($atts, array(
 			'animation' => 'fade', 									// fade, horizontal-slide, vertical-slide, horizontal-push
 			'animationSpeed' => 800, 								// how fast animtions are
@@ -280,7 +280,7 @@ class PL_Component_Entity {
 
 		ob_start();
 		
-		if ($advanced) {
+		if ($default_style) {
 			?>
 				<style type="text/css">
 				.orbit-wrapper .orbit-caption { 
