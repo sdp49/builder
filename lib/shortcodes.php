@@ -11,97 +11,117 @@
 PL_Shortcodes::init();
 class PL_Shortcodes
 {
-	public static $codes = array('search_form', 'search_listings', 'prop_details', 'search_map', 'listing_slideshow', 'advanced_slideshow','featured_listings', 'static_listings', 'post_listing', 'pl_neighborhood');
+	public static $codes = array(
+		'search_form', 
+		'search_listings', 
+		'prop_details', 
+		'search_map', 
+		'listing_slideshow', 
+		'advanced_slideshow',
+		'featured_listings', 
+		'static_listings', 
+		'post_listing', 
+		'pl_neighborhood'
+	);
 
-	public static $p_codes = array(	'search_form' => 'Search Form Shortcode',
-									'search_listings' => 'Search Listings Shortcode',
-									'prop_details' => 'Property Details Template',
-									'search_map' => 'Listings Map Template',
-									'listing_slideshow' => 'Listing Slideshow Template',
-									'advanced_slideshow' => 'Advanced Slideshow Template',
-									'featured_listings' => 'Slideshow Template',
-									'static_listings' => 'Slideshow Template',
-									'post_listing' => 'Post Listing Template',
-									'pl_neighborhood' => 'Neighborhood Template',
-								);
-	
+	public static $p_codes = array(	
+		'search_form' => 'Search Form Shortcode',
+		'search_listings' => 'Search Listings Shortcode',
+		'prop_details' => 'Property Details Template',
+		'search_map' => 'Listings Map Template',
+		'listing_slideshow' => 'Listing Slideshow Template',
+		'advanced_slideshow' => 'Advanced Slideshow Template',
+		'featured_listings' => 'Slideshow Template',
+		'static_listings' => 'Slideshow Template',
+		'post_listing' => 'Post Listing Template',
+		'pl_neighborhood' => 'Neighborhood Template',
+	);
+
 	// TODO: Construct these lists dynamically by examining the doc hierarchy...
-	public static $defaults = array('search_form' 		=> array('twentyten', 'twentyeleven'),
-	  				                'search_listings' 		=> array('twentyten', 'twentyeleven'),
-	  				                'prop_details' 		=> array('twentyten', 'twentyeleven'),
-	  				                'search_map'		=> array('twentyten', 'twentyeleven'),
-	  				                'listing_slideshow'	=> array('twentyten', 'twentyeleven'),
-	  				                'advanced_slideshow'=> array('twentyten', 'twentyeleven'),
-	  				                'featured_listings' => array('twentyten', 'twentyeleven'),
-	  				                'static_listings' 	=> array('twentyten', 'twentyeleven'),
-	  				                'post_listing' 			=> array('twentyten', 'twentyeleven'),
-									'pl_neighborhood' 			=> array('twentyten', 'twentyeleven'),
-			               			'listings' 			=> array('twentyten', 'twentyeleven') );
+	public static $defaults = array(
+		'search_form' => array('twentyten', 'twentyeleven'),
+		'search_listings' => array('twentyten', 'twentyeleven'),
+		'prop_details' => array('twentyten', 'twentyeleven'),
+		'search_map' => array('twentyten', 'twentyeleven'),
+		'listing_slideshow'	=> array('twentyten', 'twentyeleven'),
+		'advanced_slideshow' => array('twentyten', 'twentyeleven'),
+		'featured_listings' => array('twentyten', 'twentyeleven'),
+		'static_listings' => array('twentyten', 'twentyeleven'),
+		'post_listing' => array('twentyten', 'twentyeleven'),
+		'pl_neighborhood' => array('twentyten', 'twentyeleven'),
+		'listings' => array('twentyten', 'twentyeleven') 
+	);
 
-	public static $subcodes = array('search_form'  =>  array('bedrooms',
-												            'min_beds',
-												            'max_beds',
-												            'bathrooms',
-												            'min_baths',
-												            'max_baths',
-												            'price',
-												            'half_baths',
-												            'property_type',
-												            'listing_types',
-												            'zoning_types',
-												            'purchase_types',
-												            'available_on',
-												            'cities',
-												            'states',
-												            'zips',
-												            'neighborhood',
-												            'county',
-												            'min_price',
-												            'max_price',
-												            'min_price_rental',
-	        												'max_price_rental'),
-            						'listing'	  =>  array('price',
-            												'sqft',
-            												'beds',
-            												'baths',
-            												'half_baths',
-            												'avail_on',
-            												'url',
-            												'address',
-            												'locality',
-            												'region',
-            												'postal',
-            												'neighborhood',
-            												'county',
-            												'country',
-            												'coords',
-            												'unit',
-            												'full_address',
-            												'email',
-            												'phone',
-            												'desc',
-            												'image',
-            												'mls_id',
-            												'map',
-            												'listing_type',
-            												'img_gallery',
-            												'amenities',
-            												'price_unit',
-            												//'compliance'
-            												),
-									'neighborhood' => array('nb_title',
-															'nb_featured_image',
-															'nb_description',
-															'nb_link',
-															'nb_map'),
-									'listing_slideshow' => array(
-														'ls_index',
-														'ls_url',
-														'ls_address',
-														'ls_beds',
-														'ls_baths',
-											),
-            						);
+	public static $subcodes = array(
+		'search_form' => array(
+			'bedrooms',
+            'min_beds',
+            'max_beds',
+            'bathrooms',
+            'min_baths',
+            'max_baths',
+            'price',
+            'half_baths',
+            'property_type',
+            'listing_types',
+            'zoning_types',
+            'purchase_types',
+            'available_on',
+            'cities',
+            'states',
+            'zips',
+            'neighborhood',
+            'county',
+            'min_price',
+            'max_price',
+            'min_price_rental',
+			'max_price_rental'
+		),
+		'listing' => array(
+			'price',
+			'sqft',
+			'beds',
+			'baths',
+			'half_baths',
+			'avail_on',
+			'url',
+			'address',
+			'locality',
+			'region',
+			'postal',
+			'neighborhood',
+			'county',
+			'country',
+			'coords',
+			'unit',
+			'full_address',
+			'email',
+			'phone',
+			'desc',
+			'image',
+			'mls_id',
+			'map',
+			'listing_type',
+			'img_gallery',
+			'amenities',
+			'price_unit',
+			//'compliance'
+		),
+		'neighborhood' => array(
+			'nb_title',
+			'nb_featured_image',
+			'nb_description',
+			'nb_link',
+			'nb_map'
+		),
+		'listing_slideshow' => array(
+			'ls_index',
+			'ls_url',
+			'ls_address',
+			'ls_beds',
+			'ls_baths',
+		),
+	);
 
 	// TODO: These are a temporary solution, come up with a better convention...
 	public static $form_html = false;
@@ -147,43 +167,50 @@ class PL_Shortcodes
 		//basically initializes the bootloader object if it's been defined because a
 		//shortcode has been called
 		add_action('wp_footer', array(__CLASS__, 'init_bootloader'));
-		// add_action('after_switch_theme', array(__CLASS__, 'update_shortcode_js'));
 	}
 
 
-	/*** Shortcode Handlers ***/	
+	/*** Shortcode Handlers ***/
+	public static function create( $shortcode, $content = '' ) {
+		ob_start();
+		do_action( $shortcode . '_pre_header' );
+		// do some real shortcode work
+		echo $content;
+		do_action( $shortcode . '_post_footer' );
+		return ob_get_clean();
+	}
 	
 	public static function compliance_shortcode_handler( $atts ) {
 		$content = PL_Component_Entity::compliance_entity( $atts );
 		
-		return PL_Shortcode_Wrapper::create( 'compliance', $content );
+		return self::wrap( 'compliance', $content );
 		
 	} 
 	
 	public static function search_form_shortcode_handler($atts) {
 		$content = PL_Component_Entity::search_form_entity( $atts );
 		
-		return PL_Shortcode_Wrapper::create( 'search_form', $content );
+		return self::wrap( 'search_form', $content );
 	}
 	
 	public static function neighborhood_shortcode_handler($atts) {
 		//$content = PL_Component_Entity::search_form_entity( $atts );
 		$content = '';
 		
-		return PL_Shortcode_Wrapper::create( 'neighborhood', $content );
+		return self::wrap( 'neighborhood', $content );
 	}
 
 
 	public static function listing_slideshow_shortcode_handler ($atts) {
 		$content = PL_Component_Entity::listing_slideshow( $atts );
 		
-		return PL_Shortcode_Wrapper::create( 'listing_slideshow', $content );
+		return self::wrap( 'listing_slideshow', $content );
 		
 	}
 	public static function advanced_slideshow_shortcode_handler ($atts) {
-		$content = PL_Component_Entity::advanced_slideshow_entity( $atts );
+		$content = PL_Component_Entity::listing_slideshow( $atts, false );
 		
-		return PL_Shortcode_Wrapper::create( 'advanced_slideshow', $content );
+		return self::wrap( 'advanced_slideshow', $content );
 	}
 	
 	// Handle featured listings and filters
@@ -191,7 +218,7 @@ class PL_Shortcodes
 				
 		$content = PL_Component_Entity::featured_listings_entity( $atts );
 		
-		return PL_Shortcode_Wrapper::create( 'featured_listings', $content );	
+		return self::wrap( 'featured_listings', $content );	
 	}
 	
 	public static function static_listings_shortcode_handler ( $atts, $content = '' ) {
@@ -207,24 +234,10 @@ class PL_Shortcodes
 				
 		$content = PL_Component_Entity::static_listings_entity( $atts, $filters );
 		
-		return PL_Shortcode_Wrapper::create( 'static_listings', $content );
-	}
-	
-	public static function post_listing_shortcode_handler ( $atts ) {
-		// $shortcode = 'listings';
-		// self::$listing = $listing;
-
-		// // ob_start();
-		// //   echo pls_dump($listing);
-		// // return ob_get_clean();
-
-	 //  	$snippet_body = self::get_active_snippet_body($shortcode);
-	 //  	return do_shortcode($snippet_body);
+		return self::wrap( 'static_listings', $content );
 	}
 
-
-	public static function search_listings_shortcode_handler( $atts, $content )
-	{		
+	public static function search_listings_shortcode_handler( $atts, $content ) {		
 		add_filter('pl_filter_wrap_filter', array( __CLASS__, 'pl_filter_wrap_default_filters' ));
 		$filters = '';
 		
@@ -241,26 +254,25 @@ class PL_Shortcodes
 		// the context func applies to each individual listing.
 		$content = PL_Component_Entity::search_listings_entity( $atts, $filters );
 		
-		return PL_Shortcode_Wrapper::create( 'search_listings', $content );
+		return self::wrap( 'search_listings', $content );
 	}
 
 	public static function search_map_shortcode_handler( $atts ) {
 		$content = PL_Component_Entity::search_map_entity( $atts );
 		
-		return PL_Shortcode_Wrapper::create( 'search_map', $content );
+		return self::wrap( 'search_map', $content );
 	}
 	
 
 	public static function pl_neighborhood_shortcode_handler( $atts ) {
 		$content = PL_Component_Entity::pl_neighborhood_entity( $atts );
 	
-		return PL_Shortcode_Wrapper::create( 'pl_neighborhood', $content );
+		return self::wrap( 'pl_neighborhood', $content );
 	}
 
 /*** Context Filter Handlers ***/	
 
-	public static function searchform_shortcode_context($form, $form_html, $form_options, $section_title, $form_data)
-	{
+	public static function searchform_shortcode_context($form, $form_html, $form_options, $section_title, $form_data) {
 		$shortcode = 'search_form';
 		self::$form_html = $form_html;
 
@@ -301,27 +313,26 @@ class PL_Shortcodes
 
 /*** Sub-Shortcode Handlers ***/
 
-	public static function search_form_sub_shortcode_handler ($atts, $content, $tag) 
-	{ 
+	public static function search_form_sub_shortcode_handler ($atts, $content, $tag) { 
 		return isset( self::$form_html[$tag] ) ? self::$form_html[$tag] : '';
 	}
 
 	public static function listing_sub_shortcode_handler ($atts, $content, $tag) {
 		$content = PL_Component_Entity::listing_sub_entity( $atts, $content, $tag );
 		
-		return PL_Shortcode_Wrapper::create( 'listing_sub', $content );
+		return self::wrap( 'listing_sub', $content );
 	}
 	
 	public static function listing_slideshow_sub_shortcode_handler ($atts, $content, $tag) {
 		$content = PL_Component_Entity::listing_slideshow_sub_entity( $atts, $content, $tag );
 	
-		return PL_Shortcode_Wrapper::create( 'listing_slideshow_sub', $content );
+		return self::wrap( 'listing_slideshow_sub', $content );
 	}
 	
 	public static function neighborhood_sub_shortcode_handler ($atts, $content, $tag) {
 		$content = PL_Component_Entity::neighborhood_sub_entity( $atts, $content, $tag );
 	
-		return PL_Shortcode_Wrapper::create( 'neighborhood_sub', $content );
+		return self::wrap( 'neighborhood_sub', $content );
 	}
 	
 	/** Helpcode shortcode handler **/
@@ -354,13 +365,13 @@ class PL_Shortcodes
 		return apply_filters('pl_filter_wrap_filter', '{ "name": "' . $filter . '", "value" : "' . $value . '"} ');
 	}	
 	
-	public static function pl_filter_wrap_default_filters( $filter ) {
+	public static function pl_filter_wrap_default_filters ($filter) {
 		return "listings.default_filters.push(" . trim( strip_tags( $filter ) ) . "); ";
 	}
 
 	/*** Helper Functions ***/
 
-	public static function get_active_snippet_body($shortcode, $template_name = '')
+	public static function get_active_snippet_body ($shortcode, $template_name = '')
 	{
 		// Get snippet ID currently associated with this shortcode...
 		$option_key = ('pls_' . $shortcode);
@@ -379,7 +390,7 @@ class PL_Shortcodes
 				$type = 'custom';
 			}
 		}
-		$snippet_body = PL_Router::load_snippet($shortcode, $snippet_name, $type);
+		$snippet_body = PL_Snippet_Helper::load_snippet($shortcode, $snippet_name, $type);
 		return $snippet_body;
 	}
 
@@ -396,25 +407,6 @@ class PL_Shortcodes
 			</script>
 		<?php
 		echo ob_get_clean();
-	}
-
-	function update_shortcode_templates($new_theme) {
-			global $did_i_just_change_theme;
-	
-	}
-
-	function update_shortcode_js ($new_theme) {
-
-		$current_themes = get_themes();
-	    $new_theme_info = $current_themes[$new_theme];
-
-		ob_start();
-	    ?>
-	    	<script type="text/javascript">
-	    		console.log(<?php echo json_encode($new_theme_info) ?>);
-	    	</script>
-	    <?php
-	    echo ob_get_clean();		    
 	}
 	
 	/*** Admin Functions ***/

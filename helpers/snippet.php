@@ -16,10 +16,27 @@ class PL_Snippet_Helper {
 		add_action( 'wp_ajax_toggle_prop_details', array(__CLASS__, 'toggle_prop_details_enabled') );
 	}	
 
-	public static function get_snippet_body_ajax() 
+	public static function load_snippet ($shortcode, $snippet, $type) {
+		ob_start();
+		// Add parameter validation code...
+		switch ($type) {
+			case 'custom' :
+				$template = PL_Shortcode_CPT::load_shortcode_template($shortcode, $snippet);
+				echo html_entity_decode($template['snippet_body'], ENT_QUOTES);
+				break;
+			case 'default' :
+			default :
+				$filename = (trailingslashit(PL_VIEWS_SHORT_DIR) . trailingslashit($shortcode) . $snippet . '.php');
+				//echo $filename;
+				include $filename;
+		}
+		return ob_get_clean();
+	}
+
+	public static function get_snippet_body_ajax () 
 	{
 		if ($_POST['shortcode'] && $_POST['snippet'] && $_POST['type']) {
-			$snippet_body = html_entity_decode(PL_Router::load_snippet($_POST['shortcode'], $_POST['snippet'], $_POST['type']), ENT_QUOTES);
+			$snippet_body = html_entity_decode(self::load_snippet($_POST['shortcode'], $_POST['snippet'], $_POST['type']), ENT_QUOTES);
 			$response = array( 'snippet_body' =>  $snippet_body);
 			echo json_encode($response);
 		} else {
@@ -29,7 +46,7 @@ class PL_Snippet_Helper {
 		die();
 	}
 
-	public static function activate_snippet_ajax() 
+	public static function activate_snippet_ajax () 
 	{
 		if ($_POST['shortcode'] && $_POST['snippet']) {
 			$shortcode_DB_key = ('pls_' . $_POST['shortcode']);
@@ -48,7 +65,7 @@ class PL_Snippet_Helper {
 		die();
 	}
 
-	public static function save_custom_snippet_ajax() 
+	public static function save_custom_snippet_ajax () 
 	{
 		if ($_POST['shortcode'] && $_POST['snippet'] && $_POST['snippet_body']) 
 		{
@@ -79,7 +96,7 @@ class PL_Snippet_Helper {
 		die();
 	}
 
-	public static function toggle_prop_details_enabled() 
+	public static function toggle_prop_details_enabled () 
 	{
 		$DB_key = PL_Shortcodes::$prop_details_enabled_key;
 		$val = get_option( $DB_key, '');
@@ -104,7 +121,7 @@ class PL_Snippet_Helper {
 		die();
 	}
 
-	public static function delete_snippet_ajax() 
+	public static function delete_snippet_ajax () 
 	{
 		// TODO...
 		die();
@@ -113,7 +130,7 @@ class PL_Snippet_Helper {
 	////////////////
 	// Utility Funcs
 
-	public static function get_shortcode_snippet_list($shortcode) 
+	public static function get_shortcode_snippet_list ($shortcode) 
 	{
 		// Get list of custom snippet ids for this shortcode...
 		$snippet_list_DB_key = ('pls_' . $shortcode . '_list');
@@ -135,7 +152,7 @@ class PL_Snippet_Helper {
 		return $snippet_type_map;
 	}
 
-	public static function get_active_snippet_map() 
+	public static function get_active_snippet_map () 
 	{
 		$active_snippet_map = array();
 

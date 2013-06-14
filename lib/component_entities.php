@@ -256,7 +256,7 @@ class PL_Component_Entity {
 	  	return ob_get_clean();  
 	}
 	
-	public static function advanced_slideshow_entity( $atts ) {
+	public static function listing_slideshow( $atts, $default_style = true ) {
 		$atts = wp_parse_args($atts, array(
 			'animation' => 'fade', 									// fade, horizontal-slide, vertical-slide, horizontal-push
 			'animationSpeed' => 800, 								// how fast animtions are
@@ -277,50 +277,27 @@ class PL_Component_Entity {
 			'featured_option_id' => 'slideshow-featured-listings',
 			'listings' => 'limit=5&is_featured=true&sort_by=price'
 		));
+
 		ob_start();
-		echo PLS_Slideshow::slideshow($atts);
-		return ob_get_clean();
-	}
 		
-	public static function listing_slideshow( $atts ) {
-		$atts = wp_parse_args($atts, array(
-			'animation' => 'fade', 									// fade, horizontal-slide, vertical-slide, horizontal-push
-			'animationSpeed' => 800, 								// how fast animtions are
-			'timer' => true,											// true or false to have the timer
-			'pauseOnHover' => true,									// if you hover pauses the slider
-			'advanceSpeed' => 5000,									// if timer is enabled, time between transitions
-			'startClockOnMouseOut' => true,					// if clock should start on MouseOut
-			'startClockOnMouseOutAfter' => 1000,		// how long after MouseOut should the timer start again
-			'directionalNav' => true, 							// manual advancing directional navs
-			'captions' => true, 										// do you want captions?
-			'captionAnimation' => 'fade', 					// fade, slideOpen, none
-			'captionAnimationSpeed' => 800, 				// if so how quickly should they animate in
-			'afterSlideChange' => 'function(){}',		// empty function
-			'width' => 610,
-			'height' => 320,
-			'bullets' => 'false',
-			'context' => 'home',
-			'featured_option_id' => 'slideshow-featured-listings',
-			'listings' => 'limit=5&is_featured=true&sort_by=price'
-		));
-
-		ob_start();
-		?>
-		<style type="text/css">
-		.orbit-wrapper .orbit-caption { 
-			z-index: 999999 !important;
-			margin-top: -113px;
-			position: absolute;
-			right: 0;
-			bottom: 0;
-			width: 100%;
+		if ($default_style) {
+			?>
+				<style type="text/css">
+				.orbit-wrapper .orbit-caption { 
+					z-index: 999999 !important;
+					margin-top: -113px;
+					position: absolute;
+					right: 0;
+					bottom: 0;
+					width: 100%;
+				}
+				.orbit-caption {
+					display: none;
+				}
+				</style>
+			<?php 
 		}
-		.orbit-caption {
-			display: none;
-		}
-		</style>
-
-		<?php
+		
 		echo PLS_Slideshow::slideshow($atts); 
 	
 		return ob_get_clean();
@@ -826,15 +803,13 @@ class PL_Component_Entity {
 	 */
 	
 	// Provide template layout for featured listings
-	public static function featured_listings_ajax_templates( $item_html, $listing, $context_var ) {
-		//PL_Shortcodes::get_active_snippet_body('listings', self::$featured_context);			
+	public static function featured_listings_ajax_templates( $item_html, $listing, $context_var ) {		
 		$shortcode = 'featured_listings';
 		self::$listing = $listing;
 
 		// get the template attached as a context arg, 33 is the length of the filter prefix
 		$template = substr(current_filter(), 33);
 		
-		//$template_body = self::get_active_snippet_body( 'featured_listings', $template );
 		$template_body = PL_Shortcodes::get_active_snippet_body($shortcode);
 		return do_shortcode( $template_body );
 	}
@@ -846,8 +821,7 @@ class PL_Component_Entity {
 
 		// get the template attached as a context arg, 33 is the length of the filter prefix
 		$template = substr(current_filter(), 31);
-	
-		//$snippet_body = self::get_active_snippet_body($shortcode, $template);
+
 		$snippet_body = PL_Shortcodes::get_active_snippet_body( $shortcode, $template );
 		return do_shortcode($snippet_body);
 	}
@@ -877,7 +851,6 @@ class PL_Component_Entity {
 		$template = $context;
 			
 		$snippet_body = PL_Shortcodes::get_active_snippet_body($shortcode, $template);
-		// $snippet_body = PL_Shortcodes::get_active_snippet_body($shortcode);
 		return do_shortcode($snippet_body . $html);
 	}
 	
@@ -898,7 +871,6 @@ class PL_Component_Entity {
 			$template = substr( $template, 16 );
 		}
 		
-		//$snippet_body = self::get_active_snippet_body($shortcode, $template);
 		$snippet_body = PL_Shortcodes::get_active_snippet_body($shortcode, $template);
 		return do_shortcode($snippet_body);
 	}
@@ -912,33 +884,9 @@ class PL_Component_Entity {
 			
 		// get the template attached as a context arg, 33 is the length of the filter prefix
 		$template = $context;
-			
-		//$snippet_body = self::get_active_snippet_body($shortcode, $template);
+
 		$snippet_body = PL_Shortcodes::get_active_snippet_body($shortcode, $template);
 		return do_shortcode($snippet_body);
-	}
-	
-	
-	public static function get_active_snippet_body($shortcode, $template_name = '')
-	{
-		// Get snippet ID currently associated with this shortcode...
-		$option_key = ('pls_' . $shortcode);
-		$snippet_name = get_option($option_key, self::$defaults[0]);
-	
-		// Determine if snippet is custom (in DB) or default (stored in flat-file)
-		$snippet_DB_key = ('pls_' . $shortcode . '_' . $snippet_name);
-		$type = ( get_option($snippet_DB_key) ? 'custom' : 'default' );
-	
-		// assign a template as a shortcode arg
-		if( ! empty( $template_name ) ) {
-			$snippet_name = $template_name;
-			$type = 'custom';
-			if( in_array( $template_name, self::$defaults ) ) {
-				$type = 'default';
-			} 
-		}
-		$snippet_body = PL_Router::load_snippet($shortcode, $snippet_name, $type);
-		return $snippet_body;
 	}
 	
 	public static function compliance_entity( $atts ) {
