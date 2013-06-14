@@ -21,7 +21,7 @@ if (empty($shortcode) || empty($args)) {
 }
 
 
-$hash = md5($shortcode . serialize($args));
+$hash = md5($shortcode . serialize($sc_str));
 $widget_cache = new PL_Cache("Embeddable_Widget_Preview");
 
 if(0&& $widget_page = $widget_cache->get($hash) ) {
@@ -29,35 +29,11 @@ if(0&& $widget_page = $widget_cache->get($hash) ) {
 	return;
 }
 
-$argstr = '';
-foreach($args as $arg=>$val) {
-	if ($val) {
-		switch($arg) {
-			case 'before_widget':
-			case 'after_widget':
-			case 'widget_css':
-			case 'snippet_body':
-				break;
-			default:
-				$argstr .= ' '.$arg.'="'.$val.'"';
-		}
-	}
-}
-
-if (empty($args['snippet_body'])) {
-	$shortcode = '['.$shortcode.$argstr.']';
-}
-else {
-	$shortcode = '['.$shortcode.$argstr.']'.$args['snippet_body'].'[/'.$shortcode.']';
-}
-
 add_filter('show_admin_bar', '__return_false');
 
 ob_start();
 
-$html_class = '';
-
-?><html style="margin-top: 0 !important; overflow: hidden;" <?php echo $html_class; ?>>
+?><html style="margin-top: 0 !important; overflow: hidden;">
 	<head>
 		<style type="text/css">
 			body {
@@ -76,7 +52,6 @@ $html_class = '';
 			p {
 				margin-top: 0px;
 			}
-			<?php echo $args['widget_css']?>
 		</style>
 		<script type="text/javascript">
 			var pl_general_widget = true;
@@ -87,7 +62,7 @@ $html_class = '';
 	
 		<div class="pls_embedded_widget_wrapper">
 			<?php
-			echo do_shortcode( $shortcode );
+			echo do_shortcode( $sc_str );
 			?>
 		<div>
 		

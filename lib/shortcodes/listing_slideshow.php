@@ -40,9 +40,12 @@ class PL_Listing_Slideshow_CPT extends PL_SC_Base {
 
 	protected static $template = array(
 		'snippet_body'	=> array( 'type' => 'textarea', 'label' => 'HTML', 'default' => 'Put subcodes here to build your form...' ),
-		'css'			=> array( 'type' => 'textarea', 'label' => 'CSS', 'default' => '' ),
-		'before_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content before the widget', 'default' => '' ),
-		'after_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content after the widget', 'default' => '' ),
+		'css'			=> array( 'type' => 'textarea', 'label' => 'CSS', 'default' => '',
+								'hook'=>'listing_slideshow_pre_header', 'handle_as'=>'css' ),
+		'before_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content before the widget', 'default' => '',
+								'hook'=>'listing_slideshow_pre_header', 'handle_as'=>'header' ),
+		'after_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content after the widget', 'default' => '',
+								'hook'=>'listing_slideshow_post_footer', 'handle_as'=>'footer' ),
 	);
 }
 

@@ -314,21 +314,18 @@ abstract class PL_SC_Base {
 	}
 
 	/**
-	 * Generate a shortcode from the post record
+	 * Generate a shortcode for this shortcode type from arguments
 	 * @param string $shortcode_type	: shortcode type we will be generating
 	 * @param array $args				: shortcode post type record including postmeta values
 	 * @return string					: returned shortcode
 	 */
-	protected static function _generate_shortcode($shortcode_type, $args) {
-
-		$class = 'PL_'.ucfirst(substr($shortcode_type,3)).'_CPT';
-		if (!class_exists($class)) {
-			return '';
-		}
+	public static function generate_shortcode_str($args) {
+		
+		$class = get_called_class();
 
 		// prepare args
 		$sc_args = '';
-		$class_options = $class::$options;
+		$class_options = array_merge(array('context'=>array('type'=>'text', 'default'=>'')), $class::$options);
 		foreach($args as $option => $value) {
 			if (!empty($value)) {
 				// only output options that are valid for this type and not default
@@ -336,12 +333,7 @@ abstract class PL_SC_Base {
 					&& $class_options[$option]['default'] != $value
 					&& $class_options[$option]['type'] != 'featured_listing_meta'
 					) {
-					if( $option == 'pl_cpt_template' ) {
-						$sc_args .= " context='search_listings_$value'";
-					}
-					else {
-						$sc_args .= ' '.$option."='".$value."'";
-					}
+					$sc_args .= ' '.$option."='".$value."'";
 				}
 			}
 		}

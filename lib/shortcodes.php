@@ -156,7 +156,7 @@ class PL_Shortcodes
 
 
 	/*** Shortcode Handlers ***/
-	public static function create( $shortcode, $content = '' ) {
+	public static function wrap( $shortcode, $content = '' ) {
 		ob_start();
 		do_action( $shortcode . '_pre_header' );
 		// do some real shortcode work

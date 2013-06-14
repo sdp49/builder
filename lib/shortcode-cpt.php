@@ -91,6 +91,17 @@ class PL_Shortcode_CPT {
 	 * Admin pages
 	 ***************************************************/
 	
+	
+	/**
+	 * Helper function to generate a shortcode string from a set of arguments
+	 */
+	public function generate_shortcode_str($shortcode, $args) {
+		if (empty($shortcode) || empty(self::$shortcodes[$shortcode])) {
+			return '';
+		}
+		return self::$shortcodes[$shortcode]->generate_shortcode_str($args);
+	}
+
 	public function template_preview() {
 		
 		$shortcode = (!empty($_GET['shortcode']) ? stripslashes($_GET['shortcode']) : '');
@@ -98,16 +109,17 @@ class PL_Shortcode_CPT {
 		if (!$shortcode || empty($shortcode_args[$shortcode]) || empty($_GET[$shortcode])) {
 			die;
 		}
-		
 		$args = $_GET[$shortcode];
-		
-		// we are going to try to override the default template
+
+		// we are going to try to override the default template, get its id
 		$option_key = ('pls_' . $shortcode);
-		$args['context'] = get_option($option_key, $shortcode_args[$shortcode]['template']);
+		$args['context'] = get_option($option_key, array());
+
+		$sc_str = $this->generate_shortcode_str($shortcode, $args);
 		
 		// get the default template fields for this shortcode
 		$this->preview_tpl = $shortcode_args[$shortcode]['template'];
-		// load the args on top of the default template and set up how the template will hook in to render
+		// load the args on top of the default template and set up how the template will hook in to render preview
 		foreach($this->preview_tpl as $field => $values) {
 			if (!empty($args[$field]) && !empty($this->preview_tpl[$field]['hook']) && !empty($this->preview_tpl[$field]['handle_as'])) {
 				$this->preview_tpl[$field]['value'] = stripslashes($args[$field]);
