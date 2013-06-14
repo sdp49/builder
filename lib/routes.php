@@ -148,6 +148,9 @@ class PL_Router {
 		}
 		self::router('shortcodes/shortcode-edit.php', array(), false);
 	}
+	public static function shortcodes_templates() {
+		self::router('shortcodes/templates.php', array(), false);
+	}
 	public static function shortcodes_template_edit() {
 		self::router('shortcodes/template-edit.php', array(), false);
 	}

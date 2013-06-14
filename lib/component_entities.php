@@ -43,34 +43,34 @@ class PL_Component_Entity {
 		
 		// TODO: make dynamic function control over templates
 		// currently they have different logic and diff input parameters 
-		$featured_templates = self::get_shortcode_snippet_list( 'featured_listings', self::$defaults );
+		$featured_templates = PL_Shortcode_CPT::template_list('featured_listings');
 		foreach ($featured_templates as $template => $type) {
 			add_filter( 'pls_listings_list_ajax_item_html_' . $template, array(__CLASS__,'featured_listings_ajax_templates'), 10, 3 );	
 		}
 		
-		$search_form_templates = self::get_shortcode_snippet_list( 'search_form', self::$defaults );		
+		$search_form_templates = PL_Shortcode_CPT::template_list('search_form');		
 		foreach ($search_form_templates as $template => $type) {
 			add_filter( 'pls_listings_search_form_outer_' . $template, array(__CLASS__,'search_form_templates'), 10, 6 );
 		}
 
-		$listing_slideshow_templates = self::get_shortcode_snippet_list( 'listing_slideshow', self::$defaults );
+		$listing_slideshow_templates = PL_Shortcode_CPT::template_list('listing_slideshow');
 		foreach ($listing_slideshow_templates as $template => $type) {
 			add_filter( 'pls_slideshow_single_caption_' . $template, array( __CLASS__, 'listing_slideshow_templates' ), 10, 5 );
 			// add_filter( 'pls_slideshow_html_' . $template, array(__CLASS__,'listing_slideshow_templates'), 10, 6 );
 			// add_filter( 'pls_slideshow_data_' . $template, array(__CLASS__,'listing_slideshow_templates'), 10, 3 );
 		}
 		
-		$search_listings_templates = self::get_shortcode_snippet_list( 'search_listings', self::$defaults );
+		$search_listings_templates = PL_Shortcode_CPT::template_list('search_listings');
 		foreach ($search_listings_templates as $template => $type) {
 			add_filter( 'pls_listings_list_ajax_item_html_search_listings_' . $template, array(__CLASS__,'search_listings_templates'), 10, 3 );
 		}
 		
-		$static_listings_templates = self::get_shortcode_snippet_list( 'static_listings', self::$defaults );
+		$static_listings_templates = PL_Shortcode_CPT::template_list('static_listings');
 		foreach ($static_listings_templates as $template => $type) {
 			add_filter( 'pls_listings_list_ajax_item_html_static_listings_' . $template, array(__CLASS__, 'search_listings_templates'), 10, 3 );
 		}
 		
-		$neighborhood_templates = self::get_shortcode_snippet_list( 'pl_neighborhood', self::$defaults );
+		$neighborhood_templates = PL_Shortcode_CPT::template_list('pl_neighborhood');
 		foreach ($neighborhood_templates as $template => $type) {
 			add_filter( 'pls_neighborhood_html_' . $template, array(__CLASS__, 'neighborhood_templates'), 10, 4 );
 		}
@@ -918,26 +918,6 @@ class PL_Component_Entity {
 		return do_shortcode($snippet_body);
 	}
 	
-	
-	public static function get_shortcode_snippet_list($shortcode, $default_snippets)
-	{
-		// Get list of custom snippet ids for this shortcode...
-		$snippet_list_DB_key = ('pls_' . $shortcode . '_list');
-		$snip_arr = get_option($snippet_list_DB_key, self::$defaults );
-	
-		$snippet_type_map = array();
-	
-		foreach ($default_snippets as $snippet) {
-			$snippet_type_map[$snippet] = 'default';
-		}
-	
-		// Add Custom snippets..
-		foreach ($snip_arr as $snippet) {
-			$snippet_type_map[$snippet] = 'custom';
-		}
-	
-		return $snippet_type_map;
-	}
 	
 	public static function get_active_snippet_body($shortcode, $template_name = '')
 	{

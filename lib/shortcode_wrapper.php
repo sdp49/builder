@@ -10,7 +10,7 @@ class PL_Shortcode_Wrapper {
 	}
 	
 	public static function create( $shortcode, $content = '' ) {
-		ob_start();		
+		ob_start();
 		do_action( $shortcode . '_pre_header' );
 		// do some real shortcode work
 		echo $content;

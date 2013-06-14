@@ -6,7 +6,7 @@
 
 class PL_Listing_Slideshow_CPT extends PL_SC_Base {
 
-	protected static $post_type = 'pl_slideshow';
+	protected static $pl_post_type = 'pl_slideshow';
 
 	protected static $shortcode = 'listing_slideshow';
 
@@ -36,6 +36,13 @@ class PL_Listing_Slideshow_CPT extends PL_SC_Base {
 		'ls_address',
 		'ls_beds',
 		'ls_baths',
+	);
+
+	protected static $template = array(
+		'snippet_body'	=> array( 'type' => 'textarea', 'label' => 'HTML', 'default' => 'Put subcodes here to build your form...' ),
+		'css'			=> array( 'type' => 'textarea', 'label' => 'CSS', 'default' => '' ),
+		'before_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content before the widget', 'default' => '' ),
+		'after_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content after the widget', 'default' => '' ),
 	);
 }
 

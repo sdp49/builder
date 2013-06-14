@@ -123,6 +123,7 @@ include_once('lib/posts.php');
 include_once('lib/membership.php');
 include_once('lib/caching.php');
 include_once('lib/shortcode_wrapper.php');
+include_once('lib/shortcode-cpt.php');
 include_once('lib/component_entities.php');
 include_once('lib/shortcodes.php');
 include_once('lib/featured_listings_post_type.php');
@@ -133,9 +134,6 @@ include_once('lib/social_networks.php');
 include_once('lib/analytics.php');
 include_once('lib/bootup.php');
 include_once('lib/global-filters.php');
-
-//shortcode widgetizaton
-include_once('lib/shortcode-cpt.php');
 
 
 //models
@@ -242,16 +240,15 @@ function placester_admin_menu() {
     global $shortcode_subpages;
     $shortcode_subpages = array('All Shortcodes' => '',
 					    		'Create Shortcode' => '_shortcode_edit',
-					    		'Create Template' => '_template_edit',
-					    		'Property Details' => '_property_details',
-					    		'Options' => '_options');
+    							'Shortcode Templates' => '_templates',
+					    		'Create Shortcode Template' => '_template_edit');
     foreach ($shortcode_subpages as $name => $page_url) {
     	// leave parent slug empty to add pages without adding them to the menu
     	$hook = add_submenu_page( 'placester', '', $name, 'edit_pages', 'placester_shortcodes' . $page_url, array('PL_Router','shortcodes' . $page_url));
     	PL_Helper_Header::add_sub_page('placester_shortcodes', 'placester_shortcodes' . $page_url, $hook);
     	PL_Shortcodes::admin_buffer_op($hook);
     }
-    add_submenu_page('placester', '', 'Shortcodes / Widgets', 'edit_pages', 'placester_shortcodes', array('PL_Router','shortcodes'));
+    add_submenu_page('placester', '', 'Shortcodes', 'edit_pages', 'placester_shortcodes', array('PL_Router','shortcodes'));
 
     /* Social Integration functionality... */
     add_submenu_page( 'placester', 'Social', 'Social', 'edit_pages', 'placester_social', array('PL_Social_Networks','add_social_settings_cb') );

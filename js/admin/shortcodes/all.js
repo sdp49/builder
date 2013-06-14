@@ -59,12 +59,12 @@ jQuery(document).ready(function($){
 			var selected_tpl_type = selected.parent().prop('label');
 			
 			if (selected_tpl_type=='Default') {
-				$('#edit_sc_template_create').attr("href", pl_sc_template_url+'&type='+shortcode_type).show();
+				$('#edit_sc_template_create').attr("href", pl_sc_template_url+'&shortcode='+shortcode_type+'&action=copy&default='+selected_tpl).show();
 				$('#edit_sc_template_edit').hide();
 			}
 			else {
 				$('#edit_sc_template_create').hide();
-				$('#edit_sc_template_edit').attr("href", pl_sc_template_url+'&type='+shortcode_type+'&title='+selected_tpl).show();
+				$('#edit_sc_template_edit').attr("href", pl_sc_template_url+'&id='+selected_tpl).show();
 			}
 		}
 	}
@@ -135,27 +135,6 @@ jQuery(document).ready(function($){
 			}
 		});
 	}
-
-
-	////////////////////////////////////////
-	//Toggle Before/After Widget Textarea views
-	////////////////////////////////////////
-
-	$('.toggle').click(function(event) {
-		event.preventDefault();
-		var n = $(this).attr('id').lastIndexOf('_toggle'), $target;
-		if (n && ($target = $('#'+$(this).attr('id').substr(0,n)))) {
-			$target.toggle();
-		}
-	});
-
-	if ( $('#before_widget').val() ) {
-		$('#before_widget_wrapper').show();
-	};
-
-	if ( $('#after_widget').val() ) {
-		$('#after_widget_wrapper').show();
-	};
 
 
 	$('#pl_location_tax input:radio').click(radioClicks);
@@ -278,12 +257,15 @@ jQuery(document).ready(function($){
 	 * When the shortcode type is changed update hints, etc
 	 */
 	function tpl_type_selected() {
-		var shortcode_type = $('#pl_sc_tpl_post_type').val();
+		var shortcode = $('#pl_sc_tpl_shortcode').val();
 		// update the shortcode hints
 		$('#subshortcodes .shortcode_block').hide();
-		$('#subshortcodes .shortcode_block.'+shortcode_type).show();
-		var shortcode = $('#pl_sc_tpl_post_type option:selected').attr('id').substr('pl_sc_tpl_shortcode_'.length);
-		$('#pl_sc_tpl_edit input[name="shortcode"]').val(shortcode);
+		$('#subshortcodes .shortcode_block.'+shortcode).show();
+		
+		// display template blocks
+		$('#pl_sc_tpl_edit .pl_template_block').each(function() {
+			$(this).css('display', ($(this).hasClass(shortcode) ? 'block' : 'none'));
+		});
 	}
 	
 	/**
@@ -292,33 +274,18 @@ jQuery(document).ready(function($){
 	function tpl_update_preview() {
 		$('#pl_sc_tpl_edit .preview_load_spinner').show();
 		
-		var shortcode = $('#pl_sc_tpl_edit input[name="shortcode"]').val();
-		var post_data = {
-				'before_widget': $('#before_widget').val(),
-				'after_widget': $('#after_widget').val(),
-				'snippet_body': $('#snippet_body').val(),
-				'widget_css': $('#widget_css').val(),
-				'width': 250,
-				'height': 250,
-				'meta_box_nonce': $('#meta_box_nonce').val(),
-				'listing_types': 'false',
-				'location': '',
-				'metadata': '',
-				'hide_sort_by': true,
-				'hide_sort_direction': true,
-				'hide_num_results': true,
-		};
-		var args = encodeURIComponent(JSON.stringify(post_data));
-
-		$('#preview_meta_widget').html('<iframe src="'+ajaxurl+'?action=pl_widget_preview&shortcode='+shortcode+'&args='+args+'" width="250px" height="250px"></iframe>');
+		var shortcode = $('#pl_sc_tpl_edit [name="shortcode"]').val();
+		var data = $('#pl_sc_tpl_edit form .'+shortcode).find('input,select,textarea').serializeArray();
+		var args = $.param(data);
+		$('#preview_meta_widget').html('<iframe src="'+ajaxurl+'?action=pl_sc_template_preview&shortcode='+shortcode+'&'+args+'" width="250px" height="250px"></iframe>');
 		$('#preview_meta_widget iframe').load( function() {
 			$('#pl_sc_tpl_edit .preview_load_spinner').hide();
+			$('#pl_sc_tpl_edit #pl-review-link').show();
 		});
-		$('#pl_sc_tpl_edit #pl-review-link').show();
 	}
 	
 
-	$('#pl_sc_tpl_post_type').change(tpl_type_selected);
+	$('#pl_sc_tpl_shortcode').change(tpl_type_selected);
 
 	// call the custom autosave for every changed input and select in the template edit view
 	$('#pl_sc_tpl_edit').find('input, select, textarea').change(function() {
@@ -334,6 +301,15 @@ jQuery(document).ready(function($){
 		e.preventDefault();
 	});
 	
+	$('#pl_sc_tpl_edit').find('.before_widget, .after_widget').each(function(){
+		$(this).find('textarea').each(function(){$(this).css('display', ($(this).val() ? 'block' : 'none'))});
+		$(this).find('label').wrap('<a href="#" />').click(function(e) {
+			e.preventDefault();
+			var id = $(this).attr('for');
+			$('#'+id).toggle();
+		});
+	});
+
 	// trigger an event to set up the preview pane on page load 
-	$('#pl_sc_tpl_post_type').trigger('change');
+	$('#pl_sc_tpl_shortcode').trigger('change');
 });

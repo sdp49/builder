@@ -4,12 +4,9 @@
  */
 
 $title = empty($title)?'':$title; // template name
-$pl_post_type = empty($pl_post_type)?'pl_form':$pl_post_type; // shortcode type we are making a template for
-$data = empty($data)?array():$data; // current template values
-
-$data = wp_parse_args($data, array('before_widget'=>'', 'after_widget'=>'', 'snippet_body'=>'', 'widget_css'=>''));
-$shortcode = '';
-$pl_shortcode_types = PL_Shortcode_CPT::get_shortcodes(); 
+$shortcode = empty($shortcode)?'':$shortcode; // shortcode type we are making a template for
+$values = empty($values)?array():$values; // current template values
+$pl_shortcodes = PL_Shortcode_CPT::get_shortcodes();
 ?>
 
 <div class="postbox ">
@@ -21,11 +18,11 @@ $pl_shortcode_types = PL_Shortcode_CPT::get_shortcodes();
 		<section class="row-fluid">
 
 			<div class="span2">
-				<label for="edit-template-name" class="section-label">Template Name:</label>
+				<label for="pl_tpl_edit_title" class="section-label">Template Name:</label>
 			</div>
 
 			<div class="span10">
-				<input type="text" id="title" class="snippet_name new_snippet_name" title="<?php _e('Please enter a name for this shortcode template.')?>" value="<?php echo $title?>" />
+				<input type="text" id="pl_tpl_edit_title" class="snippet_name new_snippet_name" name="title" title="<?php _e('Please enter a name for this shortcode template.')?>" value="<?php echo $title?>" />
 			</div>
 
 		</section>
@@ -35,27 +32,26 @@ $pl_shortcode_types = PL_Shortcode_CPT::get_shortcodes();
 		<section class="row-fluid">
 
 			<div class="span2">
-				<label for="tpl_post_type" class="section-label">Template Type:</label>
+				<label for="pl_sc_tpl_shortcode" class="section-label">Template Type:</label>
 			</div>
 
 			<div class="span10">
-				<select id="pl_sc_tpl_post_type">
+				<select id="pl_sc_tpl_shortcode" name="shortcode">
 						<?php 
-						$shortcode_ref = array();
-						foreach( $pl_shortcode_types as $post_type => $values ):
+						$shortcode_refs = array();
+						foreach( $pl_shortcodes as $pl_shortcode => $sct_args ):
 							$link_class = $selected = '';
-							if ($post_type == $pl_post_type) {
+							if ($shortcode == $pl_shortcode) {
 								$link_class = 'selected_type';
 								$selected = 'selected="selected"';
-								$shortcode = $values['shortcode'];
 							}
 							?>
-							<option id="pl_sc_tpl_shortcode_<?php echo $values['shortcode']; ?>" class="<?php echo $link_class; ?>" value="<?php echo $values['post_type']; ?>" <?php echo $selected; ?>>
-								<?php echo $values['title']; ?>
+							<option id="pl_sc_tpl_shortcode_<?php echo $pl_shortcode; ?>" class="<?php echo $link_class; ?>" value="<?php echo $pl_shortcode; ?>" <?php echo $selected; ?>>
+								<?php echo $sct_args['title']; ?>
 							</option>
 							<?php
 							// get help text, use later
-							$shortcode_ref[$post_type] = PL_Router::load_builder_partial('shortcode-ref.php', array('shortcode' => $values['shortcode']), true);
+							$shortcode_refs[$pl_shortcode] = PL_Router::load_builder_partial('shortcode-ref.php', array('shortcode' => $pl_shortcode), true);
 						endforeach;
 						?>
 				</select>
@@ -73,30 +69,26 @@ $pl_shortcode_types = PL_Shortcode_CPT::get_shortcodes();
 				<!-- Use existing template lightbox -->
 				<a id="popup_existing_template" href="#">Use existing template as a base for this new template</a>
 
-				<!-- Add HTML -->
-				<label for="snippet_body">HTML</label>
-				<div class="edit-box">
-					<textarea id="snippet_body" name="snippet_body" class="snippet"><?php echo $data['snippet_body']?></textarea>
-				</div>
-
-				<!-- Add CSS -->
-				<label for="widget_css">CSS</label>
-				<div class="edit-box">
-					<textarea id="widget_css" name="widget_css" class="snippet"><?php echo $data['widget_css']?></textarea>
-				</div>
-
-				<!-- Add Content Before Widget -->
-				<a href="#" id="before_widget_wrapper_toggle" class="toggle clearfix">Add content before the widget</a>
-				<div id="before_widget_wrapper" class="edit-box" style="display:none;">
-					<textarea id="before_widget" name="before_widget" class="snippet"><?php echo $data['before_widget']?></textarea>
-				</div>
+				<?php
+				foreach( $pl_shortcodes as $pl_shortcode => $sct_args ) {?>
+					<div class="pl_template_block <?php echo $pl_shortcode;?>">
+					<?php
+					foreach($sct_args['template'] as $field => $f_args) {
+						$value = isset( $values[$field] ) ? $values[$field] : '';
+						if( !empty( $value ) && empty( $_POST[$pl_shortcode][$field] ) ) {
+							$_POST[$pl_shortcode][$field] = $value;
+						}
+						else {
+							$_POST[$pl_shortcode][$field] = $f_args['default'];
+						}
+						$f_args['css'] = (!empty($f_args['css']) ? $f_args['css'].' ' : '') . $field;
+						PL_Form::item($field, $f_args, 'POST', $pl_shortcode, 'general_widget_', true);
+					}?>
+					</div>
+					<?php
+				}
+				?>
 				
-				<!-- Add Content After Widget -->
-				<a href="#" id="after_widget_wrapper_toggle" class="toggle clearfix">Add content after the widget</a>
-				<div id="after_widget_wrapper" class="edit-box" style="display:none;">
-					<textarea id="after_widget" name="after_widget" class="snippet"><?php echo $data['after_widget']?></textarea>
-				</div>
-
 			</div>
 
 			<!-- Search Sub-Shortcodes -->
@@ -105,8 +97,8 @@ $pl_shortcode_types = PL_Shortcode_CPT::get_shortcodes();
 					<label for="search-subshortcodes">Sub-Shortcodes</label> 
 					<input type="text" placeholder="search sub-shortcodes" />
 				</div>			
-				<?php foreach($shortcode_ref as $post_type => $shortcode_help ): ?>
-					<div class="shortcode_block <?php echo $post_type?>" style="display: none;">
+				<?php foreach($shortcode_refs as $shortcode_ref => $shortcode_help ): ?>
+					<div class="shortcode_block <?php echo $shortcode_ref?>" style="display: none;">
 					<?php echo $shortcode_help; ?>
 					</div>
 				<?php endforeach;?>
@@ -115,7 +107,6 @@ $pl_shortcode_types = PL_Shortcode_CPT::get_shortcodes();
 		</section><!-- /Template Contents -->
 
 		<?php wp_nonce_field( 'pl_cpt_meta_box_nonce', 'meta_box_nonce' );?>
-		<input type="hidden" name="shortcode" value="<?php echo $shortcode ?>" />
 		
 		<div class="clear"></div>
 			

@@ -16,16 +16,12 @@ function pl_template_add_modernizr() {
 	wp_enqueue_script( 'modernizr' );
 }
 
-
-$shortcode = (!empty($_GET['shortcode']) ? stripslashes($_GET['shortcode']) : '');
-$argstr = (!empty($_GET['args']) ? stripslashes($_GET['args']) : '');
-$args = json_decode($argstr, true);
-
-if (!$shortcode || $args === false) {
+if (empty($shortcode) || empty($args)) {
 	die;
 }
 
-$hash = md5($shortcode . $argstr);
+
+$hash = md5($shortcode . serialize($args));
 $widget_cache = new PL_Cache("Embeddable_Widget_Preview");
 
 if(0&& $widget_page = $widget_cache->get($hash) ) {
@@ -92,9 +88,7 @@ $html_class = '';
 	
 		<div class="pls_embedded_widget_wrapper">
 			<?php
-			echo $args['before_widget'];
 			echo do_shortcode( $shortcode );
-			echo $args['after_widget'];
 			?>
 		<div>
 		
