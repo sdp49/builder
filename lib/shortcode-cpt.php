@@ -140,7 +140,7 @@ class PL_Shortcode_CPT {
 
 	public function _get_template_header() {
 		foreach($this->preview_tpl as $field => $values) {
-			if (!empty($values['handle_as'])) {
+			if (!empty($values['handle_as']) && !empty($values['value'])) {
 				if ($values['handle_as'] == 'css') {
 					echo '<style type="text/css">'.$values['value'].'</style>';
 				}

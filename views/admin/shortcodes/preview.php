@@ -29,7 +29,6 @@ if(0&& $widget_page = $widget_cache->get($hash) ) {
 	return;
 }
 
-$args = array_merge(array('before_widget'=>'', 'after_widget'=>'', 'widget_css'=>''), $args);
 $argstr = '';
 foreach($args as $arg=>$val) {
 	if ($val) {
@@ -45,11 +44,11 @@ foreach($args as $arg=>$val) {
 	}
 }
 
-if ($args['snippet_body']) {
-	$shortcode = '['.$shortcode.$argstr.']'.$args['snippet_body'].'[/'.$shortcode.']';
+if (empty($args['snippet_body'])) {
+	$shortcode = '['.$shortcode.$argstr.']';
 }
 else {
-	$shortcode = '['.$shortcode.$argstr.']';
+	$shortcode = '['.$shortcode.$argstr.']'.$args['snippet_body'].'[/'.$shortcode.']';
 }
 
 add_filter('show_admin_bar', '__return_false');
