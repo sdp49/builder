@@ -53,7 +53,6 @@ class PL_Js_Helper {
 						'placester_page_placester_settings_filtering',
 						'placester_page_placester_settings_client',
 						'placester_page_placester_lead_capture',
-						'placester_page_placester_settings_template',
 						'placester_page_placester_shortcodes_template_edit',
 						'placester_page_placester_shortcodes',
 						'placester_page_placester_shortcodes_shortcode_edit'

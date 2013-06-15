@@ -24,19 +24,6 @@ class PL_Shortcodes
 		'pl_neighborhood'
 	);
 
-	public static $p_codes = array(	
-		'search_form' => 'Search Form Shortcode',
-		'search_listings' => 'Search Listings Shortcode',
-		'prop_details' => 'Property Details Template',
-		'search_map' => 'Listings Map Template',
-		'listing_slideshow' => 'Listing Slideshow Template',
-		'advanced_slideshow' => 'Advanced Slideshow Template',
-		'featured_listings' => 'Slideshow Template',
-		'static_listings' => 'Slideshow Template',
-		'post_listing' => 'Post Listing Template',
-		'pl_neighborhood' => 'Neighborhood Template',
-	);
-
 	// TODO: Construct these lists dynamically by examining the doc hierarchy...
 	public static $defaults = array(
 		'search_form' => array('twentyten', 'twentyeleven'),
@@ -128,9 +115,7 @@ class PL_Shortcodes
 	public static $listing = false;
 	public static $prop_details_enabled_key = 'pls_prop_details_enabled';
 
-	public function init() 
-	{
-
+	public function init() {
 		//pulls in all the macro shortcodes, static list defined above
 		foreach (self::$codes as $shortcode) {
 			add_shortcode($shortcode, array(__CLASS__, $shortcode . '_shortcode_handler'));			

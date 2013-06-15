@@ -85,24 +85,27 @@ class PL_Router {
 	public static function settings() {
 		self::router('settings/general.php', array(), false);
 	}
+	
 	public static function settings_polygons() {
 		self::router('settings/polygons.php', array(), false);
 	}
+	
 	public static function settings_property_pages() {
 		self::router('settings/property.php', array(), false);
 	}
+	
 	public static function settings_international() {
 		self::router('settings/international.php', array(), false);
 	}
+	
 	public static function settings_neighborhood() {
 		self::router('settings/neighborhood.php', array(), false);
 	}
+	
 	public static function settings_filtering() {
 		self::router('settings/filtering.php', array(), false);
 	}
-	public static function settings_template() {
-		self::router('settings/template.php', array(), false);
-	}
+
 	public static function settings_client() {
 		self::load_builder_helper('membership.php');
 		self::router('settings/client.php', PL_Membership_Helper::get_client_settings(), false);
@@ -124,6 +127,7 @@ class PL_Router {
 		self::load_builder_view('shortcodes/general.php');
 		//self::router('shortcodes/general.php', array(), false);
 	}
+	
 	public static function shortcodes_shortcode_edit() {
 		if (isset($_REQUEST['trashed'])) {
 			wp_redirect(admin_url('admin.php?page=placester_shortcodes'));
@@ -131,15 +135,19 @@ class PL_Router {
 		}
 		self::router('shortcodes/shortcode-edit.php', array(), false);
 	}
+	
 	public static function shortcodes_templates() {
 		self::router('shortcodes/templates.php', array(), false);
 	}
+	
 	public static function shortcodes_template_edit() {
 		self::router('shortcodes/template-edit.php', array(), false);
 	}
+	
 	public static function shortcodes_property_details() {
 		self::router('shortcodes/property-details.php', array(), false);
 	}
+	
 	public static function shortcodes_options() {
 		self::router('shortcodes/options.php', array(), false);
 	}

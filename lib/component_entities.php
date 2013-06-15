@@ -181,14 +181,6 @@ class PL_Component_Entity {
 	
 	public static function search_map_entity( $atts ) {
 		$atts = wp_parse_args($atts, array('type' => 'listings', 'width' => 600, 'height' => 400, 'sync_map_to_list' => false));
-		// if( ! isset( $atts['map_id'] ) ) { return ''; }
-		// $map_id = $atts['map_id'];
-		
-		// $values = get_post_meta( $map_id );
-		// $pl_featured_listing_meta = isset( $values['pl_featured_listing_meta'] ) && is_array( $values['pl_featured_listing_meta'] ) ? @unserialize($values['pl_featured_listing_meta'][0]) : '';
-		// $pl_featured_meta_value = empty( $pl_featured_listing_meta ) && ! isset( $pl_featured_listing_meta['featured-listings-type'] ) ? array() : $pl_featured_listing_meta['featured-listings-type'];
-		
-		// $property_ids = array_flip( $pl_featured_meta_value );
 		
 		$encoded_atts = array( 
 			'width' => $atts['width'],
