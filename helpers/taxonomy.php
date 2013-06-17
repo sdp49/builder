@@ -20,6 +20,9 @@ class PL_Taxonomy_Helper {
 		add_action('wp_ajax_get_polygons_by_type', array(__CLASS__, 'ajax_get_polygons_by_type'));
 		add_action('wp_ajax_nopriv_get_polygons_by_type', array(__CLASS__, 'ajax_get_polygons_by_type'));
 
+		add_action('wp_ajax_get_polygons_by_community', array(__CLASS__, 'ajax_get_polygons_by_community'));
+		add_action('wp_ajax_nopriv_get_polygons_by_community', array(__CLASS__, 'ajax_get_polygons_by_community'));
+
 		add_action('wp_ajax_get_polygons_by_slug', array(__CLASS__, 'ajax_get_polygons_by_slug'));
 		add_action('wp_ajax_nopriv_get_polygons_by_slug', array(__CLASS__, 'ajax_get_polygons_by_slug'));
 
@@ -275,6 +278,98 @@ class PL_Taxonomy_Helper {
 			}
 		}
 		return $response;
+	}
+
+	public static function ajax_get_polygons_by_community () {
+		echo json_encode(self::get_polygons_by_community($_POST['community_id']));
+		die();
+	}
+
+	public static function get_polygons_by_community ($community_id) {
+		// polygon type neighborhoods only
+		
+		$neighborhood_polygons = array();
+
+		// get community's neighborhoods
+		$community_neighborhoods = get_post_meta($community_id, 'community_neighborhoods', true);
+		if( empty( $community_neighborhoods ) ) {
+			$community_neighborhoods = array();
+		} 
+		// error_log(var_export($community_neighborhoods, true));
+		
+		// Get neighborhoods
+		$neighborhoods = get_terms( 'neighborhood', array( 'hide_empty' => false ) );
+
+
+
+		// Get Neighborhood Polygons
+		$polygons = PL_Option_Helper::get_polygons();
+		// error_log(var_export($polygons, true));
+		// foreach ($polygons as $key => $polygon) {
+			// error_log(var_export($polygon, true));	
+			// if ($polygon['tax'] == 'neighborhood' && in_array($polygon->id, $community_neighborhoods) ) {
+			// 	$neighborhood_polygons[] = $polygon;
+			// }
+		// }
+		// error_log(var_export($neighborhood_polygons, true));
+		
+		// Match neighborhoods to polygons and save to $neighborhood_taxonomy_polygons
+		$neighborhood_taxonomy_polygons = array();
+		$neighborhoodz = array();
+
+		foreach ($neighborhoods as $key => $hood_object) {
+			
+			error_log(var_export($hood_object, true));
+			
+			$hood_id = $hood_object->term_id;
+			if ($hood_object['taxonomy'] == 'neighborhood' && in_array($hood_id, $community_neighborhoods) ) {
+				$neighborhoodz[] = $hood_object;
+			}
+
+			// foreach ($neighborhood_polygons as $key => $polygon) {
+			// 	if ($polygon['name'] == $hood_object->name ) {
+			// 		array_push($neighborhood_taxonomy_polygons, $hood_object);
+			// 	}
+			// }
+		}
+		error_log(var_export($neighborhoodz, true));
+
+		// error_log(var_export($neighborhood_taxonomy_polygons, true));
+
+		// $page_neighborhoods = get_post_meta( $post->ID, 'community_neighborhoods', true );
+		
+		// if( empty( $page_neighborhoods ) ) {
+		// 	$page_neighborhoods = array();
+		// } 
+
+		// Get neighborhoods and display them
+		// $neighborhoods = get_terms( 'neighborhood', array( 'hide_empty' => false ) );
+
+		// Get Neighborhood Polygons
+		// $polygons = PL_Option_Helper::get_polygons();
+		// foreach ($polygons as $key => $polygon) {
+		// 	if ($polygon['tax'] == 'neighborhood') {
+		// 		$neighborhood_polygons[] = $polygon;
+		// 	}
+		// }
+
+		// // Match neighborhoods to polygons and save to $neighborhood_taxonomy_polygons
+		// $neighborhood_taxonomy_polygons = array();
+		// foreach ($neighborhoods as $key => $hood_object) {
+			
+		// 	foreach ($neighborhood_polygons as $key => $polygon) {
+		// 		if ($polygon['name'] == $hood_object->name ) {
+		// 			array_push($neighborhood_taxonomy_polygons, $hood_object);
+		// 		}
+		// 	}
+			
+		// }
+
+
+
+
+		// error_log(var_export($community_neighborhoods, true));
+		// return $neighborhood_taxonomy_polygons;
 	}
 
 	function ajax_get_polygons_by_slug () {
