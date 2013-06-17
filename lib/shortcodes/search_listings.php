@@ -45,9 +45,12 @@ class PL_Search_Listing_CPT extends PL_SC_Base {
 	protected static $filters = array();
 
 	protected static $template = array(
-			'css'			=> array( 'type' => 'textarea', 'label' => 'CSS', 'default' => '' ),
-			'before_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content before the widget', 'default' => '' ),
-			'after_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content after the widget', 'default' => '' ),
+		'css'			=> array( 'type' => 'textarea', 'label' => 'CSS', 'default' => '',
+								'hook'=>'', 'handle_as'=>'css' ),
+		'before_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content before the widget', 'default' => '',
+								'hook'=>'', 'handle_as'=>'header' ),
+		'after_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content after the widget', 'default' => '',
+								'hook'=>'', 'handle_as'=>'footer' ),
 	);
 
 

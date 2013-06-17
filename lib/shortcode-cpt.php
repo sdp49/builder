@@ -292,7 +292,7 @@ class PL_Shortcode_CPT {
 	 * Comparator to sort template list in alphabetical order
 	 */
 	public static function _tpl_list_sort($a, $b) {
-		return strcasecmp($a['title'], $b['title']);
+		return strcasecmp($a, $b);
 	} 
 
 	/**
