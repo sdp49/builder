@@ -116,9 +116,10 @@ class PL_Analytics {
 
 		switch ($event) {
 			case "listing_view":
-				if (isset($_POST["prop_id"])) {
-					$response["hash"] = self::listing_view($_POST["prop_id"]);
-				}
+				if (isset($_POST["prop_id"])) 
+					{ $response["hash"] = self::listing_view($_POST["prop_id"]); }
+				else
+					{ $response["error_msg"] = "Missing required event attributes"; }
 				break;
 			case "home_view":
 				$response["hash"] = self::home_view();
