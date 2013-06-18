@@ -294,82 +294,43 @@ class PL_Taxonomy_Helper {
 		$community_neighborhoods = get_post_meta($community_id, 'community_neighborhoods', true);
 		if( empty( $community_neighborhoods ) ) {
 			$community_neighborhoods = array();
-		} 
+		}
 		// error_log(var_export($community_neighborhoods, true));
 		
-		// Get neighborhoods
+		// Get neighborhood taxonomies
 		$neighborhoods = get_terms( 'neighborhood', array( 'hide_empty' => false ) );
+		// error_log(var_export($neighborhoods, true));
 
+		$selected_neighborhood_taxonomies = array();
 
+		// Go through neighborhood taxonomies and find ones that are in taxonomy
+		foreach ($neighborhoods as $key => $value) {
+			foreach ($community_neighborhoods as $hood_id) {
+				$value = (array)$value;
+				if ($value['term_id'] == $hood_id) {
+					array_push($selected_neighborhood_taxonomies, $value);
+				}
+			}
+		}
+		// error_log(var_export($selected_neighborhood_taxonomies, true));
 
 		// Get Neighborhood Polygons
 		$polygons = PL_Option_Helper::get_polygons();
 		// error_log(var_export($polygons, true));
-		// foreach ($polygons as $key => $polygon) {
-			// error_log(var_export($polygon, true));	
-			// if ($polygon['tax'] == 'neighborhood' && in_array($polygon->id, $community_neighborhoods) ) {
-			// 	$neighborhood_polygons[] = $polygon;
-			// }
-		// }
-		// error_log(var_export($neighborhood_polygons, true));
 		
-		// Match neighborhoods to polygons and save to $neighborhood_taxonomy_polygons
-		$neighborhood_taxonomy_polygons = array();
-		$neighborhoodz = array();
-
-		foreach ($neighborhoods as $key => $hood_object) {
-			
-			error_log(var_export($hood_object, true));
-			
-			$hood_id = $hood_object->term_id;
-			if ($hood_object['taxonomy'] == 'neighborhood' && in_array($hood_id, $community_neighborhoods) ) {
-				$neighborhoodz[] = $hood_object;
+		$community_polygons = array();
+		// Find the actual polygon objects from the list of neighborhoods for the community
+		foreach ($selected_neighborhood_taxonomies as $key => $hood) {
+			foreach ($polygons as $key => $polygon) {
+				if ($hood['slug'] == $polygon['slug']) {
+					array_push($community_polygons, $polygon);
+				}
 			}
-
-			// foreach ($neighborhood_polygons as $key => $polygon) {
-			// 	if ($polygon['name'] == $hood_object->name ) {
-			// 		array_push($neighborhood_taxonomy_polygons, $hood_object);
-			// 	}
-			// }
 		}
-		error_log(var_export($neighborhoodz, true));
+		// error_log(var_export($community_polygons, true));
 
-		// error_log(var_export($neighborhood_taxonomy_polygons, true));
-
-		// $page_neighborhoods = get_post_meta( $post->ID, 'community_neighborhoods', true );
+		return $community_polygons;
 		
-		// if( empty( $page_neighborhoods ) ) {
-		// 	$page_neighborhoods = array();
-		// } 
-
-		// Get neighborhoods and display them
-		// $neighborhoods = get_terms( 'neighborhood', array( 'hide_empty' => false ) );
-
-		// Get Neighborhood Polygons
-		// $polygons = PL_Option_Helper::get_polygons();
-		// foreach ($polygons as $key => $polygon) {
-		// 	if ($polygon['tax'] == 'neighborhood') {
-		// 		$neighborhood_polygons[] = $polygon;
-		// 	}
-		// }
-
-		// // Match neighborhoods to polygons and save to $neighborhood_taxonomy_polygons
-		// $neighborhood_taxonomy_polygons = array();
-		// foreach ($neighborhoods as $key => $hood_object) {
-			
-		// 	foreach ($neighborhood_polygons as $key => $polygon) {
-		// 		if ($polygon['name'] == $hood_object->name ) {
-		// 			array_push($neighborhood_taxonomy_polygons, $hood_object);
-		// 		}
-		// 	}
-			
-		// }
-
-
-
-
-		// error_log(var_export($community_neighborhoods, true));
-		// return $neighborhood_taxonomy_polygons;
 	}
 
 	function ajax_get_polygons_by_slug () {
