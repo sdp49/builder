@@ -22,7 +22,7 @@ $pl_shortcodes = PL_Shortcode_CPT::get_shortcodes();
 			</div>
 
 			<div class="span10">
-				<input type="text" id="pl_tpl_edit_title" class="snippet_name new_snippet_name" name="title" title="<?php _e('Please enter a name for this shortcode template.')?>" value="<?php echo $title?>" />
+				<input type="text" id="pl_tpl_edit_title" name="title" title="<?php _e('Please enter a name for this shortcode template.')?>" value="<?php echo $title?>" />
 			</div>
 
 		</section>
@@ -50,8 +50,6 @@ $pl_shortcodes = PL_Shortcode_CPT::get_shortcodes();
 								<?php echo $sct_args['title']; ?>
 							</option>
 							<?php
-							// get help text, use later
-							$shortcode_refs[$pl_shortcode] = PL_Router::load_builder_partial('shortcode-ref.php', array('shortcode' => $pl_shortcode), true);
 						endforeach;
 						?>
 				</select>
@@ -71,7 +69,7 @@ $pl_shortcodes = PL_Shortcode_CPT::get_shortcodes();
 
 				<?php
 				foreach( $pl_shortcodes as $pl_shortcode => $sct_args ) {?>
-					<div class="pl_template_block <?php echo $pl_shortcode;?>">
+					<div class="pl_template_block <?php echo $pl_shortcode;?>" style="display:none;">
 					<?php
 					foreach($sct_args['template'] as $field => $f_args) {
 						$value = isset( $values[$field] ) ? $values[$field] : '';
@@ -81,7 +79,6 @@ $pl_shortcodes = PL_Shortcode_CPT::get_shortcodes();
 						else {
 							$_POST[$pl_shortcode][$field] = $f_args['default'];
 						}
-						$f_args['css'] = (!empty($f_args['css']) ? $f_args['css'].' ' : '') . $field;
 						PL_Form::item($field, $f_args, 'POST', $pl_shortcode, 'general_widget_', true);
 					}?>
 					</div>
@@ -97,10 +94,17 @@ $pl_shortcodes = PL_Shortcode_CPT::get_shortcodes();
 					<label for="search-subshortcodes">Sub-Shortcodes</label> 
 					<input type="text" placeholder="search sub-shortcodes" />
 				</div>			
-				<?php foreach($shortcode_refs as $shortcode_ref => $shortcode_help ): ?>
-					<div class="shortcode_block <?php echo $shortcode_ref?>" style="display: none;">
-					<?php echo $shortcode_help; ?>
-					</div>
+				<?php foreach( $pl_shortcodes as $pl_shortcode => $sct_args ) :?>
+					<?php if(!empty($sct_args['subcodes'])):?>
+						<div class="shortcode_block <?php echo $pl_shortcode?>" style="display: none;">
+							<h3>Usage</h3>
+							<?php $subcodes = '';?>
+							<?php foreach($sct_args['subcodes'] as $subcode): ?>
+								<?php $subcodes .= ($subcodes?', ':'') . '[' . $subcode . ']';?>
+							<?php endforeach;?>
+							<p>Use the following subcodes to complete your shortcode template:<br><?php echo $subcodes?></p>
+						</div>
+					<?php endif;?>
 				<?php endforeach;?>
 			</div>
 			

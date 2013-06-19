@@ -200,7 +200,7 @@ class PL_Shortcodes
 	
 	// Handle featured listings and filters
 	public static function featured_listings_shortcode_handler ($atts, $content = '') {
-				
+
 		$content = PL_Component_Entity::featured_listings_entity( $atts );
 		
 		return self::wrap( 'featured_listings', $content );	
@@ -209,7 +209,7 @@ class PL_Shortcodes
 	public static function static_listings_shortcode_handler ( $atts, $content = '' ) {
 		add_filter('pl_filter_wrap_filter', array( __CLASS__, 'pl_filter_wrap_default_filters' ));
 		$filters = '';
-		
+
 		// call do_shortcode for all pl_filter shortcodes
 		// Note: don't leave whitespace or other non-valuable symbols
 		if( ! empty( $content ) ) {
@@ -257,6 +257,9 @@ class PL_Shortcodes
 
 /*** Context Filter Handlers ***/	
 
+	/**
+	 * Get search form body from template
+	 */
 	public static function searchform_shortcode_context($form, $form_html, $form_options, $section_title, $form_data) {
 		$shortcode = 'search_form';
 		self::$form_html = $form_html;
@@ -266,8 +269,7 @@ class PL_Shortcodes
 	}
 
 	// It's important to note that this is called for every individual listing...
-	public static function listings_shortcode_context($item_html, $listing) 
-	{
+	public static function listings_shortcode_context($item_html, $listing) {
 		$shortcode = 'listings';
 		self::$listing = $listing;
 
@@ -275,8 +277,7 @@ class PL_Shortcodes
 	  	return do_shortcode($snippet_body);
 	}
 
-	public static function prop_details_shortcode_context($html, $listing_data) 
-	{
+	public static function prop_details_shortcode_context($html, $listing_data)	{
 		// Check to see if this functionality is enabled...
 		$enabled = get_option( self::$prop_details_enabled_key, 'false' );
 		
@@ -356,8 +357,10 @@ class PL_Shortcodes
 
 	/*** Helper Functions ***/
 
-	public static function get_active_snippet_body ($shortcode, $template_name = '')
-	{
+	/**
+	 * Get the body for a shortcode's output from a template
+	 */
+	public static function get_active_snippet_body ($shortcode, $template_name = '') {
 		// Get snippet ID currently associated with this shortcode...
 		$option_key = ('pls_' . $shortcode);
 		$snippet_name = get_option($option_key, self::$defaults[$shortcode][0]);
@@ -375,10 +378,20 @@ class PL_Shortcodes
 				$type = 'custom';
 			}
 		}
-		$snippet_body = PL_Snippet_Helper::load_snippet($shortcode, $snippet_name, $type);
-		return $snippet_body;
-	}
 
+		ob_start();
+		switch ($type) {
+			case 'custom' :
+				$template = PL_Shortcode_CPT::load_shortcode_template($snippet_name);
+				echo html_entity_decode($template['snippet_body'], ENT_QUOTES);
+				break;
+			case 'default' :
+			default :
+				$filename = (trailingslashit(PL_VIEWS_SHORT_DIR) . trailingslashit($shortcode) . $snippet_name . '.php');
+				include $filename;
+		}
+		return ob_get_clean();
+	}
 
 	public static function init_bootloader () {
 		ob_start();

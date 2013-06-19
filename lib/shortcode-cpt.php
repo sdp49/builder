@@ -23,7 +23,7 @@ class PL_Shortcode_CPT {
 		
 		// get list of shortcodes that can be widgetized:
 		$path = trailingslashit( PL_LIB_DIR ) . 'shortcodes/';
-		$ignore = array('sc_base.php');
+		$ignore = array('sc_base.php', 'pl_neighborhood.php');
 		include_once($path . 'sc_base.php');
 		if ($handle = opendir($path)) {
 			while (false !== ($file = readdir($handle))) {
@@ -102,6 +102,10 @@ class PL_Shortcode_CPT {
 		return self::$shortcodes[$shortcode]->generate_shortcode_str($args);
 	}
 
+	/**
+	 * We have to save settings as a template in order for ajax driven forms such as search listings
+	 * to work. We always use the same name '_preview' for the tmplate name.
+	 */
 	public function template_preview() {
 		
 		$shortcode = (!empty($_GET['shortcode']) ? stripslashes($_GET['shortcode']) : '');
@@ -109,35 +113,13 @@ class PL_Shortcode_CPT {
 		if (!$shortcode || empty($shortcode_args[$shortcode]) || empty($_GET[$shortcode])) {
 			die;
 		}
-		$args = $_GET[$shortcode];
-
-		// we are going to try to override the default template, get its id
-		$option_key = ('pls_' . $shortcode);
-		$args['context'] = get_option($option_key, array());
-
+		// set the defaults
+		$template_id = 'pls_'.$shortcode.'___preview';
+		$args = wp_parse_args($_GET, array('context'=>$template_id, 'width'=>'250','height'=>'250'));
 		$sc_str = $this->generate_shortcode_str($shortcode, $args);
+		$args = wp_parse_args($_GET[$shortcode], array('shortcode'=>$shortcode, 'title'=>'_preview'));
+		$this->save_shortcode_template($template_id, $args);
 		
-		// get the default template fields for this shortcode
-		$this->preview_tpl = $shortcode_args[$shortcode]['template'];
-		// load the args on top of the default template and set up how the template will hook in to render preview
-		foreach($this->preview_tpl as $field => $values) {
-			if (!empty($args[$field]) && !empty($this->preview_tpl[$field]['hook']) && !empty($this->preview_tpl[$field]['handle_as'])) {
-				$this->preview_tpl[$field]['value'] = stripslashes($args[$field]);
-				switch($this->preview_tpl[$field]['handle_as']) {
-					case 'body':
-						add_filter($this->preview_tpl[$field]['hook'].$args['context'], array($this, '_get_template_body'), 100, 5);
-						break;
-					case 'css':
-					case 'header':
-						add_action($this->preview_tpl[$field]['hook'], array($this, '_get_template_header'), 100, 5);
-						break;
-					case 'footer':
-						add_action($this->preview_tpl[$field]['hook'], array($this, '_get_template_footer'), 100, 5);
-						break;
-				}
-			}					
-		}
-
 		include(PL_VIEWS_ADMIN_DIR . 'shortcodes/preview.php');
 		die;
 	}
@@ -231,12 +213,10 @@ class PL_Shortcode_CPT {
 		}
 		delete_option($id);
 	
-		// Remove from the list of custom snippet IDs for this shortcode...
+		// Remove from the list of custom template IDs for this shortcode...
 		$tpl_list_DB_key = ('pls_' . $parts[0] . '_list');
 		$tpl_list = get_option($tpl_list_DB_key, array()); // If it doesn't exist, create a blank array to append...
 		unset($tpl_list[$id]);
-	
-		// Update (or add) list in (to) DB...
 		update_option($tpl_list_DB_key, $tpl_list);
 	}
 
@@ -309,7 +289,9 @@ class PL_Shortcode_CPT {
 		$tpls = $wpdb->get_results($wpdb->prepare("SELECT * FROM $wpdb->options WHERE option_name LIKE %s", 'pls\_'.$shortcode.'\_\__%'));
 		$tpl_list = array();
 		foreach($tpls as $tpl){
-			$tpl_data = get_option($tpl->option_name);
+			if(!isset($tpl_data['title'])) {
+				$tpl_data['title'] = '';
+			}
 			$tpl_list[$tpl->option_name] = $tpl_data['title'];
 		}
 		uasort($tpl_list, array(__CLASS__, '_tpl_list_sort'));

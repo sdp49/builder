@@ -277,7 +277,7 @@ jQuery(document).ready(function($){
 		var shortcode = $('#pl_sc_tpl_edit [name="shortcode"]').val();
 		var data = $('#pl_sc_tpl_edit form .'+shortcode).find('input,select,textarea').serializeArray();
 		var args = $.param(data);
-		$('#preview_meta_widget').html('<iframe src="'+ajaxurl+'?action=pl_sc_template_preview&shortcode='+shortcode+'&'+args+'" width="250px" height="250px"></iframe>');
+		$('#preview_meta_widget').html('<iframe src="'+ajaxurl+'?action=pl_sc_template_preview&post_type=pl_general_widget&shortcode='+shortcode+'&'+args+'" width="250px" height="250px"></iframe>');
 		$('#preview_meta_widget iframe').load( function() {
 			$('#pl_sc_tpl_edit .preview_load_spinner').hide();
 			$('#pl_sc_tpl_edit #pl-review-link').show();

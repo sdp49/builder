@@ -7,24 +7,27 @@ header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
 header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 
 
-function pl_template_drop_modernizr() {
-	wp_dequeue_script('form');
-}
-
-function pl_template_add_modernizr() {
-	wp_register_script( 'modernizr', trailingslashit( PLS_JS_URL ) . 'libs/modernizr/modernizr.min.js' , array(), '2.6.1');
-	wp_enqueue_script( 'modernizr' );
-}
-
 if (empty($shortcode) || empty($args)) {
 	die;
 }
+
+//TODO: check if we need all these
+add_action( 'wp_print_scripts', 'pls_print_info_var' );
+wp_enqueue_script( 'jquery-placeholder', trailingslashit( PLS_JS_URL ) . 'libs/jquery-placeholder/jquery.placeholder.min.js' , array( 'jquery' ), '1.0.1', true );
+wp_enqueue_script( 'listings-object', trailingslashit( PLS_JS_URL ) . 'scripts/listings.js' , array( 'jquery' ), '1.0.1', true );
+wp_enqueue_script( 'get-listings-fav-ajax', trailingslashit( PLS_JS_URL ) . 'scripts/get-listings-fav-ajax.js' , array( 'jquery' ), NULL, true );
+wp_enqueue_script( 'contact-widget', trailingslashit( PLS_JS_URL ) . 'scripts/contact.widget.ajax.js' , array( 'jquery' ), NULL, true );
+wp_enqueue_script( 'client-edit-profile', trailingslashit( PLS_JS_URL ) . 'scripts/client-edit-profile.js' , array( 'jquery' ), NULL, true );
+wp_enqueue_script( 'script-history', trailingslashit( PLS_JS_URL ) . 'libs/history/jquery.address.js' , array( 'jquery' ), NULL, true );
+wp_enqueue_script( 'search-bootloader', trailingslashit( PLS_JS_URL ) . 'scripts/search-loader.js' , array( 'jquery' ), NULL, true );
+wp_enqueue_script( 'pls-slideshow-orbit', trailingslashit( PLS_EXT_URL ) . 'slideshow/orbit/jquery.orbit.js', array( 'jquery' ), NULL, false );
+wp_enqueue_script( 'pls-slideshow-orbit', trailingslashit( PLS_EXT_URL ) . 'slideshow/orbit/orbit.css');
 
 
 $hash = md5($shortcode . serialize($sc_str));
 $widget_cache = new PL_Cache("Embeddable_Widget_Preview");
 
-if(0&& $widget_page = $widget_cache->get($hash) ) {
+if (0&&$widget_page = $widget_cache->get($hash) ) {
 	echo $widget_page;
 	return;
 }
