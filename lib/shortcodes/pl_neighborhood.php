@@ -12,6 +12,18 @@ class PL_Neighborhood_CPT extends PL_SC_Base {
 
 	protected static $title = 'Neighborhood';
 
+	protected static $help = 
+		'<p>
+		You can add a neighborhood area via the [pl_neighborhood] shortcode. 
+		The neighborhood could list an area with polygons for a given region, such as:
+		</p> 
+		<ul>
+			<li>Neighborhood</li>
+			<li>City</li>
+			<li>Zip code</li>
+			<li>State</li>
+		</ul>';
+
 	protected static $options = array(
 		'pl_cpt_template'	=> array( 'type' => 'select', 'label' => 'Template', 'default' => ''),
 		'width'				=> array( 'type' => 'text', 'label' => 'Width(px)', 'default' => 250 ),
@@ -40,12 +52,9 @@ class PL_Neighborhood_CPT extends PL_SC_Base {
 
 	protected static $template = array(
 		'snippet_body'	=> array( 'type' => 'textarea', 'label' => 'HTML', 'default' => 'Put subcodes here to build your form...' ),
-		'css'			=> array( 'type' => 'textarea', 'label' => 'CSS', 'default' => '',
-								'hook'=>'', 'handle_as'=>'css' ),
-		'before_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content before the widget', 'default' => '',
-								'hook'=>'', 'handle_as'=>'header' ),
-		'after_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content after the widget', 'default' => '',
-								'hook'=>'', 'handle_as'=>'footer' ),
+		'css'			=> array( 'type' => 'textarea', 'label' => 'CSS', 'default' => '' ),
+		'before_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content before the template', 'default' => '' ),
+		'after_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content after the template', 'default' => '' ),
 	);
 }
 

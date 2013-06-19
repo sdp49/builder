@@ -61,8 +61,6 @@ abstract class PL_SC_Base {
 //				'type'		=> 'textarea',
 //				'label'		=> '<Pretty Form Name>',
 //				'default'	=> '',
-//				'hook'		=> '<filter_hook>', 				// optional, requires 'handle_as', name of filter hook prefix used to render this field
-//				'handle_as'	=> '[body|before|after|css]',		// optional, describes how we will render the content of this field
 //			),
 	);
 
@@ -97,8 +95,10 @@ abstract class PL_SC_Base {
 				'shortcode'		=> $this::$shortcode,
 				'post_type'		=> $this::$pl_post_type,
 				'title'			=> $this::$title,
+				'help'			=> $this::$help,
 				'options'		=> $this::$options,
 				'filters'		=> $this::$filters,
+				'subcodes'		=> $this::$subcodes,
 				'default_tpl'	=> $this::$default_tpl,
 				'template'		=> $this::$template,
 		);
@@ -330,7 +330,7 @@ abstract class PL_SC_Base {
 			if (!empty($value)) {
 				// only output options that are valid for this type and not default
 				if (!empty($class_options[$option])
-					&& $class_options[$option]['default'] != $value
+					//&& $class_options[$option]['default'] != $value
 					&& $class_options[$option]['type'] != 'featured_listing_meta'
 					) {
 					$sc_args .= ' '.$option."='".$value."'";
