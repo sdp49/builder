@@ -5,8 +5,15 @@ $action = (empty($_REQUEST['action'])?'':$_REQUEST['action']);
 $ID = (empty($_REQUEST['id'])?'':$_REQUEST['id']);
 
 if ($action == 'delete' && $ID) {
-	PL_Shortcode_CPT::delete_shortcode_template($ID);
-	wp_redirect('admin.php?page=placester_templates');
+	if (!PL_Shortcode_CPT::template_in_use($ID)) {
+		PL_Shortcode_CPT::delete_shortcode_template($ID);
+	}
+	if (wp_get_referer())	{
+		wp_safe_redirect( wp_get_referer() );
+	}
+	else {
+		wp_redirect('admin.php?page=placester_shortcodes_templates');
+	}
 	die;		
 }
 if ($action == 'edit') {
@@ -79,7 +86,7 @@ $nonce_action = 'edit-sc-template_' . $ID;
 									</div>
 								
 									<div id="major-publishing-actions">
-										<?php if ($ID):?>
+										<?php if ($ID && !PL_Shortcode_CPT::template_in_use($ID)):?>
 										<div id="delete-action">
 											<a class="submitdelete deletion" href="<?php echo $delete_link; ?>"><?php echo __('Delete'); ?></a>
 										</div>

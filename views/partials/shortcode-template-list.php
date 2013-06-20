@@ -35,7 +35,7 @@ $curr_type = '';
 
 			<option value="<?php echo $id ?>" class="<?php echo $curr_type ?>"
 				<?php echo $value == $id ? 'selected="selected"' : '' ?>>
-				<?php echo $template['name']; ?>
+				<?php echo $template['title']; ?>
 			</option>
 			<?php $i++;?>
 			
