@@ -50,8 +50,6 @@ class PL_Search_Listing_CPT extends PL_SC_Base {
 		//'compliance'
 	);
 
-	protected static $filters = array();
-
 	protected static $template = array(
 		'snippet_body'	=> array( 'type' => 'textarea', 'label' => 'HTML', 'default' => 'Put subcodes here customize your list of properties...' ),
 		'css'			=> array( 'type' => 'textarea', 'label' => 'CSS', 'default' => '' ),

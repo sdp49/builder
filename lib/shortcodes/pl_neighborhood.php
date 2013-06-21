@@ -39,17 +39,6 @@ class PL_Neighborhood_CPT extends PL_SC_Base {
 			'nb_map'
 	);
 
-	public function get_args() {
-		return array(
-				'shortcode'	=> $this::$shortcode,
-				'post_type'	=> $this::$pl_post_type,
-				'title'		=> $this::$title,
-				'options'	=> $this::$options,
-				'filters'	=> $this::$filters,
-				'template'	=> $this::$template,
-		);
-	}
-
 	protected static $template = array(
 		'snippet_body'	=> array( 'type' => 'textarea', 'label' => 'HTML', 'default' => 'Put subcodes here to build your form...' ),
 		'css'			=> array( 'type' => 'textarea', 'label' => 'CSS', 'default' => '' ),

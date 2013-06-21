@@ -50,6 +50,10 @@ $form_action = 'edit';
 		<div id="message" class="updated"><p><?php echo $message; ?></p></div>
 		<?php endif; ?>
 
+		<p>
+		Use this form to build a shortcode template that can be used to control the appearance of Placester shortcodes.
+		</p>
+		
 		<form name="post" action="<?php echo $form_link?>" method="post" id="post"<?php do_action('post_edit_form_tag'); ?>>
 			<?php wp_nonce_field($nonce_action); ?>
 			<input type="hidden" id="hiddenaction" name="action" value="<?php echo esc_attr( $form_action ) ?>" />

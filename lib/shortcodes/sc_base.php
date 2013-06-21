@@ -21,17 +21,17 @@ abstract class PL_SC_Base {
 		'height'			=> array( 'type' => 'numeric', 'label' => 'Height(px)', 'default' => 250 ),
 		'widget_class'		=> array( 'type' => 'text', 'label' => 'Widget Class', 'default' => '' ),
 	//	'<field_name>'		=> array(
-	//			'type'		=> '[text|numeric|select|subgrp]' // type of form control:
-	//														// text:	text field
-	//														// numeric:	integer field
-	//														// select:	drop list
-	//														// subgrp:	contains a subgroup of controls
-	//			'label'		=> '<Pretty Form Name>',		// field label for use in a form
-	//			'options'	=> array(						// present if control type is 'select'
-	//				'<value>'	=> '<Pretty Form Name>',	// field label for use in a form
+	//			'type'		=> '[text|numeric|select|subgrp]'	// type of form control:
+	//															// text:	text field
+	//															// numeric:	integer field
+	//															// select:	drop list
+	//															// subgrp:	contains a subgroup of controls
+	//			'label'		=> '<Pretty Form Name>',			// field label for use in a form
+	//			'options'	=> array(							// present if control type is 'select'
+	//				'<value>'	=> '<Pretty Form Name>',		// field label for use in a form
 	//				...
 	//			),
-	//			'default'	=> '<default val>'				// default value - type should be appropriate to the control type
+	//			'default'	=> '<default val>'					// default value - type should be appropriate to the control type
 	//	),
 	);
 	// subclass should use this for a list of shortcode filter subcodes
@@ -56,12 +56,12 @@ abstract class PL_SC_Base {
 	// built in templates
 	protected static $default_tpl = array('twentyten', 'twentyeleven');
 	// default layout for template
-	protected static $template = array(							// defines template fields and how they hook in to the shortcode template render
-//			'snippet_body'	=> array(
-//				'type'		=> 'textarea',
-//				'label'		=> '<Pretty Form Name>',
-//				'default'	=> '',
-//			),
+	protected static $template = array(							// defines template fields
+		//		'snippet_body'	=> array(
+		//		'type'		=> 'textarea',
+		//		'label'		=> '<Pretty Form Name>',
+		//		'default'	=> '',
+		//	),
 	);
 
 
@@ -209,7 +209,7 @@ abstract class PL_SC_Base {
 	/**
 	 * Return array of filters used to configure this shortcode
 	 */
-	protected function _get_filters() {}
+	protected function _get_filters() {return array();}
 
 
 	/*******************************************

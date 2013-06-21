@@ -158,6 +158,7 @@ class PL_Shortcode_CPT {
 	 * Custom Shortcode helpers
 	 ***************************************************/
 
+
 	/**
 	 * Checks if the given template is being used and returns the number of custom shortcodes using it
 	 * @param string $id
@@ -178,7 +179,9 @@ class PL_Shortcode_CPT {
 
 	/***************************************************
 	 * Shortcode Template storage functions
+	 * TODO: move to model
 	 ***************************************************/
+
 
 	/**
 	 * Save a shortcode template

@@ -56,7 +56,8 @@ class PL_Form_CPT extends PL_SC_Base {
 	);
 
 	protected static $template = array(
-		'snippet_body'	=> array( 'type' => 'textarea', 'label' => 'HTML', 'default' => 'Put subcodes here to build your form...' ),
+		'snippet_body'	=> array( 'type' => 'textarea', 'label' => 'HTML', 
+				'default' => "Put subcodes here to build your form, e.g.:\n<br>Bedrooms: [bedrooms]<br>\nBathrooms: [bathrooms]" ),
 		'css'			=> array( 'type' => 'textarea', 'label' => 'CSS', 'default' => '' ),
 		'before_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content before the template', 'default' => '' ),
 		'after_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content after the template', 'default' => '' ),
