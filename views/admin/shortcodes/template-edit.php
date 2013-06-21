@@ -3,22 +3,19 @@ global $shortcode_subpages, $page_now, $plugin_page;
 
 $action = (empty($_REQUEST['action'])?'':$_REQUEST['action']);
 $ID = (empty($_REQUEST['id'])?'':$_REQUEST['id']);
+$notice = $message = '';
+$nonce_action = 'edit-sc-template_' . $ID;
 
 if ($action == 'delete' && $ID) {
 	if (!PL_Shortcode_CPT::template_in_use($ID)) {
 		PL_Shortcode_CPT::delete_shortcode_template($ID);
 	}
-	if (wp_get_referer())	{
-		wp_safe_redirect( wp_get_referer() );
-	}
-	else {
-		wp_redirect('admin.php?page=placester_shortcodes_templates');
-	}
-	die;		
+	wp_redirect('admin.php?page=placester_shortcodes_templates');
+	die;
 }
 if ($action == 'edit') {
 	if (empty($_POST['title'])) {
-		//TODO: error message
+		$notice = 'Please provide a title for the template.';
 	}
 	elseif(!empty($_POST['save']) && !empty($_POST['shortcode'])) {
 		if (!empty($_POST[$_POST['shortcode']])) {
@@ -38,15 +35,12 @@ if ($action == 'edit') {
 $template = PL_Shortcode_CPT::load_shortcode_template($ID);
 $title = (empty($_REQUEST['title'])?$template['title']:$_REQUEST['title']);
 $shortcode = (empty($_REQUEST['shortcode'])?$template['shortcode']:$_REQUEST['shortcode']);
-$notice = '';
-$message = '';
 $form_link = '';
 $delete_link = $page_now.'?page='.$plugin_page.'&action=delete&id='.$ID;
 $form_action = 'edit';
-$nonce_action = 'edit-sc-template_' . $ID;
 ?>
 <div class="wrap pl-sc-wrap">
-	<?php echo PL_Helper_Header::pl_subpages('placester_shortcodes', $shortcode_subpages, 'Shortcode Settings'); ?>
+	<?php echo PL_Helper_Header::pl_subpages('placester_shortcodes', $shortcode_subpages, 'Create Shortcode Template'); ?>
 
 	<div id="pl_sc_tpl_edit">
 		<?php if ( $notice ) : ?>
@@ -75,16 +69,16 @@ $nonce_action = 'edit-sc-template_' . $ID;
 					</div>
 					<div id="postbox-container-1" class="postbox-container">
 						<div id="submitdiv" class="postbox">
-							<?php $action_title = ($ID ? __('Save') : __('Create'))?>
+							<?php $action_title = ($ID ? __('Update') : __('Create'))?>
 							<h3 class="hndle"><span><?php echo $action_title;?></span></h3>
 							<div class="inside">
 								<div class="submitbox" id="submitpost">
-								
+
 									<?php // Hidden submit button early on so that the browser chooses the right button when form is submitted with Return key ?>
 									<div style="display:none;">
-									<?php submit_button( __( 'Save' ), 'button', 'save' ); ?>
+									<?php submit_button( __( 'Update' ), 'button', 'save' ); ?>
 									</div>
-								
+
 									<div id="major-publishing-actions">
 										<?php if ($ID && !PL_Shortcode_CPT::template_in_use($ID)):?>
 										<div id="delete-action">
@@ -96,10 +90,10 @@ $nonce_action = 'edit-sc-template_' . $ID;
 										</div>
 										<div class="clear"></div>
 									</div>
-								
+
 								</div>
 							</div>
-						</div>					
+						</div>
 						<?php
 						PL_Router::load_builder_partial('shortcode-preview.php', array());
 						?>
@@ -107,7 +101,7 @@ $nonce_action = 'edit-sc-template_' . $ID;
 				</div><!-- /post-body -->
 			</div>
 		</form>
-	
+
 		<div id="ajax-response"></div>
 	</div>
 </div>

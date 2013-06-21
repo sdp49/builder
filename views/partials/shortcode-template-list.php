@@ -23,9 +23,9 @@ $curr_type = '';
 			<?php if($i==$count || ($i && ($curr_type != $template['type']) && !empty($pl_snippet_types[$curr_type]))):?>
 					</optgroup>
 			<?php endif;?>
-			
+
 			<?php if ($i==$count) break;?>
-			
+
 			<?php if($curr_type != $template['type']):?>
 				<?php $curr_type = $template['type'];?>
 				<?php if(!empty($pl_snippet_types[$curr_type])):?>
@@ -38,7 +38,7 @@ $curr_type = '';
 				<?php echo $template['title']; ?>
 			</option>
 			<?php $i++;?>
-			
+
 		<?php endfor;?>
 	</select>
 </section>

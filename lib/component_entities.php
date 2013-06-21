@@ -37,34 +37,34 @@ class PL_Component_Entity {
 
 		// TODO: make dynamic function control over templates
 		// currently they have different logic and diff input parameters
-		$featured_templates = PL_Shortcode_CPT::template_list('featured_listings');
+		$featured_templates = PL_Shortcode_CPT::template_list('featured_listings', true);
 		foreach ($featured_templates as $template => $type) {
 			add_filter( 'pls_listings_list_ajax_item_html_featured_listings' . $template, array(__CLASS__,'featured_listings_ajax_templates'), 10, 3 );
 		}
 
-		$search_form_templates = PL_Shortcode_CPT::template_list('search_form');
+		$search_form_templates = PL_Shortcode_CPT::template_list('search_form', true);
 		foreach ($search_form_templates as $template => $type) {
 			add_filter( 'pls_listings_search_form_outer_' . $template, array(__CLASS__,'search_form_templates'), 10, 6 );
 		}
 
-		$listing_slideshow_templates = PL_Shortcode_CPT::template_list('listing_slideshow');
+		$listing_slideshow_templates = PL_Shortcode_CPT::template_list('listing_slideshow', true);
 		foreach ($listing_slideshow_templates as $template => $type) {
 			add_filter( 'pls_slideshow_single_caption_' . $template, array( __CLASS__, 'listing_slideshow_templates' ), 10, 5 );
 			// add_filter( 'pls_slideshow_html_' . $template, array(__CLASS__,'listing_slideshow_templates'), 10, 6 );
 			// add_filter( 'pls_slideshow_data_' . $template, array(__CLASS__,'listing_slideshow_templates'), 10, 3 );
 		}
 
-		$search_listings_templates = PL_Shortcode_CPT::template_list('search_listings');
+		$search_listings_templates = PL_Shortcode_CPT::template_list('search_listings', true);
 		foreach ($search_listings_templates as $template => $type) {
 			add_filter( 'pls_listings_list_ajax_item_html_search_listings_' . $template, array(__CLASS__,'search_listings_templates'), 10, 3 );
 		}
 
-		$static_listings_templates = PL_Shortcode_CPT::template_list('static_listings');
+		$static_listings_templates = PL_Shortcode_CPT::template_list('static_listings', true);
 		foreach ($static_listings_templates as $template => $type) {
 			add_filter( 'pls_listings_list_ajax_item_html_static_listings_' . $template, array(__CLASS__, 'search_listings_templates'), 10, 3 );
 		}
 
-		$neighborhood_templates = PL_Shortcode_CPT::template_list('pl_neighborhood');
+		$neighborhood_templates = PL_Shortcode_CPT::template_list('pl_neighborhood', true);
 		foreach ($neighborhood_templates as $template => $type) {
 			add_filter( 'pls_neighborhood_html_' . $template, array(__CLASS__, 'neighborhood_templates'), 10, 4 );
 		}
@@ -882,11 +882,8 @@ class PL_Component_Entity {
 		self::$listing = $listing;
 		self::$slideshow_caption_index = $index;
 
-		$template = $context;
-
 		// TODO: can we cache that
-		$snippet_body = PL_Shortcodes::get_active_snippet_body( $shortcode, $template );
-
+		$snippet_body = PL_Shortcodes::get_active_snippet_body( $shortcode, $context );
 		return do_shortcode( $snippet_body );
 	}
 

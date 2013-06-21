@@ -30,7 +30,10 @@ jQuery(document).ready(function($){
 			$(this).unbind(e);
 		});
 	}
-	
+
+	/**
+	 * Show hint text in the title field
+	 */
 	function validate_title(field_id) {
 		if (!field_id) {
 			field_id = '#title';
@@ -49,79 +52,6 @@ jQuery(document).ready(function($){
 		return true;
 	}
 
-	function update_template_links() {
-		var shortcode_type = $('#pl_sc_shortcode_type').val();
-		var shortcode = $('#pl_sc_edit input[name="shortcode"]').val();
-		var tpl_select = $('#'+shortcode+'_template_block select');
-		if (tpl_select) {
-			var selected = tpl_select.find(':selected');
-			var selected_tpl = tpl_select.val();
-			var selected_tpl_type = selected.parent().prop('label');
-			
-			if (selected_tpl_type=='Default') {
-				$('#edit_sc_template_create').attr("href", pl_sc_template_url+'&shortcode='+shortcode_type+'&action=copy&default='+selected_tpl).show();
-				$('#edit_sc_template_edit').hide();
-			}
-			else {
-				$('#edit_sc_template_create').hide();
-				$('#edit_sc_template_edit').attr("href", pl_sc_template_url+'&id='+selected_tpl).show();
-			}
-		}
-	}
-
-	/**
-	 * Any time we change a field on the shortcode edit page call this to save changes, which updates the preview window
-	 */
-	function widget_autosave() {
-
-		if (!validate_title()) {
-			return;
-		}
-
-		$('#pl_sc_edit .preview_load_spinner').show();
-		$('#pl-review-link').hide();
-		
-		// set a limit on max widget size
-		var $width = $('#widget_meta_wrapper input#width');
-		if ($width.val() > 1024 ) {
-			$width.val('1024');
-		}
-		var $height = $('#widget_meta_wrapper input#height');
-		if ($height.val() > 1024 ) {
-			$height.val('1024');
-		}
-
-		var post_data = $('#pl_sc_edit form').serializeArray();
-
-		$.ajax({
-			data: post_data,
-			// beforeSend: doAutoSave ? autosave_loading : null,
-			type: "POST",
-			url: ajaxurl,
-			success: function( response ) {
-				// setup the preview window
-				$('#preview_meta_widget iframe').load( function() {
-					$('#pl_sc_edit .preview_load_spinner').hide();
-					$('#pl-review-link').show();
-				});
-				// update the embed/shortcode box
-				$('#sc_slug_box').show();
-				if (response.embedcode) {
-					$('#sc_slug_box .iframe_link').show().html('<strong>Embed Code:</strong>'+response.shortcode);
-				}
-				else {
-					$('#sc_slug_box .iframe_link').hide();
-				}
-				if (response.shortcode) {
-					$('#sc_slug_box .shortcode_link').show().html('<strong>Shortcode:</strong>'+response.shortcode);
-				} 
-				else {
-					$('#sc_slug_box .shortcode_link').hide();
-				}
-			}
-		});
-	}
-	
 	function radioClicks() {
 		var radio_value = this.value;
 
@@ -144,12 +74,36 @@ jQuery(document).ready(function($){
 		$('#metadata-min_avail_on_picker').datepicker();
 	}
 
+	/**
+	 * popup preview dialog
+	 */ 
+	$('#pl-review-link').click(function(e) {
+		e.preventDefault();
+
+		var iframe_content = $('#preview_meta_widget').html();
+		var options_width = $('#widget_meta_wrapper input#width').val() || 750;
+		var options_height = $('#widget_meta_wrapper input#height').val() || 500;
+
+		$('#pl-review-popup').html( iframe_content );
+		$('#pl-review-popup iframe').css('width', options_width + 'px');
+		$('#pl-review-popup iframe').css('height', options_height + 'px');
+
+		$('#pl-review-popup').dialog({
+			width: 800,
+			height: 600
+		});
+	});
+
+	
+	
 	
 	////////////////////////////////////////
 	// Shortcode editor
 	////////////////////////////////////////
 	
-	// Changing shortcode type - update display options
+	/**
+	 * Changing shortcode type - update display options
+	 */
 	function sc_shortcode_selected() {
 		var shortcode_type = $('#pl_sc_shortcode_type').val();
 		var shortcode = $('#pl_sc_shortcode_type').find('option:selected').attr('id').substr('pl_sc_shortcode_'.length);
@@ -175,6 +129,63 @@ jQuery(document).ready(function($){
 		$('#choose_template').show();
 		$('#widget_meta_wrapper').show();
 	}
+	
+	/**
+	 * If user changes shortcode type or template, update the template edit link 
+	 */
+	function update_template_links() {
+		var shortcode_type = $('#pl_sc_shortcode_type').val();
+		var shortcode = $('#pl_sc_edit input[name="shortcode"]').val();
+		var tpl_select = $('#'+shortcode+'_template_block select');
+		if (tpl_select) {
+			var selected = tpl_select.find(':selected');
+			var selected_tpl = tpl_select.val();
+			var selected_tpl_type = selected.parent().prop('label');
+			
+			if (selected_tpl_type=='Default') {
+				$('#edit_sc_template_create').attr("href", pl_sc_template_url+'&shortcode='+shortcode_type+'&action=copy&default='+selected_tpl).show();
+				$('#edit_sc_template_edit').hide();
+			}
+			else {
+				$('#edit_sc_template_create').hide();
+				$('#edit_sc_template_edit').attr("href", pl_sc_template_url+'&id='+selected_tpl).show();
+			}
+		}
+	}
+
+	/**
+	 * Any time we change a field on the shortcode edit page call this to save changes, which updates the preview window
+	 */
+	function sc_update_preview() {
+
+		if (!validate_title()) {
+			return;
+		}
+
+		$('#pl_sc_edit .preview_load_spinner').show();
+		$('#pl-review-link').hide();
+		
+		var shortcode = $('#pl_sc_edit [name="shortcode"]').val();
+		
+		// set a limit on max widget size
+		var $width = $('#pl_sc_edit input[name="'+shortcode+'[width]"]');
+		if ($width.val() > 1024 ) {
+			$width.val('1024');
+		}
+		var $height = $('#pl_sc_edit input[name="'+shortcode+'[height]"]');
+		if ($height.val() > 1024 ) {
+			$height.val('1024');
+		}
+		
+		var data = $('#pl_sc_edit form .'+shortcode).find('input,select,textarea').serializeArray();
+		var args = $.param(data);
+		$('#preview_meta_widget').html('<iframe src="'+ajaxurl+'?action=pl_sc_preview&post_type=pl_general_widget&shortcode='+shortcode+'&'+args+'" width="100%" height="100%"></iframe>');
+		$('#preview_meta_widget iframe').load( function() {
+			$('#pl_sc_edit .preview_load_spinner').hide();
+			$('#pl_sc_edit #pl-review-link').show();
+		});
+	}
+
 	
 	$('#pl_sc_shortcode_type').change(sc_shortcode_selected);
 	
@@ -203,25 +214,7 @@ jQuery(document).ready(function($){
 		$('#pl_show_advanced').show();
 	});
 	$('#save-featured-listings').click(function() {
-		setTimeout( widget_autosave, 1000 );
-	});
-
-	// popup preview dialog
-	$('#pl-review-link').click(function(e) {
-		e.preventDefault();
-
-		var iframe_content = $('#preview_meta_widget').html();
-		var options_width = $('#widget_meta_wrapper input#width').val() || 750;
-		var options_height = $('#widget_meta_wrapper input#height').val() || 500;
-
-		$('#pl-review-popup').html( iframe_content );
-		$('#pl-review-popup iframe').css('width', options_width + 'px');
-		$('#pl-review-popup iframe').css('height', options_height + 'px');
-
-		$('#pl-review-popup').dialog({
-			width: 800,
-			height: 600
-		});
+//		setTimeout( widget_autosave, 1000 );
 	});
 
 	// setup view based on current shortcode type, etc
@@ -230,7 +223,7 @@ jQuery(document).ready(function($){
 
 	// call the custom autosave for every changed input and select in the shortcode edit view
 	$('#pl_sc_edit input, #pl_sc_edit select').change(function() {
-		widget_autosave();
+		sc_update_preview();
 	});
 
 
@@ -245,7 +238,6 @@ jQuery(document).ready(function($){
 				return;
 			}
 		});
-		type_selected();
 	}catch(e){}
 
 

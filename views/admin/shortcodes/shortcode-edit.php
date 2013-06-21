@@ -71,7 +71,7 @@ if( ! $is_post_new ) {
 ?>
 <div class="wrap pl-sc-wrap">
 	<?php echo PL_Helper_Header::pl_subpages('placester_shortcodes', $shortcode_subpages, 'Shortcode Settings'); ?>
- 
+
 	<div id="pl_sc_edit">
 		<?php if ( $notice ) : ?>
 		<div id="notice" class="error"><p><?php echo $notice ?></p></div>
@@ -118,24 +118,24 @@ if( ! $is_post_new ) {
 						$animationSpeed = isset( $values['animationSpeed'] ) && ! empty( $values['animationSpeed'][0] ) ? $values['animationSpeed'][0] : '800';
 						$_POST['animationSpeed'] = $animationSpeed;
 						$widget_class = isset( $values['widget_class'] ) && ! empty( $values['widget_class'][0] ) ? 'class="'	. $values['widget_class'][0] . '"' : '';
-						
+
 						$style = ' style="width: ' . $width . 'px;height: ' . $height . 'px"';
-						
+
 						// for post edits, prepare the frame related variables (iframe and script)
 						if( ! empty( $permalink ) ) {
 							$iframe = '<iframe src="' . $permalink . '"'. $style . $widget_class .'></iframe>';
 							$iframe_controller = '<script id="plwidget-' . $post->ID . '" src="' . PL_PARENT_URL . 'js/fetch-widget.js?id=' . $_GET['post'] . '"'	. $style . ' ' . $widget_class . '></script>';
-						} 
+						}
 						PL_Router::load_builder_partial('shortcode-preview.php', array('post'=>$post));
 						?>
 						<script type="text/javascript">
 							var pl_sc_template_url = '<?php echo admin_url('admin.php?page=placester_shortcodes_template_edit')?>';
-						</script>	
+						</script>
 					</div>
 				</div><!-- /post-body -->
 			</div>
 		</form>
-		
+
 		<div id="pl-fl-meta" style="display: none;">
 			<?php
 				$static_list_form = PL_Form::generate_form(
@@ -151,7 +151,7 @@ if( ! $is_post_new ) {
 				echo $static_list_form;
 			 ?>
 		</div>
-		
+
 		<div id="ajax-response"></div>
 		<br class="clear" />
 	</div>

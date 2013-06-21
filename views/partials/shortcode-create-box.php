@@ -14,17 +14,17 @@ $pl_shortcodes = PL_Shortcode_CPT::get_shortcodes();
 $options_class = $filters_class = '';
 ?>
 <div class="postbox">
-	
+
 	<h3>Create Shortcode</h3>
-	
-	<div class="inside">	
+
+	<div class="inside">
 
 		<!-- Type and Template -->
 		<div>
 
 			<!-- Type -->
 			<section class="post_types_list_wrapper row-fluid">
-				
+
 				<div class="span2">
 					<label class="section-label" for="pl_sc_shortcode_type">Type:</label>
 				</div>
@@ -32,9 +32,9 @@ $options_class = $filters_class = '';
 				<div class="span9">
 
 					<select id="pl_sc_shortcode_type" name="shortcode_type" class="">
-						
+
 						<option id="pl_sc_shortcode_undefined" value="undefined">Select</option>
-						
+
 						<?php
 						foreach( $pl_shortcodes as $pl_shortcode => $sct_args ):
 							$link_class = ($pl_shortcode == $pl_post_type) ? 'selected_type' : '';
@@ -47,16 +47,16 @@ $options_class = $filters_class = '';
 							// build our class list for the Options and Templates sections in this loop
 							if (!empty($sct_args['options'])) {
 								$options_class .= ' '.$pl_shortcode;
-							} 
+							}
 							if (!empty($sct_args['filters'])) {
 								$filters_class .= ' '.$pl_shortcode;
-							} 
+							}
 						endforeach;
 						?>
 					</select>
 
 				</div>
-			
+
 			</section><!-- /.post_types_list_wrapper -->
 
 			<!-- Template / Layout -->
@@ -118,7 +118,7 @@ $options_class = $filters_class = '';
 							$_POST[$pl_shortcode][$field] = $f_args['default'];
 						}
 						$f_args['css'] = (!empty($f_args['css']) ? $f_args['css'].' ' : '') . $pl_shortcode;
-						PL_Form::item($field, $f_args, 'POST', $pl_shortcode, 'general_widget_', true);
+						PL_Form::item($field, $f_args, 'POST', $pl_shortcode, 'sc_edit_', true);
 					}?>
 					</div>
 					<?php
@@ -140,23 +140,23 @@ $options_class = $filters_class = '';
 								array('method' => "POST",
 									'title' => true,
 									'wrap_form' => false,
-									'echo_form' => false,
 									'include_submit' => false,
-									'id' => 'pls_admin_my_listings',
+									'id' => $pl_shortcode.'-filters',
+									'parent' => $pl_shortcode,
 									'echo_form' => true,
 								),
-								'general_widget_');?>
+								'sc_edit_');?>
 						</div>
 						<?php
 					}
 				}
-				?>				
+				?>
 			</div><!-- /.pl_widget_block -->
 
 			<?php wp_nonce_field( 'pl_cpt_meta_box_nonce', 'meta_box_nonce' );?>
-			
+
 			<div class="clear"></div>
-		
+
 		</div> <!-- /#widget-meta-wrapper -->
 	</div><!-- /.inside -->
 </div><!-- /.postbox -->

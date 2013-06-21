@@ -13,7 +13,7 @@ $pl_shortcodes = PL_Shortcode_CPT::get_shortcodes();
 	<h3>Create Shortcode Template</h3>
 
 	<div class="inside">
-	
+
 		<!-- Template Name -->
 		<section class="row-fluid">
 
@@ -37,7 +37,7 @@ $pl_shortcodes = PL_Shortcode_CPT::get_shortcodes();
 
 			<div class="span10">
 				<select id="pl_sc_tpl_shortcode" name="shortcode">
-						<?php 
+						<?php
 						$shortcode_refs = array();
 						foreach( $pl_shortcodes as $pl_shortcode => $sct_args ):
 							$link_class = $selected = '';
@@ -85,15 +85,15 @@ $pl_shortcodes = PL_Shortcode_CPT::get_shortcodes();
 					<?php
 				}
 				?>
-				
+
 			</div>
 
 			<!-- Search Sub-Shortcodes -->
 			<div id="subshortcodes" class="span4">
 				<div style="display: none;">
-					<label for="search-subshortcodes">Sub-Shortcodes</label> 
+					<label for="search-subshortcodes">Sub-Shortcodes</label>
 					<input type="text" placeholder="search sub-shortcodes" />
-				</div>			
+				</div>
 				<?php foreach( $pl_shortcodes as $pl_shortcode => $sct_args ) :?>
 					<?php if(!empty($sct_args['subcodes'])):?>
 						<div class="shortcode_block <?php echo $pl_shortcode?>" style="display: none;">
@@ -107,13 +107,13 @@ $pl_shortcodes = PL_Shortcode_CPT::get_shortcodes();
 					<?php endif;?>
 				<?php endforeach;?>
 			</div>
-			
+
 		</section><!-- /Template Contents -->
 
 		<?php wp_nonce_field( 'pl_cpt_meta_box_nonce', 'meta_box_nonce' );?>
-		
+
 		<div class="clear"></div>
-			
+
 	</div><!-- /.inside -->
 
 </div><!-- /.postbox -->

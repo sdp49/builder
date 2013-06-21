@@ -333,7 +333,12 @@ abstract class PL_SC_Base {
 					//&& $class_options[$option]['default'] != $value
 					&& $class_options[$option]['type'] != 'featured_listing_meta'
 					) {
-					$sc_args .= ' '.$option."='".$value."'";
+					if ($option == 'pl_cpt_template') {
+						$sc_args .= " context='".$value."'";
+					}
+					else {
+						$sc_args .= ' '.$option."='".$value."'";
+					}
 				}
 			}
 		}
@@ -341,18 +346,30 @@ abstract class PL_SC_Base {
 		$shortcode = '[' . $class::$shortcode . $sc_args;
 
 		// prepare filters
-		$filters = !empty($args['pl_static_listings_option']) ? $args['pl_static_listings_option'] : array();
 		$subcodes = '';
-		if( is_array( $filters) ) {
-			$class_filters = $class::$filters;
-			foreach($filters as $filter => $values) {
-				if (!empty($class_filters[$filter])) {
-					if( $class_filters[$filter]['type'] == 'subgrp' && is_array($values)) {
-						foreach( $values as $key => $value ) {
-							$subcodes .= ' [pl_filter group="' . $filter. '" filter="' . $key . '" value="' . $value . '"] ';
+		$class_filters = $class::$filters;
+		foreach($class_filters as $f_id => $f_atts) {
+			if (!empty($args[$f_id])) {
+				if(count($f_atts) && empty($f_atts['type'])) {
+					// probably group filter
+					if (is_array($args[$f_id])) {
+						foreach( $f_atts as $key => $value ) {
+							if (!empty($args[$f_id][$key]) && $args[$f_id][$key]!='false') { 
+								$subcodes .= ' [pl_filter group="' . $f_id. '" filter="' . $key . '" value="' . $args[$f_id][$key] . '"] ';
+							}
 						}
-					} else {
-						$subcodes .= ' [pl_filter filter="' . $filter . '" value="'. $values . '"] ';
+					}
+				} 
+				else {
+					if (!empty($f_atts['type']) && $f_atts['type']=='multiselect') {
+						if (is_array($args[$f_id])) {
+							$subcodes .= ' [pl_filter filter="' . $f_id . '" value="'. implode(',', $args[$f_id]) . '"] ';
+						}
+					}
+					else {
+						if (!is_array($args[$f_id]) && $args[$f_id]!='false') {
+							$subcodes .= ' [pl_filter filter="' . $f_id . '" value="'. $args[$f_id] . '"] ';
+						}
 					}
 				}
 			}

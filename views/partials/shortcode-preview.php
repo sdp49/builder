@@ -1,4 +1,4 @@
-<?php 
+<?php
 /**
  * Generates preview metabox used in the shortcode edit view
  */

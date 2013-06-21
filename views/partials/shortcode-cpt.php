@@ -1,6 +1,6 @@
 <?php
 /**
- * Generates the preview for a widget 
+ * Generates the preview for a widget
  */
 $preview = ( ! empty ( $_GET['preview'] ) && $_GET['preview'] == 'true' ) ? true : false;
 
@@ -54,35 +54,35 @@ if( ! empty( $widget_class ) ) {
 		<?php wp_head(); ?>
 	</head>
 	<body>
-	
+
 	<?php
 		if( isset( $shortcode ) ) {
-		?>	
+		?>
 		<script type="text/javascript">
 			jQuery(document).ready(function() {
 				try {
 					if (jQuery('.shortcode-link', window.parent.document).length ) {
 						jQuery('.shortcode-link', window.parent.document).html('<strong>Shortcode:</strong><?php echo str_replace( "'", "\'", $shortcode ); ?>');
 					}
-				} catch( exception ) {}  
+				} catch( exception ) {}
 			});
 		</script>
 		<?php
 		}
-		
+
 		add_filter('show_admin_bar', '__return_false');
 		add_action('wp_enqueue_scripts', isset( $drop_modernizr ) ? 'pl_template_drop_modernizr': 'pl_template_add_modernizr' );
-		
+
 		echo '<div class="pls_embedded_widget_wrapper">';
 		echo do_shortcode( isset( $shortcode ) ? $shortcode : $post->post_content );
 		echo '<div>';
-		
+
 		wp_footer();
-		
+
 	 	function pl_template_drop_modernizr() {
 	 			wp_dequeue_script('form');
 	 	}
-	 	
+
 	 	function pl_template_add_modernizr() {
 	 		wp_register_script( 'modernizr', trailingslashit( PLS_JS_URL ) . 'libs/modernizr/modernizr.min.js' , array(), '2.6.1');
 	 		wp_enqueue_script( 'modernizr' );
@@ -90,8 +90,8 @@ if( ! empty( $widget_class ) ) {
 	?>
 </body>
 </html>
-<?php 
+<?php
 	$widget_page = ob_get_clean();
 	$widget_cache->save( $widget_page );
-	
+
 	echo $widget_page;

@@ -35,6 +35,7 @@ class PL_Shortcode_CPT {
 		}
 
 		add_action( 'init', array( $this, 'register_post_type' ) );
+		add_action( 'wp_ajax_pl_sc_preview', array( $this, 'shortcode_preview') );
 		add_action( 'wp_ajax_pl_sc_template_preview', array( $this, 'template_preview') );
 	}
 
@@ -108,6 +109,25 @@ class PL_Shortcode_CPT {
 			return '';
 		}
 		return self::$shortcodes[$shortcode]->generate_shortcode_str($args);
+	}
+
+	/**
+	 * We have to save settings as a template in order for ajax driven forms such as search listings
+	 * to work. We always use the same name '_preview' for the tmplate name.
+	 */
+	public function shortcode_preview() {
+
+		$shortcode = (!empty($_GET['shortcode']) ? stripslashes($_GET['shortcode']) : '');
+		$shortcode_args = $this->get_shortcodes();
+		if (!$shortcode || empty($shortcode_args[$shortcode]) || empty($_GET[$shortcode])) {
+			die;
+		}
+		// set the defaults
+		$args = array_merge($_GET[$shortcode], $_GET);
+		$sc_str = $this->generate_shortcode_str($shortcode, $args);
+
+		include(PL_VIEWS_ADMIN_DIR . 'shortcodes/preview.php');
+		die;
 	}
 
 	/**
@@ -250,9 +270,10 @@ class PL_Shortcode_CPT {
 	 * Return the list of available templates for the given shortcode.
 	 * List includes default templates and user created ones
 	 * @param string $shortcode
+	 * @param bool $all			: true to include hidden templates like the preview one
 	 * @return array
 	 */
-	public static function template_list($shortcode) {
+	public static function template_list($shortcode, $all = false) {
 		// sanity check
 		if (empty(self::$shortcodes[$shortcode])) {
 			return array();
@@ -272,7 +293,7 @@ class PL_Shortcode_CPT {
 		$snippet_list_DB_key = ('pls_' . $shortcode . '_list');
 		$tpl_list = get_option($snippet_list_DB_key, array());
 		foreach ($tpl_list as $id => $name) {
-			if ($id == 'pls_' . $shortcode . '___preview') continue;
+			if ($id == 'pls_' . $shortcode . '___preview' && !$all) continue;
 			$tpl_type_map[$id] = array('type'=>'custom', 'title'=>$name, 'id'=>$id);
 		}
 		return $tpl_type_map;
@@ -305,7 +326,7 @@ class PL_Shortcode_CPT {
 			}
 			$tpl_list[$tpl->option_name] = $tpl_data['title'];
 		}
-		
+
 		uasort($tpl_list, array(__CLASS__, '_tpl_list_sort'));
 		$tpl_list_DB_key = ('pls_' . $shortcode . '_list');
 		update_option($tpl_list_DB_key, $tpl_list);

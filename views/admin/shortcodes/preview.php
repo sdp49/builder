@@ -62,13 +62,13 @@ ob_start();
 		<?php wp_head(); ?>
 	</head>
 	<body>
-	
+
 		<div class="pls_embedded_widget_wrapper">
 			<?php
 			echo do_shortcode( $sc_str );
 			?>
 		<div>
-		
+
 		<?php wp_footer();?>
 	</body>
 </html>
