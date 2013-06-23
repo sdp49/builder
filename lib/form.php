@@ -213,17 +213,25 @@ class PL_Form {
 		}
 
 		if ($method == 'GET') {
-			if ($parent) {
-				$value = isset($_GET[$parent][$item]) ? $_GET[$parent][$item] : null;
-			} else {
-				$value = isset($_GET[$item]) ? $_GET[$item] : null;	
+			$_data = &$_GET;
+		} 
+		else {
+			$_data = &$_POST;
+		}
+		if ($parent) {
+			$chain = explode('[',$parent);
+			$value = ''; 
+			array_push($chain, $item);
+			$i=count($chain);
+			foreach($chain as $link) {
+				$link = trim($link, ' ]');
+				if (!isset($_data[$link])) break;
+				$_data = &$_data[$link];
+				$i--;
+				if (!$i) $value = $_data;
 			}
 		} else {
-			if ($parent) {
-				$value = isset($_POST[$parent][$item]) ? $_POST[$parent][$item] : null;
-			} else {
-				$value = isset($_POST[$item]) ? $_POST[$item] : null;	
-			}
+			$value = isset($_data[$item]) ? $_data[$item] : null;	
 		}
 
 		if (!$value && isset($attributes['bound']) && isset($attributes['bound']['default']) ) {
