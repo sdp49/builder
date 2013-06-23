@@ -105,25 +105,23 @@ jQuery(document).ready(function($){
 	 * Changing shortcode type - update display options
 	 */
 	function sc_shortcode_selected() {
-		var shortcode_type = $('#pl_sc_shortcode_type').val();
-		var shortcode = $('#pl_sc_shortcode_type').find('option:selected').attr('id').substr('pl_sc_shortcode_'.length);
-		if( shortcode_type == 'undefined' ) {
+		var shortcode = $('#pl_sc_shortcode_type').val();
+		if( shortcode == 'undefined' ) {
 			// clicking "Select" shouldn't reflect the choice
 			$('#choose_template').hide();
 			$('#widget_meta_wrapper').hide();
 			return;
 		}
-		$('#pl_sc_edit input[name="shortcode"]').val(shortcode);
 		update_template_links();
 
 		// display template blocks
 		$('#pl_sc_edit .pl_template_block').each(function() {
-			$(this).css('display', ($(this).hasClass(shortcode_type) ? 'block' : 'none'));
+			$(this).css('display', ($(this).hasClass(shortcode) ? 'block' : 'none'));
 		});
 		
 		// hide meta blocks not related to the post type and reveal the ones to be used
 		$('#pl_sc_edit .pl_widget_block').each(function() {
-			$(this).css('display', ($(this).hasClass(shortcode_type) ? 'block' : 'none'));
+			$(this).css('display', ($(this).hasClass(shortcode) ? 'block' : 'none'));
 		});
 		
 		$('#choose_template').show();
@@ -134,8 +132,7 @@ jQuery(document).ready(function($){
 	 * If user changes shortcode type or template, update the template edit link 
 	 */
 	function update_template_links() {
-		var shortcode_type = $('#pl_sc_shortcode_type').val();
-		var shortcode = $('#pl_sc_edit input[name="shortcode"]').val();
+		var shortcode = $('#pl_sc_shortcode_type').val();
 		var tpl_select = $('#'+shortcode+'_template_block select');
 		if (tpl_select) {
 			var selected = tpl_select.find(':selected');
@@ -143,7 +140,7 @@ jQuery(document).ready(function($){
 			var selected_tpl_type = selected.parent().prop('label');
 			
 			if (selected_tpl_type=='Default') {
-				$('#edit_sc_template_create').attr("href", pl_sc_template_url+'&shortcode='+shortcode_type+'&action=copy&default='+selected_tpl).show();
+				$('#edit_sc_template_create').attr("href", pl_sc_template_url+'&shortcode='+shortcode+'&action=copy&default='+selected_tpl).show();
 				$('#edit_sc_template_edit').hide();
 			}
 			else {

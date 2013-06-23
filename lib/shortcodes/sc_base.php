@@ -53,8 +53,9 @@ abstract class PL_SC_Base {
 	);
 	// tags allowed inside text boxes
 	protected static $allowable_tags = "<a><p><script><div><span><section><label><br><h1><h2><h3><h4><h5><h6><scr'+'ipt><style><article><ul><ol><li><strong><em><button><aside><blockquote><footer><header><form><nav><input><textarea><select>";
-	// built in templates
-	protected static $default_tpl = array('twentyten', 'twentyeleven');
+	// built in templates 
+	// TODO: build dynamically
+	protected static $default_tpls = array('twentyten', 'twentyeleven');
 	// default layout for template
 	protected static $template = array(							// defines template fields
 		//		'snippet_body'	=> array(
@@ -68,7 +69,7 @@ abstract class PL_SC_Base {
 
 
 	/**
-	 * Create an instance and register it with the shortcode manager
+	 * Create an instance and register it with the custom shortcode manager
 	 */
 	public static function init() {
 		$class = get_called_class();
@@ -78,8 +79,6 @@ abstract class PL_SC_Base {
 	}
 
 	public function __construct() {
-		add_action( 'add_meta_boxes', array( $this, 'meta_box' ), 99999 );
- 		add_action( 'save_post', array( $this, 'meta_box_save' ) );
  		add_action( 'template_redirect', array( $this, 'post_type_templating' ) );
 	}
 
@@ -99,7 +98,7 @@ abstract class PL_SC_Base {
 				'options'		=> $this::$options,
 				'filters'		=> $this::$filters,
 				'subcodes'		=> $this::$subcodes,
-				'default_tpl'	=> $this::$default_tpl,
+				'default_tpls'	=> $this::$default_tpls,
 				'template'		=> $this::$template,
 		);
 	}
@@ -109,28 +108,6 @@ abstract class PL_SC_Base {
 	 * Override the following as necessary
 	 *******************************************/
 
-
-	/**
-	 * Called when the admin form is being displayed for this post type
-	 */
-	public function meta_box() {}
-
-	/**
-	 * Called when saving from the shortcode edit forms
-	 * @param int $post_id
-	 */
-	public function meta_box_save($post_id) {
-
-		// Avoid autosaves
-		if( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) return;
-
-		// Verify nonces for ineffective calls
-		if( !isset( $_POST['meta_box_nonce'] ) || !wp_verify_nonce( $_POST['meta_box_nonce'], 'pl_cpt_meta_box_nonce' ) ) {
-			return;
-		}
-
-		$this->_save($post_id, $_POST);
-	}
 
 	/**
 	 * Called when the post is being formatted for display
@@ -211,107 +188,6 @@ abstract class PL_SC_Base {
 	 */
 	protected function _get_filters() {return array();}
 
-
-	/*******************************************
-	 * Private
-	 *******************************************/
-
-
-	/**
-	 * Save all the postmeta fields
-	 * @param int $post_id		: post id
-	 * @param array $args		: $_POST data to be validated and saved
-	 * @param bool $test		: true to just generate the array of postmeta without actually saving
-	 * 							  useful if we want to generate a shortcode for preview without actually
-	 * 							  updating the record
-	 * @return array			: returns an array of all the post meta data that would be saved
-	 */
-	protected function _save($post_id, $args, $test=false) {
-
-		$record = array();
-
-		// Verify we didn't get called for some other post type
-		if ( empty($args['post_type']) ||
-			($args['post_type'] != $this::$pl_post_type &&
-					($args['post_type'] != 'pl_general_widget' || empty($args['shortcode_type'])))) {
-			return $record;
-		}
-
-		if ($post_id) {
-
-			if ($args['post_type'] == 'pl_general_widget') {
-				// we are using one of our shortcode types so fetch the class so we can validate the data
-				$class = 'PL_'.ucfirst(substr($args['shortcode_type'],3)).'_CPT';
-				if (!class_exists($class)) {
-					return $record;
-				}
-				// our field values are in an array based on the shortcode type
-				$args = array_merge($args, $args[ $args['shortcode_type']]);
-				if (!$test) {
-					update_post_meta( $post_id, 'pl_post_type', $args['shortcode_type']);
-				}
-			}
-			else {
-				$class = $this;
-			}
-
-			// Save options
-			foreach( $class::$options as $option => $values ) {
-				if( !empty($args) && !empty($args[$option])) {
-					switch($values['type']) {
-						case 'checkbox':
-							update_post_meta( $post_id, $option, !empty($args[$option]) ? true : false);
-							break;
-						case 'numeric':
-							$args[$option] = (int)$args[$option];
-						case 'select':
-						case 'text':
-							if (!$test) {
-								update_post_meta( $post_id, $option, $args[$option] );
-							}
-							$record[$option] = $args[$option];
-					}
-				}
-				else {
-					// save default in case default changes in the future
-					if (!$test) {
-						update_post_meta( $post_id, $option, $values['default'] );
-					}
-				}
-			}
-
-			// Save filters - only save if they diverge from default
-			$filters = array();
-			foreach( $class::$filters as $filter => $values ) {
-				if( !empty($args) && !empty($args[$filter])) {
-					if ($values['type'] == 'subgrp') {
-						$subargs = $args[$filter];
-						foreach($values['subgrp'] as $subfilter => $sf_values) {
-							if(!empty($subargs[$subfilter]) && $subargs[$subfilter] !== $sf_values['default']) {
-								$filters[$filter][$subfilter] = $subargs[$subfilter];
-							}
-						}
-					}
-					elseif($args[$filter] !== $values['default']) {
-						$filters[$filter] = $args[$filter];
-					}
-				}
-			}
-			if (!$test) {
-				update_post_meta($post_id, 'pl_static_listings_option', $filters);
-			}
-			$record['pl_static_listings_option'] = $filters;
-		}
-
-		// Save template id
-		if( isset( $args['pl_cpt_template'] ) ) {
-			if (!$test) {
-				update_post_meta( $post_id, 'pl_cpt_template', $args['pl_cpt_template']);
-			}
-			$record['pl_cpt_template'] = $args['pl_cpt_template'];
-		}
-		return $record;
-	}
 
 	/**
 	 * Generate a shortcode for this shortcode type from arguments

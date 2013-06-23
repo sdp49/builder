@@ -10,24 +10,23 @@ if ($action == 'delete' && $ID) {
 	if (!PL_Shortcode_CPT::template_in_use($ID)) {
 		PL_Shortcode_CPT::delete_shortcode_template($ID);
 	}
-	wp_redirect('admin.php?page=placester_shortcodes_templates');
+	wp_redirect(admin_url('admin.php?page=placester_shortcodes_templates'));
 	die;
 }
-if ($action == 'edit') {
+if ($action == 'edit' && !empty($_POST['save']) && !empty($_POST['shortcode'])) {
 	if (empty($_POST['title'])) {
 		$notice = 'Please provide a title for the template.';
 	}
-	elseif(!empty($_POST['save']) && !empty($_POST['shortcode'])) {
+	else {
 		if (!empty($_POST[$_POST['shortcode']])) {
 			$data = array_merge($_POST, $_POST[$_POST['shortcode']]);
+			$id = PL_Shortcode_CPT::save_shortcode_template($ID, $data);
+			if ($id) {
+				//wp_redirect('admin.php?page=placester_templates');
+				wp_redirect('admin.php?page=placester_shortcodes_template_edit&id='.$id);
+				die;
+			}
 		}
-		else {
-			$data = $_POST;
-		}
-		$id = PL_Shortcode_CPT::save_shortcode_template($ID, $data);
-		//wp_redirect('admin.php?page=placester_templates');
-		wp_redirect('admin.php?page=placester_shortcodes_template_edit&id='.$id);
-		die;
 	}
 }
 

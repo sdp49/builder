@@ -3,13 +3,10 @@
  * Displays main shortcode edit meta box used in the shortcode edit view
  */
 
-// get all CPT custom field values
-$values = get_post_custom( $post->ID );
-
-// read the post type
-$pl_post_type = empty( $values['pl_post_type'] ) ? '' : $values['pl_post_type'][0];
-$pl_cpt_template = empty( $values['pl_cpt_template'] ) ? '' : $values['pl_cpt_template'][0];
-$pl_shortcodes = PL_Shortcode_CPT::get_shortcodes();
+// get list of shortcodes w/ attrs
+if (empty($pl_shortcodes)) {
+	$pl_shortcodes = PL_Shortcode_CPT::get_shortcodes();
+}
 
 $options_class = $filters_class = '';
 ?>
@@ -31,13 +28,13 @@ $options_class = $filters_class = '';
 
 				<div class="span9">
 
-					<select id="pl_sc_shortcode_type" name="shortcode_type" class="">
+					<select id="pl_sc_shortcode_type" name="shortcode" class="">
 
 						<option id="pl_sc_shortcode_undefined" value="undefined">Select</option>
 
 						<?php
 						foreach( $pl_shortcodes as $pl_shortcode => $sct_args ):
-							$link_class = ($pl_shortcode == $pl_post_type) ? 'selected_type' : '';
+							$link_class = ($pl_shortcode == $values['shortcode']) ? 'selected-type' : '';
 							$selected = ( !empty($link_class) ) ? 'selected="selected"' : '';
 							?>
 							<option id="pl_sc_shortcode_<?php echo $sct_args['shortcode']; ?>" class="<?php echo $link_class; ?>" value="<?php echo $pl_shortcode; ?>" <?php echo $selected; ?>>
@@ -69,7 +66,7 @@ $options_class = $filters_class = '';
 						<?php if(!empty($sct_args['options']['pl_cpt_template'])):?>
 							<div class="pl_template_block <?php echo $pl_shortcode; ?>" id="<?php echo $sct_args['shortcode'];?>_template_block" style="display: none;">
 								<?php
-								$value = isset( $values['pl_cpt_template'] ) ? $values['pl_cpt_template'] : $sct_args['options']['pl_cpt_template']['default'];
+								$value = isset( $values[$pl_shortcode]['pl_cpt_template'] ) ? $values[$pl_shortcode]['pl_cpt_template'] : $sct_args['options']['pl_cpt_template']['default'];
 								PL_Router::load_builder_partial('shortcode-template-list.php', array(
 											'shortcode' => $sct_args['shortcode'],
 											'post_type' => $pl_shortcode,
@@ -110,13 +107,8 @@ $options_class = $filters_class = '';
 							// template field already handled
 							continue;
 						}
-						$value = isset( $values[$field] ) ? $values[$field][0] : '';
-						if( !empty( $value ) && empty( $_POST[$field] ) ) {
-							$_POST[$pl_shortcode][$field] = $value;
-						}
-						else {
-							$_POST[$pl_shortcode][$field] = $f_args['default'];
-						}
+						$value = isset( $values[$pl_shortcode][$field] ) ? $values[$pl_shortcode][$field] : $f_args['default'];
+						$_POST[$pl_shortcode][$field] = $value;
 						$f_args['css'] = (!empty($f_args['css']) ? $f_args['css'].' ' : '') . $pl_shortcode;
 						PL_Form::item($field, $f_args, 'POST', $pl_shortcode, 'sc_edit_', true);
 					}?>
@@ -134,6 +126,12 @@ $options_class = $filters_class = '';
 				// fill POST array for the forms (required after new widget is created)
 				foreach( $pl_shortcodes as $pl_shortcode => $sct_args ) {
 					if (!empty($sct_args['filters'])) {
+						foreach($sct_args['filters'] as $f_key=>$f_args) {
+							$value = isset( $values[$pl_shortcode][$f_key] ) ? $values[$pl_shortcode][$f_key] : '';
+							if ($value) {
+								$_POST[$pl_shortcode][$f_key] = $value;
+							}
+						}
 						?>
 						<div class="pl_widget_block <?php echo $pl_shortcode?>">
 						<?php PL_Form::generate_form($sct_args['filters'],
