@@ -8,12 +8,16 @@ class PL_Options {
 	}
 
 	public static function set ($option, $value) {
-		if (get_option($option, null) !== null) {
-			return update_option($option, $value);
-		} else {
-			return add_option($option, $value);
-		}
-		
+		// Initially, try to add the option...
+		$outcome = add_option($option, $value);
+
+		// If add_option fails, it almost always indicates that an option with the provided key 
+		// already exists, so attempt to update the existing option's value...
+	 	if ($outcome === false) {
+	 		$outcome = update_option($option, $value);
+ 		}
+ 		
+ 		return $outcome;
 	}
 
 }
