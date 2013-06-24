@@ -52,27 +52,6 @@ jQuery(document).ready(function($){
 		return true;
 	}
 
-	function radioClicks() {
-		var radio_value = this.value;
-
-		$('.nb-taxonomy').each(function() {
-			if( radio_value !== 'undefined') {
-				if( this.id.indexOf(radio_value, this.id.length - radio_value.length) !== -1 ) {
-					$(this).css('display', 'block');
-				} else {
-					$(this).css('display', 'none');
-				}
-			}
-		});
-	}
-
-
-	$('#pl_location_tax input:radio').click(radioClicks);
-
-	if($('#metadata-max_avail_on_picker').length) {
-		$('#metadata-max_avail_on_picker').datepicker();
-		$('#metadata-min_avail_on_picker').datepicker();
-	}
 
 	/**
 	 * popup preview dialog
@@ -81,12 +60,13 @@ jQuery(document).ready(function($){
 		e.preventDefault();
 
 		var iframe_content = $('#preview_meta_widget').html();
-		var options_width = $('#widget_meta_wrapper input#width').val() || 750;
-		var options_height = $('#widget_meta_wrapper input#height').val() || 500;
+		//TODO get width/height
+		var options_width = $('#preview_meta_widget iframe').attr('width') || '750px';
+		var options_height = $('#preview_meta_widget iframe').attr('height') || '500px';
 
 		$('#pl-review-popup').html( iframe_content );
-		$('#pl-review-popup iframe').css('width', options_width + 'px');
-		$('#pl-review-popup iframe').css('height', options_height + 'px');
+		$('#pl-review-popup iframe').css('width', options_width);
+		$('#pl-review-popup iframe').css('height', options_height);
 
 		$('#pl-review-popup').dialog({
 			width: 800,
@@ -159,59 +139,57 @@ jQuery(document).ready(function($){
 			return;
 		}
 
-		$('#pl_sc_edit .preview_load_spinner').show();
 		$('#pl-review-link').hide();
 		
-		var shortcode = $('#pl_sc_edit [name="shortcode"]').val();
+		var shortcode = $('#pl_sc_shortcode_type').val();
 		
-		// set a limit on max widget size
-		var $width = $('#pl_sc_edit input[name="'+shortcode+'[width]"]');
-		if ($width.val() > 1024 ) {
-			$width.val('1024');
+		if (shortcode!='undefined') {
+			$('#pl_sc_edit .preview_load_spinner').show();
+
+			// set a limit on max widget size
+			var $width = $('#pl_sc_edit input[name="'+shortcode+'[width]"]');
+			if ($width.val() > 1024 ) {
+				$width.val('1024');
+			}
+			var $height = $('#pl_sc_edit input[name="'+shortcode+'[height]"]');
+			if ($height.val() > 1024 ) {
+				$height.val('1024');
+			}
+			
+			var data = $('#pl_sc_edit form .'+shortcode).find('input,select,textarea').serializeArray();
+			data.push({name:'action', value:'pl_sc_changed'}, {name:'shortcode', value:shortcode});
+			var args = $.param(data);
+			jQuery.ajax({
+				data: args,
+				// beforeSend: doAutoSave ? autosave_loading : null,
+				type: "POST",
+				url: ajaxurl,
+				success: function( response ) {
+					if (response.sc_str) {
+						var width = response.width ? response.width+'px' : '100%';
+						var height = response.height ? response.height+'px' : '100%';
+						jQuery('#preview_meta_widget').html('<iframe src="'+ajaxurl+'?action=pl_sc_preview&post_type=pl_general_widget&sc_str='+response.sc_str+'" width="'+width+'" height="'+height+'"></iframe>');
+						$('#preview_meta_widget iframe').load( function() {
+							$('#pl_sc_edit .preview_load_spinner').hide();
+							$('#pl_sc_edit #pl-review-link').show();
+						});
+						jQuery('#sc_slug_box .iframe_link').hide();
+						jQuery('#sc_slug_box .shortcode_link').show().find('.slug').html(response.sc_str);
+					}
+				}
+			});
 		}
-		var $height = $('#pl_sc_edit input[name="'+shortcode+'[height]"]');
-		if ($height.val() > 1024 ) {
-			$height.val('1024');
-		}
-		
-		var data = $('#pl_sc_edit form .'+shortcode).find('input,select,textarea').serializeArray();
-		var args = $.param(data);
-		$('#preview_meta_widget').html('<iframe src="'+ajaxurl+'?action=pl_sc_preview&post_type=pl_general_widget&shortcode='+shortcode+'&'+args+'" width="100%" height="100%"></iframe>');
-		$('#preview_meta_widget iframe').load( function() {
-			$('#pl_sc_edit .preview_load_spinner').hide();
-			$('#pl_sc_edit #pl-review-link').show();
-		});
 	}
 
-	
+	// shortcode changing
 	$('#pl_sc_shortcode_type').change(sc_shortcode_selected);
-	
+	// template changing
 	$('#pl_sc_edit .snippet_list').change(function(){
 		update_template_links();
 	});
-
-	// hide advanced values for static listings area
-	$('#pl_static_listing_block #advanced').css('display', 'none');
-	$('#pl_static_listing_block #amenities').css('display', 'none');
-	$('#pl_static_listing_block #custom').css('display', 'none');
-	$('<a href="#basic" id="pl_show_advanced" style="line-height: 50px;">Show Advanced filters</a>').insertBefore('#pl_static_listing_block #advanced');
-	$('<a href="#basic" id="pl_hide_advanced" style="line-height: 50px; display: none;">Hide Advanced filters</a>').insertAfter('#pl_static_listing_block #custom');
-	$('#pl_show_advanced').click(function() {
-		$(this).hide();
-		$('#pl_static_listing_block #advanced').css('display', 'block');
-		$('#pl_static_listing_block #amenities').css('display', 'block');
-		$('#pl_static_listing_block #custom').css('display', 'block');
-		$('#pl_hide_advanced').show();
-	});
-	$('#pl_hide_advanced').click(function() {
-		$(this).hide();
-		$('#pl_static_listing_block #advanced').css('display', 'none');
-		$('#pl_static_listing_block #amenities').css('display', 'none');
-		$('#pl_static_listing_block #custom').css('display', 'none');
-		$('#pl_show_advanced').show();
-	});
-	$('#save-featured-listings').click(function() {
-//		setTimeout( widget_autosave, 1000 );
+	// date pickers
+	$('#pl_sc_edit .trigger_datepicker').each(function(){
+		$(this).datepicker();
 	});
 
 	// setup view based on current shortcode type, etc

@@ -382,7 +382,7 @@ class PL_Shortcodes
 		ob_start();
 		switch ($type) {
 			case 'custom' :
-				$template = PL_Shortcode_CPT::load_shortcode_template($snippet_name);
+				$template = PL_Shortcode_CPT::load_custom_template($snippet_name);
 				echo html_entity_decode($template['snippet_body'], ENT_QUOTES);
 				break;
 			case 'default' :

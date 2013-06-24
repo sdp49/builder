@@ -8,7 +8,7 @@ $nonce_action = 'edit-sc-template_' . $ID;
 
 if ($action == 'delete' && $ID) {
 	if (!PL_Shortcode_CPT::template_in_use($ID)) {
-		PL_Shortcode_CPT::delete_shortcode_template($ID);
+		PL_Shortcode_CPT::delete_custom_template($ID);
 	}
 	wp_redirect(admin_url('admin.php?page=placester_shortcodes_templates'));
 	die;
@@ -20,7 +20,7 @@ if ($action == 'edit' && !empty($_POST['save']) && !empty($_POST['shortcode'])) 
 	else {
 		if (!empty($_POST[$_POST['shortcode']])) {
 			$data = array_merge($_POST, $_POST[$_POST['shortcode']]);
-			$id = PL_Shortcode_CPT::save_shortcode_template($ID, $data);
+			$id = PL_Shortcode_CPT::save_custom_template($ID, $data);
 			if ($id) {
 				//wp_redirect('admin.php?page=placester_templates');
 				wp_redirect('admin.php?page=placester_shortcodes_template_edit&id='.$id);
@@ -31,7 +31,7 @@ if ($action == 'edit' && !empty($_POST['save']) && !empty($_POST['shortcode'])) 
 }
 
 // load template
-$template = PL_Shortcode_CPT::load_shortcode_template($ID);
+$template = PL_Shortcode_CPT::load_custom_template($ID);
 $title = (empty($_REQUEST['title'])?$template['title']:$_REQUEST['title']);
 $shortcode = (empty($_REQUEST['shortcode'])?$template['shortcode']:$_REQUEST['shortcode']);
 $form_link = '';
@@ -98,7 +98,7 @@ $form_action = 'edit';
 							</div>
 						</div>
 						<?php
-						PL_Router::load_builder_partial('shortcode-preview.php', array());
+						PL_Router::load_builder_partial('shortcode-preview.php', array('iframe'=>''));
 						?>
 					</div>
 				</div><!-- /post-body -->

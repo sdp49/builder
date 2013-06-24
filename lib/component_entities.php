@@ -43,30 +43,30 @@ class PL_Component_Entity {
 		}
 
 		$search_form_templates = PL_Shortcode_CPT::template_list('search_form', true);
-		foreach ($search_form_templates as $template => $type) {
-			add_filter( 'pls_listings_search_form_outer_' . $template, array(__CLASS__,'search_form_templates'), 10, 6 );
+		foreach ($search_form_templates as $id => $attr) {
+			add_filter( 'pls_listings_search_form_outer_' . $id, array(__CLASS__,'search_form_templates'), 10, 6 );
 		}
 
 		$listing_slideshow_templates = PL_Shortcode_CPT::template_list('listing_slideshow', true);
-		foreach ($listing_slideshow_templates as $template => $type) {
-			add_filter( 'pls_slideshow_single_caption_' . $template, array( __CLASS__, 'listing_slideshow_templates' ), 10, 5 );
+		foreach ($listing_slideshow_templates as $id => $attr) {
+			add_filter( 'pls_slideshow_single_caption_' . $id, array( __CLASS__, 'listing_slideshow_templates' ), 10, 5 );
 			// add_filter( 'pls_slideshow_html_' . $template, array(__CLASS__,'listing_slideshow_templates'), 10, 6 );
 			// add_filter( 'pls_slideshow_data_' . $template, array(__CLASS__,'listing_slideshow_templates'), 10, 3 );
 		}
 
 		$search_listings_templates = PL_Shortcode_CPT::template_list('search_listings', true);
-		foreach ($search_listings_templates as $template => $type) {
-			add_filter( 'pls_listings_list_ajax_item_html_search_listings_' . $template, array(__CLASS__,'search_listings_templates'), 10, 3 );
+		foreach ($search_listings_templates as $id => $attr) {
+			add_filter( 'pls_listings_list_ajax_item_html_search_listings_' . $id, array(__CLASS__,'search_listings_templates'), 10, 3 );
 		}
 
 		$static_listings_templates = PL_Shortcode_CPT::template_list('static_listings', true);
-		foreach ($static_listings_templates as $template => $type) {
-			add_filter( 'pls_listings_list_ajax_item_html_static_listings_' . $template, array(__CLASS__, 'search_listings_templates'), 10, 3 );
+		foreach ($static_listings_templates as $id => $attr) {
+			add_filter( 'pls_listings_list_ajax_item_html_static_listings_' . $id, array(__CLASS__, 'search_listings_templates'), 10, 3 );
 		}
 
 		$neighborhood_templates = PL_Shortcode_CPT::template_list('pl_neighborhood', true);
-		foreach ($neighborhood_templates as $template => $type) {
-			add_filter( 'pls_neighborhood_html_' . $template, array(__CLASS__, 'neighborhood_templates'), 10, 4 );
+		foreach ($neighborhood_templates as $id => $attr) {
+			add_filter( 'pls_neighborhood_html_' . $id, array(__CLASS__, 'neighborhood_templates'), 10, 4 );
 		}
 	}
 
@@ -112,9 +112,43 @@ class PL_Component_Entity {
 	public static function static_listings_entity( $atts, $filters = '' ) {
 		$atts = wp_parse_args($atts, array('id' => 0, 'limit' => 5, 'featured_id' => 'custom', 'context' => 'shortcode'));
 
+		if (empty($atts['id'])) {
+			// default filter options
+			$filters_string = '';
+		}
+		else {
+			// if we are a custom shortcode fetch the record so we can display the correct filters
+			// for the js
+			$listing_filters = PL_Shortcode_CPT::get_shortcode_filters($atts['id']);
+			$filters_string = self::convert_filters( $listing_filters );
+			// and template and other attributes
+			$options = PL_Shortcode_CPT::get_shortcode_options($atts['id']);
+			foreach ($options as $key=>$val) {
+				if ($key=='pl_cpt_template') {
+					if ($atts['context']=='shortcode') {
+						$atts['context'] = $options['pl_cpt_template'];
+					}
+				}
+				else {
+					if (empty($atts[$key])) {
+						$atts[$key] = $val;
+					}
+				}
+			}
+		}
+
+		// set limit per page if any
+		if( ! empty( $atts['query_limit'] ) ) {
+			global $pl_listings_query_limit;
+			$pl_listings_query_limit = $atts['query_limit'];
+
+			add_action( 'static_listings_limit_default', array( __CLASS__, 'add_length_limit_default'  ));
+			unset ( $pl_listings_query_limit );
+		}
+
 		// add template formatting
 		$header = $footer = '';
-		$template = PL_Shortcode_CPT::load_shortcode_template($atts['context']);
+		$template = PL_Shortcode_CPT::load_template($atts['context'], 'static_listings');
 		if (!empty($template['before_widget'])) {
 			$header = $template['before_widget'].$header;
 		}
@@ -124,35 +158,15 @@ class PL_Component_Entity {
 		if (!empty($template['after_widget'])) {
 			$footer .= $template['after_widget'];
 		}
-
-		ob_start();
-
-		if( ! empty( $atts['query_limit'] ) ) {
-			global $pl_listings_query_limit;
-			$pl_listings_query_limit = $atts['query_limit'];
-
-			add_action( 'static_listings_limit_default', array( __CLASS__, 'add_length_limit_default'  ));
-			unset ( $pl_listings_query_limit );
-		}
-
-		self::hide_unnecessary_controls( $atts );
-
-		if ($atts['id']) {
-			// if we are a custom shortcode fetch the record so we can display the correct filters
-			$listing_filters = PL_Component_Entity::get_filters_by_listing( $atts['id'] );
-			$filters_string = PL_Component_Entity::convert_filters( $listing_filters );
-		}
-		else {
-			// default filter options
-			$filters_string = '';
-		}
-		// accepts string only due to shortcode evaluation algorithm
+		// way to request template when ajax gets listings
 		$atts['context'] = 'static_listings_' . $atts['context'];
-		PL_Component_Entity::print_filters( $filters . $filters_string, $atts['context'] );
+		
+		ob_start();
+		self::hide_unnecessary_controls( $atts );
+		self::print_filters( $filters . $filters_string, $atts['context'] );
 		echo PLS_Partials::get_listings_list_ajax( 'context=' . $atts['context'] . '&'
 				. 'table_id=placester_listings_list'
 				.( empty( $atts['query_limit'] ) ? '' : '&query_limit=' . $atts['query_limit'] ));
-
 		return $header.ob_get_clean().$footer;
 	}
 
@@ -169,10 +183,28 @@ class PL_Component_Entity {
 	public static function search_listings_entity( $atts, $filters = '' ) {
 		$atts = wp_parse_args($atts, array('context' => 'shortcode'));
 
+
+		if (empty($atts['id'])) {
+			// default filter options
+			$filters_string = '';
+		}
+		else {
+			// if we are a custom shortcode fetch the record so we can display the correct filters
+			// for the js
+			$listing_filters = PL_Shortcode_CPT::get_shortcode_filters($atts['id']);
+			$filters_string = self::convert_filters( $listing_filters );
+			// and template
+			if ($atts['context']=='shortcode') {
+				$options = PL_Shortcode_CPT::get_shortcode_options($atts['id']);
+				if (!empty($options['pl_cpt_template'])) {
+					$atts['context'] = $options['pl_cpt_template'];
+				}
+			}
+		}
+		
 		// add template formatting
-		$header = '';
-		$footer = '';
-		$template = PL_Shortcode_CPT::load_shortcode_template($atts['context']);
+		$header = $footer = '';
+		$template = PL_Shortcode_CPT::load_template($atts['context'], 'search_listings');
 		if (!empty($template['before_widget'])) {
 			$header = $template['before_widget'].$header;
 		}
@@ -182,12 +214,11 @@ class PL_Component_Entity {
 		if (!empty($template['after_widget'])) {
 			$footer .= $template['after_widget'];
 		}
-
-		// crude way to get right template when ajax gets listings
+		// way to request template when ajax gets listings
 		$atts['context'] = 'search_listings_'.$atts['context'];
-		self::print_filters($filters, $atts['context']);
-
+		
 		ob_start();
+		self::print_filters( $filters . $filters_string, $atts['context'] );
 		PLS_Partials_Get_Listings_Ajax::load(array('context' => $atts['context']));
 		return $header.ob_get_clean().$footer;
 	}
@@ -201,7 +232,7 @@ class PL_Component_Entity {
 		// add template formatting
 		$header = '';
 		$footer = '';
-		$template = PL_Shortcode_CPT::load_shortcode_template($atts['context']);
+		$template = PL_Shortcode_CPT::load_template($atts['context'], 'search_map');
 		if (!empty($template['before_widget'])) {
 			$header = $template['before_widget'].$header;
 		}
@@ -322,7 +353,7 @@ class PL_Component_Entity {
 		// add template formatting
 		$header = '';
 		$footer = '';
-		$template = PL_Shortcode_CPT::load_shortcode_template($atts['context']);
+		$template = PL_Shortcode_CPT::load_template($atts['context'], 'listing_slideshow');
 		if (!empty($template['css'])) {
 			$css .= $template['css'];
 		}
@@ -692,7 +723,7 @@ class PL_Component_Entity {
 		// default form enclosure and add template formatting
 		$header = '<div id="pls_listings_search_results"><form method="POST" action="' . $form_action . '" class="pls_search_form_listings" target="_parent">';
 		$footer = '</form></div>';
-		$template = PL_Shortcode_CPT::load_shortcode_template($atts['context']);
+		$template = PL_Shortcode_CPT::load_template($atts['context'], 'search_form');
 		if (!empty($template['before_widget'])) {
 			$header = $template['before_widget'].$header;
 		}

@@ -231,7 +231,7 @@ abstract class PL_SC_Base {
 					if (is_array($args[$f_id])) {
 						foreach( $f_atts as $key => $value ) {
 							if (!empty($args[$f_id][$key]) && $args[$f_id][$key]!='false') { 
-								$subcodes .= ' [pl_filter group="' . $f_id. '" filter="' . $key . '" value="' . $args[$f_id][$key] . '"] ';
+								$subcodes .= " [pl_filter group='" . $f_id. "' filter='" . $key . "' value='" . $args[$f_id][$key] . "'] ";
 							}
 						}
 					}
@@ -239,12 +239,12 @@ abstract class PL_SC_Base {
 				else {
 					if (!empty($f_atts['type']) && $f_atts['type']=='multiselect') {
 						if (is_array($args[$f_id])) {
-							$subcodes .= ' [pl_filter filter="' . $f_id . '" value="'. implode(',', $args[$f_id]) . '"] ';
+							$subcodes .= " [pl_filter filter='" . $f_id . "' value='". implode(',', $args[$f_id]) . "'] ";
 						}
 					}
 					else {
 						if (!is_array($args[$f_id]) && $args[$f_id]!='false') {
-							$subcodes .= ' [pl_filter filter="' . $f_id . '" value="'. $args[$f_id] . '"] ';
+							$subcodes .= " [pl_filter filter='" . $f_id . "' value='". $args[$f_id] . "'] ";
 						}
 					}
 				}
@@ -253,7 +253,7 @@ abstract class PL_SC_Base {
 
 		// build the shortcode
 		if ($subcodes) {
-			$shortcode = $shortcode . ']'.$subcodes.'[/'.$class::$shortcode.']';
+			$shortcode = $shortcode . ']'.$subcodes."[/".$class::$shortcode."]";
 		}
 		else {
 			$shortcode .= ']';

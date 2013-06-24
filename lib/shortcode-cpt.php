@@ -41,6 +41,7 @@ class PL_Shortcode_CPT {
 		}
 
 		add_action( 'init', array( $this, 'register_post_type' ) );
+		add_action( 'wp_ajax_pl_sc_changed', array( $this, 'ajax_shortcode_changed') );
 		add_action( 'wp_ajax_pl_sc_preview', array( $this, 'shortcode_preview') );
 		add_action( 'wp_ajax_pl_sc_template_preview', array( $this, 'template_preview') );
 		add_filter( 'get_edit_post_link', array( $this, 'shortcode_edit_link' ), 10, 3);
@@ -129,6 +130,22 @@ class PL_Shortcode_CPT {
 	 * Custom Shortcode helper functions
 	 ***************************************************/
 	
+	public function ajax_shortcode_changed() {
+		$response = array('sc_str'=>'');
+
+		// generate shortcode string
+		if ( isset($_POST['shortcode']) && !empty($_POST[$_POST['shortcode']])) {
+			$args = array_merge($_POST, $_POST[$_POST['shortcode']]);
+			$response['sc_str'] = $this->generate_shortcode_str($_POST['shortcode'], $args);
+			$response['width'] = $args['width'];
+			$response['height'] = $args['height'];
+		}
+		
+		header( "Content-Type: application/json" );
+		echo json_encode($response);
+		die;
+	}
+	
 	
 	/**
 	 * Helper function to generate a shortcode string from a set of arguments
@@ -141,21 +158,52 @@ class PL_Shortcode_CPT {
 	}
 
 	/**
-	 * Generate preview for a set of shortcode parameters.
+	 * Generate preview for the shortcode edit page.
 	 */
 	public function shortcode_preview() {
 	
-		$shortcode = (!empty($_GET['shortcode']) ? stripslashes($_GET['shortcode']) : '');
-		$shortcode_args = $this->get_shortcodes();
-		if (!$shortcode || empty($shortcode_args[$shortcode]) || empty($_GET[$shortcode])) {
-			die;
+		$sc_str = '';
+		$sc_id = (!empty($_GET['sc_id']) ? stripslashes($_GET['sc_id']) : '');
+		if ($sc_id) {
+			$sc_attrs = $this->load_shortcode($sc_id);
+			if (!empty($sc_attrs)) {
+				$sc_str = $this->generate_shortcode_str($sc_attrs['shortcode'], $sc_attrs);
+			}
 		}
-		// set the defaults
-		$args = array_merge($_GET[$shortcode], $_GET);
-		$sc_str = $this->generate_shortcode_str($shortcode, $args);
-	
+		if (!empty($_GET['sc_str'])) {
+			$sc_str = stripslashes($_GET['sc_str']);
+		}
+			
 		include(PL_VIEWS_ADMIN_DIR . 'shortcodes/preview.php');
 		die;
+	}
+	
+	public static function get_shortcode_filters($id) {
+		if ($post = get_post($id, ARRAY_A, array('post_type'=>'pl_general_widget'))) {
+			$postmeta = get_post_meta($id);
+			$p_shortcode = $postmeta['shortcode'][0];
+			if (!empty($postmeta['pl_'.$p_shortcode.'_option'])) {
+				$filters = maybe_unserialize($postmeta['pl_'.$p_shortcode.'_option'][0]);
+				return $filters;
+			}
+		}
+		return array();
+	}
+	
+	public static function get_shortcode_options($id) {
+		if ($post = get_post($id, ARRAY_A, array('post_type'=>'pl_general_widget'))) {
+			$postmeta = get_post_meta($id);
+			$p_shortcode = $postmeta['shortcode'][0];
+			$sc_attrs = self::get_shortcodes($p_shortcode);
+			$options = array();
+			foreach($sc_attrs['options'] as $attr=>$vals) {
+				if (isset($postmeta[$attr])) {
+					$options[$attr] = maybe_unserialize($postmeta[$attr][0]);
+				}
+			}
+			return $options;
+		}
+		return array();
 	}
 	
 	
@@ -164,6 +212,12 @@ class PL_Shortcode_CPT {
 	 ***************************************************/
 
 
+	/**
+	 * Fetch custom shortcode attributes using record id.
+	 * @param int $id			: shortcode record id
+	 * @param string $shortcode	: optional shortcode type as sanity check
+	 * @return array			: custom shortcode's attributes
+	 */
 	public static function load_shortcode($id, $shortcode='') {
 		if ($post = get_post($id, ARRAY_A, array('post_type'=>'pl_general_widget'))) {
 			$postmeta = get_post_meta($id);
@@ -184,6 +238,13 @@ class PL_Shortcode_CPT {
 		return array();
 	}	
 	
+	/**
+	 * Save custom shortcode attributes.
+	 * @param int $id			: id of record to update, 0 for new record
+	 * @param string $shortcode	: shortcode type as sanity check
+	 * @param array $args		: custom shortcode's attributes
+	 * @return int				: record id if saved
+	 */
 	public static function save_shortcode($id, $shortcode, $args) {
 		$sc_attrs = self::get_shortcodes($shortcode);
 		if (!empty($sc_attrs)) {
@@ -206,21 +267,30 @@ class PL_Shortcode_CPT {
 			
 				// Save options
 				foreach( $sc_attrs['options'] as $option => $values ) {
-					if( !empty($args) && !empty($args[$option])) {
-						switch($values['type']) {
-							case 'checkbox':
-								update_post_meta( $id, $option, !empty($args[$option]) ? true : false);
-								break;
-							case 'numeric':
+					switch($values['type']) {
+						case 'checkbox':
+							// in some places having the option set counts as on.. 
+							if (empty($args[$option])) {
+								delete_post_meta($id, $option);	
+							}
+							else {
+								// so delete if not set
+								update_post_meta($id, $option, 'true');
+							}
+							break;
+						case 'numeric':
+							if( !empty($args) && !empty($args[$option])) {
 								$args[$option] = (int)$args[$option];
-							case 'select':
-							case 'text':
-								update_post_meta( $id, $option, $args[$option] );
-						}
-					}
-					else {
-						// save default in case default changes in the future
-						update_post_meta( $id, $option, $values['default'] );
+							}
+						case 'select':
+						case 'text':
+							if( !empty($args) && !empty($args[$option])) {
+								update_post_meta($id, $option, trim($args[$option]));
+							}
+							else {
+								// save default in case default changes in the future
+								update_post_meta( $id, $option, $values['default'] );
+							}
 					}
 				}
 			
@@ -272,7 +342,7 @@ class PL_Shortcode_CPT {
 		$args = wp_parse_args($_GET, array('context'=>$template_id, 'width'=>'250', 'height'=>'250'));
 		$sc_str = $this->generate_shortcode_str($shortcode, $args);
 		$args = wp_parse_args($_GET[$shortcode], array('shortcode'=>$shortcode, 'title'=>'_preview'));
-		$this->save_shortcode_template($template_id, $args);
+		$this->save_custom_template($template_id, $args);
 
 		include(PL_VIEWS_ADMIN_DIR . 'shortcodes/preview.php');
 		die;
@@ -307,7 +377,33 @@ class PL_Shortcode_CPT {
 	 * @param string $id
 	 * @return array
 	 */
-	public static function load_shortcode_template($id) {
+	public static function load_template($id, $shortcode) {
+		$default = array('shortcode'=>'', 'title'=>'');
+		
+		if ($shortcode && !empty(self::$shortcodes[$shortcode])) {
+			// Get template from shortcode's template list in case we are using
+			// default or builtin template
+
+			// get custom template list
+			$option_key = ('pls_' . $shortcode.'_list');
+			$tpl_list = get_option($option_key, array());
+			if (!empty($tpl_list) && !empty($tpl_list[$id])) {
+				return self::load_custom_template($id);
+			}
+
+			// get builtin/default templates
+			$sc_attrs = self::get_shortcodes($shortcode);
+			if (!empty($sc_attrs['default_tpls']) && in_array($id, $sc_attrs['default_tpls'])) {
+				ob_start();
+				$filename = (trailingslashit(PL_VIEWS_SHORT_DIR) . trailingslashit($shortcode) . $id . '.php');
+				include $filename;
+				$default['snippet_body'] = ob_get_clean();
+			}
+		}		
+		return $default;		
+	}
+	
+	public static function load_custom_template($id) {
 		$default = array('shortcode'=>'', 'title'=>'');
 		if (strpos($id, 'pls_') !== 0) {
 			return $default;
@@ -318,6 +414,7 @@ class PL_Shortcode_CPT {
 		}
 		return $data;
 	}
+	
 	
 	/**
 	 * Save a shortcode template
@@ -331,7 +428,7 @@ class PL_Shortcode_CPT {
 	 * @param array $data		:
 	 * @return string			: unique id used to reference the template
 	 */
-	public static function save_shortcode_template($id, $atts) {
+	public static function save_custom_template($id, $atts) {
 		$atts = (array)$atts;
 		// sanity check
 		$shortcode = empty($atts['shortcode'])?'':$atts['shortcode'];
@@ -368,7 +465,7 @@ class PL_Shortcode_CPT {
 	 * @param string $id
 	 * @return void
 	 */
-	public static function delete_shortcode_template($id) {
+	public static function delete_custom_template($id) {
 		// sanity check
 		$parts = explode('_', $id);
 		if (count($parts) < 4 || $parts[0]!=='pls') {die;
@@ -403,10 +500,10 @@ class PL_Shortcode_CPT {
 
 		$tpl_type_map = array();
 
-		$sc_args = self::get_shortcodes();
+		$sc_args = self::get_shortcodes($shortcode);
 
 		// add default templates
-		$default_tpls = !empty($sc_args[$shortcode]['default_tpls']) ? $sc_args[$shortcode]['default_tpls'] : array();
+		$default_tpls = !empty($sc_args['default_tpls']) ? $sc_args['default_tpls'] : array();
 		foreach ($default_tpls as $name) {
 			$tpl_type_map[$name] = array('type'=>'default', 'title'=>$name, 'id'=>$name);
 		}

@@ -19,6 +19,17 @@ class PL_Static_Listing_CPT extends PL_Search_Listing_CPT {
 		The shortcode require an ID parameter of the static listing ID number published in your
 		Featured Listings post type control on the left side of the admin panel.
 		</p>';
+	
+	protected static $options = array(
+		'pl_cpt_template'		=> array( 'type' => 'select', 'label' => 'Template', 'default' => ''),
+		'width'					=> array( 'type' => 'numeric', 'label' => 'Width(px)', 'default' => 250 ),
+		'height'				=> array( 'type' => 'numeric', 'label' => 'Height(px)', 'default' => 250 ),
+		'hide_sort_by'			=> array( 'type' => 'checkbox', 'label' => 'Hide "Sort By" dropdown', 'default' => true ),
+		'hide_sort_direction'	=> array( 'type' => 'checkbox', 'label' => 'Hide "Sort Direction" dropdown', 'default' => true ),
+		'hide_num_results'		=> array( 'type' => 'checkbox', 'label' => 'Hide "Show # entries" dropdown', 'default' => true ),
+		'query_limit'			=> array( 'type' => 'numeric', 'label' => 'Number of results to display', 'default' => 5 ),
+		'widget_class'			=> array( 'type' => 'text', 'label' => 'Widget Class', 'default' => '' ),
+	);
 }
 
 PL_Static_Listing_CPT::init(__CLASS__);

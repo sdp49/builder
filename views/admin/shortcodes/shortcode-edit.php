@@ -10,8 +10,8 @@ $post = array();
 $notice = '';
 $message = '';
 $form_link = '';
+$iframe = $embed_sc_str = $embed_sc_js = '';
 $pl_shortcodes = PL_Shortcode_CPT::get_shortcodes();
-
 
 if ($post_ID) {
 	$post = PL_Shortcode_CPT::load_shortcode($post_ID);
@@ -22,6 +22,10 @@ if ($post_ID) {
 		$notice = 'Unable to locate that custom shortcode.';					
 	}
 	else {
+		$shortcode = $post['shortcode'];
+		$embed_sc_js = htmlentities('<script id="plwidget-'.$post_ID.'" src="'. PL_PARENT_URL . 'js/fetch-widget.js?id='.$post_ID.'" style="width:'.$post['width'].'px;height:'.$post['height'].'px" ></script>');
+		$embed_sc_str = '['.$post['shortcode'].' id='.$post_ID.']';
+		$iframe = '<iframe src="'.admin_url('admin-ajax.php').'?action=pl_sc_preview&post_type=pl_general_widget&sc_str='.rawurlencode($embed_sc_str).'" width="'.$post['width'].'px" height="'.$post['height'].'px"></iframe>';
 		$post = array($post['shortcode']=>$post, 'shortcode'=>$post['shortcode'], 'post_title'=>$post['post_title'], 'post_content'=>$post['post_content']);
 	}
 }
@@ -90,8 +94,8 @@ $nonce_action = 'update-' . $post_type . '_' . $post_ID;
 							</div>
 							<div class="inside">
 								<div id="sc_slug_box" class="hide-if-no-js">
-									<div class="iframe_link"></div>
-									<div class="shortcode_link"></div>
+									<div class="embed-link iframe_link" style="<?php echo ($embed_sc_js?'':'display:none;');?>"><strong>Embed Code:</strong><span class="slug"><?php echo $embed_sc_js;?></span></div>
+									<div class="embed-link shortcode_link" style="<?php echo ($embed_sc_str?'':'display:none;');?>"><strong>Shortcode:</strong><span class="slug"><?php echo $embed_sc_str;?></span></div>
 								</div>
 							</div>
 						</div><!-- /titlediv -->
@@ -147,7 +151,7 @@ $nonce_action = 'update-' . $post_type . '_' . $post_ID;
 					
 						<?php
 						// preview pane
-						PL_Router::load_builder_partial('shortcode-preview.php', array('post'=>$post));
+						PL_Router::load_builder_partial('shortcode-preview.php', array('post'=>$post,'iframe'=>$iframe));
 						// link for template editing
 						?>
 						<script type="text/javascript">
