@@ -19,20 +19,21 @@ class PL_Listing_Slideshow_CPT extends PL_SC_Base {
 		</p>';
 
 	protected static $options = array(
-		'pl_cpt_template'	=> array( 'type' => 'select', 'label' => 'Template', 'default' => ''),
-		'width'				=> array( 'type' => 'numeric', 'label' => 'Width(px)', 'default' => 250 ),
-		'height'			=> array( 'type' => 'numeric', 'label' => 'Height(px)', 'default' => 250 ),
-		'widget_class'		=> array( 'type' => 'text', 'label' => 'Widget Class', 'default' => '' ),
-		'animation' 		=> array( 'type' => 'select', 'label' => 'Animation', 'options' => array(
+		'context'		=> array( 'type' => 'select', 'label' => 'Template', 'default' => '' ),
+		'width'			=> array( 'type' => 'numeric', 'label' => 'Width(px)', 'default' => 610 ),
+		'height'		=> array( 'type' => 'numeric', 'label' => 'Height(px)', 'default' => 320 ),
+		'widget_class'	=> array( 'type' => 'text', 'label' => 'Widget Class', 'default' => '' ),
+		'animation' 	=> array( 'type' => 'select', 'label' => 'Animation', 'options' => array(
 				'fade' => 'fade',
 				'horizontal-slide' => 'horizontal-slide',
 				'vertical-slide' => 'vertical-slide',
 				'horizontal-push' => 'horizontal-push',
 			),
 			'default' => 'fade' ),
-		'animationSpeed'	=> array( 'type' => 'numeric', 'label' => 'Animation Speed', 'default' => 4000 ),
-		'timer'				=> array( 'type' => 'checkbox', 'label' => 'Timer', 'default' => true),
-		'pauseOnHover'		=> array( 'type' => 'checkbox', 'label' => 'Pause on hover', 'default' => true ),
+		'animationSpeed'	=> array( 'type' => 'numeric', 'label' => 'Animation Speed(ms)', 'default' => 800 ),	// how fast animtions are
+		'advanceSpeed'		=> array( 'type' => 'numeric', 'label' => 'Advance Speed(ms)', 'default' => 5000 ),		// if timer is enabled, time between transitions
+		'timer'				=> array( 'type' => 'checkbox', 'label' => 'Timer', 'default' => true ),				// true or false to have the timer
+		'pauseOnHover'		=> array( 'type' => 'checkbox', 'label' => 'Pause on hover', 'default' => true ),		// if you hover pauses the slider
 		'pl_featured_listing_meta' => array( 'type' => 'featured_listing_meta', 'default' => '' ),
 	);
 

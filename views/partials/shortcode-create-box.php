@@ -63,14 +63,14 @@ $options_class = $filters_class = '';
 				</div>
 				<div class="span6">
 					<?php foreach( $pl_shortcodes as $pl_shortcode => $sct_args ): ?>
-						<?php if(!empty($sct_args['options']['pl_cpt_template'])):?>
+						<?php if(!empty($sct_args['options']['context'])):?>
 							<div class="pl_template_block <?php echo $pl_shortcode; ?>" id="<?php echo $sct_args['shortcode'];?>_template_block" style="display: none;">
 								<?php
-								$value = isset( $values[$pl_shortcode]['pl_cpt_template'] ) ? $values[$pl_shortcode]['pl_cpt_template'] : $sct_args['options']['pl_cpt_template']['default'];
+								$value = isset( $values[$pl_shortcode]['context'] ) ? $values[$pl_shortcode]['context'] : $sct_args['options']['context']['default'];
 								PL_Router::load_builder_partial('shortcode-template-list.php', array(
 											'shortcode' => $sct_args['shortcode'],
 											'post_type' => $pl_shortcode,
-											'select_name' => $pl_shortcode.'[pl_cpt_template]',
+											'select_name' => $pl_shortcode.'[context]',
 											'class' => '',
 											'value' => $value,
 									)
@@ -103,7 +103,7 @@ $options_class = $filters_class = '';
 					<div class="pl_widget_block <?php echo $pl_shortcode;?>">
 					<?php
 					foreach($sct_args['options'] as $field => $f_args) {
-						if ($field == 'pl_cpt_template') {
+						if ($field == 'context') {
 							// template field already handled
 							continue;
 						}

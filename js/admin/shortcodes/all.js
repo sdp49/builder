@@ -159,7 +159,7 @@ jQuery(document).ready(function($){
 			var data = $('#pl_sc_edit form .'+shortcode).find('input,select,textarea').serializeArray();
 			data.push({name:'action', value:'pl_sc_changed'}, {name:'shortcode', value:shortcode});
 			var args = $.param(data);
-			jQuery.ajax({
+			$.ajax({
 				data: args,
 				// beforeSend: doAutoSave ? autosave_loading : null,
 				type: "POST",
@@ -168,13 +168,13 @@ jQuery(document).ready(function($){
 					if (response.sc_str) {
 						var width = response.width ? response.width+'px' : '100%';
 						var height = response.height ? response.height+'px' : '100%';
-						jQuery('#preview_meta_widget').html('<iframe src="'+ajaxurl+'?action=pl_sc_preview&post_type=pl_general_widget&sc_str='+response.sc_str+'" width="'+width+'" height="'+height+'"></iframe>');
+						$('#preview_meta_widget').html('<iframe src="'+ajaxurl+'?action=pl_sc_preview&post_type=pl_general_widget&sc_str='+response.sc_str+'" width="'+width+'" height="'+height+'"></iframe>');
 						$('#preview_meta_widget iframe').load( function() {
 							$('#pl_sc_edit .preview_load_spinner').hide();
 							$('#pl_sc_edit #pl-review-link').show();
 						});
-						jQuery('#sc_slug_box .iframe_link').hide();
-						jQuery('#sc_slug_box .shortcode_link').show().find('.slug').html(response.sc_str);
+						$('#sc_slug_box .iframe_link').hide();
+						$('#sc_slug_box .shortcode_link').show().find('.slug').html(response.sc_str);
 					}
 				}
 			});
@@ -196,7 +196,12 @@ jQuery(document).ready(function($){
 	wptitlehint();
 	$('#pl_sc_shortcode_type').trigger('change');
 
-	// call the custom autosave for every changed input and select in the shortcode edit view
+	// setup preview window if loading prexisting shortcode
+	if ($('#preview_meta_widget').html()) {
+		$('#pl_sc_edit #pl-review-link').show();
+	}
+	
+	// call the preview update for every changed input and select in the shortcode edit view
 	$('#pl_sc_edit input, #pl_sc_edit select').change(function() {
 		sc_update_preview();
 	});

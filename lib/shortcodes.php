@@ -190,8 +190,8 @@ class PL_Shortcodes
 		$content = PL_Component_Entity::listing_slideshow( $atts );
 		
 		return self::wrap( 'listing_slideshow', $content );
-		
 	}
+
 	public static function advanced_slideshow_shortcode_handler ($atts) {
 		$content = PL_Component_Entity::listing_slideshow( $atts, false );
 		

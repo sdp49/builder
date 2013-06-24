@@ -24,17 +24,6 @@ class PL_Component_Entity {
 	public static function init() {
 		// add_action('init', array( __CLASS__, 'filter_featured_context' ) );
 
-		$shortcodes_to_iterate = array(
-				'featured_listings' => 'pls_listings_list_ajax_item_html_',
-				'search_form' => 'pls_listings_search_form_outer_',
-				// 'search_map' => '',
-				// 'pl_neighborhood' => '',
-				'listing_slideshow' => 'pls_slideshow_html_',
-				'search_listings' => 'pls_listings_list_ajax_item_html_',
-				'static_listings' => 'pls_listings_list_ajax_item_html_'
-
-		);
-
 		// TODO: make dynamic function control over templates
 		// currently they have different logic and diff input parameters
 		$featured_templates = PL_Shortcode_CPT::template_list('featured_listings', true);
@@ -110,7 +99,6 @@ class PL_Component_Entity {
 	 * Generate static_listings shortcode output
 	 */
 	public static function static_listings_entity( $atts, $filters = '' ) {
-		$atts = wp_parse_args($atts, array('id' => 0, 'limit' => 5, 'featured_id' => 'custom', 'context' => 'shortcode'));
 
 		if (empty($atts['id'])) {
 			// default filter options
@@ -123,19 +111,9 @@ class PL_Component_Entity {
 			$filters_string = self::convert_filters( $listing_filters );
 			// and template and other attributes
 			$options = PL_Shortcode_CPT::get_shortcode_options($atts['id']);
-			foreach ($options as $key=>$val) {
-				if ($key=='pl_cpt_template') {
-					if ($atts['context']=='shortcode') {
-						$atts['context'] = $options['pl_cpt_template'];
-					}
-				}
-				else {
-					if (empty($atts[$key])) {
-						$atts[$key] = $val;
-					}
-				}
-			}
+			$atts = wp_parse_args($atts, $options);
 		}
+		$atts = wp_parse_args($atts, array('id' => 0, 'limit' => 5, 'featured_id' => 'custom', 'context' => 'shortcode'));
 
 		// set limit per page if any
 		if( ! empty( $atts['query_limit'] ) ) {
@@ -181,8 +159,6 @@ class PL_Component_Entity {
 	 * Generate search_listings shortcode output
 	 */
 	public static function search_listings_entity( $atts, $filters = '' ) {
-		$atts = wp_parse_args($atts, array('context' => 'shortcode'));
-
 
 		if (empty($atts['id'])) {
 			// default filter options
@@ -193,14 +169,11 @@ class PL_Component_Entity {
 			// for the js
 			$listing_filters = PL_Shortcode_CPT::get_shortcode_filters($atts['id']);
 			$filters_string = self::convert_filters( $listing_filters );
-			// and template
-			if ($atts['context']=='shortcode') {
-				$options = PL_Shortcode_CPT::get_shortcode_options($atts['id']);
-				if (!empty($options['pl_cpt_template'])) {
-					$atts['context'] = $options['pl_cpt_template'];
-				}
-			}
+			// and template and other attributes
+			$options = PL_Shortcode_CPT::get_shortcode_options($atts['id']);
+			$atts = wp_parse_args($atts, $options);
 		}
+		$atts = wp_parse_args($atts, array('context' => 'shortcode'));
 		
 		// add template formatting
 		$header = $footer = '';
@@ -227,17 +200,13 @@ class PL_Component_Entity {
 	 * Generate search_map shortcode output
 	 */
 	public static function search_map_entity( $atts ) {
-		$atts = wp_parse_args($atts, array('context' => 'shortcode', 'type' => 'listings', 'width' => 600, 'height' => 400, 'sync_map_to_list' => false));
 
 		if (!empty($atts['id'])) {
-			// if we are a custom shortcode fetch the record so we can display the correct template, etc
-			if ($atts['context']=='shortcode') {
-				$options = PL_Shortcode_CPT::get_shortcode_options($atts['id']);
-				if (!empty($options['pl_cpt_template'])) {
-					$atts['context'] = $options['pl_cpt_template'];
-				}
-			}
+			// get template and other attributes
+			$options = PL_Shortcode_CPT::get_shortcode_options($atts['id']);
+			$atts = wp_parse_args($atts, $options);
 		}
+		$atts = wp_parse_args($atts, array('context' => 'shortcode', 'type' => 'listings', 'sync_map_to_list' => false));
 		
 		// add template formatting
 		$header = $footer = '';
@@ -321,37 +290,35 @@ class PL_Component_Entity {
 	 * Generate listing_slideshow shortcode output
 	 */
 	public static function listing_slideshow( $atts, $default_style = true ) {
-		$atts = wp_parse_args($atts, array(
-			'animation' => 'fade',					// fade, horizontal-slide, vertical-slide, horizontal-push
-			'animationSpeed' => 800,				// how fast animtions are
-			'timer' => true,						// true or false to have the timer
-			'pauseOnHover' => true,					// if you hover pauses the slider
-			'advanceSpeed' => 5000,					// if timer is enabled, time between transitions
-			'startClockOnMouseOut' => true,			// if clock should start on MouseOut
-			'startClockOnMouseOutAfter' => 1000,	// how long after MouseOut should the timer start again
-			'directionalNav' => true,				// manual advancing directional navs
-			'captions' => true,						// do you want captions?
-			'captionAnimation' => 'fade',			// fade, slideOpen, none
-			'captionAnimationSpeed' => 800,			// if so how quickly should they animate in
-			'afterSlideChange' => 'function(){}',	// empty function
-			'width' => 610,
-			'height' => 320,
-			'bullets' => 'false',
-			'context' => 'home',
-			'featured_option_id' => 'slideshow-featured-listings',
-			'listings' => 'limit=5&is_featured=true&sort_by=price'
-		));
 
-		if (!empty($atts['id'])) {
-			// if we are a custom shortcode fetch the record so we can display the correct template, etc
-			if ($atts['context']=='home') {
-				$options = PL_Shortcode_CPT::get_shortcode_options($atts['id']);
-				if (!empty($options['pl_cpt_template'])) {
-					$atts['context'] = $options['pl_cpt_template'];
-				}
+		// fix attribute name case so js slideshow gets correct value names
+		$sc_attrs = PL_Shortcode_CPT::get_shortcodes('listing_slideshow');
+		foreach ($sc_attrs['options'] as $key=>$vals) {
+			if (empty($atts[$key]) && !empty($atts[strtolower($key)])) {
+				$atts[$key] = $atts[strtolower($key)];
+				unset($atts[strtolower($key)]);
 			}
 		}
 
+		if (!empty($atts['id'])) {
+			// get template and other attributes
+			$options = PL_Shortcode_CPT::get_shortcode_options($atts['id']);
+			$atts = wp_parse_args($atts, $options);
+		}
+		$atts = wp_parse_args($atts, array(
+				'startClockOnMouseOut' => true,			// if clock should start on MouseOut
+				'startClockOnMouseOutAfter' => 1000,	// how long after MouseOut should the timer start again
+				'directionalNav' => true,				// manual advancing directional navs
+				'captions' => true,						// do you want captions?
+				'captionAnimation' => 'fade',			// fade, slideOpen, none
+				'captionAnimationSpeed' => 800,			// if so how quickly should they animate in
+				'afterSlideChange' => 'function(){}',	// empty function
+				'bullets' => 'false',
+				'context' => 'home',
+				'featured_option_id' => 'slideshow-featured-listings',
+				'listings' => 'limit=5&is_featured=true&sort_by=price'
+		));
+		
 		// basic slideshow style
 		$css = '';
 		if ($default_style) {
@@ -724,17 +691,13 @@ class PL_Component_Entity {
 	 * Generate output for search_form shortcode
 	 */
 	public static function search_form_entity( $atts ) {
-		$atts = wp_parse_args($atts, array('context' => 'shortcode'));
 
 		if (!empty($atts['id'])) {
-			// if we are a custom shortcode fetch the record so we can display the correct template, etc
-			if ($atts['context']=='shortcode') {
-				$options = PL_Shortcode_CPT::get_shortcode_options($atts['id']);
-				if (!empty($options['pl_cpt_template'])) {
-					$atts['context'] = $options['pl_cpt_template'];
-				}
-			}
+			// get template and other attributes
+			$options = PL_Shortcode_CPT::get_shortcode_options($atts['id']);
+			$atts = wp_parse_args($atts, $options);
 		}
+		$atts = wp_parse_args($atts, array('context' => 'shortcode'));
 		
 		// Handle attributes using shortcode_atts...
 		$form_action = esc_url( home_url( '/' ) ) . 'listings';

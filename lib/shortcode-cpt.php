@@ -178,6 +178,11 @@ class PL_Shortcode_CPT {
 		die;
 	}
 	
+	/**
+	 * Get filter settings for the custom shortcode
+	 * @param string $id	: id of a saved custom shortcode
+	 * @return array
+	 */
 	public static function get_shortcode_filters($id) {
 		if ($post = get_post($id, ARRAY_A, array('post_type'=>'pl_general_widget'))) {
 			$postmeta = get_post_meta($id);
@@ -190,6 +195,11 @@ class PL_Shortcode_CPT {
 		return array();
 	}
 	
+	/**
+	 * Get option settings for the custom shortcode
+	 * @param string $id	: id of a saved custom shortcode
+	 * @return array
+	 */
 	public static function get_shortcode_options($id) {
 		if ($post = get_post($id, ARRAY_A, array('post_type'=>'pl_general_widget'))) {
 			$postmeta = get_post_meta($id);
@@ -197,8 +207,14 @@ class PL_Shortcode_CPT {
 			$sc_attrs = self::get_shortcodes($p_shortcode);
 			$options = array();
 			foreach($sc_attrs['options'] as $attr=>$vals) {
-				if (isset($postmeta[$attr])) {
-					$options[$attr] = maybe_unserialize($postmeta[$attr][0]);
+				if ($attr=='context') {
+					$key = 'pl_cpt_template';
+				}
+				else {
+					$key = $attr;
+				}
+				if (isset($postmeta[$key])) {
+					$options[$attr] = maybe_unserialize($postmeta[$key][0]);
 				}
 			}
 			return $options;
@@ -226,8 +242,12 @@ class PL_Shortcode_CPT {
 				$options = array();
 				foreach($postmeta as $key=>$val) {
 					if ($key=='pl_'.$p_shortcode.'_option') {
+						// filters
 						$options = maybe_unserialize($val[0]);
 						continue;
+					}
+					elseif ($key=='pl_cpt_template') {
+						$key = 'context';
 					}
 					$post[$key] = maybe_unserialize($val[0]);
 				}
@@ -257,6 +277,7 @@ class PL_Shortcode_CPT {
 				}
 			}
 			if (!$id) {
+				// creating new one or changing type
 				$id = wp_insert_post(array('post_type'=>'pl_general_widget'));
 			}
 			if ($id) {
@@ -267,15 +288,21 @@ class PL_Shortcode_CPT {
 			
 				// Save options
 				foreach( $sc_attrs['options'] as $option => $values ) {
+					if ($option=='context') {
+						$key = 'pl_cpt_template';
+					}
+					else {
+						$key = $option;
+					}
 					switch($values['type']) {
 						case 'checkbox':
 							// in some places having the option set counts as on.. 
 							if (empty($args[$option])) {
-								delete_post_meta($id, $option);	
+								// so delete if not set
+								delete_post_meta($id, $key);	
 							}
 							else {
-								// so delete if not set
-								update_post_meta($id, $option, 'true');
+								update_post_meta($id, $key, 'true');
 							}
 							break;
 						case 'numeric':
@@ -284,12 +311,13 @@ class PL_Shortcode_CPT {
 							}
 						case 'select':
 						case 'text':
+						default:
 							if( !empty($args) && !empty($args[$option])) {
-								update_post_meta($id, $option, trim($args[$option]));
+								update_post_meta($id, $key, trim($args[$option]));
 							}
 							else {
 								// save default in case default changes in the future
-								update_post_meta( $id, $option, $values['default'] );
+								update_post_meta( $id, $key, $values['default'] );
 							}
 					}
 				}

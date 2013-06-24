@@ -16,7 +16,7 @@ abstract class PL_SC_Base {
 	protected static $help = '';
 	// subclass should use this for basic display options/shortcode arguments
 	protected static $options = array(
-		'pl_cpt_template'	=> array( 'type' => 'select', 'label' => 'Template', 'default' => ''),
+		'context'			=> array( 'type' => 'select', 'label' => 'Template', 'default' => ''),
 		'width'				=> array( 'type' => 'numeric', 'label' => 'Width(px)', 'default' => 250 ),
 		'height'			=> array( 'type' => 'numeric', 'label' => 'Height(px)', 'default' => 250 ),
 		'widget_class'		=> array( 'type' => 'text', 'label' => 'Widget Class', 'default' => '' ),
@@ -142,7 +142,7 @@ abstract class PL_SC_Base {
 						) {
 							$args .= ' '.$option."='".$value[0]."'";
 						}
-						elseif( $option == 'pl_cpt_template' ) {
+						elseif( $option == 'context' ) {
 							$args .= " context='search_listings_{$value[0]}'";
 						}
 					}
@@ -201,7 +201,7 @@ abstract class PL_SC_Base {
 
 		// prepare args
 		$sc_args = '';
-		$class_options = array_merge(array('context'=>array('type'=>'text', 'default'=>'')), $class::$options);
+		$class_options = $class::$options;
 		foreach($args as $option => $value) {
 			if (!empty($value)) {
 				// only output options that are valid for this type and not default
@@ -209,12 +209,7 @@ abstract class PL_SC_Base {
 					//&& $class_options[$option]['default'] != $value
 					&& $class_options[$option]['type'] != 'featured_listing_meta'
 					) {
-					if ($option == 'pl_cpt_template') {
-						$sc_args .= " context='".$value."'";
-					}
-					else {
-						$sc_args .= ' '.$option."='".$value."'";
-					}
+					$sc_args .= ' '.$option."='".$value."'";
 				}
 			}
 		}

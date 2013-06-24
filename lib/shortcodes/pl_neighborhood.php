@@ -25,7 +25,7 @@ class PL_Neighborhood_CPT extends PL_SC_Base {
 		</ul>';
 
 	protected static $options = array(
-		'pl_cpt_template'	=> array( 'type' => 'select', 'label' => 'Template', 'default' => ''),
+		'context'			=> array( 'type' => 'select', 'label' => 'Template', 'default' => ''),
 		'width'				=> array( 'type' => 'text', 'label' => 'Width(px)', 'default' => 250 ),
 		'height'			=> array( 'type' => 'text', 'label' => 'Height(px)', 'default' => 250 ),
 		'widget_class'		=> array( 'type' => 'text', 'label' => 'Widget Class', 'default' => '' ),

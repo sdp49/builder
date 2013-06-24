@@ -21,7 +21,7 @@ class PL_Static_Listing_CPT extends PL_Search_Listing_CPT {
 		</p>';
 	
 	protected static $options = array(
-		'pl_cpt_template'		=> array( 'type' => 'select', 'label' => 'Template', 'default' => ''),
+		'context'				=> array( 'type' => 'select', 'label' => 'Template', 'default' => ''),
 		'width'					=> array( 'type' => 'numeric', 'label' => 'Width(px)', 'default' => 250 ),
 		'height'				=> array( 'type' => 'numeric', 'label' => 'Height(px)', 'default' => 250 ),
 		'hide_sort_by'			=> array( 'type' => 'checkbox', 'label' => 'Hide "Sort By" dropdown', 'default' => true ),
