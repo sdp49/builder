@@ -13,10 +13,10 @@ class PL_Options {
 
 		// If add_option fails, it almost always indicates that an option with the provided key 
 		// already exists, so attempt to update the existing option's value...
-	 	if ($outcome === false) {
-	 		$outcome = update_option($option, $value);
- 		}
- 		
+		if ($outcome === false) {
+			$outcome = update_option($option, $value);
+		}
+
  		return $outcome;
 	}
 
