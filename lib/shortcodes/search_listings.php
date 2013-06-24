@@ -19,6 +19,8 @@ class PL_Search_Listing_CPT extends PL_SC_Base {
         the search criteria will be displayed.
 		</p>';
 
+	protected static $filters = array();
+	
 	protected static $subcodes = array(
 		'price',
 		'sqft',
