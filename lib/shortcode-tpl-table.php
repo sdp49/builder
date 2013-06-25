@@ -18,7 +18,7 @@ class PL_SC_Templates_List_Table extends WP_List_Table {
 						'id'		=> 'Template ID',
 				),
 				array(),
-				array('title', 'shortcode')
+				array(),
 			);
 		$this->items = array();
 	}

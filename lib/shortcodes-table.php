@@ -38,53 +38,84 @@ class PL_Shortcodes_List_Table extends WP_List_Table {
 	}
 
 	public function prepare_items() {
-		global $wp_query, $per_page, $mode, $avail_post_stati;
-
-		$q = $_GET;
-		$q['post_type'] = $this->post_type;
-		$avail_post_stati = wp_edit_posts_query($q);
-		
-		$total_items = $wp_query->found_posts;
-
-		$post_type = $this->post_type;
-		$per_page = $this->get_items_per_page( 'edit_' . $post_type . '_per_page' );
- 		$per_page = apply_filters( 'edit_posts_per_page', $per_page, $post_type );
-		$total_pages = $wp_query->max_num_pages;
-
-		$mode = empty( $_REQUEST['mode'] ) ? 'list' : $_REQUEST['mode'];
+		global $wpdb, $wp_query;
 
 		$this->is_trash = isset( $_REQUEST['post_status'] ) && $_REQUEST['post_status'] == 'trash';
+		$status = $this->is_trash ? "= 'trash'" : "!= 'trash'";
+		
+		$orderby = empty($_GET['orderby']) ? 'title' : $_GET['orderby']; 
+		$order = empty($_GET['order']) ? 'asc' : $_GET['order'];
+		$order = $order=='asc' ? 'asc' : 'desc';
+		$orderstr = $orderby == 'title' ? "ORDER BY $wpdb->posts.post_title $order" : '';
+		$this->items = $wpdb->get_results("
+				SELECT $wpdb->posts.ID, $wpdb->posts.post_status, $wpdb->posts.post_title AS title, $wpdb->postmeta.meta_value AS type
+				FROM $wpdb->posts, $wpdb->postmeta
+				WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id
+				AND $wpdb->postmeta.meta_key = 'shortcode'
+				AND $wpdb->posts.post_type = 'pl_general_widget'
+				AND $wpdb->posts.post_status $status 
+				$orderstr");
+		
+		$total_items = count($this->items);
+		
+		foreach($this->items as $item) {
+			if (empty($this->shortcode_types[$item->type])) {
+				$item->shortcode = 'Unknown';
+			}
+			else {
+				$item->shortcode = $this->shortcode_types[$item->type];
+			}
+		}
+		if ($orderby == 'type') {
+			uasort($this->items, array($this, $order=='asc' ? 'sort_by_type_asc' : 'sort_by_type_desc'));
+		}
+		
+		$post_type = $this->post_type;
+ 		$per_page = apply_filters( 'edit_posts_per_page', $this->per_page, $post_type );
+		$total_pages = ceil($total_items/$per_page);
+
 		$this->_column_headers = array(
-				array(
-						'cb' 		=> '<input type="checkbox" />',
-						'title'		=> 'Name',
-						'type'		=> 'Shortcode Type',
-						'shortcode'	=> 'Shortcode',
-				),
-				array(),
-				array('title' => array('title', 'asc')),
+			array(
+					'cb' 		=> '<input type="checkbox" />',
+					'title'		=> 'Name',
+					'type'		=> 'Shortcode Type',
+					'shortcode'	=> 'Shortcode',
+			),
+			array(),
+			array(
+					'title' => array('title', 'asc'),
+					'type' => array('type', 'asc'),
+			),
 		);
+		
 		$this->set_pagination_args( array(
 			'total_items' => $total_items,
 			'total_pages' => $total_pages,
 			'per_page' => $per_page
 		) );
+		
+		// paginate the results
+		$page = $this->get_pagenum();
+		$page--;
+		if ($page >= 0 && $page < $total_pages) {
+			$this->items = array_slice($this->items, $page*$per_page, $per_page);
+		}
 	}
 	
-	public function sort_by_type($a, $b) {
-		$cmp = strcmp($a['shortcode'], $b['shortcode']);
+	public function sort_by_type_asc($a, $b) {
+		$cmp = strcmp($a->shortcode, $b->shortcode);
 		if ($cmp != 0) return $cmp;
-		return strcasecmp($a['title'], $b['title']);
+		return strcasecmp($a->title, $b->title);
 	}
 
-	public function sort_by_name($a, $b) {
-		$cmp = strcasecmp($a['title'], $b['title']);
-		if ($cmp != 0) return $cmp;
-		return strcmp($a['shortcode'], $b['shortcode']);
+	public function sort_by_type_desc($a, $b) {
+		$cmp = strcmp($a->shortcode, $b->shortcode);
+		if ($cmp != 0) return -$cmp;
+		return strcasecmp($a->title, $b->title);
 	}
 
 	public function has_items() {
-		return have_posts();
+		return count($this->items);
 	}
 
 	public function no_items() {
@@ -171,39 +202,26 @@ class PL_Shortcodes_List_Table extends WP_List_Table {
 	}
 
 	public function display_rows( $posts = array() ) {
-		global $mode, $wp_query, $per_page;
-
-		if ( empty( $posts ) )
-			$posts = $wp_query->posts;
-
-		add_filter( 'the_title', 'esc_html' );
-
+		if (empty($posts)) {
+			$posts = $this->items;
+		}
+		
 		foreach ( $posts as $post )
 			$this->single_row( $post );
 	}
 	
-	public function single_row( $a_post ) {
-		global $post, $mode;
+	public function single_row( $post ) {
 		static $alternate;
 		
-		$global_post = $post;
-		$post = $a_post;
-		
-		setup_postdata( $post );
-		
-		$title = _draft_or_post_title();
-		$post_type_object = get_post_type_object( $post->post_type );
+		$post_type_object = get_post_type_object( $this->post_type );
 		$can_edit_post = current_user_can( $post_type_object->cap->edit_post, $post->ID );
-		$post_meta = get_post_meta( $post->ID);
-		$shortcode = empty($post_meta['shortcode']) ? '' : $post_meta['shortcode'][0];
-		$shortcode_type = $shortcode && !empty($this->shortcode_types[$shortcode]) ? $this->shortcode_types[$shortcode] : 'Unknown Shortcode Type';
-		$shortcode_str = '['.$shortcode." id='".$post->ID."']";
+		$shortcode_str = '['.$post->type." id='".$post->ID."']";
 		
 		$alternate = 'alternate' == $alternate ? '' : 'alternate';
 		$classes = $alternate;
 		
 		?>
-		<tr id="sc-shortcode-<?php echo $post->ID; ?>" class="<?php echo $classes;?> sc-shortcode-<?php echo $post_meta['shortcode']?>" valign="top">
+		<tr id="sc-shortcode-<?php echo $post->ID; ?>" class="<?php echo $classes;?> sc-shortcode-<?php echo $post->type?>" valign="top">
 		<?php
 		
 		list( $columns, $hidden ) = $this->get_column_info();
@@ -224,8 +242,8 @@ class PL_Shortcodes_List_Table extends WP_List_Table {
 					?>
 					<th scope="row" class="check-column">
 						<?php if ( $can_edit_post ) { ?>
-						<label class="screen-reader-text" for="cb-select-<?php the_ID(); ?>"><?php printf( __( 'Select %s' ), $title ); ?></label>
-						<input id="cb-select-<?php the_ID(); ?>" type="checkbox" name="post[]" value="<?php the_ID(); ?>" />
+						<label class="screen-reader-text" for="cb-select-<?php the_ID(); ?>"><?php printf( __( 'Select %s' ), $post->title ); ?></label>
+						<input id="cb-select-<?php echo $post->ID; ?>" type="checkbox" name="post[]" value="<?php echo $post->ID; ?>" />
 						<?php } ?>
 					</th>
 					<?php
@@ -233,7 +251,7 @@ class PL_Shortcodes_List_Table extends WP_List_Table {
 	
 				case 'title':
 					?>
-					<td <?php echo $attributes ?>><strong><?php echo $title?></strong>
+					<td <?php echo $attributes ?>><strong><?php echo $post->title?></strong>
 					<?php
 					$actions = array();
 					if ( $can_edit_post && 'trash' != $post->post_status ) {
@@ -255,7 +273,7 @@ class PL_Shortcodes_List_Table extends WP_List_Table {
 	
 				case 'type':
 					?>
-					<td <?php echo $attributes ?>><?php echo $shortcode_type?></td>
+					<td <?php echo $attributes ?>><?php echo $post->shortcode?></td>
 					<?php
 					break;
 	
