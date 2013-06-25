@@ -2,7 +2,7 @@
 global $shortcode_subpages;
 
 if(!class_exists('PL_SC_Templates_List_Table')){
-	require_once( PL_LIB_DIR . 'templates-table.php' );
+	require_once( PL_LIB_DIR . 'shortcode-tpl-table.php' );
 }
 
 

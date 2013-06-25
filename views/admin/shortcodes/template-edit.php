@@ -22,8 +22,7 @@ if ($action == 'edit' && !empty($_POST['save']) && !empty($_POST['shortcode'])) 
 			$data = array_merge($_POST, $_POST[$_POST['shortcode']]);
 			$id = PL_Shortcode_CPT::save_custom_template($ID, $data);
 			if ($id) {
-				//wp_redirect('admin.php?page=placester_templates');
-				wp_redirect('admin.php?page=placester_shortcodes_template_edit&id='.$id);
+				wp_redirect('admin.php?page=placester_shortcodes_templates');
 				die;
 			}
 		}

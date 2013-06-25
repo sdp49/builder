@@ -18,7 +18,7 @@ $pl_shortcodes = PL_Shortcode_CPT::get_shortcodes();
 		<section class="row-fluid">
 
 			<div class="span2">
-				<label for="pl_tpl_edit_title" class="section-label">Template Name:</label>
+				<label for="pl_tpl_edit_title" class="section-label">Template Title:</label>
 			</div>
 
 			<div class="span10">

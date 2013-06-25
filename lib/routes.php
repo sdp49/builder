@@ -124,8 +124,7 @@ class PL_Router {
 	}
 
 	public static function shortcodes() {
-		self::load_builder_view('shortcodes/general.php');
-		//self::router('shortcodes/general.php', array(), false);
+		self::router('shortcodes/shortcodes.php', array(), false);
 	}
 	
 	public static function shortcodes_shortcode_edit() {
