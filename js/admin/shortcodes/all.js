@@ -61,8 +61,8 @@ jQuery(document).ready(function($){
 
 		var iframe_content = $('#preview_meta_widget').html();
 		//TODO get width/height
-		var options_width = $('#preview_meta_widget iframe').attr('width') || '750px';
-		var options_height = $('#preview_meta_widget iframe').attr('height') || '500px';
+		var options_width = '100%';
+		var options_height = '100%';
 
 		$('#pl-review-popup').html( iframe_content );
 		$('#pl-review-popup iframe').css('width', options_width);
@@ -206,6 +206,9 @@ jQuery(document).ready(function($){
 		sc_update_preview();
 		_changesMade = true;
 	});
+	$('#pl_sc_edit input[type="submit"]').click(function() {
+		_changesMade = false;
+	});
 
 
 	try{
@@ -265,6 +268,10 @@ jQuery(document).ready(function($){
 		tpl_update_preview();
 		_changesMade = true;
 	});
+	$('#pl_sc_tpl_edit input[type="submit"]').click(function() {
+		_changesMade = false;
+	});
+	
 	
 	// Update preview when creating a new template
 	$('.save_snippet').click(function() {
