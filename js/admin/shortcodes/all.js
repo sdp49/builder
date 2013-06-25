@@ -204,6 +204,7 @@ jQuery(document).ready(function($){
 	// call the preview update for every changed input and select in the shortcode edit view
 	$('#pl_sc_edit input, #pl_sc_edit select').change(function() {
 		sc_update_preview();
+		_changesMade = true;
 	});
 
 
@@ -262,6 +263,7 @@ jQuery(document).ready(function($){
 	// call the custom autosave for every changed input and select in the template edit view
 	$('#pl_sc_tpl_edit').find('input, select, textarea').change(function() {
 		tpl_update_preview();
+		_changesMade = true;
 	});
 	
 	// Update preview when creating a new template
@@ -274,7 +276,9 @@ jQuery(document).ready(function($){
 	});
 	
 	$('#pl_sc_tpl_edit').find('.before_widget, .after_widget').each(function(){
-		$(this).find('textarea').each(function(){$(this).css('display', ($(this).val() ? 'block' : 'none'))});
+		$(this).find('textarea').each(function(){
+			$(this).css('display', ($(this).val() ? 'block' : 'none'));
+		});
 		$(this).find('label').wrap('<a href="#" />').click(function(e) {
 			e.preventDefault();
 			var id = $(this).attr('for');
@@ -284,4 +288,16 @@ jQuery(document).ready(function($){
 
 	// trigger an event to set up the preview pane on page load 
 	$('#pl_sc_tpl_shortcode').trigger('change');
+	
+	
+	////////////////////////////////////////
+	// All forms - check for unsaved edits
+	////////////////////////////////////////
+	var _changesMade = false;
+	
+	$(window).bind('beforeunload', function() {
+		if (_changesMade)
+			return autosaveL10n.saveAlert;
+	});
+	
 });

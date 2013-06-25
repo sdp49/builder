@@ -129,14 +129,20 @@ class PL_Js_Helper {
 
 		// Shortcodes and Shortcode Templates
 		if ($hook == 'placester_page_placester_shortcodes_shortcode_edit') {
-			wp_enqueue_script('shortcodes-template', trailingslashit(PL_JS_URL) .  'admin/shortcodes/all.js', array('jquery'));
+			wp_enqueue_script('shortcodes-admin', trailingslashit(PL_JS_URL) .  'admin/shortcodes/all.js', array('jquery'));
 			wp_enqueue_style('jquery-ui-datepicker');
 			wp_enqueue_script('jquery-ui-datepicker');
 			wp_enqueue_script('datatable', trailingslashit( PLS_JS_URL ) . 'libs/datatables/jquery.dataTables.js' , array('jquery'), NULL, true );
 			wp_enqueue_script('featured-listing', OPTIONS_FRAMEWORK_DIRECTORY.'js/featured-listing.js', array('jquery'));
+			wp_localize_script('shortcodes-admin', 'autosaveL10n', array(
+			'saveAlert' => __('The changes you made will be lost if you navigate away from this page.')
+			) );
 		}
 		if ($hook == 'placester_page_placester_shortcodes_template_edit') {
-			wp_enqueue_script('shortcodes-template', trailingslashit(PL_JS_URL) .  'admin/shortcodes/all.js', array('jquery'));
+			wp_enqueue_script('shortcodes-admin', trailingslashit(PL_JS_URL) .  'admin/shortcodes/all.js', array('jquery'));
+			wp_localize_script('shortcodes-admin', 'autosaveL10n', array(
+			'saveAlert' => __('The changes you made will be lost if you navigate away from this page.')
+			) );
 		}
 		
 	}
