@@ -111,6 +111,13 @@
 }
 
 
+/* Shortcode list */
+
+.pl-sc-wrap .column-shortcode {
+	width: 50%;
+}
+
+
 /* Shortcode editor */
 
 

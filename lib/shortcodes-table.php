@@ -178,7 +178,7 @@ class PL_Shortcodes_List_Table extends WP_List_Table {
 					'cb' 		=> '<input type="checkbox" />',
 					'title'		=> 'Name',
 					'type'		=> 'Shortcode Type',
-					'shortcode'	=> 'Shortcode',
+					'shortcode'	=> 'Shortcode/Embed Code',
 			),
 			array(),
 			array(
@@ -322,6 +322,13 @@ class PL_Shortcodes_List_Table extends WP_List_Table {
 		$post_type_object = get_post_type_object( $this->post_type );
 		$can_edit_post = current_user_can( $post_type_object->cap->edit_post, $post->ID );
 		$shortcode_str = '['.$post->type." id='".$post->ID."']";
+		$sc = PL_Shortcode_CPT::get_shortcode_options($post->ID);
+		if (!empty($sc['width']) && !empty($sc['height'])) {
+			$embed_str = htmlentities('<script id="plwidget-'.$post->ID.'" src="'.PL_PARENT_URL.'js/fetch-widget.js?id='.$post->ID.'" style="width:'.$sc['width'].'px;height:'.$sc['height'].'px"></script>');
+		}
+		else {	
+			$embed_str = '';
+		}
 
 		$alternate = 'alternate' == $alternate ? '' : 'alternate';
 		$classes = $alternate;
@@ -385,7 +392,7 @@ class PL_Shortcodes_List_Table extends WP_List_Table {
 
 				case 'shortcode':
 					?>
-					<td <?php echo $attributes ?>><?php echo $shortcode_str;?></td>
+					<td <?php echo $attributes ?>><?php echo $shortcode_str;?><br/><?php echo $embed_str;?></td>
 					<?php
 					break;
 
