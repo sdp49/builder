@@ -127,13 +127,13 @@ class PL_Component_Entity {
 		// add template formatting
 		$header = $footer = '';
 		$template = PL_Shortcode_CPT::load_template($atts['context'], 'static_listings');
-		if (!empty($template['before_widget'])) {
+		if (!empty($template['before_widget']) && empty($_GET['embedded'])) {
 			$header = $template['before_widget'].$header;
 		}
 		if (!empty($template['css'])) {
 			$header = '<style type="text/css">'.$template['css'].'</style>'.$header;
 		}
-		if (!empty($template['after_widget'])) {
+		if (!empty($template['after_widget']) && empty($_GET['embedded'])) {
 			$footer .= $template['after_widget'];
 		}
 		// way to request template when ajax gets listings
@@ -178,13 +178,13 @@ class PL_Component_Entity {
 		// add template formatting
 		$header = $footer = '';
 		$template = PL_Shortcode_CPT::load_template($atts['context'], 'search_listings');
-		if (!empty($template['before_widget'])) {
+		if (!empty($template['before_widget']) && empty($_GET['embedded'])) {
 			$header = $template['before_widget'].$header;
 		}
 		if (!empty($template['css'])) {
 			$header = '<style type="text/css">'.$template['css'].'</style>'.$header;
 		}
-		if (!empty($template['after_widget'])) {
+		if (!empty($template['after_widget']) && empty($_GET['embedded'])) {
 			$footer .= $template['after_widget'];
 		}
 		// way to request template when ajax gets listings
@@ -211,13 +211,13 @@ class PL_Component_Entity {
 		// add template formatting
 		$header = $footer = '';
 		$template = PL_Shortcode_CPT::load_template($atts['context'], 'search_map');
-		if (!empty($template['before_widget'])) {
+		if (!empty($template['before_widget']) && empty($_GET['embedded'])) {
 			$header = $template['before_widget'].$header;
 		}
 		if (!empty($template['css'])) {
 			$header = '<style type="text/css">'.$template['css'].'</style>'.$header;
 		}
-		if (!empty($template['after_widget'])) {
+		if (!empty($template['after_widget']) && empty($_GET['embedded'])) {
 			$footer .= $template['after_widget'];
 		}
 
@@ -344,10 +344,10 @@ class PL_Component_Entity {
 		if ($css) {
 			$header = '<style type="text/css">'.$css.'</style>';
 		}
-		if (!empty($template['before_widget'])) {
+		if (!empty($template['before_widget']) && empty($_GET['embedded'])) {
 			$header .= $template['before_widget'];
 		}
-		if (!empty($template['after_widget'])) {
+		if (!empty($template['after_widget']) && empty($_GET['embedded'])) {
 			$footer .= $template['after_widget'];
 		}
 		
@@ -714,13 +714,13 @@ class PL_Component_Entity {
 		$header = '<div id="pls_listings_search_results"><form method="POST" action="' . $form_action . '" class="pls_search_form_listings" target="_parent">';
 		$footer = '</form></div>';
 		$template = PL_Shortcode_CPT::load_template($atts['context'], 'search_form');
-		if (!empty($template['before_widget'])) {
+		if (!empty($template['before_widget']) && empty($_GET['embedded'])) {
 			$header = $template['before_widget'].$header;
 		}
 		if (!empty($template['css'])) {
 			$header = '<style type="text/css">'.$template['css'].'</style>'.$header;
 		}
-		if (!empty($template['after_widget'])) {
+		if (!empty($template['after_widget']) && empty($_GET['embedded'])) {
 			$footer .= $template['after_widget'];
 		}
 

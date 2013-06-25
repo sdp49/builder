@@ -41,10 +41,15 @@ class PL_Shortcode_CPT {
 		}
 
 		add_action( 'init', array( $this, 'register_post_type' ) );
+		// sc editing
+		add_filter( 'get_edit_post_link', array( $this, 'shortcode_edit_link' ), 10, 3);
 		add_action( 'wp_ajax_pl_sc_changed', array( $this, 'ajax_shortcode_changed') );
 		add_action( 'wp_ajax_pl_sc_preview', array( $this, 'shortcode_preview') );
+		// tpl editing
 		add_action( 'wp_ajax_pl_sc_template_preview', array( $this, 'template_preview') );
-		add_filter( 'get_edit_post_link', array( $this, 'shortcode_edit_link' ), 10, 3);
+		// embedded sc support (fetch-widget.js)
+		add_action( 'wp_ajax_handle_widget_script', array( $this, 'handle_iframe_cross_domain' ) );
+		add_action( 'wp_ajax_nopriv_handle_widget_script', array( $this, 'handle_iframe_cross_domain' ) );
 	}
 
 	/**
@@ -125,6 +130,9 @@ class PL_Shortcode_CPT {
 	 * Custom Shortcode helper functions
 	 ***************************************************/
 
+	/**
+	 * Called when editing - pass back enough info to generate the preview pane
+	 */
 	public function ajax_shortcode_changed() {
 		$response = array('sc_str'=>'');
 
@@ -217,7 +225,63 @@ class PL_Shortcode_CPT {
 		return array();
 	}
 
+	/**
+	 * Handle cross-domain sc insertion using script embed.
+	 * This is called by fetch-widget when embedded - pass back the template, and dimensions
+	 * the embedded script will create an iframe wrapped with the template, then fetch the shortcode
+	 * inside the iframe by fetching the post id of this shortcode in sc_base.php  
+	 * This allows the body of the form, map, etc to be the size specified by the shortcode.
+	 */
+	public function handle_iframe_cross_domain() {
+		// don't process if widget ID is missing
+		if( ! isset( $_GET['id'] ) ) {
+			die();
+		}
+			
+		// defaults
+		$args = array('width'=>'250', 'height'=>'250');
 
+		// get the post and the meta
+		$sc = $this->load_shortcode($_GET['id']);
+		if (!empty($sc)) {
+			// clean it up to just the options
+			$sc_attrs = $this->get_shortcodes($sc['shortcode']);
+			foreach($sc as $key=>$val) {
+				if (!empty($sc_attrs['options'][$key]) && !empty($val)) {
+					$args[$key] = $val;
+				}
+			}
+			// return the template if one is set, to use css, before, after 
+			if (!empty($sc['context'])) {
+				$args = array_merge($args, $this->load_template($sc['context'], $sc['shortcode']));
+			}
+		}
+	
+		$args['width'] = ! empty( $_GET['width'] ) ? $_GET['width'] : $args['width'];
+		$args['height'] = ! empty( $_GET['height'] ) ? $_GET['height'] : $args['height'];
+	
+		unset( $args['action'] );
+		unset( $args['callback'] );
+	
+		$args['post_id'] = $_GET['id'];
+	
+		// setup url for js to request the shortcode in embedded form
+		$query = '&embedded=1';
+		if (!empty($args['widget_class'])) {
+			$query .= '&widget_class='.urlencode($args['widget_class']);
+		}
+		if( isset( $args['widget_original_src'] ) ) {
+			$args['widget_url'] =  $args['widget_original_src'] . '/?p=' . $_GET['id'] . $query;
+			unset( $args['widget_original_src'] );
+		} else {
+			$args['widget_url'] =  home_url() . '/?p=' . $_GET['id'] . $query;
+		}
+	
+		header("content-type: application/javascript");
+		echo $_GET['callback'] . '(' . json_encode( $args ) . ');';
+	}
+	
+	
 	/***************************************************
 	 * Custom Shortcode storage functions
 	 ***************************************************/
@@ -397,7 +461,8 @@ class PL_Shortcode_CPT {
 
 	/**
 	 * Load a template
-	 * @param string $id
+	 * @param string $id		: unique template id
+	 * @param string $shortcode	: required to get the built in templates
 	 * @return array
 	 */
 	public static function load_template($id, $shortcode) {

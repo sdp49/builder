@@ -110,76 +110,18 @@ abstract class PL_SC_Base {
 
 
 	/**
-	 * Called when the post is being formatted for display
-	 * @param unknown $single
-	 * @param string $skipdb
+	 * Called when the post is being formatted for display by an embedded js tag for example
+	 * Make the shortcode and render it. The template will already have been rendered by the embedded js.
+	 * @param object $single	: post object
+	 * @param bool $skipdb
 	 */
 	public function post_type_templating( $single, $skipdb = false ) {
 		global $post;
 
-		if( ! empty( $post ) ) {
-			$meta_custom = get_post_custom( $post->ID );
-			if ($post->post_type === $this::$pl_post_type ||
-				($post->post_type == 'pl_general_widget' && !empty($meta_custom['shortcode_type']) && $meta_custom['shortcode_type'][0]==$this::$pl_post_type)) {
-
-				unset( $_GET['skipdb'] );
-				$meta = $_GET;
-
-				// verify if skipdb param is passed
-				if( ! $skipdb ) {
-					$meta = array_merge( $meta_custom, $meta );
-				}
-
-				// prepare args
-				$args = '';
-				$class_options = $this::$options;
-				foreach($meta as $option=>$value) {
-					if (!empty($value) && $value[0]) {
-						// only output options that are valid for this type and not default
-						if (!empty($class_options[$option])
-							&& $class_options[$option]['default']!=$value[0]
-							&& $class_options[$option]['type'] != 'featured_listing_meta'
-						) {
-							$args .= ' '.$option."='".$value[0]."'";
-						}
-						elseif( $option == 'context' ) {
-							$args .= " context='search_listings_{$value[0]}'";
-						}
-					}
-				}
-
-				$shortcode = '[' . $this::$shortcode . $args;
-
-				// prepare filters
-				$filters = !empty($meta['pl_static_listings_option']) ? unserialize( $meta['pl_static_listings_option'][0] ) : array();
-				$subcodes = '';
-				if( is_array( $filters) ) {
-					$class_filters = $this::$filters;
-					foreach($filters as $filter=>$values) {
-						if (!empty($class_filters[$filter])) {
-							if( $class_filters[$filter]['type'] == 'subgrp' && is_array($values)) {
-								foreach( $values as $key => $value ) {
-									$subcodes .= ' [pl_filter group="' . $filter. '" filter="' . $key . '" value="' . $value . '"] ';
-								}
-							} else {
-								$subcodes .= ' [pl_filter filter="' . $filter . '" value="'. $values . '"] ';
-							}
-						}
-					}
-				}
-
-				// build the shortcode
-				if ($subcodes) {
-					$shortcode = $shortcode . ']'.$subcodes.'[/'.$this::$shortcode.']';
-				}
-				else {
-					$shortcode .= ']';
-				}
-
-				include PL_LIB_DIR . '/post_types/pl_post_types_template.php';
-
-				die();
-			}
+		if( !empty($post) && $post->post_type == 'pl_general_widget') {
+			$sc_str = $post->post_content;
+			include(PL_VIEWS_DIR . 'shortcode-embedded.php');
+			die;			
 		}
 	}
 
@@ -204,9 +146,8 @@ abstract class PL_SC_Base {
 		$class_options = $class::$options;
 		foreach($args as $option => $value) {
 			if (!empty($value)) {
-				// only output options that are valid for this type and not default
+				// only output options that are valid for this type
 				if (!empty($class_options[$option])
-					//&& $class_options[$option]['default'] != $value
 					&& $class_options[$option]['type'] != 'featured_listing_meta'
 					) {
 					$sc_args .= ' '.$option."='".$value."'";
