@@ -13,8 +13,8 @@ class PL_Shortcode_CPT {
 	// holds the configuration parameters for the shortcode classes we have installed
 	private static $shortcode_config = array();
 
-	
-	
+
+
 
 	/**
 	 * Called by shortcode object to register itself
@@ -55,16 +55,16 @@ class PL_Shortcode_CPT {
 		// custom post type to hold a customized shortcode
 		$args = array(
 			'labels' => array(
-				'name' => __( 'Placester Widget', 'pls' ),
-				'singular_name' => __( 'pl_map', 'pls' ),
-				'add_new_item' => __('Add New Placester Widget', 'pls'),
-				'edit_item' => __('Edit Placester Widget', 'pls'),
-				'new_item' => __('New Placester Widget', 'pls'),
-				'all_items' => __('All Placester Widgets', 'pls'),
-				'view_item' => __('View Placester Widgets', 'pls'),
-				'search_items' => __('Search Placester Widgets', 'pls'),
-				'not_found' =>  __('No widgets found', 'pls'),
-				'not_found_in_trash' => __('No widgets found in Trash', 'pls')),
+				'name' => __( 'Custom Shortcodes', 'pls' ),
+				'singular_name' => __( 'Custom Shortcode', 'pls' ),
+				'add_new_item' => __('Add New Custom Shortcode', 'pls'),
+				'edit_item' => __('Edit Custom Shortcode', 'pls'),
+				'new_item' => __('New Custom Shortcode', 'pls'),
+				'all_items' => __('All Custom Shortcodes', 'pls'),
+				'view_item' => __('View Custom Shortcodes', 'pls'),
+				'search_items' => __('Search Custom Shortcodes', 'pls'),
+				'not_found' =>  __('No custom shortcodes found', 'pls'),
+				'not_found_in_trash' => __('No custom shortcodes found in Trash', 'pls')),
 			'menu_icon' => trailingslashit(PL_IMG_URL) . 'logo_16.png',
 			'public' => true,
 			'publicly_queryable' => true,
@@ -115,12 +115,7 @@ class PL_Shortcode_CPT {
 	public function shortcode_edit_link($url, $ID, $context) {
 		global $pagenow;
 		if (get_post_type($ID) == 'pl_general_widget') {
-			if ($pagenow == 'admin.php') {
-				return admin_url('admin.php?page=placester_shortcodes_shortcode_edit&ID='.$ID);
-			}
-			elseif ($pagenow == 'post.php') {
-				return admin_url('admin.php?page=placester_shortcodes');
-			}
+			return admin_url('admin.php?page=placester_shortcodes_shortcode_edit&ID='.$ID);
 		}
 		return $url;
 	}
@@ -129,7 +124,7 @@ class PL_Shortcode_CPT {
 	/***************************************************
 	 * Custom Shortcode helper functions
 	 ***************************************************/
-	
+
 	public function ajax_shortcode_changed() {
 		$response = array('sc_str'=>'');
 
@@ -140,13 +135,13 @@ class PL_Shortcode_CPT {
 			$response['width'] = $args['width'];
 			$response['height'] = $args['height'];
 		}
-		
+
 		header( "Content-Type: application/json" );
 		echo json_encode($response);
 		die;
 	}
-	
-	
+
+
 	/**
 	 * Helper function to generate a shortcode string from a set of arguments
 	 */
@@ -161,7 +156,7 @@ class PL_Shortcode_CPT {
 	 * Generate preview for the shortcode edit page.
 	 */
 	public function shortcode_preview() {
-	
+
 		$sc_str = '';
 		$sc_id = (!empty($_GET['sc_id']) ? stripslashes($_GET['sc_id']) : '');
 		if ($sc_id) {
@@ -173,11 +168,11 @@ class PL_Shortcode_CPT {
 		if (!empty($_GET['sc_str'])) {
 			$sc_str = stripslashes($_GET['sc_str']);
 		}
-			
+
 		include(PL_VIEWS_ADMIN_DIR . 'shortcodes/preview.php');
 		die;
 	}
-	
+
 	/**
 	 * Get filter settings for the custom shortcode
 	 * @param string $id	: id of a saved custom shortcode
@@ -194,7 +189,7 @@ class PL_Shortcode_CPT {
 		}
 		return array();
 	}
-	
+
 	/**
 	 * Get option settings for the custom shortcode
 	 * @param string $id	: id of a saved custom shortcode
@@ -221,8 +216,8 @@ class PL_Shortcode_CPT {
 		}
 		return array();
 	}
-	
-	
+
+
 	/***************************************************
 	 * Custom Shortcode storage functions
 	 ***************************************************/
@@ -256,8 +251,8 @@ class PL_Shortcode_CPT {
 			}
 		}
 		return array();
-	}	
-	
+	}
+
 	/**
 	 * Save custom shortcode attributes.
 	 * @param int $id			: id of record to update, 0 for new record
@@ -281,11 +276,11 @@ class PL_Shortcode_CPT {
 				$id = wp_insert_post(array('post_type'=>'pl_general_widget'));
 			}
 			if ($id) {
-			
+
 				$sc_str = self::generate_shortcode_str($shortcode, $args);
 				wp_update_post(array('ID'=>$id, 'post_title'=>$args['post_title'], 'post_content'=>$sc_str, 'post_status'=>'publish'));
 				update_post_meta( $id, 'shortcode', $shortcode);
-			
+
 				// Save options
 				foreach( $sc_attrs['options'] as $option => $values ) {
 					if ($option=='context') {
@@ -296,10 +291,10 @@ class PL_Shortcode_CPT {
 					}
 					switch($values['type']) {
 						case 'checkbox':
-							// in some places having the option set counts as on.. 
+							// in some places having the option set counts as on..
 							if (empty($args[$option])) {
 								// so delete if not set
-								delete_post_meta($id, $key);	
+								delete_post_meta($id, $key);
 							}
 							else {
 								update_post_meta($id, $key, 'true');
@@ -321,7 +316,7 @@ class PL_Shortcode_CPT {
 							}
 					}
 				}
-			
+
 				// Save filters - only save if they diverge from default
 				$filters = array();
 				foreach( $sc_attrs['filters'] as $filter => $values ) {
@@ -342,13 +337,13 @@ class PL_Shortcode_CPT {
 				$db_key = 'pl_'.$shortcode.'_option';
 				update_post_meta($id, $db_key, $filters);
 			}
-			
+
 			return $id;
 		}
 		return 0;
 	}
-	
-	
+
+
 	/***************************************************
 	 * Shortcode Template helper functions
 	 ***************************************************/
@@ -393,7 +388,7 @@ class PL_Shortcode_CPT {
 			AND $wpdb->posts.post_type = 'pl_general_widget'", $id));
 	}
 
-	
+
 	/***************************************************
 	 * Shortcode Template storage functions
 	 * TODO: move to model
@@ -407,7 +402,7 @@ class PL_Shortcode_CPT {
 	 */
 	public static function load_template($id, $shortcode) {
 		$default = array('shortcode'=>'', 'title'=>'');
-		
+
 		if ($shortcode && !empty(self::$shortcodes[$shortcode])) {
 			// Get template from shortcode's template list in case we are using
 			// default or builtin template
@@ -427,10 +422,10 @@ class PL_Shortcode_CPT {
 				include $filename;
 				$default['snippet_body'] = ob_get_clean();
 			}
-		}		
-		return $default;		
+		}
+		return $default;
 	}
-	
+
 	public static function load_custom_template($id) {
 		$default = array('shortcode'=>'', 'title'=>'');
 		if (strpos($id, 'pls_') !== 0) {
@@ -442,8 +437,8 @@ class PL_Shortcode_CPT {
 		}
 		return $data;
 	}
-	
-	
+
+
 	/**
 	 * Save a shortcode template
 	 * We save it in the options table using the name:

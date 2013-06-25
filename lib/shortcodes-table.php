@@ -9,28 +9,113 @@ class PL_Shortcodes_List_Table extends WP_List_Table {
 	private $per_page = 20;
 	protected $_column_headers = array();
 	private $shortcode_types = array();
-	
+	private $filter = array();
+	private $search = '';
+
 	public function __construct( $args = array() ) {
 		global $pagenow, $wpdb;
-		
+
 		// set screen to this post type
 		$screen = get_current_screen();
 		$screen->id = 'edit-'.$this->post_type;
 		$page = $_REQUEST['page'];
 		$this->base_page = $pagenow.'?page='.$page;
-		
+
 		$args = wp_parse_args($args, array(
 				'plural' => 'posts',	// for nonce since we manage the records using wp-admin/edit.php
 				'screen' => $screen,
 		));
-		
+
 		parent::__construct($args);
-		
+
+		$doaction = empty($_REQUEST['action']) ? '-1' : $_REQUEST['action'];
+		if ($doaction!='-1') {
+			$post_ids = empty($_REQUEST['post']) ? array() : (array)$_REQUEST['post'];
+			if (empty($post_ids)) {
+				$doaction = '';
+			}
+		}
+		else {
+			$doaction = '';
+		}
+		if (isset($_REQUEST['delete_all'])) {
+			$post_status = preg_replace('/[^a-z0-9_-]+/i', '', $_REQUEST['post_status']);
+			if ( get_post_status_object($post_status) ) // Check the post status exists first
+				$post_ids = $wpdb->get_col( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_type=%s AND post_status = %s", $this->post_type, $post_status ) );
+			$doaction = 'delete';
+		}
+		if ($doaction) {
+			$sendback = remove_query_arg( array('action', 'action2', '_status', 'post', 'bulk_edit', 'post_view'), wp_get_referer() );
+			$post_type_object = get_post_type_object( $this->post_type );
+			switch ( $doaction ) {
+				case 'trash':
+					$trashed = 0;
+					foreach( (array) $post_ids as $post_id ) {
+						if ( !current_user_can($post_type_object->cap->delete_post, $post_id) )
+							wp_die( __('You are not allowed to move this item to the Trash.') );
+
+						if ( !wp_trash_post($post_id) )
+							wp_die( __('Error in moving to Trash.') );
+
+						$trashed++;
+					}
+					$sendback = add_query_arg( array('trashed' => $trashed, 'ids' => join(',', $post_ids) ), $sendback );
+					break;
+				case 'untrash':
+					$untrashed = 0;
+					foreach( (array) $post_ids as $post_id ) {
+						if ( !current_user_can($post_type_object->cap->delete_post, $post_id) )
+							wp_die( __('You are not allowed to restore this item from the Trash.') );
+
+						if ( !wp_untrash_post($post_id) )
+							wp_die( __('Error in restoring from Trash.') );
+
+						$untrashed++;
+					}
+					$sendback = add_query_arg('untrashed', $untrashed, $sendback);
+					break;
+				case 'delete':
+					$deleted = 0;
+					foreach( (array) $post_ids as $post_id ) {
+						$post_del = & get_post($post_id);
+
+						if ( !current_user_can($post_type_object->cap->delete_post, $post_id) )
+							wp_die( __('You are not allowed to delete this item.') );
+
+						if ( $post_del->post_type == 'attachment' ) {
+							if ( ! wp_delete_attachment($post_id) )
+								wp_die( __('Error in deleting...') );
+						} else {
+							if ( !wp_delete_post($post_id) )
+								wp_die( __('Error in deleting...') );
+						}
+						$deleted++;
+					}
+					$sendback = add_query_arg('deleted', $deleted, $sendback);
+					break;
+				case 'edit':
+					if ( isset($_REQUEST['bulk_edit']) ) {
+						$done = bulk_edit_posts($_REQUEST);
+
+						if ( is_array($done) ) {
+							$done['updated'] = count( $done['updated'] );
+							$done['skipped'] = count( $done['skipped'] );
+							$done['locked'] = count( $done['locked'] );
+							$sendback = add_query_arg( $done, $sendback );
+						}
+					}
+					break;
+			}
+			wp_redirect($sendback);
+			exit();
+		}
+
 		$this->items = array();
 		$sc_attrs = PL_Shortcode_CPT::get_shortcodes();
 		foreach($sc_attrs as $sc=>$attrs) {
 			$this->shortcode_types[$sc] = $attrs['title'];
-		} 
+		}
+
 	}
 
 	public function ajax_user_can() {
@@ -42,22 +127,36 @@ class PL_Shortcodes_List_Table extends WP_List_Table {
 
 		$this->is_trash = isset( $_REQUEST['post_status'] ) && $_REQUEST['post_status'] == 'trash';
 		$status = $this->is_trash ? "= 'trash'" : "!= 'trash'";
-		
-		$orderby = empty($_GET['orderby']) ? 'title' : $_GET['orderby']; 
+
+		$type = isset( $_REQUEST['type'] ) ? $_REQUEST['type'] : '';
+		if (!empty($this->shortcode_types[$type])) {
+			$where = "AND $wpdb->postmeta.meta_value = '$type'";
+		}
+		else {
+			$where = '';
+		}
+		$this->filter['type'] = $type;
+
+		$this->search = empty($_REQUEST['s']) ? '' : $_REQUEST['s'];
+		if ($this->search) {
+			$where .= $wpdb->prepare(" AND $wpdb->posts.post_title LIKE '%%%s%%'", $this->search);
+		}
+
+		$orderby = empty($_GET['orderby']) ? 'title' : $_GET['orderby'];
 		$order = empty($_GET['order']) ? 'asc' : $_GET['order'];
 		$order = $order=='asc' ? 'asc' : 'desc';
 		$orderstr = $orderby == 'title' ? "ORDER BY $wpdb->posts.post_title $order" : '';
 		$this->items = $wpdb->get_results("
 				SELECT $wpdb->posts.ID, $wpdb->posts.post_status, $wpdb->posts.post_title AS title, $wpdb->postmeta.meta_value AS type
 				FROM $wpdb->posts, $wpdb->postmeta
-				WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id
+				WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id $where
 				AND $wpdb->postmeta.meta_key = 'shortcode'
 				AND $wpdb->posts.post_type = 'pl_general_widget'
-				AND $wpdb->posts.post_status $status 
+				AND $wpdb->posts.post_status $status
 				$orderstr");
-		
+
 		$total_items = count($this->items);
-		
+
 		foreach($this->items as $item) {
 			if (empty($this->shortcode_types[$item->type])) {
 				$item->shortcode = 'Unknown';
@@ -69,7 +168,7 @@ class PL_Shortcodes_List_Table extends WP_List_Table {
 		if ($orderby == 'type') {
 			uasort($this->items, array($this, $order=='asc' ? 'sort_by_type_asc' : 'sort_by_type_desc'));
 		}
-		
+
 		$post_type = $this->post_type;
  		$per_page = apply_filters( 'edit_posts_per_page', $this->per_page, $post_type );
 		$total_pages = ceil($total_items/$per_page);
@@ -87,13 +186,13 @@ class PL_Shortcodes_List_Table extends WP_List_Table {
 					'type' => array('type', 'asc'),
 			),
 		);
-		
+
 		$this->set_pagination_args( array(
 			'total_items' => $total_items,
 			'total_pages' => $total_pages,
 			'per_page' => $per_page
 		) );
-		
+
 		// paginate the results
 		$page = $this->get_pagenum();
 		$page--;
@@ -101,7 +200,7 @@ class PL_Shortcodes_List_Table extends WP_List_Table {
 			$this->items = array_slice($this->items, $page*$per_page, $per_page);
 		}
 	}
-	
+
 	public function sort_by_type_asc($a, $b) {
 		$cmp = strcmp($a->shortcode, $b->shortcode);
 		if ($cmp != 0) return $cmp;
@@ -168,7 +267,7 @@ class PL_Shortcodes_List_Table extends WP_List_Table {
 
 		return $status_links;
 	}
-	
+
 	public function get_bulk_actions() {
 		$actions = array();
 
@@ -189,8 +288,15 @@ class PL_Shortcodes_List_Table extends WP_List_Table {
 		<div class="alignleft actions">
 <?php
 		if ( 'top' == $which && !is_singular() ) {
-//			do_action( 'restrict_manage_posts', $this->post_type);
-//			submit_button( __( 'Filter' ), 'button', false, false, array( 'id' => 'post-query-submit' ) );
+			?>
+			<select name="type">
+				<option value="">Show all shortcode types</option>
+				<?php foreach($this->shortcode_types as $type=>$title): ?>
+				<option value="<?php echo $type ?>"<?php echo ($this->filter['type']==$type ? 'selected="selected"' : '')?>><?php echo $title ?></option>
+				<?php endforeach;?>
+			</select>
+			<?php
+			submit_button( __( 'Filter' ), 'button', false, false, array( 'id' => 'pl_general_widget-query-submit' ) );
 		}
 
 		if ( $this->is_trash && current_user_can( get_post_type_object( $this->post_type )->cap->edit_posts ) ) {
@@ -205,27 +311,27 @@ class PL_Shortcodes_List_Table extends WP_List_Table {
 		if (empty($posts)) {
 			$posts = $this->items;
 		}
-		
+
 		foreach ( $posts as $post )
 			$this->single_row( $post );
 	}
-	
+
 	public function single_row( $post ) {
 		static $alternate;
-		
+
 		$post_type_object = get_post_type_object( $this->post_type );
 		$can_edit_post = current_user_can( $post_type_object->cap->edit_post, $post->ID );
 		$shortcode_str = '['.$post->type." id='".$post->ID."']";
-		
+
 		$alternate = 'alternate' == $alternate ? '' : 'alternate';
 		$classes = $alternate;
-		
+
 		?>
 		<tr id="sc-shortcode-<?php echo $post->ID; ?>" class="<?php echo $classes;?> sc-shortcode-<?php echo $post->type?>" valign="top">
 		<?php
-		
+
 		list( $columns, $hidden ) = $this->get_column_info();
-		
+
 		foreach ( $columns as $column_name => $column_display_name ) {
 			$class = "class=\"$column_name column-$column_name\"";
 
@@ -248,7 +354,7 @@ class PL_Shortcodes_List_Table extends WP_List_Table {
 					</th>
 					<?php
 					break;
-	
+
 				case 'title':
 					?>
 					<td <?php echo $attributes ?>><strong><?php echo $post->title?></strong>
@@ -270,19 +376,19 @@ class PL_Shortcodes_List_Table extends WP_List_Table {
 					</td>
 					<?php
 					break;
-	
+
 				case 'type':
 					?>
 					<td <?php echo $attributes ?>><?php echo $post->shortcode?></td>
 					<?php
 					break;
-	
+
 				case 'shortcode':
 					?>
 					<td <?php echo $attributes ?>><?php echo $shortcode_str;?></td>
 					<?php
 					break;
-	
+
 				default:
 					break;
 			}
