@@ -11,7 +11,7 @@ $notice = '';
 $message = '';
 $form_link = '';
 $iframe = $embed_sc_str = $embed_sc_js = '';
-$pl_shortcodes = PL_Shortcode_CPT::get_shortcodes();
+$pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs();
 
 if ($post_ID) {
 	$post = PL_Shortcode_CPT::load_shortcode($post_ID);
@@ -32,14 +32,29 @@ if ($post_ID) {
 
 
 if (!empty($_POST['publish'])) {
+	// accomodate featured listings where the field name is merged with the shortcode, need to move into shortcode array
+	if (!empty($_POST[$_POST['shortcode']]['pl_featured_listing_meta'])) {
+		$_POST[$_POST['shortcode']]['pl_featured_listing_meta'] = $_POST[$_POST['shortcode']]['pl_featured_listing_meta']['featured-listings-type'];
+	}
 	if (empty($_POST['post_title'])) {
 		$notice = 'Please provide a name for this shortcode.';	
 	}
-	elseif ($_POST['shortcode']=='undefined' || empty($pl_shortcodes[$_POST['shortcode']]) || empty($_POST[$_POST['shortcode']])) {
+	elseif ($_POST['shortcode']=='undefined' || empty($pl_shortcodes_attr[$_POST['shortcode']]) || empty($_POST[$_POST['shortcode']])) {
 		$notice = 'Please select a shortcode.';	
 	}
 	else {
-		if (PL_Shortcode_CPT::save_shortcode($post_ID, $_POST['shortcode'], array_merge($_POST, $_POST[$_POST['shortcode']]))) {
+		$data = array();
+		foreach($_POST as $key=>$val) {
+			if (is_array($val)) {
+				if ($key == $_POST['shortcode']) {
+					$data = array_merge($data, $val);					
+				}
+			}
+			else {
+				$data[$key] = $val;
+			}
+		}
+		if (PL_Shortcode_CPT::save_shortcode($post_ID, $_POST['shortcode'], $data)) {
 			wp_redirect(admin_url('admin.php?page=placester_shortcodes'));
 			die;
 		}
@@ -50,6 +65,8 @@ if (!empty($_POST['publish'])) {
 	$post = $_POST;
 }
 $post = wp_parse_args($post, $post_def);
+$pl_featured_meta_value = (!empty($post['shortcode']) && !empty($post[$post['shortcode']]['pl_featured_listing_meta'])) ? $post[$post['shortcode']]['pl_featured_listing_meta'] : array();
+
 
 // for post edits, prepare the frame related variables (iframe and script)
 if( $post_ID ) {
@@ -84,6 +101,7 @@ $nonce_action = 'update-' . $post_type . '_' . $post_ID;
 			<input type="hidden" name="action" value="<?php echo esc_attr( $form_action ) ?>" />
 			<input type="hidden" name="originalaction" value="<?php echo esc_attr( $form_action ) ?>" />
 			<input type="hidden" name="ID" value="<?php echo esc_attr($post_ID) ?>" />
+
 			<div id="poststuff">
 				<div id="post-body" class="metabox-holder columns-2">
 					<div id="post-body-content">
@@ -100,7 +118,8 @@ $nonce_action = 'update-' . $post_type . '_' . $post_ID;
 							</div>
 						</div><!-- /titlediv -->
 						<div id="normal-sortables" class="meta-box-sortables">
-							<?php PL_Router::load_builder_partial('shortcode-create-box.php', array('values'=>$post,'pl_shortcodes'=>$pl_shortcodes));?>
+							<?php PL_Router::load_builder_partial('shortcode-create-box.php', 
+								array('values'=>$post,'pl_shortcodes'=>$pl_shortcodes_attr,'pl_featured_meta_value'=>$pl_featured_meta_value));?>
 						</div>
 					</div>
 					<div id="postbox-container-1" class="postbox-container">
@@ -165,18 +184,18 @@ $nonce_action = 'update-' . $post_type . '_' . $post_ID;
 		<div id="pl-fl-meta" style="display: none;">
 			<?php
 				// featured listings dialog
-				$static_list_form = PL_Form::generate_form(
-							PL_Config::PL_API_LISTINGS('get', 'args'),
-							array(	'method' => "POST",
-									'title' => true,
-									'wrap_form' => false,
-									'echo_form' => false,
-									'include_submit' => false,
-									'id' => 'pls_admin_my_listings'),
-							'sc_edit_');
-
-				echo $static_list_form;
-			 ?>
+				include PLS_OPTRM_DIR . '/views/featured-listings.php';
+				// Enqueue all required stylings and scripts
+				wp_enqueue_script('datatable', trailingslashit( PLS_JS_URL ) . 'libs/datatables/jquery.dataTables.js' , array( 'jquery'), NULL, true );
+				wp_enqueue_script('jquery-ui-core');
+				wp_enqueue_style('jquery-ui-datepicker');
+				wp_enqueue_script('jquery-ui-datepicker');
+				wp_enqueue_style('jquery-ui-dialog', OPTIONS_FRAMEWORK_DIRECTORY.'css/jquery-ui-1.8.22.custom.css');
+				wp_enqueue_script('jquery-ui-dialog');
+				wp_enqueue_script('options-custom', OPTIONS_FRAMEWORK_DIRECTORY.'js/options-custom.js', array('jquery'));
+				wp_enqueue_style('featured-listings', OPTIONS_FRAMEWORK_DIRECTORY.'css/featured-listings.css');
+				wp_enqueue_script('featured-listing', OPTIONS_FRAMEWORK_DIRECTORY.'js/featured-listing.js', array('jquery'));
+			?>
 		</div>
 
 		<div id="ajax-response"></div>

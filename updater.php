@@ -48,20 +48,19 @@ class PL_Updater {
 
 	private static function _1_1_9() {
 		global $wpdb;
-		
 		// update old shortcode templates
 		$template_opts = array('pls_search_map','pls_search_form','pls_search_listings','pls_pl_neighborhood','pls_listing_slideshow','pls_featured_listings','pls_static_listings');
 		foreach($template_opts as $template_opt) {
 			$query = "SELECT * FROM ".$wpdb->prefix."options WHERE option_name LIKE '".$template_opt."_%'";
 			$results = $wpdb->get_results($query);
+			$shortcode = substr($template_opt, 4);
 			$fields = array('before_widget'=>'', 'after_widget'=>'', 'snippet_body'=>'', 'widget_css'=>'');
-			$list = array();
 			foreach($results as $result) {
 				$matches = array();
 				if (preg_match('/^'.$template_opt.'_((?!list$)(.+))$/', $result->option_name, $matches)) {
 					$val = get_option($result->option_name, '');
 					if (!is_array($val)) {
-						$val = array('snippet_body'=>$result->option_value);
+						$val = array('shortcode'=>$shortcode, "title"=>$matches[1], 'snippet_body'=>$result->option_value);
 						$val = array_merge($fields, $val);
 						$query = "UPDATE ".$wpdb->prefix."options
 							SET option_name='".$template_opt."__".$matches[1]."',
@@ -69,16 +68,25 @@ class PL_Updater {
 							WHERE option_name='".$result->option_name."'";
 						$results = $wpdb->get_results($query);
 					}
-					else {
-						// probably been updated already
-						if (strpos($matches[1], '_')===0) {
-							$matches[1] = substr($matches[1], 1);
-						}
-					}
-					$list[] = $matches[1];
 				}
 			}
-			update_option($template_opt.'_list', $list);
+			PL_Shortcode_CPT::build_tpl_list($shortcode);
+		}
+		// update shortcodes
+		$sc_attrs = PL_Shortcode_CPT::get_shortcode_attrs();
+		$scs = get_posts(array('post_type'=>'pl_general_widget'));
+		foreach ($scs as $sc) {
+			$postmeta = get_post_meta($sc->ID);
+			if (!empty($postmeta['pl_post_type'])) {
+				if (empty($postmeta['shortcode'])) {
+					foreach($sc_attrs as $shortcode=>$attrs) {echo $attrs['pl_post_type'];
+						if ($postmeta['pl_post_type'][0] == $attrs['pl_post_type']) {
+							update_post_meta($sc->ID, 'shortcode', $shortcode);
+							break;
+						}
+					}
+				}
+			}
 		}
 	}
 }

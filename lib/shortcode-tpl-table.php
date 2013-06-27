@@ -2,7 +2,7 @@
 /**
  * Construct a table to manage custom shortcode templates
  */
-class PL_SC_Templates_List_Table extends WP_List_Table {
+class PL_Shortcode_Tpl_Table extends WP_List_Table {
 
 	private $per_page = 20;
 	protected $_column_headers = array();

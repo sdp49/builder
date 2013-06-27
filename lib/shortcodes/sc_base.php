@@ -92,7 +92,7 @@ abstract class PL_SC_Base {
 		}
 		return array(
 				'shortcode'		=> $this::$shortcode,
-				'post_type'		=> $this::$pl_post_type,
+				'pl_post_type'	=> $this::$pl_post_type,
 				'title'			=> $this::$title,
 				'help'			=> $this::$help,
 				'options'		=> $this::$options,

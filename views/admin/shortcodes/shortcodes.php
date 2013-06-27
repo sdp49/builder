@@ -1,13 +1,13 @@
 <?php
 global $shortcode_subpages;
 
-if(!class_exists('PL_Shortcodes_List_Table')){
+if(!class_exists('PL_Shortcodes_Table')){
 	require_once( PL_LIB_DIR . 'shortcodes-table.php' );
 }
 
 $search = (!empty($_REQUEST['s']) ? esc_attr($_REQUEST['s']) : '');
 $post_type = 'pl_general_widget';
-$wp_list_table = new PL_Shortcodes_List_Table();
+$wp_list_table = new PL_Shortcodes_Table();
 $wp_list_table->prepare_items();
 $pagenum = $wp_list_table->get_pagenum();
 
@@ -65,7 +65,6 @@ PL_Router::load_builder_view('header.php');
 
 		<input type="hidden" name="page" class="post_page" value="placester_shortcodes" />
 		<input type="hidden" name="post_status" class="post_status_page" value="<?php echo !empty($_REQUEST['post_status']) ? esc_attr($_REQUEST['post_status']) : 'all'; ?>" />
-		<input type="hidden" name="apost_type" class="post_type_page" value="<?php echo $post_type; ?>" />
 
 		<?php $wp_list_table->display(); ?>
 

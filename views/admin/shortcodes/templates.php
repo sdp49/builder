@@ -1,12 +1,12 @@
 <?php
 global $shortcode_subpages;
 
-if(!class_exists('PL_SC_Templates_List_Table')){
+if(!class_exists('PL_Shortcode_Tpl_Table')){
 	require_once( PL_LIB_DIR . 'shortcode-tpl-table.php' );
 }
 
 
-$wp_list_table = new PL_SC_Templates_List_Table();
+$wp_list_table = new PL_Shortcode_Tpl_Table();
 $wp_list_table->prepare_items();
 
 
@@ -29,7 +29,7 @@ PL_Router::load_builder_view('header.php');
 
 		<?php $wp_list_table->views(); ?>
 
-		<form id="posts-filter" action="edit.php" method="get">
+		<form id="posts-filter" action="" method="get">
 
 		<?php $wp_list_table->display(); ?>
 

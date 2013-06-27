@@ -99,10 +99,10 @@ class PL_Shortcode_CPT {
 	 * construct admin pages for creating a custom instance of a shortcode
 	 * @return array	: array of shortcode type arrays
 	 */
-	public static function get_shortcodes($shortcode='') {
+	public static function get_shortcode_attrs($shortcode='') {
 		if (empty(self::$shortcode_config)) {
-			foreach(self::$shortcodes as $shortcode => $instance){
-				self::$shortcode_config[$shortcode] = $instance->get_args();
+			foreach(self::$shortcodes as $sc => $instance){
+				self::$shortcode_config[$sc] = $instance->get_args();
 			}
 		}
 		if ($shortcode) {
@@ -168,9 +168,9 @@ class PL_Shortcode_CPT {
 		$sc_str = '';
 		$sc_id = (!empty($_GET['sc_id']) ? stripslashes($_GET['sc_id']) : '');
 		if ($sc_id) {
-			$sc_attrs = $this->load_shortcode($sc_id);
-			if (!empty($sc_attrs)) {
-				$sc_str = $this->generate_shortcode_str($sc_attrs['shortcode'], $sc_attrs);
+			$sc_vals = $this->load_shortcode($sc_id);
+			if (!empty($sc_vals)) {
+				$sc_str = $this->generate_shortcode_str($sc_vals['shortcode'], $sc_vals);
 			}
 		}
 		if (!empty($_GET['sc_str'])) {
@@ -189,10 +189,12 @@ class PL_Shortcode_CPT {
 	public static function get_shortcode_filters($id) {
 		if ($post = get_post($id, ARRAY_A, array('post_type'=>'pl_general_widget'))) {
 			$postmeta = get_post_meta($id);
-			$p_shortcode = $postmeta['shortcode'][0];
-			if (!empty($postmeta['pl_'.$p_shortcode.'_option'])) {
-				$filters = maybe_unserialize($postmeta['pl_'.$p_shortcode.'_option'][0]);
-				return $filters;
+			if (!empty($postmeta['shortcode'])) {
+				$p_shortcode = $postmeta['shortcode'][0];
+				if (!empty($postmeta['pl_'.$p_shortcode.'_option'])) {
+					$filters = maybe_unserialize($postmeta['pl_'.$p_shortcode.'_option'][0]);
+					return $filters;
+				}
 			}
 		}
 		return array();
@@ -206,21 +208,23 @@ class PL_Shortcode_CPT {
 	public static function get_shortcode_options($id) {
 		if ($post = get_post($id, ARRAY_A, array('post_type'=>'pl_general_widget'))) {
 			$postmeta = get_post_meta($id);
-			$p_shortcode = $postmeta['shortcode'][0];
-			$sc_attrs = self::get_shortcodes($p_shortcode);
-			$options = array();
-			foreach($sc_attrs['options'] as $attr=>$vals) {
-				if ($attr=='context') {
-					$key = 'pl_cpt_template';
+			if (!empty($postmeta['shortcode'])) {
+				$p_shortcode = $postmeta['shortcode'][0];
+				$sc_attrs = self::get_shortcode_attrs($p_shortcode);
+				$options = array();
+				foreach($sc_attrs['options'] as $attr=>$vals) {
+					if ($attr=='context') {
+						$key = 'pl_cpt_template';
+					}
+					else {
+						$key = $attr;
+					}
+					if (isset($postmeta[$key])) {
+						$options[$attr] = maybe_unserialize($postmeta[$key][0]);
+					}
 				}
-				else {
-					$key = $attr;
-				}
-				if (isset($postmeta[$key])) {
-					$options[$attr] = maybe_unserialize($postmeta[$key][0]);
-				}
+				return $options;
 			}
-			return $options;
 		}
 		return array();
 	}
@@ -244,8 +248,9 @@ class PL_Shortcode_CPT {
 		// get the post and the meta
 		$sc = $this->load_shortcode($_GET['id']);
 		if (!empty($sc)) {
-			// clean it up to just the options
-			$sc_attrs = $this->get_shortcodes($sc['shortcode']);
+			// clean it up to just the options needed to wrap the shortcode body
+			// (width, height, context, etc)
+			$sc_attrs = $this->get_shortcode_attrs($sc['shortcode']);
 			foreach($sc as $key=>$val) {
 				if (!empty($sc_attrs['options'][$key]) && !empty($val)) {
 					$args[$key] = $val;
@@ -296,23 +301,30 @@ class PL_Shortcode_CPT {
 	public static function load_shortcode($id, $shortcode='') {
 		if ($post = get_post($id, ARRAY_A, array('post_type'=>'pl_general_widget'))) {
 			$postmeta = get_post_meta($id);
-			$p_shortcode = $postmeta['shortcode'][0];
-			if (!$shortcode || $p_shortcode==$shortcode) {
-				$options = array();
-				foreach($postmeta as $key=>$val) {
-					if ($key=='pl_'.$p_shortcode.'_option') {
-						// filters
-						$options = maybe_unserialize($val[0]);
-						continue;
+			if (!empty($postmeta['shortcode'])) {
+				$p_shortcode = $postmeta['shortcode'][0];
+				if (!$shortcode || $p_shortcode==$shortcode) {
+					$options = array();
+					foreach($postmeta as $key=>$val) {
+						if ($key=='pl_'.$p_shortcode.'_option') {
+							// filters
+							$options = maybe_unserialize($val[0]);
+							continue;
+						}
+						elseif ($key=='pl_featured_listing_meta') {
+							// featured listings are stored as JSON
+							$post[$key] = json_decode($val[0], true);
+							continue;
+						}
+						elseif ($key=='pl_cpt_template') {
+							$key = 'context';
+						}
+						$post[$key] = maybe_unserialize($val[0]);
 					}
-					elseif ($key=='pl_cpt_template') {
-						$key = 'context';
-					}
-					$post[$key] = maybe_unserialize($val[0]);
+					$post = array_merge($post, $options);
 				}
-				$post = array_merge($post, $options);
-				return $post;
 			}
+			return $post;
 		}
 		return array();
 	}
@@ -325,7 +337,7 @@ class PL_Shortcode_CPT {
 	 * @return int				: record id if saved
 	 */
 	public static function save_shortcode($id, $shortcode, $args) {
-		$sc_attrs = self::get_shortcodes($shortcode);
+		$sc_attrs = self::get_shortcode_attrs($shortcode);
 		if (!empty($sc_attrs)) {
 			if ($id) {
 				// sanity check and make sure we are not changing the shortcode type
@@ -368,9 +380,7 @@ class PL_Shortcode_CPT {
 							if( !empty($args) && !empty($args[$option])) {
 								$args[$option] = (int)$args[$option];
 							}
-						case 'select':
 						case 'text':
-						default:
 							if( !empty($args) && !empty($args[$option])) {
 								update_post_meta($id, $key, trim($args[$option]));
 							}
@@ -378,6 +388,25 @@ class PL_Shortcode_CPT {
 								// save default in case default changes in the future
 								update_post_meta( $id, $key, $values['default'] );
 							}
+							break;
+						case 'featured_listing_meta':
+							// featured listings (pl_featured_listing_meta field) save as json
+							$val = $values['default'];
+							if(!empty($args[$option])) {
+								$val = $args[$option];
+							}
+							update_post_meta( $id, $key, json_encode($val) );
+							break;
+						case 'select':
+						default:
+							if( !empty($args) && !empty($args[$option])) {
+								update_post_meta($id, $key, $args[$option]);
+							}
+							else {
+								// save default in case default changes in the future
+								update_post_meta( $id, $key, $values['default'] );
+							}
+							break;
 					}
 				}
 
@@ -420,7 +449,7 @@ class PL_Shortcode_CPT {
 	public function template_preview() {
 
 		$shortcode = (!empty($_GET['shortcode']) ? stripslashes($_GET['shortcode']) : '');
-		$shortcode_args = $this->get_shortcodes();
+		$shortcode_args = $this->get_shortcode_attrs();
 		if (!$shortcode || empty($shortcode_args[$shortcode]) || empty($_GET[$shortcode])) {
 			die;
 		}
@@ -480,7 +509,7 @@ class PL_Shortcode_CPT {
 			}
 
 			// get builtin/default templates
-			$sc_attrs = self::get_shortcodes($shortcode);
+			$sc_attrs = self::get_shortcode_attrs($shortcode);
 			if (!empty($sc_attrs['default_tpls']) && in_array($id, $sc_attrs['default_tpls'])) {
 				ob_start();
 				$filename = (trailingslashit(PL_VIEWS_SHORT_DIR) . trailingslashit($shortcode) . $id . '.php');
@@ -525,9 +554,11 @@ class PL_Shortcode_CPT {
 		}
 		// if we change the shortcode of an existing record create a new one with new shortcode
 		if (empty($id) || strpos($id, 'pls_'.$shortcode.'__')!==0) {
-			$id = ('pls_' . $shortcode . '__' . time() . rand(10,99));
+			$count = get_option('pl_shortcode_tpl_counter', 0) + 1;
+			$id = 'pls_' . $shortcode . '__' . $count;
+			update_option('pl_shortcode_tpl_counter', $count);
 		}
-		$sc_args = self::get_shortcodes();
+		$sc_args = self::get_shortcode_attrs();
 		$data = $sc_args[$shortcode]['template'] + array('shortcode'=>'', 'title'=>'');
 		foreach($data as $key => &$val) {
 			if (isset($atts[$key])) {
@@ -544,7 +575,7 @@ class PL_Shortcode_CPT {
 		// sort alphabetically
 		uasort($tpl_list, array(__CLASS__, '_tpl_list_sort'));
 		update_option($tpl_list_DB_key, $tpl_list);
-		self::_build_tpl_list($shortcode);
+		self::build_tpl_list($shortcode);
 		return $id;
 	}
 
@@ -554,23 +585,26 @@ class PL_Shortcode_CPT {
 	 * @return void
 	 */
 	public static function delete_custom_template($id) {
-		// sanity check
+		// sanity check - ids should be in the form 'pls_<sc>__<some unique identifier>
 		$parts = explode('_', $id);
-		if (count($parts) < 4 || $parts[0]!=='pls') {die;
+		if (count($parts) < 4 || $parts[0]!=='pls') {
 			return;
 		}
-		$shortcode = implode('_', array_slice($parts, 1, -2));
-		if (empty(self::$shortcodes[$shortcode])) {die;
+		$valid = false;
+		foreach(self::$shortcodes as $shortcode=>$inst) {
+			if (strpos($id, $shortcode)===4) {
+				$valid = true;
+				break;
+			}
+		}
+		if (!$valid) {
 			return;
 		}
 
 		delete_option($id);
 
 		// Remove from the list of custom template IDs for this shortcode...
-		$tpl_list_DB_key = ('pls_' . $shortcode . '_list');
-		$tpl_list = get_option($tpl_list_DB_key, array()); // If it doesn't exist, create a blank array to append...
-		unset($tpl_list[$id]);
-		update_option($tpl_list_DB_key, $tpl_list);
+		self::build_tpl_list($shortcode);
 	}
 
 	/**
@@ -588,7 +622,7 @@ class PL_Shortcode_CPT {
 
 		$tpl_type_map = array();
 
-		$sc_args = self::get_shortcodes($shortcode);
+		$sc_args = self::get_shortcode_attrs($shortcode);
 
 		// add default templates
 		$default_tpls = !empty($sc_args['default_tpls']) ? $sc_args['default_tpls'] : array();
@@ -618,7 +652,7 @@ class PL_Shortcode_CPT {
 	 * @param string $shortcode	:
 	 * @return array			: updated template list
 	 */
-	private static function _build_tpl_list($shortcode) {
+	public static function build_tpl_list($shortcode) {
 		global $wpdb;
 		// sanity check
 		if (empty(self::$shortcodes[$shortcode])) {

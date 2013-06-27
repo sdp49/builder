@@ -6,7 +6,7 @@
 $title = empty($title)?'':$title; // template name
 $shortcode = empty($shortcode)?'':$shortcode; // shortcode type we are making a template for
 $values = empty($values)?array():$values; // current template values
-$pl_shortcodes = PL_Shortcode_CPT::get_shortcodes();
+$pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs();
 ?>
 
 <div class="postbox ">
@@ -39,7 +39,7 @@ $pl_shortcodes = PL_Shortcode_CPT::get_shortcodes();
 				<select id="pl_sc_tpl_shortcode" name="shortcode">
 						<?php
 						$shortcode_refs = array();
-						foreach( $pl_shortcodes as $pl_shortcode => $sct_args ):
+						foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ):
 							$link_class = $selected = '';
 							if ($shortcode == $pl_shortcode) {
 								$link_class = 'selected_type';
@@ -68,17 +68,12 @@ $pl_shortcodes = PL_Shortcode_CPT::get_shortcodes();
 				<a id="popup_existing_template" href="#">Use existing template as a base for this new template</a>
 
 				<?php
-				foreach( $pl_shortcodes as $pl_shortcode => $sct_args ) {?>
+				foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ) {?>
 					<div class="pl_template_block <?php echo $pl_shortcode;?>" style="display:none;">
 					<?php
 					foreach($sct_args['template'] as $field => $f_args) {
 						$value = isset( $values[$field] ) ? $values[$field] : '';
-						if( !empty( $value ) && empty( $_POST[$pl_shortcode][$field] ) ) {
-							$_POST[$pl_shortcode][$field] = $value;
-						}
-						else {
-							$_POST[$pl_shortcode][$field] = $f_args['default'];
-						}
+						$_POST[$pl_shortcode][$field] = $value;
 						PL_Form::item($field, $f_args, 'POST', $pl_shortcode, 'general_widget_', true);
 					}?>
 					</div>
@@ -94,7 +89,7 @@ $pl_shortcodes = PL_Shortcode_CPT::get_shortcodes();
 					<label for="search-subshortcodes">Sub-Shortcodes</label>
 					<input type="text" placeholder="search sub-shortcodes" />
 				</div>
-				<?php foreach( $pl_shortcodes as $pl_shortcode => $sct_args ) :?>
+				<?php foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ) :?>
 					<?php if(!empty($sct_args['subcodes'])):?>
 						<div class="shortcode_block <?php echo $pl_shortcode?>" style="display: none;">
 							<h3>Usage</h3>

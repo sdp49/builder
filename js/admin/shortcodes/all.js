@@ -32,24 +32,18 @@ jQuery(document).ready(function($){
 	}
 
 	/**
-	 * Show hint text in the title field
+	 * Return error message if the title is invalid
 	 */
-	function validate_title(field_id) {
+	function empty_field(field_id) {
 		if (!field_id) {
 			field_id = '#title';
 		}
+		var prompt = '';
         var $title = $(field_id);
         if ($title.val() == '') {
-            var prompt = $title.attr('title');
-            if (prompt) {
-                alert(prompt);
-            }
-            else {
-                alert('Please enter a title first.');
-            }
-            return false;
+            prompt = $title.attr('title');
         }
-		return true;
+        return prompt;
 	}
 
 
@@ -135,10 +129,6 @@ jQuery(document).ready(function($){
 	 */
 	function sc_update_preview() {
 
-		if (!validate_title()) {
-			return;
-		}
-
 		$('#pl-review-link').hide();
 		
 		var shortcode = $('#pl_sc_shortcode_type').val();
@@ -216,8 +206,10 @@ jQuery(document).ready(function($){
 		// force a title in shortcode edit page
 		// TODO not working on safari
 		$('#pl_sc_edit').find('input,select,button').not('#title').click(function(e){
-			if (!validate_title()) {
+			var prompt = empty_field('#title');
+			if (prompt) {
 				e.preventDefault();
+				alert(prompt);
 				$('#title').focus();
 				return;
 			}

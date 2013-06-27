@@ -2,7 +2,7 @@
 /**
  * Construct a table to manage custom shortcode templates
  */
-class PL_Shortcodes_List_Table extends WP_List_Table {
+class PL_Shortcodes_Table extends WP_List_Table {
 
 	private $post_type = 'pl_general_widget';
 	private $base_page;
@@ -111,7 +111,7 @@ class PL_Shortcodes_List_Table extends WP_List_Table {
 		}
 
 		$this->items = array();
-		$sc_attrs = PL_Shortcode_CPT::get_shortcodes();
+		$sc_attrs = PL_Shortcode_CPT::get_shortcode_attrs();
 		foreach($sc_attrs as $sc=>$attrs) {
 			$this->shortcode_types[$sc] = $attrs['title'];
 		}
@@ -147,10 +147,10 @@ class PL_Shortcodes_List_Table extends WP_List_Table {
 		$order = $order=='asc' ? 'asc' : 'desc';
 		$orderstr = $orderby == 'title' ? "ORDER BY $wpdb->posts.post_title $order" : '';
 		$this->items = $wpdb->get_results("
-				SELECT $wpdb->posts.ID, $wpdb->posts.post_status, $wpdb->posts.post_title AS title, $wpdb->postmeta.meta_value AS type
+				SELECT $wpdb->posts.ID, $wpdb->posts.post_status, $wpdb->posts.post_title AS title, $wpdb->postmeta.meta_key, $wpdb->postmeta.meta_value AS type
 				FROM $wpdb->posts, $wpdb->postmeta
 				WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id $where
-				AND $wpdb->postmeta.meta_key = 'shortcode'
+				AND ($wpdb->postmeta.meta_key = 'shortcode' OR $wpdb->postmeta.meta_key = 'pl_post_type')
 				AND $wpdb->posts.post_type = 'pl_general_widget'
 				AND $wpdb->posts.post_status $status
 				$orderstr");

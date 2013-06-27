@@ -292,7 +292,7 @@ class PL_Component_Entity {
 	public static function listing_slideshow( $atts, $default_style = true ) {
 
 		// fix attribute name case so js slideshow gets correct value names
-		$sc_attrs = PL_Shortcode_CPT::get_shortcodes('listing_slideshow');
+		$sc_attrs = PL_Shortcode_CPT::get_shortcode_attrs('listing_slideshow');
 		foreach ($sc_attrs['options'] as $key=>$vals) {
 			if (empty($atts[$key]) && !empty($atts[strtolower($key)])) {
 				$atts[$key] = $atts[strtolower($key)];

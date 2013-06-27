@@ -5,6 +5,7 @@ $action = (empty($_REQUEST['action'])?'':$_REQUEST['action']);
 $ID = (empty($_REQUEST['id'])?'':$_REQUEST['id']);
 $notice = $message = '';
 $nonce_action = 'edit-sc-template_' . $ID;
+$template = PL_Shortcode_CPT::load_custom_template($ID);
 
 if ($action == 'delete' && $ID) {
 	if (!PL_Shortcode_CPT::template_in_use($ID)) {
@@ -14,12 +15,12 @@ if ($action == 'delete' && $ID) {
 	die;
 }
 if ($action == 'edit' && !empty($_POST['save']) && !empty($_POST['shortcode'])) {
+	$data = array_merge($_POST, $_POST[$_POST['shortcode']]);
 	if (empty($_POST['title'])) {
 		$notice = 'Please provide a title for the template.';
 	}
 	else {
 		if (!empty($_POST[$_POST['shortcode']])) {
-			$data = array_merge($_POST, $_POST[$_POST['shortcode']]);
 			$id = PL_Shortcode_CPT::save_custom_template($ID, $data);
 			if ($id) {
 				wp_redirect('admin.php?page=placester_shortcodes_templates');
@@ -27,15 +28,15 @@ if ($action == 'edit' && !empty($_POST['save']) && !empty($_POST['shortcode'])) 
 			}
 		}
 	}
+	$template = array_merge($template, $data);
 }
 
-// load template
-$template = PL_Shortcode_CPT::load_custom_template($ID);
 $title = (empty($_REQUEST['title'])?$template['title']:$_REQUEST['title']);
 $shortcode = (empty($_REQUEST['shortcode'])?$template['shortcode']:$_REQUEST['shortcode']);
 $form_link = '';
 $delete_link = $page_now.'?page='.$plugin_page.'&action=delete&id='.$ID;
 $form_action = 'edit';
+
 ?>
 <div class="wrap pl-sc-wrap">
 	<?php echo PL_Helper_Header::pl_subpages('placester_shortcodes', $shortcode_subpages, 'Create Shortcode Template'); ?>

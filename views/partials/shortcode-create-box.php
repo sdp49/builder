@@ -4,8 +4,8 @@
  */
 
 // get list of shortcodes w/ attrs
-if (empty($pl_shortcodes)) {
-	$pl_shortcodes = PL_Shortcode_CPT::get_shortcodes();
+if (empty($pl_shortcodes_attr)) {
+	$pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs();
 }
 
 $options_class = $filters_class = '';
@@ -33,7 +33,7 @@ $options_class = $filters_class = '';
 						<option id="pl_sc_shortcode_undefined" value="undefined">Select</option>
 
 						<?php
-						foreach( $pl_shortcodes as $pl_shortcode => $sct_args ):
+						foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ):
 							$link_class = ($pl_shortcode == $values['shortcode']) ? 'selected-type' : '';
 							$selected = ( !empty($link_class) ) ? 'selected="selected"' : '';
 							?>
@@ -62,7 +62,7 @@ $options_class = $filters_class = '';
 					<label class="section-label" for="pl_template">Template:</label>
 				</div>
 				<div class="span6">
-					<?php foreach( $pl_shortcodes as $pl_shortcode => $sct_args ): ?>
+					<?php foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ): ?>
 						<?php if(!empty($sct_args['options']['context'])):?>
 							<div class="pl_template_block <?php echo $pl_shortcode; ?>" id="<?php echo $sct_args['shortcode'];?>_template_block" style="display: none;">
 								<?php
@@ -99,12 +99,23 @@ $options_class = $filters_class = '';
 				<?php
 				// get meta values from custom fields
 				// fill POST array for the forms (required after new widget is created)
-				foreach( $pl_shortcodes as $pl_shortcode => $sct_args ) {?>
+				foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ) {?>
 					<div class="pl_widget_block <?php echo $pl_shortcode;?>">
 					<?php
 					foreach($sct_args['options'] as $field => $f_args) {
 						if ($field == 'context') {
 							// template field already handled
+							continue;
+						}
+						elseif ($field == 'pl_featured_listing_meta') {
+							// create button and placeholder for selected listings
+							echo pls_generate_featured_listings_ui(array(
+									'name' => 'Featured Meta',
+									'desc' => '',
+									'id' => 'featured-listings-type',
+									'type' => 'featured_listing'
+								) ,$pl_featured_meta_value
+								, $pl_shortcode.'[pl_featured_listing_meta]');
 							continue;
 						}
 						$value = isset( $values[$pl_shortcode][$field] ) ? $values[$pl_shortcode][$field] : $f_args['default'];
@@ -124,7 +135,7 @@ $options_class = $filters_class = '';
 				</div>
 				<?php
 				// fill POST array for the forms (required after new widget is created)
-				foreach( $pl_shortcodes as $pl_shortcode => $sct_args ) {
+				foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ) {
 					if (!empty($sct_args['filters'])) {
 						foreach($sct_args['filters'] as $f_key=>$f_args) {
 							$value = isset( $values[$pl_shortcode][$f_key] ) ? $values[$pl_shortcode][$f_key] : '';

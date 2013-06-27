@@ -91,6 +91,7 @@ if (is_admin()) {
 
 	$prev_ver = get_option('pl_plugin_version', PL_PLUGIN_VERSION);
 	if ($prev_ver != PL_PLUGIN_VERSION) {
+		include_once('lib/shortcode-cpt.php');
 		include_once('updater.php');
 	}
 }
@@ -234,8 +235,8 @@ function placester_admin_menu() {
     add_submenu_page( 'placester', 'Lead Capture', 'Lead Capture', 'edit_pages', 'placester_lead_capture', array('PL_Router','lead_capture') );
 
     global $shortcode_subpages;
-    $shortcode_subpages = array('All Shortcodes' => '',
-					    		'Create Shortcode' => '_shortcode_edit',
+    $shortcode_subpages = array('All Custom Shortcodes' => '',
+					    		'Create Custom Shortcode' => '_shortcode_edit',
     							'Shortcode Templates' => '_templates',
 					    		'Create Shortcode Template' => '_template_edit');
     foreach ($shortcode_subpages as $name => $page_url) {
