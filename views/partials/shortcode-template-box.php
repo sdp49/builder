@@ -3,10 +3,12 @@
  * Displays meta box used in the shortcode template edit view
  */
 
+$action = empty($action)?'':$action;
 $title = empty($title)?'':$title; // template name
 $shortcode = empty($shortcode)?'':$shortcode; // shortcode type we are making a template for
 $values = empty($values)?array():$values; // current template values
 $pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs();
+
 ?>
 
 <div class="postbox ">
@@ -68,12 +70,12 @@ $pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs();
 				<a id="popup_existing_template" href="#">Use existing template as a base for this new template</a>
 
 				<?php
-				foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ) {?>
+				foreach( $pl_shortcodes_attr as $pl_shortcode => $sc_attrs ) {?>
 					<div class="pl_template_block <?php echo $pl_shortcode;?>" style="display:none;">
 					<?php
-					foreach($sct_args['template'] as $field => $f_args) {
-						$value = isset( $values[$field] ) ? $values[$field] : '';
-						$_POST[$pl_shortcode][$field] = $value;
+					foreach($sc_attrs['template'] as $field => $f_args) {
+						$default = ($action!='edit' && !empty($f_args['default'])) ? $f_args['default'] : '';
+						$_POST[$pl_shortcode][$field] = !empty( $values[$field] ) ? $values[$field] : $default;
 						PL_Form::item($field, $f_args, 'POST', $pl_shortcode, 'general_widget_', true);
 					}?>
 					</div>

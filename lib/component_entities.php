@@ -173,6 +173,13 @@ class PL_Component_Entity {
 			$options = PL_Shortcode_CPT::get_shortcode_options($atts['id']);
 			$atts = wp_parse_args($atts, $options);
 		}
+		// get default values
+		$sc_attrs = PL_Shortcode_CPT::get_shortcode_attrs('search_listings');
+		foreach ($sc_attrs['options'] as $key=>$vals) {
+			if (empty($atts[$key]) && !empty($vals['default'])) {
+				$atts[$key] = $vals['default'];
+			}
+		}
 		$atts = wp_parse_args($atts, array('context' => 'shortcode'));
 		
 		// add template formatting
@@ -206,8 +213,15 @@ class PL_Component_Entity {
 			$options = PL_Shortcode_CPT::get_shortcode_options($atts['id']);
 			$atts = wp_parse_args($atts, $options);
 		}
+		// get default values
+		$sc_attrs = PL_Shortcode_CPT::get_shortcode_attrs('search_map');
+		foreach ($sc_attrs['options'] as $key=>$vals) {
+			if (empty($atts[$key]) && !empty($vals['default'])) {
+				$atts[$key] = $vals['default'];
+			}
+		}
 		$atts = wp_parse_args($atts, array('context' => 'shortcode', 'type' => 'listings', 'sync_map_to_list' => false));
-		
+
 		// add template formatting
 		$header = $footer = '';
 		$template = PL_Shortcode_CPT::load_template($atts['context'], 'search_map');
@@ -304,6 +318,12 @@ class PL_Component_Entity {
 			// get template and other attributes
 			$options = PL_Shortcode_CPT::get_shortcode_options($atts['id']);
 			$atts = wp_parse_args($atts, $options);
+		}
+		// get default values
+		foreach ($sc_attrs['options'] as $key=>$vals) {
+			if (empty($atts[$key]) && !empty($vals['default'])) {
+				$atts[$key] = $vals['default'];
+			}
 		}
 		$atts = wp_parse_args($atts, array(
 				'startClockOnMouseOut' => true,			// if clock should start on MouseOut
@@ -696,6 +716,13 @@ class PL_Component_Entity {
 			// get template and other attributes
 			$options = PL_Shortcode_CPT::get_shortcode_options($atts['id']);
 			$atts = wp_parse_args($atts, $options);
+		}
+		// get default values
+		$sc_attrs = PL_Shortcode_CPT::get_shortcode_attrs('search_form');
+		foreach ($sc_attrs['options'] as $key=>$vals) {
+			if (empty($atts[$key]) && !empty($vals['default'])) {
+				$atts[$key] = $vals['default'];
+			}
 		}
 		$atts = wp_parse_args($atts, array('context' => 'shortcode'));
 		

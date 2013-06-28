@@ -64,6 +64,7 @@ $form_action = 'edit';
 						<?php wp_nonce_field( 'samplepermalink', 'samplepermalinknonce', false );?>
 						<div id="normal-sortables" class="meta-box-sortables">
 							<?php PL_Router::load_builder_partial('shortcode-template-box.php', array(
+									'action'=>$action,
 									'title'=>$title,
 									'shortcode'=>$shortcode,
 									'values'=>$template,

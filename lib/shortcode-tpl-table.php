@@ -123,8 +123,8 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 					?>
 					<td <?php echo $attributes ?>><strong><?php echo $template['title']?></strong>
 					<?php
+					$actions = array();
 					if ($template['type'] == 'custom') {
-						$actions = array();
 						$actions['edit'] = '<a href="' . $edit_link . $template['id'] . '" title="' . esc_attr( __( 'Edit this item' ) ) . '">' . __( 'Edit' ) . '</a>';
 						if (PL_Shortcode_CPT::template_in_use($template['id'])) {
 							$actions['delete'] =  __( 'In Use' );
@@ -132,11 +132,12 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 						else {
 							$actions['delete'] = "<a class='submitdelete' title='" . esc_attr( __( 'Delete this item permanently' ) ) . "' href='" . $delete_link . $template['id'] . "'>" . __( 'Delete Permanently' ) . "</a>";
 						}
-						echo $this->row_actions( $actions );
 					}
 					else {
 						echo ' (built-in)';
+						$actions['edit'] = __('Non-editable built-in template.');
 					}
+					echo $this->row_actions( $actions );
 					?>
 					</td>
 					<?php
