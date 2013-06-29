@@ -19,18 +19,7 @@ wp_enqueue_script( 'search-bootloader', trailingslashit( PLS_JS_URL ) . 'scripts
 wp_enqueue_script( 'pls-slideshow-orbit', trailingslashit( PLS_EXT_URL ) . 'slideshow/orbit/jquery.orbit.js', array( 'jquery' ), NULL, false );
 wp_enqueue_script( 'pls-slideshow-orbit', trailingslashit( PLS_EXT_URL ) . 'slideshow/orbit/orbit.css');
 
-
-$hash = md5($sc_str);
-$widget_cache = new PL_Cache("Embeddable_Widget_Preview");
-
-if (0&&$widget_page = $widget_cache->get($hash) ) {
-	echo $widget_page;
-	return;
-}
-
 add_filter('show_admin_bar', '__return_false');
-
-ob_start();
 
 ?><html style="margin-top: 0 !important; overflow: hidden;">
 	<head>
@@ -68,9 +57,3 @@ ob_start();
 		<?php wp_footer();?>
 	</body>
 </html>
-<?php
-
-$widget_page = ob_get_clean();
-$widget_cache->save( $widget_page );
-
-echo $widget_page;
