@@ -18,28 +18,12 @@ class PL_Css_Helper {
 			// self::register_enqueue_if_not('jquery-ui-dialog', OPTIONS_FRAMEWORK_DIRECTORY.'css/jquery-ui-1.8.22.custom.css');
 		}
 		
-		if( $hook == 'post-new.php' || $hook == 'post.php' || ( $hook == 'edit.php' && isset( $_GET['post_type'] ) && $_GET['post_type'] == 'pl_general_widget' ) ) {
+		if ( $hook == 'post-new.php' || $hook == 'post.php' || ( $hook == 'edit.php' && isset( $_GET['post_type'] ) && $_GET['post_type'] == 'pl_general_widget' ) ) {
 			self::register_enqueue_if_not('post-screens', trailingslashit(PL_CSS_ADMIN_URL) .  'post-screens.css');
 		}
-		
-		$pages = array('placester_page_placester_properties', 
-					   'placester_page_placester_property_add', 
-					   'placester_page_placester_settings', 
-					   'placester_page_placester_support', 
-					   'placester_page_placester_theme_gallery', 
-					   'placester_page_placester_integrations',
-		 			   'placester_page_placester_settings_polygons', 
-		 			   'placester_page_placester_settings_property_pages', 
-		 			   'placester_page_placester_settings_international', 
-		 			   'placester_page_placester_settings_neighborhood', 
-		 			   'placester_page_placester_settings_filtering', 
-		 			   'placester_page_placester_settings_template', 
-		 			   'placester_page_placester_settings_client',
-		 			   'placester_page_placester_social',
-		 			   'placester_page_placester_lead_capture',
-					   'edit.php');
 
-		if (!in_array($hook, $pages)) { return; }
+		// NOTE:  This ensures that pages with the proper hook prefix make it past this point...
+		if (strpos($hook, 'placester_page_placester_') === false || $hook == 'edit.php') { return; }
 
 		//always load these
 		self::register_enqueue_if_not('global-css', trailingslashit(PL_CSS_URL) .  'global.css');		
@@ -109,6 +93,9 @@ class PL_Css_Helper {
 			self::register_enqueue_if_not('settings-filtering', trailingslashit(PL_CSS_ADMIN_URL) .  'settings/filtering.css');					
 		}
 
+		if ($hook == 'placester_page_placester_crm') {
+			self::register_enqueue_if_not('crm', trailingslashit(PL_CSS_ADMIN_URL) .  'crm.css');	
+		}
 	}
 
 	public static function customizer() {

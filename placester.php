@@ -170,75 +170,73 @@ include_once('third-party/convex-hull/convex-hull.php');
 include_once('third-party/mixpanel/mixpanel.php');
 
 
-// Register hook to load blueprint from plugin if no theme has yet to do so...
+// Register hook to load blueprint from plugin if the active theme has yet to do so...
 add_action( 'after_setup_theme', 'load_blueprint_from_plugin', 18 );
-function load_blueprint_from_plugin() 
-{
+function load_blueprint_from_plugin() {
     if (!class_exists('Placester_Blueprint')) {
+        // Load script that contains main blueprint class, and instantiate an object...
         require_once('blueprint/blueprint.php');
         new Placester_Blueprint('2.5', 'plugin');
-        add_action('init', 'blueprint_settings');
+        add_action('init', 'plugin_blueprint_settings');
     }
 }
 
-function blueprint_settings() {
-    remove_theme_support( 'pls-default-css' );
-    remove_theme_support( 'pls-default-style' );
-    remove_theme_support( 'pls-default-960' );
-    remove_theme_support( 'pls-default-normalize' );
-    remove_theme_support( 'pls-js' );
-    remove_theme_support( 'pls-routing-util-templates' );
+// This takes care of what a theme's functions.php file normally handles...
+function plugin_blueprint_settings() {
+    remove_theme_support('pls-default-css');
+    remove_theme_support('pls-default-style');
+    remove_theme_support('pls-default-960');
+    remove_theme_support('pls-default-normalize');
+    remove_theme_support('pls-js');
+    remove_theme_support('pls-routing-util-templates');
 }
 
 // Build plugin settings tabs/UI...
-add_action( 'admin_menu', 'placester_admin_menu' );
+add_action('admin_menu', 'placester_admin_menu');
 function placester_admin_menu() {
     // Add separator
     global $menu;
     $menu['3a'] = array( '', 'read', 'separator1', '', 'wp-menu-separator' );
 
     // Add Placester Menu
-    add_menu_page('Placester','Placester','edit_pages','placester',array('PL_Router','my_listings'), plugins_url('images/icons/logo_16.png', __FILE__ ), '3b' /* position between 3 and 4 */ );
+    add_menu_page('Placester', 'Placester', 'edit_pages', 'placester', array('PL_Router','my_listings'), plugins_url('images/icons/logo_16.png', __FILE__ ), '3b' /* position between 3 and 4 */ );
 
     // Avoid submenu to start with menu function
     global $submenu;
     $submenu['placester'] = array();
 
-    add_submenu_page( 'placester', '','Listings', 'edit_pages', 'placester_properties', array('PL_Router','my_listings'));
-    add_submenu_page( 'placester', '', 'Add Listing', 'edit_pages', 'placester_property_add', array('PL_Router','add_listings') );    
+    add_submenu_page( 'placester', 'Listings','Listings', 'edit_pages', 'placester_properties', array('PL_Router','my_listings') );
+    add_submenu_page( 'placester', 'Add Listing', 'Add Listing', 'edit_pages', 'placester_property_add', array('PL_Router','add_listings') );
     
     // If the site using the plugin is on our hosted network, don't show the theme gallery...
     if ( !defined('HOSTED_PLUGIN_KEY') ) {
-    	add_submenu_page( 'placester', '', 'Theme Gallery', 'edit_pages', 'placester_theme_gallery', array('PL_Router','theme_gallery') );    	
+    	add_submenu_page( 'placester', '', 'Theme Gallery', 'edit_pages', 'placester_theme_gallery', array('PL_Router','theme_gallery') );
     }
     
     global $settings_subpages;
-    $settings_subpages = array('Settings' => '',
-                               'Client Settings' => '_client',
-                               'Global Property Filtering' => '_filtering', 
-                               'Custom Drawn Areas' => '_polygons', 
-                               'Property Pages' => '_property_pages', 
-                               // 'Template Controls' => '_template', 
-                               'International Settings' => '_international' );
+    $settings_subpages = array(
+        'Settings' => '',
+        'Client Settings' => '_client',
+        'Global Property Filtering' => '_filtering', 
+        'Custom Drawn Areas' => '_polygons', 
+        'Property Pages' => '_property_pages',
+        'International Settings' => '_international'
+    );
+
     foreach ($settings_subpages as $name => $page_url) {
-        add_submenu_page( 'placester', '', $name, 'edit_pages', 'placester_settings' . $page_url, array('PL_Router','settings' . $page_url) );    
+        add_submenu_page( 'placester', '', $name, 'edit_pages', 'placester_settings' . $page_url, array('PL_Router','settings' . $page_url) );
     }
     
+    // TODO: Integrate shortcode and social pages into existing menu control structure...
     add_submenu_page( 'placester', 'Lead Capture', 'Lead Capture', 'edit_pages', 'placester_lead_capture', array('PL_Router','lead_capture') );
-
-    add_submenu_page( 'placester', 'Shortcodes / Widgets', 'Shortcodes / Widgets', 'edit_pages', 'edit.php?post_type=pl_general_widget' );
-    
-    /* Social Integration functionality... */
+    add_submenu_page( 'placester', 'Shortcodes', 'Shortcodes', 'edit_pages', 'edit.php?post_type=pl_general_widget' );
+    add_submenu_page( 'placester', 'IDX / MLS', 'IDX / MLS', 'edit_pages', 'placester_integrations', array('PL_Router','integrations') );
+    add_submenu_page( 'placester', 'CRM', 'CRM', 'edit_pages', 'placester_crm', array('PL_Router','crm') );
+    add_submenu_page( 'placester', 'Support', 'Support', 'edit_pages', 'placester_support', array('PL_Router','support') );
     add_submenu_page( 'placester', 'Social', 'Social', 'edit_pages', 'placester_social', array('PL_Social_Networks','add_social_settings_cb') );
-    
-    // add_submenu_page( 'placester', '', 'Settings', 'edit_pages', 'placester_settings_general', array('PL_Router','settings') );    
-    add_submenu_page( 'placester', '', 'Support', 'edit_pages', 'placester_support', array('PL_Router','support') );    
-    add_submenu_page( 'placester', '', 'IDX / MLS', 'edit_pages', 'placester_integrations', array('PL_Router','integrations') );    
-
-
 }
 
-register_activation_hook( __FILE__, 'placester_activate' );
+register_activation_hook(__FILE__, 'placester_activate');
 // register_deactivation_hook( __FILE__, 'placester_deactivate' );
 function placester_activate() {
     $metrics = new MetricsTracker("9186cdb540264089399036dd672afb10");
@@ -260,7 +258,7 @@ function on_first_activation() {
     }
 }
 
-add_action( 'wp_head', 'placester_info_bar' );
+add_action('wp_head', 'placester_info_bar');
 function placester_info_bar() {
     if ( PL_Option_Helper::get_demo_data_flag() && current_user_can('manage_options') ) {
         PL_Router::load_builder_partial('infobar.php');
