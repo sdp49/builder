@@ -1,5 +1,7 @@
 <?php
 
+PL_CRM_Contactually::init();
+
 class PL_CRM_Contactually extends PL_CRM_Base {
 	
 	const apiOptionKey = "pl_contactually_api_key";
@@ -11,14 +13,15 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 			$crm_info = array(
 				"id" => "contactually", 
 				"class" => "PL_CRM_Contactually",
-				"display_name" => "Contactually"
+				"display_name" => "Contactually",
+				"logo" => ""
 			);
 
 			PL_CRM_Controller::registerCRM($crm_info);
 		}
 	}
 
-	private function getAPIOptionKey () {
+	protected function getAPIOptionKey () {
 		return self::apiOptionKey;
 	}
 
@@ -26,7 +29,7 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 		return "{self::apiURL}/{self::version}/{$endpoint}.json";
 	}
 
-	public function callAPI ($args) {
+	public function callAPI ($endpoint, $method, $args) {
 		
 	}
 }

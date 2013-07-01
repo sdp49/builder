@@ -22,7 +22,7 @@ class PL_Css_Helper {
 			self::register_enqueue_if_not('post-screens', trailingslashit(PL_CSS_ADMIN_URL) .  'post-screens.css');
 		}
 
-		// NOTE:  This ensures that pages with the proper hook prefix make it past this point...
+		// NOTE:  This ensures that pages with the proper hook prefix make it past this point... (i.e., only plugin admin pages)
 		if (strpos($hook, 'placester_page_placester_') === false || $hook == 'edit.php') { return; }
 
 		//always load these

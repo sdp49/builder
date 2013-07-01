@@ -27,6 +27,16 @@ Author URI: https://www.placester.com/
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
+/* 
+ * This directive allows CRM functionality to be isolated and executed with minimal overhead...
+ */
+if (defined('DOING_AJAX') && $_POST['action'] == 'crm_ajax_controller') {
+    include_once('lib/crm/controller.php');
+
+    // This will end execution of this script, returning to the point where the caller included 'placester.php'...
+    return;
+}
+
 define('PL_PLUGIN_VERSION','1.1.12');
 
 define( 'PL_PARENT_DIR', plugin_dir_path(__FILE__) );

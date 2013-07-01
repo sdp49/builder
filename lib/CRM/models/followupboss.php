@@ -1,5 +1,7 @@
 <?php
 
+PL_CRM_Followupboss::init();
+
 class PL_CRM_Followupboss extends PL_CRM_Base {
 	
 	const apiOptionKey = "pl_followupboss_api_key";
@@ -12,19 +14,16 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 			$crm_info = array(
 				"id" => "followupboss", 
 				"class" => "PL_CRM_Followupboss",
-				"display_name" => "Follow Up Boss"
+				"display_name" => "Follow Up Boss",
+				"logo" => ""
 			);
 
 			PL_CRM_Controller::registerCRM($crm_info);
 		}
 	}
 
-	private function getAPIOptionKey () {
+	protected function getAPIOptionKey () {
 		return self::apiOptionKey;
-	}
-
-	public function getContact ($args = array()) {
-
 	}
 
 	public function constructURL ($endpoint) {
