@@ -7,6 +7,9 @@ header("Cache-Control: no-cache, must-revalidate"); // HTTP/1.1
 header("Expires: Sat, 26 Jul 1997 05:00:00 GMT"); // Date in the past
 
 
+if (class_exists('PLS_Slideshow')) {
+	PLS_Slideshow::enqueue();
+}
 //TODO: check if we need all these
 add_action( 'wp_print_scripts', 'pls_print_info_var' );
 wp_enqueue_script( 'jquery-placeholder', trailingslashit( PLS_JS_URL ) . 'libs/jquery-placeholder/jquery.placeholder.min.js' , array( 'jquery' ), '1.0.1', true );
@@ -16,12 +19,10 @@ wp_enqueue_script( 'contact-widget', trailingslashit( PLS_JS_URL ) . 'scripts/co
 wp_enqueue_script( 'client-edit-profile', trailingslashit( PLS_JS_URL ) . 'scripts/client-edit-profile.js' , array( 'jquery' ), NULL, true );
 wp_enqueue_script( 'script-history', trailingslashit( PLS_JS_URL ) . 'libs/history/jquery.address.js' , array( 'jquery' ), NULL, true );
 wp_enqueue_script( 'search-bootloader', trailingslashit( PLS_JS_URL ) . 'scripts/search-loader.js' , array( 'jquery' ), NULL, true );
-wp_enqueue_script( 'pls-slideshow-orbit', trailingslashit( PLS_EXT_URL ) . 'slideshow/orbit/jquery.orbit.js', array( 'jquery' ), NULL, false );
-wp_enqueue_script( 'pls-slideshow-orbit', trailingslashit( PLS_EXT_URL ) . 'slideshow/orbit/orbit.css');
 
 add_filter('show_admin_bar', '__return_false');
 
-?><html style="margin-top: 0 !important; overflow: hidden;">
+?><html style="margin-top: 0 !important; overflow: scroll;">
 	<head>
 		<style type="text/css">
 			body {
