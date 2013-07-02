@@ -12,8 +12,8 @@
 			</div>
 			<div id='preview_meta_widget'><?php echo $iframe;?></div>
 			<div id="pl-review-wrapper">
-				<a id="pl-review-link" href="" style="display:none;">Open Preview in a popup</a>
-				<div id="pl-review-popup" class="dialog" style="display: none;">Loading preview...</div>
+				<a href="" class="pl_review_link button" style="display:none;" title="Preview">Preview in a popup window</a>
+				<div id="pl_review_popup" class="dialog" style="display: none;">Loading preview...</div>
 			</div>
 		</div>
 	</div>
