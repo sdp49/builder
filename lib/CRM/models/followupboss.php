@@ -4,9 +4,9 @@ PL_CRM_Followupboss::init();
 
 class PL_CRM_Followupboss extends PL_CRM_Base {
 	
-	const apiOptionKey = "pl_followupboss_api_key";
-	const apiURL = "https://api.followupboss.com";
-	const version = "v1";
+	private static $apiOptionKey = "pl_followupboss_api_key";
+	private static $apiURL = "https://api.followupboss.com";
+	private static $version = "v1";
 
 	public static function init () {
 		// Register this CRM implementation with the controller...
@@ -16,7 +16,8 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 				"class" => "PL_CRM_Followupboss",
 				"display_name" => "Follow Up Boss",
 				"referral_url" => "app.followupboss.com/signup?p=placester",
-				"logo_img_path" => "images/follow-up-boss-color.png"
+				"cred_lookup_url" => "https://app.followupboss.com/settings/user",
+				"logo_img" => "follow-up-boss-color.png"
 			);
 
 			PL_CRM_Controller::registerCRM($crm_info);
@@ -28,11 +29,11 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 	}
 
 	protected function getAPIOptionKey () {
-		return self::apiOptionKey;
+		return self::$apiOptionKey;
 	}
 
 	public function constructURL ($endpoint) {
-		return "{self::apiURL}/{self::version}/{$endpoint}";
+		return "{self::$apiURL}/{self::$version}/{$endpoint}";
 	}
 
 	public function callAPI ($endpoint, $method, $args = array()) {

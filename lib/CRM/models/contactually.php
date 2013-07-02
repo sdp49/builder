@@ -4,9 +4,9 @@ PL_CRM_Contactually::init();
 
 class PL_CRM_Contactually extends PL_CRM_Base {
 	
-	const apiOptionKey = "pl_contactually_api_key";
-	const apiURL = "https://www.contactually.com/api";
-	const version = "v1";
+	private static $apiOptionKey = "pl_contactually_api_key";
+	private static $apiURL = "https://www.contactually.com/api";
+	private static $version = "v1";
 
 	public static function init () {
 		// Register this CRM implementation with the controller...
@@ -16,7 +16,8 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 				"class" => "PL_CRM_Contactually",
 				"display_name" => "Contactually",
 				"referral_url" => "https://www.contactually.com/invite/placester",
-				"logo_img_path" => "images/contactually_logo.png"
+				"cred_lookup_url" => "https://www.contactually.com/settings/integrations",
+				"logo_img" => "contactually-logo.png"
 			);
 
 			PL_CRM_Controller::registerCRM($crm_info);
@@ -28,11 +29,11 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 	}
 
 	protected function getAPIOptionKey () {
-		return self::apiOptionKey;
+		return self::$apiOptionKey;
 	}
 
 	public function constructURL ($endpoint) {
-		return "{self::apiURL}/{self::version}/{$endpoint}.json";
+		return "{self::$apiURL}/{self::$version}/{$endpoint}.json";
 	}
 
 	public function callAPI ($endpoint, $method, $args = array()) {
@@ -51,14 +52,9 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 		// Construct URL...
 		$query_str = isset($args["query_params"]) ? $this->constructQueryString($args["query_params"]) : "";
 		$url = $this->constructURL($endpoint) . $query_str;
-		
 
 		curl_setopt($handle, CURLOPT_URL, $url);
 		curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
-
-		// HTTP authentication using the API key...
-		curl_setopt($handle, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-		curl_setopt($handle, CURLOPT_USERPWD, $api_key . ":");
 
 		// Use a local cert to make sure we have a valid one
 		curl_setopt($handle, CURLOPT_CAINFO, trailingslashit(PL_PARENT_DIR) . "config/cacert.pem");

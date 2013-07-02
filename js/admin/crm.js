@@ -19,6 +19,7 @@ jQuery(document).ready(function($) {
 	// Get main view...
 	call_CRM_AJAX('mainView', {}, function (result) {
 		console.log(result);
+		$('#main-crm-container').html(result);
 	});
 
 });

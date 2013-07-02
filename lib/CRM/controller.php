@@ -4,7 +4,7 @@ PL_CRM_Controller::init();
 
 class PL_CRM_Controller {
 
-	const activeCRMKey = "pl_active_CRM";
+	private static $activeCRMKey = "pl_active_CRM";
 
 	public static $registeredCRMList = array();
 
@@ -14,8 +14,9 @@ class PL_CRM_Controller {
 		include_once("models/contactually.php");
 		include_once("models/followupboss.php");
 
-		// Load any necessary non-CRM libs...
-		include_once("../../models/options.php");
+		// Load any necessary non-CRM plugin libs...
+		$curr_dir = trailingslashit(dirname(__FILE__));
+		include_once("{$curr_dir}../../models/options.php");
 
 		// Register main AJAX endpoint for all CRM calls...
 		add_action("wp_ajax_crm_ajax_controller", array(__CLASS__, "ajaxController"));
@@ -51,24 +52,21 @@ class PL_CRM_Controller {
 	}
 
 	public static function registerCRM ($crm_info) {
-		extract($crm_info);
-
 		// We need an id...
-		if (!isset($id)) { return; }
+		if (empty($crm_info["id"])) { return; }
 
-		$info = array();
-		$info['class'] = isset($class) ? $class : null;
-		$info['display_name'] = isset($display_name) ? $display_name : null;
+		$id = $crm_info["id"];
+		unset($crm_info["id"]);
 
-		self::$registeredCRMList[$id] = $info;
+		self::$registeredCRMList[$id] = $crm_info;
 	}
 
 	public static function getActiveCRM () {
-		return PL_Options::get(self::activeCRMkey, null);
+		return PL_Options::get(self::$activeCRMKey, null);
 	}
 
 	public static function setActiveCRM ($crm_id) {
-		return PL_Options::set(self::activeCRMKey, $crm_id);
+		return PL_Options::set(self::$activeCRMKey, $crm_id);
 	}
 
 	/*
@@ -81,7 +79,7 @@ class PL_CRM_Controller {
 
 		ob_start();
 			if (is_null($active_crm)) {
-				include("../views/login.php");
+				include("views/login.php");
 			}
 			else {
 				// TODO...
