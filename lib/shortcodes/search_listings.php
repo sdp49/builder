@@ -54,14 +54,14 @@ class PL_Search_Listing_CPT extends PL_SC_Base {
 
 	protected static $template = array(
 		'snippet_body'	=> array( 'type' => 'textarea', 'label' => 'HTML', 'default' => '
-<section class="lu">
-	<div class="lu-head">
+<section class="my-lu">
+	<div class="my-lu-head">
 		<a href="[url]">[address] [locality], [region]</a>
 	</div>
-	<div class="lu-body">
-		<div class="lu-image">[image]</div>
+	<div class="my-lu-body">
+		<div class="my-lu-image">[image]</div>
 
-		<div class="lu-details">
+		<div class="my-lu-details">
 			<ul>
 				<li>[beds]<span> Bed(s)</span>
 				</li>
@@ -70,13 +70,13 @@ class PL_Search_Listing_CPT extends PL_SC_Base {
 				<li>[sqft]<span> Sqft</span>
 				</li>
 			</ul>
-			<p class="lu-mls">MLS #: [mls_id]</p>
+			<p class="my-lu-mls">MLS #: [mls_id]</p>
 		</div>
-		<p class="lu-price">
+		<p class="my-lu-price">
 			Price: <span>[price]</span>
 		</p>
-		<p class="lu-desc">[desc]</p>
-		<a class="lu-details" href="[url]">View Listing Details</a>
+		<p class="my-lu-desc">[desc]</p>
+		<a class="my-lu-details" href="[url]">View Listing Details</a>
 	</div>
 </section>
 ',
@@ -87,6 +87,7 @@ You can use any valid HTML in this field to format the subcodes.' ),
 			'default' => '
 /* sample list box */
 .my-listings {
+	clear: both;
 	border: 1px solid #000;
 	padding: 5px;
 	width: 400px;
@@ -106,52 +107,52 @@ You can use any valid HTML in this field to format the subcodes.' ),
 
 /* format the table that holds the listings */				
 .my-listings .placester_properties {
-width: 100%;
+	width: 100%;
 }
 
 /* format the pagination links */
 .my-listings .paginate_button {
-padding-right: 1em;
+	padding-right: 1em;
 }
 /* page numbers */
 .my-listings .dataTables_paginate span {
-padding-right: 1em;
+	padding-right: 1em;
 }
 
 /* section defined above to hold a single listing */				
-section.lu {
-margin-bottom: 2px;
-background: #efefef;
-padding: 3px;
+section.my-lu {
+	margin-bottom: 2px;
+	background: #efefef;
+	padding: 3px;
 }
 /* section defined above to hold the body of the listing */				
-.lu-body {
+.my-lu-body {
 	width: 100%;
 	overflow: hidden;
 }
 /* section defined above to hold the listing heading */				
-.lu-head {
+.my-lu-head {
 	margin: 3px 0;
 }
 /* section defined above to hold the listing image */				
-.lu-image {
+.my-lu-image {
 	float: left;
 }
 /* sections defined above to hold the details of the listing */				
-.lu-details,
-.lu-price,
-.lu-desc {
+.my-lu-details,
+.my-lu-price,
+.my-lu-desc {
 	float: right;
 	clear: right;
 	width: 50%;
-font-size: 12px;
+	font-size: 12px;
 }
-.lu p,
-.lu li {
+.my-lu p,
+.my-lu li {
 	margin: 0;
 	padding: 0;
 }
-.lu ul {
+.my-lu ul {
 	margin: 0;
 	padding-left: 1.2em;
 }',
