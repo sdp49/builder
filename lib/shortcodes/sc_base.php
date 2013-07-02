@@ -16,7 +16,7 @@ abstract class PL_SC_Base {
 	protected static $help = '';
 	// subclass should use this for basic display options/shortcode arguments
 	protected static $options = array(
-		'context'			=> array( 'type' => 'select', 'label' => 'Template', 'default' => ''),
+		'context'			=> array( 'type' => 'select', 'label' => 'Template', 'default' => ''),		// these should always exist
 		'width'				=> array( 'type' => 'numeric', 'label' => 'Width(px)', 'default' => 250 ),
 		'height'			=> array( 'type' => 'numeric', 'label' => 'Height(px)', 'default' => 250 ),
 		'widget_class'		=> array( 'type' => 'text', 'label' => 'Widget Class', 'default' => '' ),
@@ -126,15 +126,56 @@ abstract class PL_SC_Base {
 	}
 
 	/**
-	 * Return array of filters used to configure this shortcode
+	 * Return array of filters used to configure this shortcode.
 	 */
 	protected function _get_filters() {return array();}
 
-
+	/**
+	 * Return array of filters used to configure this custom shortcode
+	 * @param $id int	: id of custom shortcode record
+	 * @return array
+	 */
+	public static function get_filters($id) {
+		$class = get_called_class();
+		if ($post = get_post($id, ARRAY_A, array('post_type'=>'pl_general_widget'))) {
+			$postmeta = get_post_meta($id);
+			if (!empty($postmeta['pl_'.$class::$shortcode.'_option'])) {
+				$filters = maybe_unserialize($postmeta['pl_'.$class::$shortcode.'_option'][0]);
+				return $filters;
+			}
+		}
+		return array();
+	}
+		
+	/**
+	 * Return array of options used to configure this custom shortcode
+	 * @param $id int	: id of custom shortcode record
+	 * @return array
+	 */
+	public static function get_options($id) {
+		$class = get_called_class();
+		$options = array();
+		if ($post = get_post($id, ARRAY_A, array('post_type'=>'pl_general_widget'))) {
+			$postmeta = get_post_meta($id);
+			foreach($class::$options as $attr=>$vals) {
+				if ($attr=='context') {
+					$key = 'pl_cpt_template';
+				}
+				else {
+					$key = $attr;
+				}
+				if (isset($postmeta[$key])) {
+					$options[$attr] = maybe_unserialize($postmeta[$key][0]);
+				}
+			}
+		}
+		return $options;
+	}
+		
 	/**
 	 * Generate a shortcode for this shortcode type from arguments
-	 * @param string $shortcode_type	: shortcode type we will be generating
-	 * @param array $args				: shortcode post type record including postmeta values
+	 * Used by shortcode edit page, template edit page for the preview pane
+	 * @param array $args				: set of key value pairs
 	 * @return string					: returned shortcode
 	 */
 	public static function generate_shortcode_str($args) {

@@ -32,11 +32,11 @@ class PL_Neighborhood_CPT extends PL_SC_Base {
 	);
 
 	protected static $subcodes = array(
-			'nb_title',
-			'nb_featured_image',
-			'nb_description',
-			'nb_link',
-			'nb_map'
+		'nb_title'			=> array('help' => ''),
+		'nb_featured_image'	=> array('help' => ''),
+		'nb_description'	=> array('help' => ''),
+		'nb_link'			=> array('help' => ''),
+		'nb_map'			=> array('help' => '')
 	);
 
 	protected static $template = array(
