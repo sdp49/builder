@@ -4,10 +4,9 @@ PL_CRM_Controller::init();
 
 class PL_CRM_Controller {
 
-	const integratedCRMListKey = "pl_integrated_CRM_list";
 	const activeCRMKey = "pl_active_CRM";
 
-	public static $supportedCRMList = array();
+	public static $registeredCRMList = array();
 
 	public static function init () {
 		// Load CRM libs...
@@ -25,11 +24,9 @@ class PL_CRM_Controller {
 	public static function ajaxController () {
 		error_log("In ajaxController...");
 		error_log(var_export($_POST, true));
-		echo "It worked!!!";
-		die();
 
-		// CRM-related AJAX calls (i.e., to the single endpoint defined in init) MUST specify
-		// a field called "crm_method" that corresponds to the class function it wants to execute,
+		// CRM-related AJAX calls (i.e., to the single endpoint defined in init) MUST specify a
+		// field called "crm_method" that corresponds to the class function it wants to execute,
 		// along with the properly labeled fields as subsequent arguments...
 		if (is_null($_POST["crm_method"])) { return; }
 
@@ -63,11 +60,7 @@ class PL_CRM_Controller {
 		$info['class'] = isset($class) ? $class : null;
 		$info['display_name'] = isset($display_name) ? $display_name : null;
 
-		self::$supportedCRMList[$id] = $info;
-	}
-
-	public static function integrateCRM () {
-		
+		self::$registeredCRMList[$id] = $info;
 	}
 
 	public static function getActiveCRM () {

@@ -14,6 +14,22 @@ abstract class PL_CRM_Base {
 		return PL_Options::set($option_key, $api_key);
 	}
 
+	protected function constructQueryString ($query_params = array()) {
+		$query_string = "";
+
+		if (is_array($args["query_params"]) && !empty($args["query_params"])) {
+			$query_string = "?";
+			foreach ($args["query_params"] as $key => $value) {
+				$query_string .= "{$key}={$value}&";
+			}
+		}
+
+		// Remove trailing "&" if one exists...
+		$query_string = rtrim($query_string, "&");
+
+		return $query_string;
+	}
+
 	abstract public function constructURL ($endpoint);
 
 	abstract public function callAPI ($endpoint, $method, $args);

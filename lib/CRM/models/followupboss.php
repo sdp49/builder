@@ -12,14 +12,19 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 		// Register this CRM implementation with the controller...
 		if (class_exists("PL_CRM_Controller")) {
 			$crm_info = array(
-				"id" => "followupboss", 
+				"id" => "followupboss",
 				"class" => "PL_CRM_Followupboss",
 				"display_name" => "Follow Up Boss",
-				"logo" => ""
+				"referral_url" => "app.followupboss.com/signup?p=placester",
+				"logo_img_path" => "images/follow-up-boss-color.png"
 			);
 
 			PL_CRM_Controller::registerCRM($crm_info);
 		}
+	}
+
+	public function __construct () {
+		// Nothing yet...
 	}
 
 	protected function getAPIOptionKey () {
@@ -34,6 +39,10 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 		// init cURL handle...
 		$handle = curl_init();
 		$api_key = $this->getAPIKey();
+		
+		// Construct URL...
+		$query_str = isset($args["query_params"]) ? $this->constructQueryString($args["query_params"]) : "";
+		$url = $this->constructURL($endpoint) . $query_str;
 
 		curl_setopt($handle, CURLOPT_URL, $url);
 		curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
@@ -47,7 +56,11 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 
 		curl_setopt($handle, CURLOPT_CUSTOMREQUEST, $method);
 		curl_setopt($handle, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-		curl_setopt($handle, CURLOPT_POSTFIELDS, json_encode($args["body"]));
+		
+		// Set payload if it exists...
+		if (!empty($args["body"])) {
+			curl_setopt($handle, CURLOPT_POSTFIELDS, json_encode($args["body"]));
+		}
 
 		// make API call
 		$response = curl_exec($handle);

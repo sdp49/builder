@@ -92,14 +92,14 @@ class PL_Js_Helper {
 			self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) . 'datatables/jquery.dataTables.js', array('jquery'));
 		}
 		
-		if ($hook == 'placester_page_placester_settings_international') {
-			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings/international.js', array('jquery'));
-			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings.js', array('jquery'));	
-		}
+		// if ($hook == 'placester_page_placester_settings_international') {
+		// 	self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings/international.js', array('jquery'));
+		// 	self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings.js', array('jquery'));	
+		// }
 		
-		if ($hook == 'placester_page_placester_settings_neighborhood') {
-			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings.js', array('jquery'));
-		}
+		// if ($hook == 'placester_page_placester_settings_neighborhood') {
+		// 	self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings.js', array('jquery'));
+		// }
 		
 		if ($hook == 'placester_page_placester_settings_filtering') {
 			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings/filtering.js', array('jquery'));
