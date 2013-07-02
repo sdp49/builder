@@ -28,6 +28,13 @@ if ($action == 'edit' && !empty($_POST['save']) && !empty($_POST['shortcode'])) 
 			}
 		}
 	}
+	// unescape form fields
+	foreach($data as $key=>&$val) {
+		if (!is_array($val)) {
+			$val = stripcslashes($val);
+		}
+	}
+	print_r($data);
 	$template = array_merge($template, $data);
 }
 
@@ -58,10 +65,16 @@ $form_action = 'edit';
 			<input type="hidden" id="hiddenaction" name="action" value="<?php echo esc_attr( $form_action ) ?>" />
 			<input type="hidden" id="originalaction" name="originalaction" value="<?php echo esc_attr( $form_action ) ?>" />
 			<input type="hidden" id="id" name="id" value="<?php echo esc_attr($ID) ?>" />
+
 			<div id="poststuff">
 				<div id="post-body" class="metabox-holder columns-2">
 					<div id="post-body-content">
-						<?php wp_nonce_field( 'samplepermalink', 'samplepermalinknonce', false );?>
+						<div id="titlediv">
+							<div id="titlewrap">
+								<label class="screen-reader-text" id="title-prompt-text" for="title"><?php echo __( 'Enter a title for your template here' ); ?></label>
+								<input type="text" name="title" size="30" value="<?php echo esc_attr( htmlspecialchars( $title ) ); ?>" id="title" autocomplete="off" title="<?php _e('Please enter a title for this shortcode.')?>" />
+							</div>
+						</div><!-- /titlediv -->
 						<div id="normal-sortables" class="meta-box-sortables">
 							<?php PL_Router::load_builder_partial('shortcode-template-box.php', array(
 									'action'=>$action,

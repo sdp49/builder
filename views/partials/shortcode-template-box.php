@@ -16,20 +16,6 @@ $pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs();
 
 	<div class="inside">
 
-		<!-- Template Name -->
-		<section class="row-fluid">
-
-			<div class="span2">
-				<label for="pl_tpl_edit_title" class="section-label">Template Title:</label>
-			</div>
-
-			<div class="span10">
-				<input type="text" id="pl_tpl_edit_title" name="title" title="<?php _e('Please enter a name for this shortcode template.')?>" value="<?php echo $title?>" />
-			</div>
-
-		</section>
-		<!-- /Template Name -->
-
 		<!-- Template Type -->
 		<section class="row-fluid">
 
@@ -43,6 +29,9 @@ $pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs();
 						$shortcode_refs = array();
 						foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ):
 							$link_class = $selected = '';
+							if (!$shortcode) {
+								$shortcode = $pl_shortcode;
+							}
 							if ($shortcode == $pl_shortcode) {
 								$link_class = 'selected_type';
 								$selected = 'selected="selected"';
@@ -54,7 +43,7 @@ $pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs();
 							<?php
 						endforeach;
 						?>
-				</select>
+				</select> (for use with shortcode <span id="pl_sc_tpl_shortcode_selected">[<?php echo $shortcode?>]</span>)
 			</div>
 
 		</section>
@@ -66,17 +55,22 @@ $pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs();
 			<!-- Template HTML/CSS -->
 			<div class="span6">
 
+				<?php /*
 				<!-- Use existing template lightbox -->
 				<a id="popup_existing_template" href="#">Use existing template as a base for this new template</a>
-
+				*/ ?>
 				<?php
 				foreach( $pl_shortcodes_attr as $pl_shortcode => $sc_attrs ) {?>
 					<div class="pl_template_block <?php echo $pl_shortcode;?>" style="display:none;">
 					<?php
 					foreach($sc_attrs['template'] as $field => $f_args) {
-						$default = ($action!='edit' && !empty($f_args['default'])) ? $f_args['default'] : '';
-						$_POST[$pl_shortcode][$field] = !empty( $values[$field] ) ? $values[$field] : $default;
-						PL_Form::item($field, $f_args, 'POST', $pl_shortcode, 'general_widget_', true);
+						if ($action!='edit' || $values['shortcode']!=$pl_shortcode) {
+							$_POST[$pl_shortcode][$field] = !empty($f_args['default']) ? $f_args['default'] : '';
+						}
+						else {
+							$_POST[$pl_shortcode][$field] = !empty( $values[$field] ) ? $values[$field] : '';
+						}
+						PL_Form::item($field, $f_args, 'POST', $pl_shortcode, 'pl-sc-tpl-edit', true);
 					}?>
 					</div>
 					<?php
@@ -94,12 +88,16 @@ $pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs();
 				<?php foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ) :?>
 					<?php if(!empty($sct_args['subcodes'])):?>
 						<div class="shortcode_block <?php echo $pl_shortcode?>" style="display: none;">
-							<h3>Usage</h3>
+							<h3>Subcodes</h3>
 							<?php $subcodes = '';?>
-							<?php foreach($sct_args['subcodes'] as $subcode): ?>
-								<?php $subcodes .= ($subcodes?', ':'') . '[' . $subcode . ']';?>
+							<?php foreach($sct_args['subcodes'] as $subcode=>$atts): ?>
+								<?php $subcodes .= '<span class="subcode">[' . $subcode . ']</span>';?>
+								<?php if (!empty($atts['help'])):?>
+									<?php $subcodes .= '<span class="description subcode-help">'. $atts['help'] .'</span>';?>
+								<?php endif;?>
+								<?php $subcodes .= '<br />';?>
 							<?php endforeach;?>
-							<p>Use the following subcodes to complete your shortcode template:<br><?php echo $subcodes?></p>
+							<p>Use the following subcodes to customize your shortcode template:<br /><?php echo $subcodes?></p>
 						</div>
 					<?php endif;?>
 				<?php endforeach;?>
