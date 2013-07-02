@@ -80,7 +80,7 @@ class PL_Search_Listing_CPT extends PL_SC_Base {
 	</div>
 </section>
 ',
-			'prompt'	=> '
+			'description'	=> '
 You can use any valid HTML in this field to format the subcodes.' ),
 
 		'css'			=> array( 'type' => 'textarea', 'label' => 'CSS', 
@@ -155,16 +155,16 @@ font-size: 12px;
 	margin: 0;
 	padding-left: 1.2em;
 }',
-			'prompt'	=> '
+			'description'	=> '
 You can use any valid CSS in this field to customize the listings, which will also inherit the CSS from the theme.' ),
 
 		'before_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content before the listings', 'default' => '<div class="my-listings">',
-			'prompt'	=> '
+			'description'	=> '
 You can use any valid HTML in this field and it will appear before the listings.
 For example, you can wrap the whole list with a <div> element to apply borders, etc, by placing the opening <div> tag in this field and the closing </div> tag in the following field.' ),
 
 		'after_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content after the listings', 'default' => '</div>',
-			'prompt'	=> '
+			'description'	=> '
 You can use any valid HTML in this field and it will appear after the listings.' ),
 	);
 

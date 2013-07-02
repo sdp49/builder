@@ -54,7 +54,7 @@ class PL_Listing_Slideshow_CPT extends PL_SC_Base {
 	<p class="caption-subtitle"><span class="price">[ls_beds] beds</span>, <span class="baths">[ls_baths] baths</span></p>
 	<a class="button details" href="[ls_url]"><span></span></a>
 </div>',
-			'prompt'	=> '
+			'description'	=> '
 You can use any valid HTML in this field to format the subcodes, but you must ensure that it is contained in a block similar to:
 <div id="caption-[ls_index]" class="orbit-caption">...</div>.'),
 
@@ -94,16 +94,16 @@ You can use any valid HTML in this field to format the subcodes, but you must en
 .orbit-wrapper .orbit-caption a:hover {
 	text-decoration: underline;
 }',
-			'prompt'	=> '
+			'description'	=> '
 You can use any valid CSS in this field to customize the caption, which will also inherit the CSS from the theme.' ),
 
 		'before_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content before the slideshow', 'default' => '<div class="my-slideshow">',
-			'prompt'	=> '
+			'description'	=> '
 You can use any valid HTML in this field and it will appear before the slideshow images. 
 For example, you can wrap the whole slideshow with a <div> element to apply borders, etc, by placing the opening <div> tag in this field and the closing </div> tag in the following field.' ),
 
 		'after_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content after the slideshow', 'default' => '</div>',
-			'prompt'	=> '
+			'description'	=> '
 You can use any valid HTML in this field and it will appear after the slideshow images.' ),
 	);
 

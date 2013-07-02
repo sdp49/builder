@@ -37,16 +37,16 @@ class PL_Map_CPT extends PL_SC_Base {
 	float: left;
 	width: 10em;
 }',
-			'prompt'	=> '
+			'description'	=> '
 You can use any valid CSS in this field to customize your HTML, which will also inherit the CSS from the theme.' ),
 
 		'before_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content before the map', 'default' => '<div class="my-map">',
-			'prompt'	=> '
+			'description'	=> '
 You can use any valid HTML in this field and it will appear before the map.
 For example, you can wrap the whole map with a <div> element to apply borders, etc, by placing the opening <div> tag in this field and the closing </div> tag in the following field.' ),
 
 		'after_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content after the map', 'default' => '</div>',
-			'prompt'	=> '
+			'description'	=> '
 You can use any valid HTML in this field and it will appear after the map.' ),
 	);
 }

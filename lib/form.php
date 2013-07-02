@@ -79,7 +79,7 @@ class PL_Form {
 			$cols = ! empty( $attributes['cols'] ) ? $attributes['cols'] : 20;
 			?>
 				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>">
-					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
+					<label class="textarea" for="<?php echo $id ?>"><?php echo $text ?><?php if (!empty($description)) : ?><span class="description"><?php echo htmlentities($description);?></span><?php endif;?></label>	
 					<textarea id="<?php echo $id ?>" name="<?php echo $name ?>" rows="<?php echo $rows; ?>" cols="<?php echo $cols; ?>"><?php echo $value ?></textarea>
 				</section>
 			<?php
@@ -193,8 +193,12 @@ class PL_Form {
 		$id = $item;
 		if($parent) {
 			$name = $parent . '[' . $item . ']';
-			$id = str_replace(array('[',']'), array('-',''), $parent) . '-' . $item; //finding brackets in ids is tricky for js
+			$id = str_replace(array('[',']'), array('-',''), $parent) . '-' . $item; // brackets are not valid in the id
 		}
+		
+		// support description text
+		$description = '';
+		if (!empty($attributes['description'])) { $description = $attributes['description'];}
 
 		// get options, if there are any.
 		if (isset($attributes['bound']) && is_array($attributes['bound'])) {
@@ -245,7 +249,7 @@ class PL_Form {
 		// extra check for blank arrays
 		$value = ( is_array( $value ) && count( $value ) === 0 ) ? null : $value;
 
-		return array('name' => $name, 'value' => $value, 'text' => $text, 'options' => $options, 'id' => $id, 'type' => $attributes['type'], 'css' => $css);
+		return array('name' => $name, 'value' => $value, 'text' => $text, 'options' => $options, 'id' => $id, 'type' => $attributes['type'], 'css' => $css, 'description' => $description);
 	}
 
 	public function prepare_custom_item($options, $method, $parent) {

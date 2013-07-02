@@ -58,7 +58,7 @@ Put subcodes here to build your form, e.g.:
 
 <div><label>Bedrooms:</label>[bedrooms]</div>
 <div><label>Bathrooms:</label>[bathrooms]</div>',
-			'prompt'	=> '
+			'description'	=> '
 You can use any valid HTML in this field to format the subcodes.' ),
 
 		'css'			=> array( 'type' => 'textarea', 'label' => 'CSS', 
@@ -75,16 +75,16 @@ You can use any valid HTML in this field to format the subcodes.' ),
 	float: left;
 	width: 10em;
 }',
-			'prompt'	=> '
+			'description'	=> '
 You can use any valid CSS in this field to customize the form, which will also inherit the CSS from the theme.' ),
 
 		'before_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content before the form', 'default' => '<div class="my-searchform">',
-			'prompt'	=> '
+			'description'	=> '
 You can use any valid HTML in this field and it will appear before the form.
 For example, you can wrap the whole form with a <div> element to apply borders, etc, by placing the opening <div> tag in this field and the closing </div> tag in the following field.' ),
 
 		'after_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content after the form', 'default' => '</div>',
-			'prompt'	=> '
+			'description'	=> '
 You can use any valid HTML in this field and it will appear after the form.' ),
 	);
 }
