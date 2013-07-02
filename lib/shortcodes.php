@@ -388,7 +388,9 @@ class PL_Shortcodes
 			case 'default' :
 			default :
 				$filename = (trailingslashit(PL_VIEWS_SHORT_DIR) . trailingslashit($shortcode) . $snippet_name . '.php');
-				include $filename;
+				if (file_exists($filename)) {
+					include $filename;
+				}
 		}
 		return ob_get_clean();
 	}
