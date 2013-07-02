@@ -392,7 +392,7 @@ class PL_Shortcode_CPT {
 				$filters = array();
 				foreach( $sc_attrs['filters'] as $filter => $values ) {
 					if( !empty($args) && !empty($args[$filter])) {
-						if ($values['type'] == 'subgrp') {
+						if (!empty($values['type']) && $values['type'] == 'subgrp') {
 							$subargs = $args[$filter];
 							foreach($values['subgrp'] as $subfilter => $sf_values) {
 								if(!empty($subargs[$subfilter]) && $subargs[$subfilter] !== $sf_values['default']) {
@@ -400,7 +400,7 @@ class PL_Shortcode_CPT {
 								}
 							}
 						}
-						elseif($args[$filter] !== $values['default']) {
+						else {
 							$filters[$filter] = $args[$filter];
 						}
 					}

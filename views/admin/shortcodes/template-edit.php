@@ -34,7 +34,6 @@ if ($action == 'edit' && !empty($_POST['save']) && !empty($_POST['shortcode'])) 
 			$val = stripcslashes($val);
 		}
 	}
-	print_r($data);
 	$template = array_merge($template, $data);
 }
 

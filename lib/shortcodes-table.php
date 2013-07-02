@@ -355,7 +355,7 @@ class PL_Shortcodes_Table extends WP_List_Table {
 					?>
 					<th scope="row" class="check-column">
 						<?php if ( $can_edit_post ) { ?>
-						<label class="screen-reader-text" for="cb-select-<?php the_ID(); ?>"><?php printf( __( 'Select %s' ), $post->title ); ?></label>
+						<label class="screen-reader-text" for="cb-select-<?php $post->ID; ?>"><?php printf( __( 'Select %s' ), $post->title ); ?></label>
 						<input id="cb-select-<?php echo $post->ID; ?>" type="checkbox" name="post[]" value="<?php echo $post->ID; ?>" />
 						<?php } ?>
 					</th>
