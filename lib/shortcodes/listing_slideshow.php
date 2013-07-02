@@ -87,11 +87,12 @@ You can use any valid HTML in this field to format the subcodes, but you must en
 	font-size: 1.2em;
 }
 /* make sure caption links are visible! */
-.orbit-wrapper .orbit-caption a {
+#main .my-slideshow .orbit-wrapper .orbit-caption a {
 	color: #fff;
 	text-decoration: none;
 }
-.orbit-wrapper .orbit-caption a:hover {
+#main .my-slideshow .orbit-wrapper .orbit-caption a:hover {
+	color: #fff;
 	text-decoration: underline;
 }',
 			'description'	=> '

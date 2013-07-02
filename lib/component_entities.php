@@ -107,10 +107,10 @@ class PL_Component_Entity {
 		else {
 			// if we are a custom shortcode fetch the record so we can display the correct filters
 			// for the js
-			$listing_filters = PL_Shortcode_CPT::get_shortcode_filters($atts['id']);
+			$listing_filters = PL_Shortcode_CPT::get_shortcode_filters('static_listings', $atts['id']);
 			$filters_string = self::convert_filters( $listing_filters );
 			// and template and other attributes
-			$options = PL_Shortcode_CPT::get_shortcode_options($atts['id']);
+			$options = PL_Shortcode_CPT::get_shortcode_options('static_listings', $atts['id']);
 			$atts = wp_parse_args($atts, $options);
 		}
 		$atts = wp_parse_args($atts, array('id' => 0, 'limit' => 5, 'featured_id' => 'custom', 'context' => 'shortcode'));
@@ -167,10 +167,10 @@ class PL_Component_Entity {
 		else {
 			// if we are a custom shortcode fetch the record so we can display the correct filters
 			// for the js
-			$listing_filters = PL_Shortcode_CPT::get_shortcode_filters($atts['id']);
+			$listing_filters = PL_Shortcode_CPT::get_shortcode_filters('search_listings', $atts['id']);
 			$filters_string = self::convert_filters( $listing_filters );
 			// and template and other attributes
-			$options = PL_Shortcode_CPT::get_shortcode_options($atts['id']);
+			$options = PL_Shortcode_CPT::get_shortcode_options('search_listings', $atts['id']);
 			$atts = wp_parse_args($atts, $options);
 		}
 		// get default values
@@ -210,7 +210,7 @@ class PL_Component_Entity {
 
 		if (!empty($atts['id'])) {
 			// get template and other attributes
-			$options = PL_Shortcode_CPT::get_shortcode_options($atts['id']);
+			$options = PL_Shortcode_CPT::get_shortcode_options('search_map', $atts['id']);
 			$atts = wp_parse_args($atts, $options);
 		}
 		// get default values
@@ -316,7 +316,7 @@ class PL_Component_Entity {
 
 		if (!empty($atts['id'])) {
 			// get template and other attributes
-			$options = PL_Shortcode_CPT::get_shortcode_options($atts['id']);
+			$options = PL_Shortcode_CPT::get_shortcode_options('listing_slideshow', $atts['id']);
 			$atts = wp_parse_args($atts, $options);
 		}
 		// get default values
@@ -370,7 +370,7 @@ class PL_Component_Entity {
 		if (!empty($template['after_widget']) && empty($_GET['embedded'])) {
 			$footer .= $template['after_widget'];
 		}
-		
+
 		ob_start();
 		echo PLS_Slideshow::slideshow($atts);
 		return $header.ob_get_clean().$footer;
@@ -506,14 +506,14 @@ class PL_Component_Entity {
 
 		$listing_list = array();
 
-		if( ! is_null( self::$listing ) ) {
+		if( !empty( self::$listing ) ) {
 			$listing_list = self::$listing;
-		} else if ( ! is_null( PL_Shortcodes::$listing ) ) {
+		} else if ( !empty( PL_Shortcodes::$listing ) ) {
 			$listing_list = PL_Shortcodes::$listing;
 		} else {
 			return;
 		}
-
+		
 		if (array_key_exists($tag, $listing_list['cur_data'])) {
 			$val = $listing_list['cur_data'][$tag];
 		}else if (array_key_exists($tag, $listing_list['location'])) {
@@ -714,7 +714,7 @@ class PL_Component_Entity {
 
 		if (!empty($atts['id'])) {
 			// get template and other attributes
-			$options = PL_Shortcode_CPT::get_shortcode_options($atts['id']);
+			$options = PL_Shortcode_CPT::get_shortcode_options('search_form', $atts['id']);
 			$atts = wp_parse_args($atts, $options);
 		}
 		// get default values

@@ -50,7 +50,7 @@ jQuery(document).ready(function($){
 	/**
 	 * popup preview dialog
 	 */ 
-	$('#pl-review-link').click(function(e) {
+	$('.pl_review_link').click(function(e) {
 		e.preventDefault();
 
 		var iframe_content = $('#preview_meta_widget').html();
@@ -58,13 +58,14 @@ jQuery(document).ready(function($){
 		var options_width = '100%';
 		var options_height = '100%';
 
-		$('#pl-review-popup').html( iframe_content );
-		$('#pl-review-popup iframe').css('width', options_width);
-		$('#pl-review-popup iframe').css('height', options_height);
+		$('#pl_review_popup').html( iframe_content );
+		$('#pl_review_popup iframe').css('width', options_width);
+		$('#pl_review_popup iframe').css('height', options_height);
 
-		$('#pl-review-popup').dialog({
+		$('#pl_review_popup').dialog({
 			width: 800,
-			height: 600
+			height: 600,
+			title: $(this).attr('title'),
 		});
 	});
 
@@ -129,7 +130,7 @@ jQuery(document).ready(function($){
 	 */
 	function sc_update_preview() {
 
-		$('#pl-review-link').hide();
+		$('.pl_review_link').hide();
 		
 		var shortcode = $('#pl_sc_shortcode_type').val();
 		
@@ -147,7 +148,7 @@ jQuery(document).ready(function($){
 			}
 			
 			var data = $('#pl_sc_edit form .'+shortcode).find('input,select,textarea').serializeArray();
-			data.push({name:'action', value:'pl_sc_changed'}, {name:'shortcode', value:shortcode});
+			data.push({name:'action', value:'pl_sc_changed'}, {name:'shortcode', value:shortcode}, {name:'id', value:$('#pl_sc_edit form input[name="ID"]').val()});
 			var args = $.param(data);
 			$.ajax({
 				data: args,
@@ -161,7 +162,7 @@ jQuery(document).ready(function($){
 						$('#preview_meta_widget').html('<iframe src="'+ajaxurl+'?action=pl_sc_preview&post_type=pl_general_widget&sc_str='+response.sc_str+'" width="'+width+'" height="'+height+'"></iframe>');
 						$('#preview_meta_widget iframe').load( function() {
 							$('#pl_sc_edit .preview_load_spinner').hide();
-							$('#pl_sc_edit #pl-review-link').show();
+							$('#pl_sc_edit .pl_review_link').show();
 						});
 						$('#sc_slug_box .iframe_link').hide();
 						$('#sc_slug_box .shortcode_link').show().find('.slug').html(response.sc_str);
@@ -188,7 +189,7 @@ jQuery(document).ready(function($){
 
 	// setup preview window if loading prexisting shortcode
 	if ($('#preview_meta_widget').html()) {
-		$('#pl_sc_edit #pl-review-link').show();
+		$('#pl_sc_edit .pl_review_link').show();
 	}
 	
 	// call the preview update for every changed input and select in the shortcode edit view
@@ -226,6 +227,9 @@ jQuery(document).ready(function($){
 	 */
 	function tpl_type_selected() {
 		var shortcode = $('#pl_sc_tpl_shortcode').val();
+		
+		$('#pl_sc_tpl_shortcode_selected').html('['+shortcode+']');
+		
 		// update the shortcode hints
 		$('#subshortcodes .shortcode_block').hide();
 		$('#subshortcodes .shortcode_block.'+shortcode).show();
@@ -248,7 +252,7 @@ jQuery(document).ready(function($){
 		$('#preview_meta_widget').html('<iframe src="'+ajaxurl+'?action=pl_sc_template_preview&post_type=pl_general_widget&shortcode='+shortcode+'&'+args+'" width="250px" height="250px"></iframe>');
 		$('#preview_meta_widget iframe').load( function() {
 			$('#pl_sc_tpl_edit .preview_load_spinner').hide();
-			$('#pl_sc_tpl_edit #pl-review-link').show();
+			$('#pl_sc_tpl_edit .pl_review_link').show();
 		});
 	}
 	

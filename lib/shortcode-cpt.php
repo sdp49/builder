@@ -131,7 +131,7 @@ class PL_Shortcode_CPT {
 	 ***************************************************/
 
 	/**
-	 * Called when editing - pass back enough info to generate the preview pane
+	 * Called by js when editing - pass back enough info to generate the preview pane
 	 */
 	public function ajax_shortcode_changed() {
 		$response = array('sc_str'=>'');
@@ -154,7 +154,7 @@ class PL_Shortcode_CPT {
 	 * Helper function to generate a shortcode string from a set of arguments
 	 */
 	public static function generate_shortcode_str($shortcode, $args) {
-		if (empty($shortcode) || empty(self::$shortcodes[$shortcode])) {
+		if (empty(self::$shortcodes[$shortcode])) {
 			return '';
 		}
 		return self::$shortcodes[$shortcode]->generate_shortcode_str($args);
@@ -183,50 +183,28 @@ class PL_Shortcode_CPT {
 
 	/**
 	 * Get filter settings for the custom shortcode
-	 * @param string $id	: id of a saved custom shortcode
+	 * @param string $sc_type	: shortcode type
+	 * @param string $id		: id of a saved custom shortcode
 	 * @return array
 	 */
-	public static function get_shortcode_filters($id) {
-		if ($post = get_post($id, ARRAY_A, array('post_type'=>'pl_general_widget'))) {
-			$postmeta = get_post_meta($id);
-			if (!empty($postmeta['shortcode'])) {
-				$p_shortcode = $postmeta['shortcode'][0];
-				if (!empty($postmeta['pl_'.$p_shortcode.'_option'])) {
-					$filters = maybe_unserialize($postmeta['pl_'.$p_shortcode.'_option'][0]);
-					return $filters;
-				}
-			}
+	public static function get_shortcode_filters($sc_type, $id) {
+		if (empty(self::$shortcodes[$sc_type])) {
+			return array();
 		}
-		return array();
+		return self::$shortcodes[$sc_type]->get_filters($id);
 	}
 
 	/**
 	 * Get option settings for the custom shortcode
-	 * @param string $id	: id of a saved custom shortcode
+	 * @param string $sc_type	: shortcode type
+	 * @param string $id		: id of a saved custom shortcode
 	 * @return array
 	 */
-	public static function get_shortcode_options($id) {
-		if ($post = get_post($id, ARRAY_A, array('post_type'=>'pl_general_widget'))) {
-			$postmeta = get_post_meta($id);
-			if (!empty($postmeta['shortcode'])) {
-				$p_shortcode = $postmeta['shortcode'][0];
-				$sc_attrs = self::get_shortcode_attrs($p_shortcode);
-				$options = array();
-				foreach($sc_attrs['options'] as $attr=>$vals) {
-					if ($attr=='context') {
-						$key = 'pl_cpt_template';
-					}
-					else {
-						$key = $attr;
-					}
-					if (isset($postmeta[$key])) {
-						$options[$attr] = maybe_unserialize($postmeta[$key][0]);
-					}
-				}
-				return $options;
-			}
+	public static function get_shortcode_options($sc_type, $id) {
+		if (empty(self::$shortcodes[$sc_type])) {
+			return array();
 		}
-		return array();
+		return self::$shortcodes[$sc_type]->get_options($id);
 	}
 
 	/**
@@ -455,7 +433,7 @@ class PL_Shortcode_CPT {
 		}
 		// set the defaults
 		$template_id = 'pls_'.$shortcode.'___preview';
-		$args = wp_parse_args($_GET, array('context'=>$template_id, 'width'=>'250', 'height'=>'250'));
+		$args = wp_parse_args($_GET, array('context'=>$template_id));
 		$sc_str = $this->generate_shortcode_str($shortcode, $args);
 		$args = wp_parse_args($_GET[$shortcode], array('shortcode'=>$shortcode, 'title'=>'_preview'));
 		$this->save_custom_template($template_id, $args);
@@ -622,9 +600,9 @@ class PL_Shortcode_CPT {
 
 		$tpl_type_map = array();
 
-		$sc_args = self::get_shortcode_attrs($shortcode);
 
 		// add default templates
+		$sc_args = self::get_shortcode_attrs($shortcode);
 		$default_tpls = !empty($sc_args['default_tpls']) ? $sc_args['default_tpls'] : array();
 		foreach ($default_tpls as $name) {
 			$tpl_type_map[$name] = array('type'=>'default', 'title'=>$name, 'id'=>$name);
