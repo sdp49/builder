@@ -25,6 +25,7 @@ class PL_CRM_Controller {
 	public static function ajaxController () {
 		error_log("In ajaxController...");
 		error_log(var_export($_POST, true));
+		// die();
 
 		// CRM-related AJAX calls (i.e., to the single endpoint defined in init) MUST specify a
 		// field called "crm_method" that corresponds to the class function it wants to execute,
@@ -51,6 +52,13 @@ class PL_CRM_Controller {
 		die();
 	}
 
+	private static function sanitizeInput ($str_input) {
+		// Removes backslashes then proceeds to remove all HTML tags...
+		$sanitized = strip_tags(stripslashes($str_input));
+
+		return $sanitized;
+	}
+
 	public static function registerCRM ($crm_info) {
 		// We need an id...
 		if (empty($crm_info["id"])) { return; }
@@ -59,6 +67,18 @@ class PL_CRM_Controller {
 		unset($crm_info["id"]);
 
 		self::$registeredCRMList[$id] = $crm_info;
+	}
+
+	public static function integrateCRM ($crm_id, $api_key) {
+		// Lookup CRM info by ID to make sure it is supported...
+		if (!isset(self::$registeredCRMList[$crm_id])) { return; }
+
+		$crm_info = self::$registeredCRMList[$crm_id];
+		$crm_class = $info["class"];
+		$crm_obj = new $crm_class();
+
+		// Set (i.e., store) credentials/API key for this CRM so that it can be activated...
+		return $crm_obj->setAPIkey($api_key);
 	}
 
 	public static function getActiveCRM () {
@@ -79,6 +99,9 @@ class PL_CRM_Controller {
 
 		ob_start();
 			if (is_null($active_crm)) {
+				// Set this var for use in the login script/view...
+				$crm_list = self::$registeredCRMList;
+				
 				include("views/login.php");
 			}
 			else {
