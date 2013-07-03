@@ -42,6 +42,7 @@ $shortcode = (empty($_REQUEST['shortcode'])?$template['shortcode']:$_REQUEST['sh
 $form_link = '';
 $delete_link = $page_now.'?page='.$plugin_page.'&action=delete&id='.$ID;
 $form_action = 'edit';
+$used_by = PL_Shortcode_CPT::template_used_by($ID);
 
 ?>
 <div class="wrap pl-sc-wrap">
@@ -58,8 +59,10 @@ $form_action = 'edit';
 		<p>
 		Use this form to build a shortcode template that can be used to control the appearance of Placester shortcodes.
 		</p>
-		
-		<form name="post" action="<?php echo $form_link?>" method="post" id="post"<?php do_action('post_edit_form_tag'); ?>>
+
+		<div id="notice" class="hide-if-js error"><p>JavaScript is required to use the shortcode template editor. Please enable JavaScript on your browser and reload this page.</p></div>
+
+		<form name="post" action="<?php echo $form_link?>" method="post" id="post"<?php do_action('post_edit_form_tag'); ?> class="hide-if-no-js">
 			<?php wp_nonce_field($nonce_action); ?>
 			<input type="hidden" id="hiddenaction" name="action" value="<?php echo esc_attr( $form_action ) ?>" />
 			<input type="hidden" id="originalaction" name="originalaction" value="<?php echo esc_attr( $form_action ) ?>" />
@@ -74,7 +77,8 @@ $form_action = 'edit';
 								<input type="text" name="title" size="30" value="<?php echo esc_attr( htmlspecialchars( $title ) ); ?>" id="title" autocomplete="off" title="<?php _e('Please enter a title for this shortcode.')?>" />
 							</div>
 						</div><!-- /titlediv -->
-						<div id="normal-sortables" class="meta-box-sortables">
+
+						<div id="pl-sc-tpl-meta-box" class="pl-sc-meta-box">
 							<?php PL_Router::load_builder_partial('shortcode-template-box.php', array(
 									'action'=>$action,
 									'title'=>$title,
@@ -83,9 +87,10 @@ $form_action = 'edit';
 								));?>
 						</div>
 					</div>
+
 					<div id="postbox-container-1" class="postbox-container">
 						<div id="submitdiv" class="postbox">
-							<?php $action_title = ($ID ? __('Update') : __('Create'))?>
+							<?php $action_title = ($ID=='' ? __('Create') : ($used_by ? __('Publish') : __('Update')))?>
 							<h3 class="hndle"><span><?php echo $action_title;?></span></h3>
 							<div class="inside">
 								<div class="submitbox" id="submitpost">
@@ -95,8 +100,22 @@ $form_action = 'edit';
 									<?php submit_button( __( 'Update' ), 'button', 'save' ); ?>
 									</div>
 
+									<div id="misc-publishing-actions">
+										<div class="misc-pub-section">
+											<label for="pl_sc_tpl_csc_link">Status:</label> <span
+												id="post-status-display">
+												<?php echo ($ID=='' ? __('Draft') : ($used_by ? '<a id="pl_sc_tpl_csc_link" href="#">'.__('In Use').'</a>' : __('Not In Use')))?></span>
+											<div id="pl_sc_tpl_csc_list" style="display:none">
+												<p>Used by the following custom shortcodes:</p>
+												<?php foreach($used_by as $csc):?>
+													- <a href="<?php echo admin_url('admin.php?page=placester_shortcodes_shortcode_edit&amp;ID='.$csc['ID'])?>"><?php echo $csc['post_title']?></a><br/>
+												<?php endforeach;?>
+											</div>
+										</div>
+									</div>
+
 									<div id="major-publishing-actions">
-										<?php if ($ID && !PL_Shortcode_CPT::template_in_use($ID)):?>
+										<?php if ($ID && !$used_by):?>
 										<div id="delete-action">
 											<a class="submitdelete deletion" href="<?php echo $delete_link; ?>"><?php echo __('Delete'); ?></a>
 										</div>

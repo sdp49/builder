@@ -117,7 +117,7 @@ $nonce_action = 'update-' . $post_type . '_' . $post_ID;
 								</div>
 							</div>
 						</div><!-- /titlediv -->
-						<div id="normal-sortables" class="meta-box-sortables">
+						<div id="pl-sc-meta-box" class="pl-sc-meta-box">
 							<?php PL_Router::load_builder_partial('shortcode-create-box.php', 
 								array('values'=>$post,'pl_shortcodes'=>$pl_shortcodes_attr,'pl_featured_meta_value'=>$pl_featured_meta_value));?>
 						</div>

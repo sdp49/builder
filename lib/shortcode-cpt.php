@@ -460,6 +460,24 @@ class PL_Shortcode_CPT {
 	}
 
 
+	/**
+	 * Checks if the given template is being used and returns the number of custom shortcodes using it
+	 * @param string $id
+	 * @return int
+	 */
+	public static function template_used_by($id) {
+		global $wpdb;
+
+		return $wpdb->get_results($wpdb->prepare("
+			SELECT $wpdb->posts.ID, $wpdb->posts.post_title
+			FROM $wpdb->posts, $wpdb->postmeta
+			WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id
+			AND $wpdb->postmeta.meta_key = 'pl_cpt_template'
+			AND $wpdb->postmeta.meta_value = '%s'
+			AND $wpdb->posts.post_type = 'pl_general_widget'", $id), ARRAY_A);
+	}
+
+
 	/***************************************************
 	 * Shortcode Template storage functions
 	 * TODO: move to model

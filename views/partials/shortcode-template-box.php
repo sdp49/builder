@@ -81,10 +81,6 @@ $pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs();
 
 			<!-- Search Sub-Shortcodes -->
 			<div id="subshortcodes" class="span4">
-				<div style="display: none;">
-					<label for="search-subshortcodes">Sub-Shortcodes</label>
-					<input type="text" placeholder="search sub-shortcodes" />
-				</div>
 				<?php foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ) :?>
 					<?php if(!empty($sct_args['subcodes'])):?>
 						<div class="shortcode_block <?php echo $pl_shortcode?>" style="display: none;">

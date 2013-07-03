@@ -292,6 +292,12 @@ jQuery(document).ready(function($){
 	// trigger an event to set up the preview pane on page load 
 	$('#pl_sc_tpl_shortcode').trigger('change');
 	
+	// toggler for seeing which csc uses the template
+	$('#pl_sc_tpl_csc_link').click(function(e){
+		e.preventDefault();
+		$('#pl_sc_tpl_csc_list').toggle();
+	});
+	
 	
 	////////////////////////////////////////
 	// All forms - check for unsaved edits
