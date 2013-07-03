@@ -36,7 +36,7 @@ class PL_Search_Listing_CPT extends PL_SC_Base {
 		'neighborhood'	=> array('help' => 'Neighborhood'),
 		'county'		=> array('help' => 'County'),
 		'country'		=> array('help' => 'Country'),
-		//'coords'		=> array('help' => 'aa'),
+		//'coords'		=> array('help' => ''),
 		'unit'			=> array('help' => 'Unit'),
 		'full_address'	=> array('help' => 'Full address'),
 		'email'			=> array('help' => 'Email address for this listing'),
@@ -44,12 +44,21 @@ class PL_Search_Listing_CPT extends PL_SC_Base {
 		'desc'			=> array('help' => 'Property description'),
 		'image'			=> array('help' => 'Property thumbnail image'),
 		'mls_id'		=> array('help' => 'MLS #'),
-		//'map'			=> array('help' => 'aa'),
+		//'map'			=> array('help' => ''),
 		'listing_type'	=> array('help' => 'Type of listing'),
 		'img_gallery'	=> array('help' => 'Image gallery'),
-		//'amenities'		=> array('help' => 'aa'),
-		'price_unit'	=> array('help' => ''),
-		//'compliance'	=> array('help' => 'aa'),
+		//'amenities'		=> array('help' => ''),
+		'price_unit'	=> array('help' => 'Unit price'),
+		/*
+		// compliance items
+		'agent_name'		=> array('help' => 'Agent name'),
+		'agent_license'		=> array('help' => 'Agent license#'),
+		'office_name'		=> array('help' => 'Office name'),
+		'office_phone'		=> array('help' => 'Office phone'),
+		'co_agent_name'		=> array('help' => 'Co-agent name'),
+		'co_office_name'	=> array('help' => 'Co-office name'),
+		'disclaimer'		=> array('help' => 'Disclaimer notice'),
+		*/
 	);
 
 	protected static $template = array(
@@ -71,12 +80,12 @@ class PL_Search_Listing_CPT extends PL_SC_Base {
 				</li>
 			</ul>
 			<p class="my-lu-mls">MLS #: [mls_id]</p>
+			<p class="my-lu-price">
+				Price: <span>[price]</span>
+			</p>
+			<p class="my-lu-desc">[desc]</p>
+			<a class="my-lu-link" href="[url]">View Listing Details</a>
 		</div>
-		<p class="my-lu-price">
-			Price: <span>[price]</span>
-		</p>
-		<p class="my-lu-desc">[desc]</p>
-		<a class="my-lu-details" href="[url]">View Listing Details</a>
 	</div>
 </section>
 ',
@@ -90,9 +99,7 @@ You can use any valid HTML in this field to format the subcodes.' ),
 	clear: both;
 	border: 1px solid #000;
 	padding: 5px;
-	width: 400px;
 	font-family: "Helvetica Neue", Arial, Helvetica, "Nimbus Sans L", sans-serif;
-	overflow: hidden;
 }
 /* make the selectors line up */
 .my-listings label {
@@ -105,29 +112,33 @@ You can use any valid HTML in this field to format the subcodes.' ),
 	width: auto;
 }
 
-/* format the table that holds the listings */				
-.my-listings .placester_properties {
+/* format the table that holds the listings */
+				
+.my-listings .placester_properties,
+.my-listings table#placester_listings_list tr {
+	margin: 0;
 	width: 100%;
 }
 
 /* format the pagination links */
-.my-listings .paginate_button {
+.my-listings .paginate_button,
+.my-listings .paginate_active {
 	padding-right: 1em;
 }
 /* page numbers */
 .my-listings .dataTables_paginate span {
-	padding-right: 1em;
 }
 
 /* section defined above to hold a single listing */				
 section.my-lu {
 	margin-bottom: 2px;
 	background: #efefef;
-	padding: 3px;
+	padding: 10px;
 }
 /* section defined above to hold the body of the listing */				
 .my-lu-body {
 	width: 100%;
+	position: relative;
 	overflow: hidden;
 }
 /* section defined above to hold the listing heading */				
@@ -137,24 +148,33 @@ section.my-lu {
 /* section defined above to hold the listing image */				
 .my-lu-image {
 	float: left;
+	margin-right: 10px;
+	width: 180px;
+}
+.my-lu-image img {
+	width: 100%;
+	height: auto;
 }
 /* sections defined above to hold the details of the listing */				
-.my-lu-details,
-.my-lu-price,
-.my-lu-desc {
-	float: right;
-	clear: right;
-	width: 50%;
+.my-lu-details {
+	margin-left: 190px;
 	font-size: 12px;
 }
-.my-lu p,
-.my-lu li {
+.my-lu-desc {
+	font-size: 12px;
+}
+.my-lu ul {
+	float: none;
+	margin: 0;
+	padding-left: 1.2em;
+}
+.my-lu li, .my-lu p {
+	float: none;
 	margin: 0;
 	padding: 0;
 }
-.my-lu ul {
-	margin: 0;
-	padding-left: 1.2em;
+.my-lu-link {
+	float:right;
 }',
 			'description'	=> '
 You can use any valid CSS in this field to customize the listings, which will also inherit the CSS from the theme.' ),

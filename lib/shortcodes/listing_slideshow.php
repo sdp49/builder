@@ -61,6 +61,10 @@ You can use any valid HTML in this field to format the subcodes, but you must en
 		'css'			=> array( 'type' => 'textarea', 'label' => 'CSS to style your slideshow', 'default' => '
 /* sample div used to wrap the slideshow plus any addiitonal html */
 .my-slideshow {
+	overflow: hidden;;
+}
+/* sample div used to wrap the slideshow */
+.my-slideshow-wrapper {
 	float: left;
 	border: 1px solid #7f7f7f;
 	padding: 5px;
@@ -98,12 +102,18 @@ You can use any valid HTML in this field to format the subcodes, but you must en
 			'description'	=> '
 You can use any valid CSS in this field to customize the caption, which will also inherit the CSS from the theme.' ),
 
-		'before_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content before the slideshow', 'default' => '<div class="my-slideshow">',
+		'before_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content before the slideshow', 
+			'default' => '
+<div class="my-slideshow">
+	<div class="my-slideshow-wrapper">',
 			'description'	=> '
 You can use any valid HTML in this field and it will appear before the slideshow images. 
 For example, you can wrap the whole slideshow with a <div> element to apply borders, etc, by placing the opening <div> tag in this field and the closing </div> tag in the following field.' ),
 
-		'after_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content after the slideshow', 'default' => '</div>',
+		'after_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content after the slideshow', 
+			'default' => '
+	</div>
+</div>',
 			'description'	=> '
 You can use any valid HTML in this field and it will appear after the slideshow images.' ),
 	);

@@ -54,26 +54,53 @@ class PL_Form_CPT extends PL_SC_Base {
 	protected static $template = array(
 		'snippet_body'	=> array( 'type' => 'textarea', 'label' => 'HTML', 
 			'default' => '
-Put subcodes here to build your form, e.g.:
-
-<div><label>Bedrooms:</label>[bedrooms]</div>
-<div><label>Bathrooms:</label>[bathrooms]</div>',
+<div class="my-searchform-body">
+	<div class="my-searchform-item">
+		<label>Bedrooms:</label>[bedrooms]
+	</div>
+	<div class="my-searchform-item">
+		<label>Bathrooms:</label>[bathrooms]
+	</div>
+</div>',
 			'description'	=> '
 You can use any valid HTML in this field to format the subcodes.' ),
 
 		'css'			=> array( 'type' => 'textarea', 'label' => 'CSS', 
 			'default' => '
-/* sample div used to wrap the slideshow plus any addiitonal html */
+/* sample div used to wrap the slideshow plus any additonal html */
 .my-searchform {
-	float: left;
+	margin: 5px 0;
 	border: 1px solid #000;
 	padding: 10px;
 }
+/* format the body of our form */
+.my-searchform-body {
+}				
+/* format our form items */
+.my-searchform-item {
+	float: left;
+	width: 50%;
+}				
 /* line up the drop lists */
 .my-searchform label {
 	display: block;
 	float: left;
 	width: 10em;
+}
+/* inner block element created by the plugin */
+.my-searchform #pls_listings_search_results {
+	display: block;
+	position: relative;
+	margin: 0;
+	padding: 0;
+	left: 0;
+	top: 0;
+	width: 100%;
+}
+/* inner form element inside pls_listings_search_results created by the plugin */
+.my-searchform .pls_search_form_listings {
+	float: none;
+	width: 100%;
 }',
 			'description'	=> '
 You can use any valid CSS in this field to customize the form, which will also inherit the CSS from the theme.' ),
@@ -83,7 +110,7 @@ You can use any valid CSS in this field to customize the form, which will also i
 You can use any valid HTML in this field and it will appear before the form.
 For example, you can wrap the whole form with a <div> element to apply borders, etc, by placing the opening <div> tag in this field and the closing </div> tag in the following field.' ),
 
-		'after_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content after the form', 'default' => '</div>',
+		'after_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content after the form', 'default' => '<div style="clear:both"></div></div>',
 			'description'	=> '
 You can use any valid HTML in this field and it will appear after the form.' ),
 	);
