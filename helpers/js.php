@@ -129,9 +129,10 @@ class PL_Js_Helper {
 
 		if ($hook == 'placester_page_placester_crm') {
 			self::register_enqueue_if_not('crm', trailingslashit(PL_JS_URL) . 'admin/crm.js', array('jquery'));
+		}			
 	}
 
-	public static function admin_menu_url() {
+	public static function admin_menu_url () {
 		?>
 		<script type="text/javascript">
 			var adminurl = '<?php echo ADMIN_MENU_URL; ?>';
