@@ -87,7 +87,7 @@ class PL_Shortcode_CPT {
 
 
 	/**
-	 * Return a list of available shortcodes
+	 * Return a list of available shortcodes objects
 	 * @return array	: array of shortcode types
 	 */
 	public static function get_shortcode_list() {
