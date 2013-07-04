@@ -23,7 +23,7 @@ class PL_Css_Helper {
 		}
 
 		// NOTE:  This ensures that pages with the proper hook prefix make it past this point... (i.e., only plugin admin pages)
-		if (strpos($hook, 'placester_page_placester_') === false || $hook == 'edit.php') { return; }
+		if (strpos($hook, 'placester_page_placester_') === false && $hook != 'edit.php') { return; }
 
 		//always load these
 		self::register_enqueue_if_not('global-css', trailingslashit(PL_CSS_URL) . 'global.css');		
