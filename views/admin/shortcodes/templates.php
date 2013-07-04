@@ -11,6 +11,9 @@ $wp_list_table->prepare_items();
 
 
 PL_Router::load_builder_view('header.php');
+
+$search = (!empty($_REQUEST['s']) ? esc_attr($_REQUEST['s']) : '');
+
 ?>
 <div class="wrap pl-sc-wrap">
 	<?php echo PL_Helper_Header::pl_subpages('placester_shortcodes', $shortcode_subpages, 'Shortcode Templates'); ?>
@@ -27,9 +30,20 @@ PL_Router::load_builder_view('header.php');
 		<code>[search_form context=twentyeleven]</code>
 		</p>
 
+		<?php if ($search):?>
+		<h2>
+			<?php printf( ' <span class="subtitle">' . __('Search results for &#8220;%s&#8221;') . '</span>', $search )?>
+		</h2>
+		<?php endif?>
+		
 		<?php $wp_list_table->views(); ?>
+		
+		<form id="posts-filter" action="<?php echo admin_url("admin.php")?>" method="get">
 
-		<form id="posts-filter" action="" method="get">
+		<?php $wp_list_table->search_box( 'Search Custom Shortcode Templates', 'pl_sc_tpl' ); ?>
+		
+		<input type="hidden" name="page" class="post_page" value="placester_shortcodes_templates" />
+		<input type="hidden" name="post_status" class="post_status_page" value="<?php echo !empty($_REQUEST['post_status']) ? esc_attr($_REQUEST['post_status']) : 'all'; ?>" />
 
 		<?php $wp_list_table->display(); ?>
 
