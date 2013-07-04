@@ -4,7 +4,7 @@ Plugin Name: Real Estate Website Builder
 Description: Quickly create a lead generating real estate website for your real property.
 Plugin URI: https://placester.com/
 Author: Placester.com
-Version: 1.1.9
+Version: 1.1.12
 Author URI: https://www.placester.com/
 */
 
@@ -27,7 +27,17 @@ Author URI: https://www.placester.com/
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-define('PL_PLUGIN_VERSION','1.1.9');
+/* 
+ * This directive allows CRM functionality to be isolated and executed with minimal overhead...
+ */
+if (defined('DOING_AJAX') && $_POST['action'] == 'crm_ajax_controller') {
+    include_once('lib/crm/controller.php');
+
+    // This will end execution of this script, returning to the point where the caller included 'placester.php'...
+    return;
+}
+
+define('PL_PLUGIN_VERSION','1.1.12');
 
 define( 'PL_PARENT_DIR', plugin_dir_path(__FILE__) );
 define( 'PL_PARENT_URL', plugin_dir_url(__FILE__) );
@@ -176,88 +186,90 @@ include_once('third-party/convex-hull/convex-hull.php');
 include_once('third-party/mixpanel/mixpanel.php');
 
 
-// Register hook to load blueprint from plugin if no theme has yet to do so...
+// Register hook to load blueprint from plugin if the active theme has yet to do so...
 add_action( 'after_setup_theme', 'load_blueprint_from_plugin', 18 );
-function load_blueprint_from_plugin() 
-{
+function load_blueprint_from_plugin() {
     if (!class_exists('Placester_Blueprint')) {
+        // Load script that contains main blueprint class, and instantiate an object...
         require_once('blueprint/blueprint.php');
         new Placester_Blueprint('2.5', 'plugin');
-        add_action('init', 'blueprint_settings');
-        
+        add_action('init', 'plugin_blueprint_settings');
     }
 }
 
-function blueprint_settings() {
-    remove_theme_support( 'pls-default-css' );
-    remove_theme_support( 'pls-default-style' );
-    remove_theme_support( 'pls-default-960' );
-    remove_theme_support( 'pls-default-normalize' );
-    remove_theme_support( 'pls-js' );
-    remove_theme_support( 'pls-routing-util-templates' );
+// This takes care of what a theme's functions.php file normally handles...
+function plugin_blueprint_settings() {
+    remove_theme_support('pls-default-css');
+    remove_theme_support('pls-default-style');
+    remove_theme_support('pls-default-960');
+    remove_theme_support('pls-default-normalize');
+    remove_theme_support('pls-js');
+    remove_theme_support('pls-routing-util-templates');
 }
 
 // Build plugin settings tabs/UI...
-add_action( 'admin_menu', 'placester_admin_menu' );
+add_action('admin_menu', 'placester_admin_menu');
 function placester_admin_menu() {
     // Add separator
     global $menu;
     $menu['3a'] = array( '', 'read', 'separator1', '', 'wp-menu-separator' );
 
     // Add Placester Menu
-    add_menu_page('Placester','Placester','edit_pages','placester',array('PL_Router','my_listings'), plugins_url('images/icons/logo_16.png', __FILE__ ), '3b' /* position between 3 and 4 */ );
+    add_menu_page('Placester', 'Placester', 'edit_pages', 'placester', array('PL_Router','my_listings'), plugins_url('images/icons/logo_16.png', __FILE__ ), '3b' /* position between 3 and 4 */ );
 
     // Avoid submenu to start with menu function
     global $submenu;
     $submenu['placester'] = array();
 
-    add_submenu_page( 'placester', '','Listings', 'edit_pages', 'placester_properties', array('PL_Router','my_listings'));
-    add_submenu_page( 'placester', '', 'Add Listing', 'edit_pages', 'placester_property_add', array('PL_Router','add_listings') );    
+    add_submenu_page( 'placester', 'Listings','Listings', 'edit_pages', 'placester_properties', array('PL_Router','my_listings') );
+    add_submenu_page( 'placester', 'Add Listing', 'Add Listing', 'edit_pages', 'placester_property_add', array('PL_Router','add_listings') );
     
     // If the site using the plugin is on our hosted network, don't show the theme gallery...
     if ( !defined('HOSTED_PLUGIN_KEY') ) {
-    	add_submenu_page( 'placester', '', 'Theme Gallery', 'edit_pages', 'placester_theme_gallery', array('PL_Router','theme_gallery') );    	
+    	add_submenu_page( 'placester', '', 'Theme Gallery', 'edit_pages', 'placester_theme_gallery', array('PL_Router','theme_gallery') );
     }
     
     global $settings_subpages;
-    $settings_subpages = array('Settings' => '',
-                               'Client Settings' => '_client',
-                               'Global Property Filtering' => '_filtering', 
-                               'Custom Drawn Areas' => '_polygons', 
-                               'Property Pages' => '_property_pages', 
-                               // 'Template Controls' => '_template', 
-    						'International Settings' => '_international' );
+    $settings_subpages = array(
+        'Settings' => '',
+        'Client Settings' => '_client',
+        'Global Property Filtering' => '_filtering', 
+        'Custom Drawn Areas' => '_polygons', 
+        'Property Pages' => '_property_pages',
+        'International Settings' => '_international'
+    );
+
     foreach ($settings_subpages as $name => $page_url) {
-    	// leave parent slug empty to add pages without adding them to the menu
-    	add_submenu_page( 'placester', '', $name, 'edit_pages', 'placester_settings' . $page_url, array('PL_Router','settings' . $page_url) );    
+        // Leave parent slug empty to add pages without adding them to the menu...
+        add_submenu_page( 'placester', '', $name, 'edit_pages', 'placester_settings' . $page_url, array('PL_Router','settings' . $page_url) );
     }
-    
-    add_submenu_page( 'placester', 'Lead Capture', 'Lead Capture', 'edit_pages', 'placester_lead_capture', array('PL_Router','lead_capture') );
 
     global $shortcode_subpages;
-    $shortcode_subpages = array('All Custom Shortcodes' => '',
-					    		'Create Custom Shortcode' => '_shortcode_edit',
-    							'Shortcode Templates' => '_templates',
-					    		'Create Shortcode Template' => '_template_edit');
+    $shortcode_subpages = array(
+        'All Custom Shortcodes' => '',
+        'Create Custom Shortcode' => '_shortcode_edit',
+        'Shortcode Templates' => '_templates',
+        'Create Shortcode Template' => '_template_edit'
+    );
+
     foreach ($shortcode_subpages as $name => $page_url) {
-    	// leave parent slug empty to add pages without adding them to the menu
+    	// Leave parent slug empty to add pages without adding them to the menu...
     	$hook = add_submenu_page( 'placester', '', $name, 'edit_pages', 'placester_shortcodes' . $page_url, array('PL_Router','shortcodes' . $page_url));
     	PL_Helper_Header::add_sub_page('placester_shortcodes', 'placester_shortcodes' . $page_url, $hook);
     	PL_Shortcodes::admin_buffer_op($hook);
     }
     add_submenu_page('placester', '', 'Shortcodes', 'edit_pages', 'placester_shortcodes', array('PL_Router','shortcodes'));
 
-    /* Social Integration functionality... */
+    // TODO: Integrate shortcode and social pages into existing menu control structure...
+    add_submenu_page( 'placester', 'Lead Capture', 'Lead Capture', 'edit_pages', 'placester_lead_capture', array('PL_Router','lead_capture') );
+    add_submenu_page( 'placester', 'Shortcodes', 'Shortcodes', 'edit_pages', 'edit.php?post_type=pl_general_widget' );
+    add_submenu_page( 'placester', 'IDX / MLS', 'IDX / MLS', 'edit_pages', 'placester_integrations', array('PL_Router','integrations') );
+    add_submenu_page( 'placester', 'CRM', 'CRM', 'edit_pages', 'placester_crm', array('PL_Router','crm') );
+    add_submenu_page( 'placester', 'Support', 'Support', 'edit_pages', 'placester_support', array('PL_Router','support') );
     add_submenu_page( 'placester', 'Social', 'Social', 'edit_pages', 'placester_social', array('PL_Social_Networks','add_social_settings_cb') );
-    
-    // add_submenu_page( 'placester', '', 'Settings', 'edit_pages', 'placester_settings_general', array('PL_Router','settings') );    
-    add_submenu_page( 'placester', '', 'Support', 'edit_pages', 'placester_support', array('PL_Router','support') );    
-    add_submenu_page( 'placester', '', 'IDX / MLS', 'edit_pages', 'placester_integrations', array('PL_Router','integrations') );    
-
-
 }
 
-register_activation_hook( __FILE__, 'placester_activate' );
+register_activation_hook(__FILE__, 'placester_activate');
 // register_deactivation_hook( __FILE__, 'placester_deactivate' );
 function placester_activate() {
     $metrics = new MetricsTracker("9186cdb540264089399036dd672afb10");
@@ -279,7 +291,7 @@ function on_first_activation() {
     }
 }
 
-add_action( 'wp_head', 'placester_info_bar' );
+add_action('wp_head', 'placester_info_bar');
 function placester_info_bar() {
     if ( PL_Option_Helper::get_demo_data_flag() && current_user_can('manage_options') ) {
         PL_Router::load_builder_partial('infobar.php');

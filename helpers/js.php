@@ -32,33 +32,15 @@ class PL_Js_Helper {
 			
 			// Launch dialog after theme is switched...
 			if ( PL_Bootup::is_theme_switched() ) {
-				self::register_enqueue_if_not('theme-switch', trailingslashit(PL_JS_URL) . 'admin/theme-switch.js', array('jquery-ui-core', 'jquery-ui-dialog'));
-			}
+	    		self::register_enqueue_if_not('theme-switch', trailingslashit(PL_JS_URL) . 'admin/theme-switch.js', array('jquery-ui-core', 'jquery-ui-dialog'));
+	    	}
 
 			// Don't load any other scripts...
 			return;
 		}
 
-		// Handle plugin admin pages...
-		$pages = array( 'placester_page_placester_properties',
-						'placester_page_placester_property_add',
-						'placester_page_placester_settings',
-						'placester_page_placester_support',
-						'placester_page_placester_theme_gallery',
-						'placester_page_placester_integrations',
-						'placester_page_placester_settings_polygons',
-						'placester_page_placester_settings_property_pages',
-						'placester_page_placester_settings_international',
-						'placester_page_placester_settings_neighborhood',
-						'placester_page_placester_settings_filtering',
-						'placester_page_placester_settings_client',
-						'placester_page_placester_lead_capture',
-						'placester_page_placester_shortcodes_template_edit',
-						'placester_page_placester_shortcodes',
-						'placester_page_placester_shortcodes_shortcode_edit'
-		);
-
-		if (!in_array($hook, $pages)) { return; }
+		// NOTE:  This ensures that pages with the proper hook prefix make it past this point... (i.e., only plugin admin pages)
+		if (strpos($hook, 'placester_page_placester_') === false) { return; }
 
 		// Load JS available to all of the plugin's pages...
 		self::register_enqueue_if_not('global', trailingslashit(PL_JS_URL) . 'admin/global.js', array('jquery-ui-core', 'jquery-ui-dialog'));
@@ -109,15 +91,15 @@ class PL_Js_Helper {
 			self::register_enqueue_if_not('settings-property', trailingslashit(PL_JS_URL) . 'admin/settings/property.js', array('jquery'));
 			self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) . 'datatables/jquery.dataTables.js', array('jquery'));
 		}
-
-		if ($hook == 'placester_page_placester_settings_international') {
-			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings/international.js', array('jquery'));
-			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings.js', array('jquery'));
-		}
-
-		if ($hook == 'placester_page_placester_settings_neighborhood') {
-			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings.js', array('jquery'));
-		}
+		
+		// if ($hook == 'placester_page_placester_settings_international') {
+		// 	self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings/international.js', array('jquery'));
+		// 	self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings.js', array('jquery'));	
+		// }
+		
+		// if ($hook == 'placester_page_placester_settings_neighborhood') {
+		// 	self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings.js', array('jquery'));
+		// }
 
 		if ($hook == 'placester_page_placester_settings_filtering') {
 			self::register_enqueue_if_not('settings', trailingslashit(PL_JS_URL) . 'admin/settings/filtering.js', array('jquery'));
@@ -129,22 +111,24 @@ class PL_Js_Helper {
 
 		// Shortcodes and Shortcode Templates
 		if ($hook == 'placester_page_placester_shortcodes_shortcode_edit') {
-			wp_enqueue_script('shortcodes-admin', trailingslashit(PL_JS_URL) .  'admin/shortcodes/all.js', array('jquery'));
-			wp_enqueue_style('jquery-ui-datepicker');
-			wp_enqueue_script('jquery-ui-datepicker');
-			wp_enqueue_script('datatable', trailingslashit( PLS_JS_URL ) . 'libs/datatables/jquery.dataTables.js' , array('jquery'), NULL, true );
-			wp_enqueue_script('featured-listing', OPTIONS_FRAMEWORK_DIRECTORY.'js/featured-listing.js', array('jquery'));
+			self::register_enqueue_if_not('shortcodes-admin', trailingslashit(PL_JS_URL) . 'admin/shortcodes/all.js', array('jquery-ui-datepicker'));
+			self::register_enqueue_if_not('datatable', trailingslashit(PLS_JS_URL) . 'libs/datatables/jquery.dataTables.js' , array('jquery'), NULL, true);
+			self::register_enqueue_if_not('featured-listing', trailingslashit(OPTIONS_FRAMEWORK_DIRECTORY) . 'js/featured-listing.js', array('jquery'));
+			
 			wp_localize_script('shortcodes-admin', 'autosaveL10n', array(
-			'saveAlert' => __('The changes you made will be lost if you navigate away from this page.')
-			) );
+				'saveAlert' => __('The changes you made will be lost if you navigate away from this page.')
+			));
 		}
 		if ($hook == 'placester_page_placester_shortcodes_template_edit') {
-			wp_enqueue_script('shortcodes-admin', trailingslashit(PL_JS_URL) .  'admin/shortcodes/all.js', array('jquery'));
+			self::register_enqueue_if_not('shortcodes-admin', trailingslashit(PL_JS_URL) .  'admin/shortcodes/all.js', array('jquery'));
+			
 			wp_localize_script('shortcodes-admin', 'autosaveL10n', array(
-			'saveAlert' => __('The changes you made will be lost if you navigate away from this page.')
-			) );
+				'saveAlert' => __('The changes you made will be lost if you navigate away from this page.')
+			));
 		}
-		
+
+		if ($hook == 'placester_page_placester_crm') {
+			self::register_enqueue_if_not('crm', trailingslashit(PL_JS_URL) . 'admin/crm.js', array('jquery'));
 	}
 
 	public static function admin_menu_url() {
