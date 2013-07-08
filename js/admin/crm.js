@@ -8,21 +8,28 @@ function call_CRM_AJAX (method, args, callback) {
 	data = {};
 	data.action = 'crm_ajax_controller';
 	data.crm_method = method;
+	
+	// If a separate method is specified for what is returned, set property and remove from args...
+	if (args && args.return_spec) { 
+		data.return_spec = args.return_spec;
+		delete args.return_spec;
+	}
+
 	data.crm_args = args;
 	data.response_format = format;
 
 	jQuery.post(ajaxurl, data, callback, format);
 }
 
-function fetch_api_key ($crm_id) {
+function fetch_api_key (crm_id) {
 	var api_key = null;
 
 	// Alphanumeric regex (API keys should pass this...)
 	var alnum_regex = /^[a-z0-9]+$/i;
 
 	// Try to fetch API key based on naming convention...
-	var input_id = '#' + id + '_api_key';
-	var input_elem = $(api_key_input_id);
+	var input_id = '#' + crm_id + '_api_key';
+	var input_elem = jQuery(input_id);
 	
 	// There should only be one API key input entered for this CRM...
 	if (input_elem.length == 1) {
@@ -37,40 +44,55 @@ function fetch_api_key ($crm_id) {
 
 jQuery(document).ready(function($) {
 
-	// Get main view...
+	// Store ref to main container element for use in setting delegated events and altering the view...(see below)
+	var view = $('#main-crm-container');
+
+	// Get the main view initially...
 	call_CRM_AJAX('mainView', {}, function (result) {
-		$('#main-crm-container').html(result);
+		view.html(result);
 	});
 
-	$('.activate-button').on('click', function (event) {
+	view.on('click', '.activate-button', function (event) {
 		event.preventDefault();
 		
 		// Extract CRM id from clicked element's actual id...
 		var id = $(this).attr('id')
 		var CRMid = id.replace('activate_', '');
 
-		call_CRM_AJAX('setActiveCRM', {crm_id: CRMid}, function (result) {
+		// Specify call to return altered view that results from CRM activation...
+		retSpec = {method: 'mainView'};		
+
+		call_CRM_AJAX('setActiveCRM', {crm_id: CRMid, return_spec: retSpec}, function (result) {
 			console.log(result);
+
+			view.html(result);
 		});
 	});
 
-	$('.integrate-button').on('click', function (event) {
+	view.on('click', '.integrate-button', function (event) {
 		event.preventDefault();
 		
 		// Extract CRM id from clicked element's actual id...
 		var id = $(this).attr('id')
 		var CRMid = id.replace('integrate_', '');
-		var api_key = fetch_api_key(CRMid);
+		var APIkey = fetch_api_key(CRMid);
 
 		// If API key wasn't entered or is invalid, prompt the user and exit...
-		if (api_key == null) {
+		if (APIkey == null) {
 			// Prompt of invalid API key entry...
+			console.log("Bad API key...");
+			return;
 		}
 
-		call_CRM_AJAX('integrateCRM', {crm_id: CRMid}, function (result) {
+		// Specify call to return the "activate" CRM partial for display purposes...
+		retSpec = {method: 'getPartial', args: {partial: 'activate', partial_args: {id: CRMid}}};
+
+		call_CRM_AJAX('integrateCRM', {crm_id: CRMid, api_key: APIkey, return_spec: retSpec}, function (result) {
 			console.log(result);
 
-			// Alter view to include an activate button...
+			// Replace the integration view with activate UI...
+			var elem = $('#' + CRMid + '-box .action-box');
+			elem.html(result);
 		});
 	});
 

@@ -27,23 +27,34 @@ class PL_CRM_Controller {
 		error_log(var_export($_POST, true));
 		// die();
 
+		// TODO: A better default message...
+		$response = "";
+
 		// CRM-related AJAX calls (i.e., to the single endpoint defined in init) MUST specify a
 		// field called "crm_method" that corresponds to the class function it wants to execute,
 		// along with the properly labeled fields as subsequent arguments...
-		if (is_null($_POST["crm_method"])) { return; }
+		if (!empty($_POST["crm_method"])) {
+			// Set args array if it exists...
+			$args = ( !empty($_POST["crm_args"]) && is_array($_POST["crm_args"]) ? array_values($_POST["crm_args"]) : array() );
 
-		$method = $_POST["crm_method"];
-		$callback = array(__CLASS__, $method);
+			// Execute primary function...
+			$callback = array(__CLASS__, $_POST["crm_method"]);
+			$response = call_user_func_array($callback, $args);
 
-		// Set args array if it exists...
-		$args = ( !empty($_POST["crm_args"]) && is_array($_POST["crm_args"]) ? $_POST["crm_args"] : array() );
+			// Check to see if a separate callback is specified for what is returned...
+			if (!empty($_POST["return_spec"]) && is_array($_POST["return_spec"])) {
+				$ret = $_POST["return_spec"];
+				$ret_args = ( !empty($ret["args"]) && is_array($ret["args"]) ? array_values($ret["args"]) : array() );
 
-		// Execute correct function...
-		$response = call_user_func_array($callback, $args);
+				// Set response to return method's value...
+				$ret_callback = array(__CLASS__, $ret["method"]);
+				$response = call_user_func_array($ret_callback, $ret_args);
+			}
 
-		// Handle formatting response if set to JSON...
-		if (isset($_POST["response_format"]) && $_POST["response_format"] == "JSON") {
-	 		$response = json_encode($response);
+			// Handle formatting response if set to JSON...
+			if (isset($_POST["response_format"]) && $_POST["response_format"] == "JSON") {
+		 		$response = json_encode($response);
+	 		}
  		}
 
 		// Write payload to response...
@@ -66,15 +77,23 @@ class PL_CRM_Controller {
 		$id = $crm_info["id"];
 		unset($crm_info["id"]);
 
+		// Translate logo image file into valid URL path...
+		if (!empty($crm_info["logo_img"])) {
+			$crm_info["logo_img"] = self::getImageURL($crm_info["logo_img"]);
+		}
+
 		self::$registeredCRMList[$id] = $crm_info;
 	}
 
 	public static function integrateCRM ($crm_id, $api_key) {
+		error_log($crm_id);
+		error_log($api_key);
+
 		// Lookup CRM info by ID to make sure it is supported...
 		if (!isset(self::$registeredCRMList[$crm_id])) { return; }
 
 		$crm_info = self::$registeredCRMList[$crm_id];
-		$crm_class = $info["class"];
+		$crm_class = $crm_info["class"];
 		$crm_obj = new $crm_class();
 
 		// Set (i.e., store) credentials/API key for this CRM so that it can be activated...
@@ -99,17 +118,48 @@ class PL_CRM_Controller {
 
 		ob_start();
 			if (is_null($active_crm)) {
-				// Set this var for use in the login script/view...
+				// Set this var for use in the login view...
 				$crm_list = self::$registeredCRMList;
-				
 				include("views/login.php");
 			}
 			else {
-				// TODO...
+				// Set this var for us in the browse view...
+				$crm_info = self::$registeredCRMList[$active_crm];
+				include("views/browse.php");
 			}
 		$html = ob_get_clean();
 
 		return $html;
+	}
+
+	public static function getPartial ($partial, $args = array()) {
+		error_log("Partial: {$partial}");
+		error_log(var_export($args, true));
+
+		// Establish partials dir...
+		$file_path = trailingslashit(dirname(__FILE__)) . "views/partials/{$partial}.php";
+		error_log($file_path);
+		$html = "";
+
+		// Make sure partial file exists...
+		if (file_exists($file_path)) {
+			error_log("Files exists...");
+			// Extract args to be used by the partial...
+			extract($args);
+
+			ob_start();
+				include($file_path);
+			$html = ob_get_clean();
+		}
+		error_log($html);
+		return $html;
+	}
+
+	public static function getImageURL ($img_file) {
+		$img_path = trailingslashit(dirname(__FILE__)) . "views/images/{$img_file}";
+		$img_url = plugin_dir_url($img_path) . $img_file;
+
+		return $img_url;
 	}
 }
 

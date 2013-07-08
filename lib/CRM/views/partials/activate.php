@@ -3,6 +3,6 @@
 //
 // NOTE: $id string must be set...
 ?>
-<div class="activate-crm">
+<div class="activate-crm-box">
 	<a href="#" id="activate_<?php echo $id ?>" class="activate-button">Active CRM</a>
 </div>
