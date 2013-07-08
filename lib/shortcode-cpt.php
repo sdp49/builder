@@ -459,11 +459,10 @@ class PL_Shortcode_CPT {
 			AND $wpdb->posts.post_type = 'pl_general_widget'", $id));
 	}
 
-
 	/**
-	 * Checks if the given template is being used and returns the number of custom shortcodes using it
+	 * Checks if the given template is being used and returns an array of custom shortcode ID's and titles using it
 	 * @param string $id
-	 * @return int
+	 * @return array
 	 */
 	public static function template_used_by($id) {
 		global $wpdb;
@@ -477,10 +476,31 @@ class PL_Shortcode_CPT {
 			AND $wpdb->posts.post_type = 'pl_general_widget'", $id), ARRAY_A);
 	}
 
+	/**
+	 * Gets a list of templates in use for a given shortcode
+	 * @param string $shortcode	: shortcode type
+	 * @return array
+	 */
+	public static function templates_in_use($shortcode) {
+		global $wpdb;
 
+		return $wpdb->get_col("
+			SELECT DISTINCT($wpdb->postmeta.meta_value) 
+				FROM $wpdb->postmeta JOIN (
+					SELECT $wpdb->posts.ID AS id
+					FROM $wpdb->postmeta 
+					JOIN $wpdb->posts ON $wpdb->posts.ID = $wpdb->postmeta.post_id 
+					AND $wpdb->posts.post_type = 'pl_general_widget' 
+					AND $wpdb->postmeta.meta_key = 'shortcode' 
+					AND $wpdb->postmeta.meta_value = '$shortcode') posts 
+				ON $wpdb->postmeta.post_id = posts.id 
+				WHERE $wpdb->postmeta.meta_key='pl_cpt_template'");
+	}
+	
+	
 	/***************************************************
 	 * Shortcode Template storage functions
-	 * TODO: move to model
+	 * TODO: maybe move to model
 	 ***************************************************/
 
 

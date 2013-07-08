@@ -8,7 +8,7 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 	private $per_page = 20;
 	protected $_column_headers = array();
 	private static $_items = array();
-	private static $_status = array('in_use'=>0, 'inactive'=>0, 'built_in'=>0);
+	private static $_viewcnt = array('in_use'=>0, 'inactive'=>0, 'built_in'=>0);
 
 	public function __construct( $args = array() ) {
 		global $pagenow;
@@ -46,14 +46,16 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 	 */
 	private static function _fetch_items() {
 		if (empty(self::$_items)) {
-			$sc_attr = PL_Shortcode_CPT::get_shortcode_attrs();
 			$shortcodes = PL_Shortcode_CPT::get_shortcode_list();
+			$sc_attr = PL_Shortcode_CPT::get_shortcode_attrs();
 			foreach($shortcodes as $shortcode=>$inst) {
 				$sc_tpls = PL_Shortcode_CPT::template_list($shortcode);
 				$shortcode_name = $sc_attr[$shortcode]['title'];
+				$tpls_in_use = PL_Shortcode_CPT::templates_in_use($shortcode);
 				foreach($sc_tpls as $sc_tpl) {
-					$status = $sc_tpl['type']=='custom' ? (PL_Shortcode_CPT::template_in_use($sc_tpl['id']) ? 'in_use' : 'inactive') : 'built_in';
-					self::$_status[$status]++;
+					$status = in_array($sc_tpl['id'], $tpls_in_use) ? 'in_use' : 'inactive';
+					self::$_viewcnt[$status]++;
+					if ($sc_tpl['type']=='default') self::$_viewcnt['built_in']++;
 					self::$_items[] = array_merge($sc_tpl, array('shortcode'=>$shortcode, 'shortcode_name'=>$shortcode_name, 'status'=>$status));
 				}
 			}
@@ -65,16 +67,18 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 
 		$search = (!empty($_REQUEST['s']) ? esc_attr($_REQUEST['s']) : '');
 		$status = (!empty($_REQUEST['status']) ? esc_attr($_REQUEST['status']) : '');
+		$type = (!empty($_REQUEST['type']) ? esc_attr($_REQUEST['type']) : '');
 		$orderby = empty($_GET['orderby']) ? 'title' : $_GET['orderby'];
 		$order = empty($_GET['order']) ? 'asc' : $_GET['order'];
 		$order = $order=='asc' ? 'asc' : 'desc';
 
 		// get data
-		$this->items = $this->_fetch_items();
-		foreach($this->items as $key=>$item) {
-			if (($status && $item['status']!=$status)
-				|| ($search && strpos($item['title'], $search)===false)) {
-				unset($this->items[$key]);
+		$this->items = array();
+		foreach($this->_fetch_items() as $item) {
+			if ((!$status || $status==$item['status']) &&
+				(!$type || $type==$item['type']) && 
+				(!$search || strpos($item['title'], $search)!==false)) {
+				$this->items[] = $item;
 			}
 		}
 
@@ -135,19 +139,19 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 		$class = empty($_REQUEST['s']) && empty($_REQUEST['status']) ? ' class="current"' : '';
 		$status_links['all'] = '<a href="'.$this->base_page.'"'.$class.'>'.sprintf(_nx('All <span class="count">(%s)</span>', 'All <span class="count">(%s)</span>', $count, 'templates'), number_format_i18n($count)).'</a>';
 
-		if ($this::$_status['in_use']) {
+		if ($this::$_viewcnt['in_use']) {
 			$class = !empty($_REQUEST['status']) && $_REQUEST['status']=='in_use' ? ' class="current"' : '';
-			$status_links['in_use'] = '<a href="'.$this->base_page.'&status=in_use"'.$class.'>'.sprintf(_nx('In Use <span class="count">(%s)</span>', 'In Use <span class="count">(%s)</span>', $this::$_status['in_use'], 'templates'), number_format_i18n($this::$_status['in_use'])).'</a>';
+			$status_links['in_use'] = '<a href="'.$this->base_page.'&status=in_use"'.$class.'>'.sprintf(_nx('In Use <span class="count">(%s)</span>', 'In Use <span class="count">(%s)</span>', $this::$_viewcnt['in_use'], 'templates'), number_format_i18n($this::$_viewcnt['in_use'])).'</a>';
 		}
 
-		if ($this::$_status['inactive']) {
+		if ($this::$_viewcnt['inactive']) {
 			$class = empty($class) && !empty($_REQUEST['status']) && $_REQUEST['status']=='inactive' ? ' class="current"' : '';
-			$status_links['inactive'] = '<a href="'.$this->base_page.'&status=inactive"'.$class.'>'.sprintf(_nx('Not In Use <span class="count">(%s)</span>', 'Not In Use <span class="count">(%s)</span>', $this::$_status['inactive'], 'templates'), number_format_i18n($this::$_status['inactive'])).'</a>';
+			$status_links['inactive'] = '<a href="'.$this->base_page.'&status=inactive"'.$class.'>'.sprintf(_nx('Not In Use <span class="count">(%s)</span>', 'Not In Use <span class="count">(%s)</span>', $this::$_viewcnt['inactive'], 'templates'), number_format_i18n($this::$_viewcnt['inactive'])).'</a>';
 		}
 
-		if ($this::$_status['built_in']) {
+		if ($this::$_viewcnt['built_in']) {
 			$class = empty($class) && !empty($_REQUEST['status']) && $_REQUEST['status']=='builtin' ? ' class="current"' : '';
-			$status_links['built_in'] = '<a href="'.$this->base_page.'&status=built_in"'.$class.'>'.sprintf(_nx('Built In <span class="count">(%s)</span>', 'Built In <span class="count">(%s)</span>', $this::$_status['built_in'], 'templates'), number_format_i18n($this::$_status['built_in'])).'</a>';
+			$status_links['built_in'] = '<a href="'.$this->base_page.'&type=default"'.$class.'>'.sprintf(_nx('Built In <span class="count">(%s)</span>', 'Built In <span class="count">(%s)</span>', $this::$_viewcnt['built_in'], 'templates'), number_format_i18n($this::$_viewcnt['built_in'])).'</a>';
 		}
 
 		return $status_links;
@@ -214,7 +218,7 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 					$actions = array();
 					if ($template['type'] == 'custom') {
 						$actions['edit'] = '<a href="' . $edit_link . $template['id'] . '" title="' . esc_attr( __( 'Edit this item' ) ) . '">' . __( 'Edit' ) . '</a>';
-						if ($template['status'] == 'in_use') {
+						if ($template['status']=='in_use') {
 							$actions['delete'] =  __( 'In Use' );
 						}
 						else {

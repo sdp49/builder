@@ -237,7 +237,6 @@ class PL_Shortcodes_Table extends WP_List_Table {
 		$status_links = array();
 		$num_posts = wp_count_posts( $post_type, 'readable' );
 		$class = '';
-		$allposts = '';
 
 		$total_posts = array_sum( (array) $num_posts );
 
@@ -246,7 +245,7 @@ class PL_Shortcodes_Table extends WP_List_Table {
 			$total_posts -= $num_posts->$state;
 
 		$class = empty( $class ) && empty( $_REQUEST['post_status'] ) && empty( $_REQUEST['show_sticky'] ) ? ' class="current"' : '';
-		$status_links['all'] = "<a href='$base_page{$allposts}'$class>" . sprintf( _nx( 'All <span class="count">(%s)</span>', 'All <span class="count">(%s)</span>', $total_posts, 'posts' ), number_format_i18n( $total_posts ) ) . '</a>';
+		$status_links['all'] = '<a href="'.$base_page.'" $class>' . sprintf( _nx( 'All <span class="count">(%s)</span>', 'All <span class="count">(%s)</span>', $total_posts, 'posts' ), number_format_i18n( $total_posts ) ) . '</a>';
 
 		foreach ( get_post_stati(array('show_in_admin_status_list' => true), 'objects') as $status ) {
 			$class = '';
