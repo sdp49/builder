@@ -74,15 +74,12 @@ class PL_CRM_Controller {
 		// We need an id...
 		if (empty($crm_info["id"])) { return; }
 
-		$id = $crm_info["id"];
-		unset($crm_info["id"]);
-
 		// Translate logo image file into valid URL path...
 		if (!empty($crm_info["logo_img"])) {
 			$crm_info["logo_img"] = self::getImageURL($crm_info["logo_img"]);
 		}
 
-		self::$registeredCRMList[$id] = $crm_info;
+		self::$registeredCRMList[$crm_info["id"]] = $crm_info;
 	}
 
 	public static function integrateCRM ($crm_id, $api_key) {
@@ -106,6 +103,10 @@ class PL_CRM_Controller {
 
 	public static function setActiveCRM ($crm_id) {
 		return PL_Options::set(self::$activeCRMKey, $crm_id);
+	}
+
+	public static function resetActiveCRM () {
+		return PL_Options::delete(self::$activeCRMKey);
 	}
 
 	/*

@@ -60,11 +60,10 @@ jQuery(document).ready(function($) {
 		var CRMid = id.replace('activate_', '');
 
 		// Specify call to return altered view that results from CRM activation...
-		retSpec = {method: 'mainView'};		
+		retSpec = {method: 'mainView'};
 
 		call_CRM_AJAX('setActiveCRM', {crm_id: CRMid, return_spec: retSpec}, function (result) {
-			console.log(result);
-
+			// Refresh view to reflect CRM activation...
 			view.html(result);
 		});
 	});
@@ -88,11 +87,21 @@ jQuery(document).ready(function($) {
 		retSpec = {method: 'getPartial', args: {partial: 'activate', partial_args: {id: CRMid}}};
 
 		call_CRM_AJAX('integrateCRM', {crm_id: CRMid, api_key: APIkey, return_spec: retSpec}, function (result) {
-			console.log(result);
-
-			// Replace the integration view with activate UI...
+			// Refesh the view so that this CRM can be activated, now that integration is completed...
 			var elem = $('#' + CRMid + '-box .action-box');
 			elem.html(result);
+		});
+	});
+
+	view.on('click', '.deactivate-button', function (event) {
+		event.preventDefault();
+
+		// Specify call to return altered view that results from CRM deactivation...
+		retSpec = {method: 'mainView'};
+		
+		call_CRM_AJAX('resetActiveCRM', {return_spec: retSpec}, function (result) {
+			// Refresh view to reflect CRM deactivation...
+			view.html(result);
 		});
 	});
 
