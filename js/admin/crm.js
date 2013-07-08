@@ -52,22 +52,6 @@ jQuery(document).ready(function($) {
 		view.html(result);
 	});
 
-	view.on('click', '.activate-button', function (event) {
-		event.preventDefault();
-		
-		// Extract CRM id from clicked element's actual id...
-		var id = $(this).attr('id')
-		var CRMid = id.replace('activate_', '');
-
-		// Specify call to return altered view that results from CRM activation...
-		retSpec = {method: 'mainView'};
-
-		call_CRM_AJAX('setActiveCRM', {crm_id: CRMid, return_spec: retSpec}, function (result) {
-			// Refresh view to reflect CRM activation...
-			view.html(result);
-		});
-	});
-
 	view.on('click', '.integrate-button', function (event) {
 		event.preventDefault();
 		
@@ -84,7 +68,7 @@ jQuery(document).ready(function($) {
 		}
 
 		// Specify call to return the "activate" CRM partial for display purposes...
-		retSpec = {method: 'getPartial', args: {partial: 'activate', partial_args: {id: CRMid}}};
+		retSpec = {method: 'getPartial', args: {partial: 'activate', partial_args: {id: CRMid, api_key: APIkey}}};
 
 		call_CRM_AJAX('integrateCRM', {crm_id: CRMid, api_key: APIkey, return_spec: retSpec}, function (result) {
 			// Refesh the view so that this CRM can be activated, now that integration is completed...
@@ -93,12 +77,45 @@ jQuery(document).ready(function($) {
 		});
 	});
 
+	view.on('click', '.activate-button', function (event) {
+		event.preventDefault();
+		
+		// Extract CRM id from clicked element's actual id...
+		var id = $(this).attr('id')
+		var CRMid = id.replace('activate_', '');
+
+		// Specify call to return altered view that results from CRM activation...
+		retSpec = {method: 'mainView'};
+
+		call_CRM_AJAX('setActiveCRM', {crm_id: CRMid, return_spec: retSpec}, function (result) {
+			// Refresh view to reflect CRM activation...
+			view.html(result);
+		});
+	});
+
+	view.on('click', '.reset-creds-button', function (event) {
+		event.preventDefault();
+
+		// Extract CRM id from clicked element's actual id...
+		var id = $(this).attr('id')
+		var CRMid = id.replace('reset_', '');
+
+		// Specify call to return the "activate" CRM partial for display purposes...
+		retSpec = {method: 'getPartial', args: {partial: 'integrate', partial_args: {id: CRMid}}};
+
+		call_CRM_AJAX('resetCRM', {crm_id: CRMid, return_spec: retSpec}, function (result) {
+			// Refesh the view so that this CRM can be activated, now that integration is completed...
+			var elem = $('#' + CRMid + '-box .action-box');
+			elem.html(result);
+		});		
+	});
+
 	view.on('click', '.deactivate-button', function (event) {
 		event.preventDefault();
 
 		// Specify call to return altered view that results from CRM deactivation...
 		retSpec = {method: 'mainView'};
-		
+
 		call_CRM_AJAX('resetActiveCRM', {return_spec: retSpec}, function (result) {
 			// Refresh view to reflect CRM deactivation...
 			view.html(result);

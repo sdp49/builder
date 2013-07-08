@@ -15,7 +15,8 @@ if (!is_array($crm_list)) { return; }
 
 				// Find out if this particular CRM has been "integrated"
 				// (i.e., user has already entered account credentials for this provider)
-				$not_integrated = is_null($crm_obj->getAPIKey());
+				$api_key = $crm_obj->getAPIKey();
+				$not_integrated = is_null($api_key);
 			?>
 			<div class="action-box">
 				<?php if ($not_integrated): ?>

@@ -4,14 +4,19 @@ abstract class PL_CRM_Base {
 
 	abstract protected function getAPIOptionKey ();
 
-	public function getAPIkey () {
+	public function getAPIKey () {
 		$option_key = $this->getAPIOptionKey();
 		return PL_Options::get($option_key, null);
 	}
 
-	public function setAPIkey ($api_key) {
+	public function setAPIKey ($api_key) {
 		$option_key = $this->getAPIOptionKey();
 		return PL_Options::set($option_key, $api_key);
+	}
+
+	public function resetAPIKey () {
+		$option_key = $this->getAPIOptionKey();
+		return PL_Options::delete($option_key);
 	}
 
 	protected function constructQueryString ($query_params = array()) {

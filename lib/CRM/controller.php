@@ -5,8 +5,7 @@ PL_CRM_Controller::init();
 class PL_CRM_Controller {
 
 	private static $activeCRMKey = "pl_active_CRM";
-
-	public static $registeredCRMList = array();
+	private static $registeredCRMList = array();
 
 	public static function init () {
 		// Load CRM libs...
@@ -23,8 +22,8 @@ class PL_CRM_Controller {
 	}
 
 	public static function ajaxController () {
-		error_log("In ajaxController...");
-		error_log(var_export($_POST, true));
+		// error_log("In ajaxController...");
+		// error_log(var_export($_POST, true));
 		// die();
 
 		// TODO: A better default message...
@@ -52,7 +51,7 @@ class PL_CRM_Controller {
 			}
 
 			// Handle formatting response if set to JSON...
-			if (isset($_POST["response_format"]) && $_POST["response_format"] == "JSON") {
+			if (!empty($_POST["response_format"]) && $_POST["response_format"] == "JSON") {
 		 		$response = json_encode($response);
 	 		}
  		}
@@ -61,13 +60,6 @@ class PL_CRM_Controller {
 		echo $response;
 
 		die();
-	}
-
-	private static function sanitizeInput ($str_input) {
-		// Removes backslashes then proceeds to remove all HTML tags...
-		$sanitized = strip_tags(stripslashes($str_input));
-
-		return $sanitized;
 	}
 
 	public static function registerCRM ($crm_info) {
@@ -82,19 +74,31 @@ class PL_CRM_Controller {
 		self::$registeredCRMList[$crm_info["id"]] = $crm_info;
 	}
 
+	public static function getCRMInfo ($crm_id) {
+		$info = array();
+
+		if (!empty(self::$registeredCRMList[$crm_id])) {
+			$info = self::$registeredCRMList[$crm_id];	
+		}
+
+		return $info;
+	}
+
 	public static function integrateCRM ($crm_id, $api_key) {
-		error_log($crm_id);
-		error_log($api_key);
-
-		// Lookup CRM info by ID to make sure it is supported...
-		if (!isset(self::$registeredCRMList[$crm_id])) { return; }
-
-		$crm_info = self::$registeredCRMList[$crm_id];
-		$crm_class = $crm_info["class"];
-		$crm_obj = new $crm_class();
+		// Try to create an instance...
+		$crm_obj = self::getCRMInstance($crm_id);
 
 		// Set (i.e., store) credentials/API key for this CRM so that it can be activated...
-		return $crm_obj->setAPIkey($api_key);
+		return ( is_null($crm_obj) ? false : $crm_obj->setAPIkey($api_key) );
+	}
+
+	/* The opposite of integration -- remove key/credentials associated with the passed CRM... */
+	public static function resetCRM ($crm_id) {
+		// Try to create an instance...
+		$crm_obj = self::getCRMInstance($crm_id);
+
+		// Reset (i.e., remove) credentials/API key associated with the CRM so new ones can be entered...
+		return ( is_null($crm_obj) ? false : $crm_obj->resetAPIkey() );
 	}
 
 	public static function getActiveCRM () {
@@ -107,6 +111,31 @@ class PL_CRM_Controller {
 
 	public static function resetActiveCRM () {
 		return PL_Options::delete(self::$activeCRMKey);
+	}
+
+	/*
+	 * Helpers...
+	 */
+
+	private static function getCRMInstance ($crm_id) {
+		$crm_obj = null;
+
+		// Lookup CRM info by ID to make sure it is supported...
+		if (!empty(self::$registeredCRMList[$crm_id])) {
+			// Get class and construct an instance...
+			$crm_info = self::$registeredCRMList[$crm_id];
+			$crm_class = $crm_info["class"];
+			$crm_obj = new $crm_class();
+		}
+	
+		return $crm_obj;
+	}
+
+	private static function sanitizeInput ($str_input) {
+		// Removes backslashes then proceeds to remove all HTML tags...
+		$sanitized = strip_tags(stripslashes($str_input));
+
+		return $sanitized;
 	}
 
 	/*
@@ -134,17 +163,12 @@ class PL_CRM_Controller {
 	}
 
 	public static function getPartial ($partial, $args = array()) {
-		error_log("Partial: {$partial}");
-		error_log(var_export($args, true));
-
 		// Establish partials dir...
 		$file_path = trailingslashit(dirname(__FILE__)) . "views/partials/{$partial}.php";
-		error_log($file_path);
 		$html = "";
 
 		// Make sure partial file exists...
 		if (file_exists($file_path)) {
-			error_log("Files exists...");
 			// Extract args to be used by the partial...
 			extract($args);
 
@@ -152,7 +176,7 @@ class PL_CRM_Controller {
 				include($file_path);
 			$html = ob_get_clean();
 		}
-		error_log($html);
+
 		return $html;
 	}
 
