@@ -192,6 +192,10 @@ You can use any valid HTML in this field and it will appear after the listings.'
 
 
 
+	/**
+	 * Get list of filter options from the api.
+	 * @see PL_SC_Base::_get_filters()
+	 */
 	protected function _get_filters() {
 		if (class_exists('PL_Config')) {
 			return PL_Config::PL_API_LISTINGS('get', 'args');

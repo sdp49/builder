@@ -30,7 +30,7 @@ Author URI: https://www.placester.com/
 /* 
  * This directive allows CRM functionality to be isolated and executed with minimal overhead...
  */
-if (defined('DOING_AJAX') && $_POST['action'] == 'crm_ajax_controller') {
+if (defined('DOING_AJAX') && !empty($_POST['action']) && $_POST['action'] == 'crm_ajax_controller') {
     include_once('lib/crm/controller.php');
 
     // This will end execution of this script, returning to the point where the caller included 'placester.php'...

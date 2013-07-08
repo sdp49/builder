@@ -61,7 +61,7 @@ $options_class = $filters_class = '';
 				<div class="span2">
 					<label class="section-label" for="pl_template">Template:</label>
 				</div>
-				<div class="span6">
+				<div>
 					<?php foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ): ?>
 						<?php if(!empty($sct_args['options']['context'])):?>
 							<div class="pl_template_block <?php echo $pl_shortcode; ?>" id="<?php echo $sct_args['shortcode'];?>_template_block" style="display: none;">
@@ -97,8 +97,7 @@ $options_class = $filters_class = '';
 					<h3>Options:</h3>
 				</div>
 				<?php
-				// get meta values from custom fields
-				// fill POST array for the forms (required after new widget is created)
+				// build options for each shortcode type
 				foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ) {?>
 					<div class="pl_widget_block <?php echo $pl_shortcode;?>">
 					<?php
