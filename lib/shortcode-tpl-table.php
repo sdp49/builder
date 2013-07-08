@@ -22,7 +22,7 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 			array(
 					//'cb' 		=> '<input type="checkbox" />',
 					'title'		=> 'Name',
-					'shortcode'	=> 'For Shortcode',
+					'shortcode'	=> 'For Shortcode Type',
 					'id'		=> 'Template ID',
 			),
 			array(),
@@ -189,7 +189,8 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 
 		$edit_link = admin_url('admin.php?page=placester_shortcodes_template_edit&action=edit&id=');
 		$delete_link = admin_url('admin.php?page=placester_shortcodes_template_edit&action=delete&id=');
-
+		$copy_link = admin_url('admin.php?page=placester_shortcodes_template_edit&action=copy&id=');
+		
 		foreach ( $columns as $column_name => $column_display_name ) {
 			$class = "class=\"$column_name column-$column_name\"";
 
@@ -218,6 +219,7 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 					$actions = array();
 					if ($template['type'] == 'custom') {
 						$actions['edit'] = '<a href="' . $edit_link . $template['id'] . '" title="' . esc_attr( __( 'Edit this item' ) ) . '">' . __( 'Edit' ) . '</a>';
+						$actions['copy'] = '<a href="' . $copy_link . $template['id'] . '" title="' . esc_attr( __( 'Duplicate this item' ) ) . '">' . __( 'Duplicate' ) . '</a>';
 						if ($template['status']=='in_use') {
 							$actions['delete'] =  __( 'In Use' );
 						}

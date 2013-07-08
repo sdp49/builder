@@ -139,7 +139,8 @@ class PL_Shortcode_CPT {
 		// generate shortcode string
 		if ( isset($_POST['shortcode']) && !empty($_POST[$_POST['shortcode']])) {
 			$args = array_merge($_POST, $_POST[$_POST['shortcode']]);
-			$response['sc_str'] = $this->generate_shortcode_str($_POST['shortcode'], $args);
+			$response['sc_long_str'] = $this->generate_shortcode_str($_POST['shortcode'], $args);
+			$response['sc_str'] = '';
 			$response['width'] = $args['width'];
 			$response['height'] = $args['height'];
 		}

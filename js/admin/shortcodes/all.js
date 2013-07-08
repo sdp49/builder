@@ -156,16 +156,17 @@ jQuery(document).ready(function($){
 				type: "POST",
 				url: ajaxurl,
 				success: function( response ) {
-					if (response.sc_str) {
+					if (response.sc_long_str) {
 						var width = response.width ? response.width+'px' : '100%';
 						var height = response.height ? response.height+'px' : '100%';
-						$('#preview_meta_widget').html('<iframe src="'+ajaxurl+'?action=pl_sc_preview&post_type=pl_general_widget&sc_str='+response.sc_str+'" width="'+width+'" height="'+height+'"></iframe>');
+						$('#preview_meta_widget').html('<iframe src="'+ajaxurl+'?action=pl_sc_preview&post_type=pl_general_widget&sc_str='+response.sc_long_str+'" width="'+width+'" height="'+height+'"></iframe>');
 						$('#preview_meta_widget iframe').load( function() {
 							$('#pl_sc_edit .preview_load_spinner').hide();
 							$('#pl_sc_edit .pl_review_link').show();
 						});
 						$('#sc_slug_box .iframe_link').hide();
-						$('#sc_slug_box .shortcode_link').show().find('.slug').html(response.sc_str);
+						$('#sc_slug_box .shortcode_link').hide();
+						$('#sc_slug_box .shortcode_long_link').show().find('.slug').html(response.sc_long_str);
 					}
 				}
 			});

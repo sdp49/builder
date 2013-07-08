@@ -14,6 +14,14 @@ if ($action == 'delete' && $ID) {
 	wp_redirect(admin_url('admin.php?page=placester_shortcodes_templates'));
 	die;
 }
+if ($action == 'copy' && $ID) {
+	if ($tpl = PL_Shortcode_CPT::load_custom_template($ID)) {
+		$tpl['title'] = 'Copy of '.$tpl['title'];
+		PL_Shortcode_CPT::save_custom_template(0, $tpl);
+	}
+	wp_redirect(admin_url('admin.php?page=placester_shortcodes_templates'));
+	die;
+}
 if ($action == 'edit' && !empty($_POST['save']) && !empty($_POST['shortcode'])) {
 	$data = array_merge($_POST, $_POST[$_POST['shortcode']]);
 	if (empty($_POST['title'])) {
@@ -130,7 +138,7 @@ $used_by = PL_Shortcode_CPT::template_used_by($ID);
 							</div>
 						</div>
 						<?php
-						PL_Router::load_builder_partial('shortcode-preview.php', array('iframe'=>''));
+						PL_Router::load_builder_partial('shortcode-preview.php', array('iframe'=>'', 'title'=>'Shortcode Template Preview'));
 						?>
 					</div>
 				</div><!-- /post-body -->

@@ -18,6 +18,16 @@ PL_Router::load_builder_view('header.php');
 	<?php echo PL_Helper_Header::pl_subpages('placester_shortcodes', $shortcode_subpages, 'Custom Shortcodes'); ?>
 
 	<div id="pl_shortcode_all">
+		<p>These are the custom shortcodes that are currently defined. Custom shortcodes provide an easy way for you to configure a 
+		Placester shortcode with its options and save it for reuse in pages, posts, widgets. For example, if you define a custom shortcode for a
+		slideshow with an ID of 30, you would enter the following in a post:</p>
+		<code>[slideshow id='30']</code>
+		<p>The 'long form' of that shortcode with it's options explicitly defined might be something like the following:</p>
+		<code>[listing_slideshow context='pls_listing_slideshow__13' width='610' height='320' animation='fade' animationSpeed='800' advanceSpeed='5000' 
+		timer='true' pauseOnHover='true']</code>
+		<p>But by defining it as a custom shortcode, you are able to configure the shortcode the way you want it, reuse it, and have any subsequent 
+		changes automatically appear in every place you have used the custom shortcode.</p>  
+		
 		<h2><?php
 		if ($search)
 			printf( ' <span class="subtitle">' . __('Search results for &#8220;%s&#8221;') . '</span>', $search );

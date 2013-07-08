@@ -22,7 +22,7 @@ wp_enqueue_script( 'search-bootloader', trailingslashit( PLS_JS_URL ) . 'scripts
 
 add_filter('show_admin_bar', '__return_false');
 
-?><html style="margin-top: 0 !important; overflow: scroll;">
+?><html style="margin-top: 0 !important; overflow: auto;">
 	<head>
 		<style type="text/css">
 			body {

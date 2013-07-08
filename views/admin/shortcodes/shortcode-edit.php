@@ -10,11 +10,17 @@ $post = array();
 $notice = '';
 $message = '';
 $form_link = '';
-$iframe = $embed_sc_str = $embed_sc_js = '';
+$iframe = $embed_sc_str = $embed_sc_long_str = $embed_sc_js = '';
 $pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs();
 
 if ($post_ID) {
 	$post = PL_Shortcode_CPT::load_shortcode($post_ID);
+	if (!empty($post) && $action == 'copy') {
+		$post['post_title'] = 'Copy of '.$post['post_title'];
+		PL_Shortcode_CPT::save_shortcode(0, $post['shortcode'], $post);
+		wp_redirect(admin_url('admin.php?page=placester_shortcodes'));
+		die;
+	}
 	if (empty($post) || empty($post['shortcode'])) {
 		$post_ID = 0;
 		$post = array();
@@ -25,6 +31,7 @@ if ($post_ID) {
 		$shortcode = $post['shortcode'];
 		$embed_sc_js = htmlentities('<script id="plwidget-'.$post_ID.'" src="'. PL_PARENT_URL . 'js/fetch-widget.js?id='.$post_ID.'" style="width:'.$post['width'].'px;height:'.$post['height'].'px" ></script>');
 		$embed_sc_str = '['.$post['shortcode']." id='".$post_ID."']";
+		$embed_sc_long_str = PL_Shortcode_CPT::generate_shortcode_str($post['shortcode'], $post);
 		$iframe = '<iframe src="'.admin_url('admin-ajax.php').'?action=pl_sc_preview&post_type=pl_general_widget&sc_str='.rawurlencode($embed_sc_str).'" width="'.$post['width'].'px" height="'.$post['height'].'px"></iframe>';
 		$post = array($post['shortcode']=>$post, 'shortcode'=>$post['shortcode'], 'post_title'=>$post['post_title'], 'post_content'=>$post['post_content']);
 	}
@@ -114,6 +121,7 @@ $nonce_action = 'update-' . $post_type . '_' . $post_ID;
 								<div id="sc_slug_box" class="hide-if-no-js">
 									<div class="embed-link iframe_link" style="<?php echo ($embed_sc_js?'':'display:none;');?>"><strong>Embed Code:</strong><span class="slug"><?php echo $embed_sc_js;?></span></div>
 									<div class="embed-link shortcode_link" style="<?php echo ($embed_sc_str?'':'display:none;');?>"><strong>Shortcode:</strong><span class="slug"><?php echo $embed_sc_str;?></span></div>
+									<div class="embed-link shortcode_long_link" style="<?php echo ($embed_sc_long_str?'':'display:none;');?>"><strong>Shortcode (long form):</strong><span class="slug"><?php echo $embed_sc_long_str;?></span></div>
 								</div>
 							</div>
 						</div><!-- /titlediv -->
@@ -170,7 +178,7 @@ $nonce_action = 'update-' . $post_type . '_' . $post_ID;
 					
 						<?php
 						// preview pane
-						PL_Router::load_builder_partial('shortcode-preview.php', array('post'=>$post,'iframe'=>$iframe));
+						PL_Router::load_builder_partial('shortcode-preview.php', array('post'=>$post, 'iframe'=>$iframe, 'title'=>'Custom Shortcode Preview'));
 						// link for template editing
 						?>
 						<script type="text/javascript">

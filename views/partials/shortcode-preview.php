@@ -2,6 +2,7 @@
 /**
  * Generates preview metabox used in the shortcode edit view
  */
+$title = empty($title) ? 'Preview' : $title;
 ?>
 <div id="pl-previewer-metabox-id" class="postbox ">
 	<h3 class="hndle"><span>Preview</span></h3>
@@ -12,8 +13,8 @@
 			</div>
 			<div id='preview_meta_widget'><?php echo $iframe;?></div>
 			<div id="pl-review-wrapper">
-				<a href="" class="pl_review_link button" style="display:none;" title="Preview">Preview in a popup window</a>
-				<div id="pl_review_popup" class="dialog" style="display: none;">Loading preview...</div>
+				<a href="" class="pl_review_link button" style="display:none;" title="<?php echo $title;?>">Preview in a popup window</a>
+				<div id="pl_review_popup" class="dialog" style="display:none;">Loading preview...</div>
 			</div>
 		</div>
 	</div>

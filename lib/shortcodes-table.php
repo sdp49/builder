@@ -182,8 +182,8 @@ class PL_Shortcodes_Table extends WP_List_Table {
 			),
 			array(),
 			array(
-					'title' => array('title', 'asc'),
-					'type' => array('type', 'asc'),
+					'title' => array('title', ''),
+					'type' => array('type', ''),
 			),
 		);
 
@@ -368,6 +368,7 @@ class PL_Shortcodes_Table extends WP_List_Table {
 					$actions = array();
 					if ( $can_edit_post && 'trash' != $post->post_status ) {
 						$actions['edit'] = '<a href="' . get_edit_post_link( $post->ID ) . '" title="' . esc_attr( __( 'Edit this item' ) ) . '">' . __( 'Edit' ) . '</a>';
+						$actions['copy'] = '<a href="' . get_edit_post_link( $post->ID ) . '&action=copy" title="' . esc_attr( __( 'Duplicate this item' ) ) . '">' . __( 'Duplicate' ) . '</a>';
 					}
 					if ( current_user_can( $post_type_object->cap->delete_post, $post->ID ) ) {
 						if ( 'trash' == $post->post_status )
@@ -377,7 +378,7 @@ class PL_Shortcodes_Table extends WP_List_Table {
 						if ( 'trash' == $post->post_status || !EMPTY_TRASH_DAYS )
 							$actions['delete'] = "<a class='submitdelete' title='" . esc_attr( __( 'Delete this item permanently' ) ) . "' href='" . get_delete_post_link( $post->ID, '', true ) . "'>" . __( 'Delete Permanently' ) . "</a>";
 					}
-					echo $this->row_actions( $actions );
+					echo $this->row_actions( $actions, true );
 					?>
 					</td>
 					<?php
@@ -385,7 +386,7 @@ class PL_Shortcodes_Table extends WP_List_Table {
 
 				case 'type':
 					?>
-					<td <?php echo $attributes ?>><?php echo $post->shortcode?></td>
+					<td <?php echo $attributes ?>><strong><?php echo $post->shortcode?></strong><br/><?php echo '['.$post->type.']'?></td>
 					<?php
 					break;
 
