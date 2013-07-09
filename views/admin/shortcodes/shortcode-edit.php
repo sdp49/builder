@@ -1,17 +1,24 @@
 <?php
 global $shortcode_subpages;
 
-$form_action = 'edit';
+$form_action = '';
 $post_type = 'pl_general_widget';
 $post_def = array('post_type'=>$post_type, 'post_title'=>'', 'post_content'=>'', 'shortcode'=>'');
 $post_ID = (int)(empty($_REQUEST['ID'])?0:$_REQUEST['ID']);
-$action = (empty($_REQUEST['action'])?$form_action:$_REQUEST['action']);
+$action = empty($_REQUEST['action']) ? $form_action : $_REQUEST['action'];
 $post = array();
 $notice = '';
 $message = '';
 $form_link = '';
 $iframe = $embed_sc_str = $embed_sc_long_str = $embed_sc_js = '';
 $pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs();
+
+if (empty($action)) {
+	// show a transiton spinner page because while the page is loading
+	// TODO: load the settings options after page load instead.
+	PL_Router::router('shortcodes/loading.php', array('location'=>site_url($_SERVER['REQUEST_URI'].'&action=edit')));
+	return;
+}
 
 if ($post_ID) {
 	$post = PL_Shortcode_CPT::load_shortcode($post_ID);
