@@ -9,7 +9,7 @@ extract($crm_info);
 $crm_obj = new $class();
 
 // Get first 10 contacts...
-// $contacts = $crm_obj->getContacts();
+$contacts = $crm_obj->getContacts();
 
 ?>
 

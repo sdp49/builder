@@ -35,17 +35,59 @@ abstract class PL_CRM_Base {
 		return $query_string;
 	}
 
-	abstract public function constructURL ($endpoint);
+	abstract protected function setCredentials (&$handle);
 
-	abstract public function callAPI ($endpoint, $method, $args);
+	abstract protected function constructURL ($endpoint);
+
+	public function callAPI ($endpoint, $method, $args) {
+		// init cURL handle...
+		$handle = curl_init();
+		$api_key = $this->getAPIKey();
+		
+		// Set call credentials using CRM specific method...
+		$this->setCredentials($handle);
+
+		// Construct URL...
+		$query_str = isset($args["query_params"]) ? $this->constructQueryString($args["query_params"]) : "";
+		$url = $this->constructURL($endpoint) . $query_str;
+
+		error_log($url);
+
+		curl_setopt($handle, CURLOPT_URL, $url);
+		curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
+
+		// Use a local cert to make sure we have a valid one when not on the hosted network...
+		if (!defined("HOSTED_PLUGIN_KEY")) {
+			curl_setopt($handle, CURLOPT_CAINFO, trailingslashit(PL_PARENT_DIR) . "config/cacert.pem");
+		}
+
+		curl_setopt($handle, CURLOPT_CUSTOMREQUEST, $method);
+		curl_setopt($handle, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
+		
+		// Set payload if it exists...
+		if (!empty($args["body"])) {
+			curl_setopt($handle, CURLOPT_POSTFIELDS, json_encode($args["body"]));
+		}
+
+		// make API call
+		$response = curl_exec($handle);
+		if ($response === false) {
+		    $response = array("error" => ("cURL error: " . curl_error($handle) . "\n"));
+		}
+		else {
+			$response = json_decode($response, true);
+		}
+		
+		return $response;
+	}
 
 	/*
 	 * Contacts
 	 */
 
-	// abstract public function getContacts ($filters);
+	abstract public function getContacts ($filters);
 
-	// abstract public function createContact ($args);
+	abstract public function createContact ($args);
 
 	// abstract public function updateContact ($contact_id, $args);
 

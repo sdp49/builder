@@ -32,42 +32,38 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 		return self::$apiOptionKey;
 	}
 
-	public function constructURL ($endpoint) {
-		return "{self::$apiURL}/{self::$version}/{$endpoint}";
-	}
-
-	public function callAPI ($endpoint, $method, $args = array()) {
-		// init cURL handle...
-		$handle = curl_init();
+	protected function setCredentials (&$handle) {
 		$api_key = $this->getAPIKey();
-		
-		// Construct URL...
-		$query_str = isset($args["query_params"]) ? $this->constructQueryString($args["query_params"]) : "";
-		$url = $this->constructURL($endpoint) . $query_str;
 
-		curl_setopt($handle, CURLOPT_URL, $url);
-		curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
-
-		// HTTP authentication using the API key...
+		// HTTP authentication using the API key as user name with no password...
 		curl_setopt($handle, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
 		curl_setopt($handle, CURLOPT_USERPWD, $api_key . ":");
+	}
 
-		// Use a local cert to make sure we have a valid one
-		curl_setopt($handle, CURLOPT_CAINFO, trailingslashit(PL_PARENT_DIR) . "config/cacert.pem");
+	public function constructURL ($endpoint) {
+		$url = self::$apiURL;
+		$version = self::$version;
 
-		curl_setopt($handle, CURLOPT_CUSTOMREQUEST, $method);
-		curl_setopt($handle, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
-		
-		// Set payload if it exists...
-		if (!empty($args["body"])) {
-			curl_setopt($handle, CURLOPT_POSTFIELDS, json_encode($args["body"]));
-		}
+		return "{$url}/{$version}/{$endpoint}";
+	}
 
-		// make API call
-		$response = curl_exec($handle);
-		if ($response === false) {
-		    exit("cURL error: " . curl_error($handle) . "\n");
-		}
+	/*
+	 * Contacts
+	 */
+
+	public function getContacts ($filters = array()) {
+		// Arg processing?
+
+		// Make API Call...
+		$response = $this->callAPI("people", "GET", $filters);
+
+		error_log(var_export($response, true));
+
+		// return 
+	}
+
+	public function createContact ($args) {
+		// NOTE: Use events endpoint for this!!!
 	}
 }
 
