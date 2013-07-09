@@ -49,16 +49,7 @@ class PL_Search_Listing_CPT extends PL_SC_Base {
 		'img_gallery'	=> array('help' => 'Image gallery'),
 		//'amenities'		=> array('help' => ''),
 		'price_unit'	=> array('help' => 'Unit price'),
-		/*
-		// compliance items
-		'agent_name'		=> array('help' => 'Agent name'),
-		'agent_license'		=> array('help' => 'Agent license#'),
-		'office_name'		=> array('help' => 'Office name'),
-		'office_phone'		=> array('help' => 'Office phone'),
-		'co_agent_name'		=> array('help' => 'Co-agent name'),
-		'co_office_name'	=> array('help' => 'Co-office name'),
-		'disclaimer'		=> array('help' => 'Disclaimer notice'),
-		*/
+		'compliance'	=> array('help' => 'MLS compliance statement'),
 	);
 
 	protected static $template = array(
@@ -84,6 +75,7 @@ class PL_Search_Listing_CPT extends PL_SC_Base {
 				Price: <span>[price]</span>
 			</p>
 			<p class="my-lu-desc">[desc]</p>
+			[compliance]
 			<a class="my-lu-link" href="[url]">View Listing Details</a>
 		</div>
 	</div>
@@ -102,6 +94,12 @@ You can use any valid HTML in this field to format the subcodes.' ),
 	font-family: "Helvetica Neue", Arial, Helvetica, "Nimbus Sans L", sans-serif;
 }
 /* make the selectors line up */
+.my-listings .sort_wrapper {
+	margin: 0;
+}
+.my-listings .sort_item {
+	overflow: hidden;
+}
 .my-listings label {
 	display: block;
 	float: left;
@@ -160,8 +158,14 @@ section.my-lu {
 	margin-left: 190px;
 	font-size: 12px;
 }
+/* property description */
 .my-lu-desc {
 	font-size: 12px;
+}
+/* MLS compliance statement */
+.compliance-wrapper {
+	margin-top: .5em;
+	font-size: 10px;
 }
 .my-lu ul {
 	float: none;
