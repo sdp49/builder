@@ -531,12 +531,12 @@ class PL_Component_Entity {
 		switch ($tag)
 		{
 			case 'desc':
-				$max_len = @array_key_exists('maxlen', $atts) ? (int)$atts['maxlen'] : 500;
+				$max_len = !empty($atts['maxlen']) ? (int)$atts['maxlen'] : 500;
 				$val = substr($val, 0, $max_len);
 				break;
 			case 'image':
-				$width = @array_key_exists('width', $atts) ? (int)$atts['width'] : 180;
-				$height = @array_key_exists('height', $atts) ? (int)$atts['height'] : 120;
+				$width = !empty($atts['width']) ? (int)$atts['width'] : 180;
+				$height = !empty($atts['height']) ? (int)$atts['height'] : 120;
 				$val = PLS_Image::load($listing_list['images'][0]['url'],
 						array('resize' => array('w' => $width, 'h' => $height),
 								'fancybox' => true,
