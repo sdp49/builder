@@ -62,6 +62,10 @@ class PL_CRM_Controller {
 		die();
 	}
 
+	/*
+	 * Utility CRM methods...
+	 */
+
 	public static function registerCRM ($crm_info) {
 		// We need an id...
 		if (empty($crm_info["id"])) { return; }
@@ -111,6 +115,21 @@ class PL_CRM_Controller {
 
 	public static function resetActiveCRM () {
 		return PL_Options::delete(self::$activeCRMKey);
+	}
+
+	/* Exposes all public CRM library methods... */
+	public static function callCRMLib ($method, $args = array()) {
+		$retVal = null;
+
+		// Try to create an instance...
+		$crm_id = self::getActiveCRM();
+		$crm_obj = self::getCRMInstance($crm_id);
+
+		if (!is_null($crm_obj) && method_exists($crm_obj, $method)) {
+			$retVal = $crm_obj->$method($args);
+		}
+
+		return $retVal;
 	}
 
 	/*

@@ -21,5 +21,5 @@ $contacts = $crm_obj->getContacts();
 	<div class="browse-logo">
 		<img src="<?php echo $logo_img; ?>" />
 	</div>
-	<h3><?php echo var_export($crm_info); ?> is currently active...</h3>
+	<h3><?php echo $crm_info["id"]; ?> is currently active...</h3>
 </div>

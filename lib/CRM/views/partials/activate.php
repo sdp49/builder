@@ -18,6 +18,6 @@ if (empty($api_key)) {
 		<a href="#" id="reset_<?php echo $id ?>" class="reset-creds-button">Enter new API Key</a>
 	</div>
 	<div>
-		<a href="#" id="activate_<?php echo $id ?>" class="activate-button">Active CRM</a>
+		<a href="#" id="activate_<?php echo $id ?>" class="activate-button">Activate CRM</a>
 	</div>	
 </div>

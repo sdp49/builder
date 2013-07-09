@@ -32,7 +32,7 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 		return self::$apiOptionKey;
 	}
 
-	protected function setCredentials (&$handle) {
+	protected function setCredentials (&$handle, &$args) {
 		$api_key = $this->getAPIKey();
 
 		// HTTP authentication using the API key as user name with no password...
@@ -52,10 +52,11 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 	 */
 
 	public function getContacts ($filters = array()) {
-		// Arg processing?
+		// This is a GET request, so mark all filters as query string params...
+		$args = array("query_params" => $filters);
 
 		// Make API Call...
-		$response = $this->callAPI("people", "GET", $filters);
+		$response = $this->callAPI("people", "GET", $args);
 
 		error_log(var_export($response, true));
 

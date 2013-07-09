@@ -32,9 +32,9 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 		return self::$apiOptionKey;
 	}
 
-	protected function setCredentials (&$handle) {
+	protected function setCredentials (&$handle, &$args) {
 		// Attach the API as the first query arg for authentication purposes...
-		if (is_array($args["query_params"])) {
+		if (!empty($args["query_params"]) && is_array($args["query_params"])) {
 			$args["query_params"]["api_key"] = $this->getAPIKey();
 		}
 		else {
@@ -54,13 +54,17 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 	 */
 
 	public function getContacts ($filters = array()) {
-		$endpoint = "contacts";
-		$method = "GET";
+		// Need to set these as this API does enforce sane defaults..
+		$filters["limit"] = ( empty($filters["limit"]) || !is_numeric($filters["limit"]) ? 10 : $filters["limit"] );
+		$filters["page"] = ( empty($filters["page"]) || !is_numeric($filters["page"]) ? 1 : $filters["page"] );
 
-		// Arg processing?
+		// This is a GET request, so mark all filters as query string params...
+		$args = array("query_params" => $filters);
 
 		// Make API Call...
-		$response = $this->callAPI($endpoint, $method, $args);
+		$response = $this->callAPI("contacts", "GET", $args);
+
+		error_log(var_export($response, true));
 	}
 
 	public function createContact ($args) {

@@ -22,9 +22,9 @@ abstract class PL_CRM_Base {
 	protected function constructQueryString ($query_params = array()) {
 		$query_string = "";
 
-		if (is_array($args["query_params"]) && !empty($args["query_params"])) {
+		if (!empty($query_params) && is_array($query_params)) {
 			$query_string = "?";
-			foreach ($args["query_params"] as $key => $value) {
+			foreach ($query_params as $key => $value) {
 				$query_string .= "{$key}={$value}&";
 			}
 		}
@@ -35,7 +35,7 @@ abstract class PL_CRM_Base {
 		return $query_string;
 	}
 
-	abstract protected function setCredentials (&$handle);
+	abstract protected function setCredentials (&$handle, &$args);
 
 	abstract protected function constructURL ($endpoint);
 
@@ -45,7 +45,9 @@ abstract class PL_CRM_Base {
 		$api_key = $this->getAPIKey();
 		
 		// Set call credentials using CRM specific method...
-		$this->setCredentials($handle);
+		$this->setCredentials($handle, $args);
+
+		error_log(var_export($args, true));
 
 		// Construct URL...
 		$query_str = isset($args["query_params"]) ? $this->constructQueryString($args["query_params"]) : "";
@@ -77,7 +79,7 @@ abstract class PL_CRM_Base {
 		else {
 			$response = json_decode($response, true);
 		}
-		
+
 		return $response;
 	}
 
