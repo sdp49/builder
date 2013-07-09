@@ -1,11 +1,11 @@
 <?php
 global $shortcode_subpages;
 
-$form_action = '';
+$form_action = 'edit';
 $post_type = 'pl_general_widget';
 $post_def = array('post_type'=>$post_type, 'post_title'=>'', 'post_content'=>'', 'shortcode'=>'');
 $post_ID = (int)(empty($_REQUEST['ID'])?0:$_REQUEST['ID']);
-$action = empty($_REQUEST['action']) ? $form_action : $_REQUEST['action'];
+$action = empty($_REQUEST['action']) ? '' : $_REQUEST['action'];
 $post = array();
 $notice = '';
 $message = '';
