@@ -36,6 +36,11 @@ class PL_CRM_Controller {
 			// Set args array if it exists...
 			$args = ( !empty($_POST["crm_args"]) && is_array($_POST["crm_args"]) ? array_values($_POST["crm_args"]) : array() );
 
+			// Special handling for AJAX requests to populate contact "dataTable" grids...
+			if (isset($_POST["sEcho"])) {
+				$args = array($_POST);
+			}
+
 			// Execute primary function...
 			$callback = array(__CLASS__, $_POST["crm_method"]);
 			$response = call_user_func_array($callback, $args);
@@ -52,6 +57,7 @@ class PL_CRM_Controller {
 
 			// Handle formatting response if set to JSON...
 			if (!empty($_POST["response_format"]) && $_POST["response_format"] == "JSON") {
+		 		error_log("Formatted as JSON...");
 		 		$response = json_encode($response);
 	 		}
  		}
@@ -130,6 +136,49 @@ class PL_CRM_Controller {
 		}
 
 		return $retVal;
+	}
+
+	public static function getContactGridData ($args = array()) {
+		error_log("In getGridData...");
+		error_log(var_export($args, true));
+
+		// Try to create an instance...
+		$crm_id = self::getActiveCRM();
+		$crm_obj = self::getCRMInstance($crm_id);
+		
+		$filters = array();
+
+		// Pagination
+		$filters["limit"] = $args["iDisplayLength"];
+		$filters["offset"] = $args["iDisplayStart"];
+		
+		// Get grid data...
+		$data = $crm_obj->getContacts($filters);
+
+		// Format grid data in a form dataTables.js expects for rendering...
+		$grid_rows = array();
+		$ordered_field_keys = array_keys($crm_obj->getContactFieldsMeta());
+
+		if (!empty($data["contacts"]) && is_array($data["contacts"])) {
+			foreach ($data["contacts"] as $index => $contact) {
+				foreach ($ordered_field_keys as $key) {
+					$val = empty($contact[$key]) ? "" : $contact[$key];
+					$grid_rows[$index][] = $val;
+				}
+			}
+		}
+
+		// Set total from API response -- corresponds to all possible contacts available...
+		$total = empty($data["total"]) ? 0 : $data["total"];
+
+		// Required for datatables.js grid to render and function properly...
+		$grid_data["sEcho"] = $args["sEcho"];
+		$grid_data["aaData"] = $grid_rows;
+		$grid_data["iTotalRecords"] = $total;
+		$grid_data["iTotalDisplayRecords"] = $total;
+
+		// error_log(var_export($grid_data, true));
+		return $grid_data;
 	}
 
 	/*

@@ -8,6 +8,8 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 	private static $apiURL = "https://api.followupboss.com";
 	private static $version = "v1";
 
+	private static $contactFieldsMeta = array();
+
 	public static function init () {
 		// Register this CRM implementation with the controller...
 		if (class_exists("PL_CRM_Controller")) {
@@ -22,6 +24,15 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 
 			PL_CRM_Controller::registerCRM($crm_info);
 		}
+
+		// Initialize contact field -- NOTE: Specific to this CRM's API!!!
+		self::$contactFieldsMeta = array(
+			"id" => "ID",
+			"firstName" => "First Name",
+			"lastName" => "Last Name",
+			"emails" => "E-mail(s)",
+			"phones" => "Phone(s)"
+		);
 	}
 
 	public function __construct () {
@@ -51,6 +62,10 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 	 * Contacts
 	 */
 
+	public function getContactFieldsMeta () {
+		return self::$contactFieldsMeta;
+	}
+
 	public function getContacts ($filters = array()) {
 		// This is a GET request, so mark all filters as query string params...
 		$args = array("query_params" => $filters);
@@ -60,7 +75,12 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 
 		error_log(var_export($response, true));
 
-		// return 
+		// Translate API specific response into standard contacts collection...
+		$data = array();
+		$data["total"] = empty($response["_metadata"]["total"]) ? 0 : $response["_metadata"]["total"];
+		$data["contacts"] = (empty($response["people"]) || !is_array($response["people"])) ? array() : $response["people"];
+
+		return $data;
 	}
 
 	public function createContact ($args) {
