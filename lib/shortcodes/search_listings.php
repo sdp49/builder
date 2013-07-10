@@ -94,21 +94,20 @@ You can use any valid HTML in this field to format the subcodes.' ),
 	font-family: "Helvetica Neue", Arial, Helvetica, "Nimbus Sans L", sans-serif;
 	overflow: hidden;
 }
-/* make the selectors line up */
+/* sort selector group */
 .my-listings .sort_wrapper {
 	margin: 0;
 }
+/* individual sort selector */
 .my-listings .sort_item {
-	overflow: hidden;
-}
-.my-listings label {
-	display: block;
 	float: left;
-	width: 10em;
+	margin-right: .5em;
 }
+/* individual sort selector label */
+.my-listings label {
+}
+/* list length selector */
 #placester_listings_list_length label {
-	float: none;
-	width: auto;
 }
 
 /* format the table that holds the listings */
