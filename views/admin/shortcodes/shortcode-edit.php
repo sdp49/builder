@@ -47,8 +47,8 @@ if ($post_ID) {
 
 if (!empty($_POST['publish'])) {
 	// accomodate featured listings where the field name is merged with the shortcode, need to move into shortcode array
-	if (!empty($_POST[$_POST['shortcode']]['pl_featured_listing_meta'])) {
-		$_POST[$_POST['shortcode']]['pl_featured_listing_meta'] = $_POST[$_POST['shortcode']]['pl_featured_listing_meta']['featured-listings-type'];
+	if (!empty($_POST[$_POST['shortcode']][$_POST['shortcode'].'-pl_featured_listing_meta'])) {
+		$_POST[$_POST['shortcode']]['pl_featured_listing_meta'] = $_POST[$_POST['shortcode']][$_POST['shortcode'].'-pl_featured_listing_meta'];
 	}
 	if (empty($_POST['post_title'])) {
 		$notice = 'Please provide a name for this shortcode.';	

@@ -34,7 +34,7 @@ class PL_Shortcode_CPT {
 		if ($handle = opendir($path)) {
 			while (false !== ($file = readdir($handle))) {
 				if (pathinfo($file, PATHINFO_EXTENSION) == 'php' && !(in_array($file, $ignore))) {
-					include($path . $file);
+					include_once($path . $file);
 				}
 			}
 			closedir($handle);

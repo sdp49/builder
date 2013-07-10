@@ -53,7 +53,7 @@ class PL_Search_Listing_CPT extends PL_SC_Base {
 	);
 
 	protected static $template = array(
-		'snippet_body'	=> array( 'type' => 'textarea', 'label' => 'HTML', 'default' => '
+		'snippet_body'	=> array( 'type' => 'textarea', 'label' => 'HTML to format each individual listing', 'default' => '
 <section class="my-lu">
 	<div class="my-lu-head">
 		<a href="[url]">[address] [locality], [region]</a>
@@ -92,6 +92,7 @@ You can use any valid HTML in this field to format the subcodes.' ),
 	border: 1px solid #000;
 	padding: 5px;
 	font-family: "Helvetica Neue", Arial, Helvetica, "Nimbus Sans L", sans-serif;
+	overflow: hidden;
 }
 /* make the selectors line up */
 .my-listings .sort_wrapper {

@@ -28,7 +28,7 @@ class PL_Component_Entity {
 		// currently they have different logic and diff input parameters
 		$featured_templates = PL_Shortcode_CPT::template_list('featured_listings', true);
 		foreach ($featured_templates as $template => $type) {
-			add_filter( 'pls_listings_list_ajax_item_html_featured_listings' . $template, array(__CLASS__,'featured_listings_ajax_templates'), 10, 3 );
+			add_filter( 'pls_listing_featured_listings_' . $template, array(__CLASS__,'featured_listings_templates'), 10, 3 );
 		}
 
 		$search_form_templates = PL_Shortcode_CPT::template_list('search_form', true);
@@ -60,39 +60,37 @@ class PL_Component_Entity {
 	}
 
 	public static function featured_listings_entity( $atts, $filters = '' ) {
-		if( ! isset( $atts['id'] ) ) {
-			return false;
+		if (!empty($atts['id'])) {
+			// if we are a custom shortcode fetch the record so we can display the correct options
+			$options = PL_Shortcode_CPT::get_shortcode_options('featured_listings', $atts['id']);
+			$atts = wp_parse_args($atts, $options);
+			$property_ids = self::get_property_ids($atts['id']);
+			if (!empty($property_ids)) {
+				$atts['property_ids'] = array_keys($property_ids);
+			}
 		}
-		$atts = wp_parse_args($atts, array('limit' => 5, 'featured_id' => 'custom', 'context' => 'shortcode'));
+
+		// add template formatting
+		$header = $footer = '';
+		$template = PL_Shortcode_CPT::load_template($atts['context'], 'featured_listings');
+		if (!empty($template['before_widget']) && empty($_GET['embedded'])) {
+			$header = $template['before_widget'].$header;
+		}
+		if (!empty($template['css'])) {
+			$header = '<style type="text/css">'.$template['css'].'</style>'.$header;
+		}
+		if (!empty($template['after_widget']) && empty($_GET['embedded'])) {
+			$footer .= $template['after_widget'];
+		}
+
+		// namespace the context:
+		if (!empty($atts['context'])) {
+			$atts['context'] = 'featured_listings_'.$atts['context'];
+		}
 		ob_start();
-
-		// pass a template as a context if any
-		$template_context = '';
-		// pls_dump($atts);
-		if( isset( $atts['template'] ) ) {
-			$template_context = $atts['template'];
-		}
-
-		// Print property_ids as argument to the listings
-		global $property_ids;
-		$property_ids = self::get_property_ids( $atts['id'] );
-
-		if( empty( $property_ids ) ) {
-			return;
-		}
-
-		$property_ids = array_flip($property_ids);
-
-		add_action('featured_filters_featured_ids', array( __CLASS__, 'print_property_listing_args') );
-		unset( $property_ids );
-
-		// print the rest of the filters
-		PL_Component_Entity::print_filters( $filters, $template_context );
-
-		// compose the final listing with AJAX
-		echo PLS_Partials::get_listings_list_ajax( ( empty( $template_context ) ? '' : 'context=' . $template_context . '&' ). 'table_id=placester_listings_list');
-
-		return ob_get_clean();
+		// output listings formatted w/ template
+		echo PLS_Partials::get_listings($atts);
+		return $header.ob_get_clean().$footer;
 	}
 
 	/**
@@ -138,7 +136,7 @@ class PL_Component_Entity {
 		}
 		// way to request template when ajax gets listings
 		$atts['context'] = 'static_listings_' . $atts['context'];
-		
+
 		ob_start();
 		self::hide_unnecessary_controls( $atts );
 		self::print_filters( $filters . $filters_string, $atts['context'] );
@@ -181,7 +179,7 @@ class PL_Component_Entity {
 			}
 		}
 		$atts = wp_parse_args($atts, array('context' => 'shortcode'));
-		
+
 		// add template formatting
 		$header = $footer = '';
 		$template = PL_Shortcode_CPT::load_template($atts['context'], 'search_listings');
@@ -196,7 +194,7 @@ class PL_Component_Entity {
 		}
 		// way to request template when ajax gets listings
 		$atts['context'] = 'search_listings_'.$atts['context'];
-		
+
 		ob_start();
 		self::print_filters( $filters . $filters_string, $atts['context'] );
 		PLS_Partials_Get_Listings_Ajax::load(array('context' => $atts['context']));
@@ -338,7 +336,7 @@ class PL_Component_Entity {
 				'featured_option_id' => 'slideshow-featured-listings',
 				'listings' => 'limit=5&is_featured=true&sort_by=price'
 		));
-		
+
 		// basic slideshow style
 		$css = '';
 		if ($default_style) {
@@ -513,7 +511,7 @@ class PL_Component_Entity {
 		} else {
 			return;
 		}
-		
+
 		if (array_key_exists($tag, $listing_list['cur_data'])) {
 			$val = $listing_list['cur_data'][$tag];
 		}else if (array_key_exists($tag, $listing_list['location'])) {
@@ -625,7 +623,7 @@ class PL_Component_Entity {
 			return;
 		}
 		$value = $atts['nb_select_' . $key];
-		
+
 		// API searches for neighborhood by slug
 		if( in_array( $key, array( 'state', 'city', 'neighborhood', 'zip', 'street' ) ) ) {
 			$term = get_term_by('id', $value, $key);
@@ -688,7 +686,7 @@ class PL_Component_Entity {
 			});
 		</script>
 		<?php
-		
+
 		echo PLS_Map::polygon( null, array(
 					'width' => 629,
 					'height' => 303,
@@ -725,7 +723,7 @@ class PL_Component_Entity {
 			}
 		}
 		$atts = wp_parse_args($atts, array('context' => 'shortcode'));
-		
+
 		// Handle attributes using shortcode_atts...
 		$form_action = esc_url( home_url( '/' ) ) . 'listings';
 		if( isset( $atts['form_action_url'] ) ) {
@@ -902,12 +900,12 @@ class PL_Component_Entity {
 	 */
 
 	// Provide template layout for featured listings
-	public static function featured_listings_ajax_templates( $item_html, $listing, $context_var ) {
+	public static function featured_listings_templates( $item_html, $listing, $context_var ) {
 		$shortcode = 'featured_listings';
 		self::$listing = $listing;
 
-		// get the template attached as a context arg, 33 is the length of the filter prefix
-		$template = substr(current_filter(), 33);
+		// get the template attached as a context arg, 30 is the length of the filter prefix
+		$template = substr(current_filter(), 30);
 
 		$snippet_body = PL_Shortcodes::get_active_snippet_body( $shortcode, $template );
 		return do_shortcode( $snippet_body );
