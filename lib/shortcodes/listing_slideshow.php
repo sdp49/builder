@@ -121,11 +121,13 @@ You can use any valid HTML in this field and it will appear after the slideshow 
 
 	/**
 	 * Return array of options used to configure this custom shortcode
+	 * @param $id int		: id of custom shortcode record
+	 * @return array/bool	: array of results/false if id invalid/trashed
 	 */
 	public static function get_options($id) {
 		$class = get_called_class();
 		$options = array();
-		if ($post = get_post($id, ARRAY_A, array('post_type'=>'pl_general_widget'))) {
+		if (($post = get_post($id, ARRAY_A, array('post_type'=>'pl_general_widget'))) && $post['post_status']=='publish') {
 			$postmeta = get_post_meta($id);
 			if (!empty($postmeta['shortcode'])) {
 				foreach($class::$options as $attr=>$vals) {
@@ -146,8 +148,9 @@ You can use any valid HTML in this field and it will appear after the slideshow 
 					}
 				}
 			}
+			return $options;
 		}
-		return $options;
+		return false;
 	}
 		
 	/**

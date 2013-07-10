@@ -63,10 +63,15 @@ class PL_Component_Entity {
 		if (!empty($atts['id'])) {
 			// if we are a custom shortcode fetch the record so we can display the correct options
 			$options = PL_Shortcode_CPT::get_shortcode_options('featured_listings', $atts['id']);
-			$atts = wp_parse_args($atts, $options);
-			$property_ids = self::get_property_ids($atts['id']);
-			if (!empty($property_ids)) {
-				$atts['property_ids'] = array_keys($property_ids);
+			if ($options!==false) {
+				$atts = wp_parse_args($atts, $options);
+				$property_ids = self::get_property_ids($atts['id']);
+				if (!empty($property_ids)) {
+					$atts['property_ids'] = array_keys($property_ids);
+				}
+			}
+			else {
+				unset($atts['id']);
 			}
 		}
 
@@ -109,7 +114,12 @@ class PL_Component_Entity {
 			$filters_string = self::convert_filters( $listing_filters );
 			// and template and other attributes
 			$options = PL_Shortcode_CPT::get_shortcode_options('static_listings', $atts['id']);
-			$atts = wp_parse_args($atts, $options);
+			if ($options!==false) {
+				$atts = wp_parse_args($atts, $options);
+			}
+			else {
+				unset($atts['id']);
+			}
 		}
 		$atts = wp_parse_args($atts, array('id' => 0, 'limit' => 5, 'featured_id' => 'custom', 'context' => 'shortcode'));
 
@@ -169,7 +179,12 @@ class PL_Component_Entity {
 			$filters_string = self::convert_filters( $listing_filters );
 			// and template and other attributes
 			$options = PL_Shortcode_CPT::get_shortcode_options('search_listings', $atts['id']);
-			$atts = wp_parse_args($atts, $options);
+			if ($options!==false) {
+				$atts = wp_parse_args($atts, $options);
+			}
+			else {
+				unset($atts['id']);
+			}
 		}
 		// get default values
 		$sc_attrs = PL_Shortcode_CPT::get_shortcode_attrs('search_listings');
@@ -209,7 +224,12 @@ class PL_Component_Entity {
 		if (!empty($atts['id'])) {
 			// get template and other attributes
 			$options = PL_Shortcode_CPT::get_shortcode_options('search_map', $atts['id']);
-			$atts = wp_parse_args($atts, $options);
+			if ($options!==false) {
+				$atts = wp_parse_args($atts, $options);
+			}
+			else {
+				unset($atts['id']);
+			}
 		}
 		// get default values
 		$sc_attrs = PL_Shortcode_CPT::get_shortcode_attrs('search_map');
@@ -315,7 +335,12 @@ class PL_Component_Entity {
 		if (!empty($atts['id'])) {
 			// get template and other attributes
 			$options = PL_Shortcode_CPT::get_shortcode_options('listing_slideshow', $atts['id']);
-			$atts = wp_parse_args($atts, $options);
+			if ($options!==false) {
+				$atts = wp_parse_args($atts, $options);
+			}
+			else {
+				unset($atts['id']);
+			}
 		}
 		// get default values
 		foreach ($sc_attrs['options'] as $key=>$vals) {
@@ -713,7 +738,12 @@ class PL_Component_Entity {
 		if (!empty($atts['id'])) {
 			// get template and other attributes
 			$options = PL_Shortcode_CPT::get_shortcode_options('search_form', $atts['id']);
-			$atts = wp_parse_args($atts, $options);
+			if ($options!==false) {
+				$atts = wp_parse_args($atts, $options);
+			}
+			else {
+				unset($atts['id']);
+			}
 		}
 		// get default values
 		$sc_attrs = PL_Shortcode_CPT::get_shortcode_attrs('search_form');

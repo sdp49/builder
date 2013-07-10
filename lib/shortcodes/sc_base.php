@@ -149,13 +149,13 @@ abstract class PL_SC_Base {
 		
 	/**
 	 * Return array of options used to configure this custom shortcode
-	 * @param $id int	: id of custom shortcode record
-	 * @return array
+	 * @param $id int		: id of custom shortcode record
+	 * @return array/bool	: array of results/false if id invalid/trashed
 	 */
 	public static function get_options($id) {
 		$class = get_called_class();
 		$options = array();
-		if ($post = get_post($id, ARRAY_A, array('post_type'=>'pl_general_widget'))) {
+		if (($post = get_post($id, ARRAY_A, array('post_type'=>'pl_general_widget'))) && $post['post_status']=='publish') {
 			$postmeta = get_post_meta($id);
 			foreach($class::$options as $attr=>$vals) {
 				if ($attr=='context') {
@@ -168,8 +168,9 @@ abstract class PL_SC_Base {
 					$options[$attr] = maybe_unserialize($postmeta[$key][0]);
 				}
 			}
+			return $options;
 		}
-		return $options;
+		return false;
 	}
 		
 	/**

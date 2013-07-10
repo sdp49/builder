@@ -321,9 +321,9 @@ class PL_Shortcodes_Table extends WP_List_Table {
 		$post_type_object = get_post_type_object( $this->post_type );
 		$can_edit_post = current_user_can( $post_type_object->cap->edit_post, $post->ID );
 		$shortcode_str = '['.$post->type." id='".$post->ID."']";
-		$sc = PL_Shortcode_CPT::get_shortcode_options($post->type, $post->ID);
-		if (!empty($sc['width']) && !empty($sc['height'])) {
-			$embed_str = htmlentities('<script id="plwidget-'.$post->ID.'" src="'.PL_PARENT_URL.'js/fetch-widget.js?id='.$post->ID.'" style="width:'.$sc['width'].'px;height:'.$sc['height'].'px"></script>');
+		$sc_options = PL_Shortcode_CPT::get_shortcode_options($post->type, $post->ID);
+		if ($sc_options!==false && !empty($sc_options['width']) && !empty($sc_options['height'])) {
+			$embed_str = htmlentities('<script id="plwidget-'.$post->ID.'" src="'.PL_PARENT_URL.'js/fetch-widget.js?id='.$post->ID.'" style="width:'.$sc_options['width'].'px;height:'.$sc_options['height'].'px"></script>');
 		}
 		else {	
 			$embed_str = '';
