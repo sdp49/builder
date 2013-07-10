@@ -117,6 +117,9 @@ You can use any valid HTML in this field to format the subcodes.' ),
 	margin: 0;
 	width: 100%;
 }
+.entry-content .my-listings td {
+	padding: 0;
+}
 
 /* format the pagination links */
 .my-listings .paginate_button,
