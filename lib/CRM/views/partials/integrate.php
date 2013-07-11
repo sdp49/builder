@@ -12,16 +12,16 @@ if (empty($info)) {
 
 ?>
 <div class="integrate-crm-box">
-	<div class="enter-creds-box">
+	<div class="enter-creds">
 		<span>Enter your API Key:</span>
 		<input id="<?php echo $id; ?>_api_key" class="api-key-field" type="text" />
 		<a href="#" id="integrate_<?php echo $id; ?>" class="integrate-button button-secondary">Integrate</a>
 	</div>
-	<div class="cred-lookup-box">
+	<div class="cred-lookup">
 		<span> Don't know your API key?</span>
 		<a href="<?php echo $info["cred_lookup_url"]; ?>" class="api-lookup" target="blank">Find it here</a>
 	</div>
-	<div class="sign-up-box">
+	<div class="sign-up">
 		<span>Don't have an account with this provider?</span>
 		<a href="<?php echo $info["referral_url"]; ?>" target="_blank">Sign-up here</a>
 	</div>

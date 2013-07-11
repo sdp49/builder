@@ -2,8 +2,16 @@
  * CRM Login Styling
  */
 
-.crm-options-box {
-	width: 700px;
+.login-header-wrapper {
+	margin: 10px 0px;
+}
+
+.login-header-wrapper h2 {
+	padding: 10px 0px;
+}
+
+.crm-options-grid {
+	width: 720px;
 	background-color: #f5f5f5;
 	border-width: 1px;
 	border-style: solid;
@@ -21,8 +29,8 @@
 }
 
 .crm-box > div {
-	height: 60px;
-	margin: 20px 20px 20px 20px;
+	height: 70px;
+	margin: 15px 20px 15px 20px;
 	float: left;
 }
 
@@ -36,12 +44,27 @@
 	border-radius: 5px;
 }
 
-.integrate-crm-box {
-
+.integrate-crm-box .enter-creds {
+	font-weight: bold;
+	font-size: 14px;
 }
 
 .activate-crm-box div {
 	height: 30px;
+}
+
+.activate-crm-box .current-key {
+	font-weight: bold;
+	font-size: 14px;
+}
+
+.activate-crm-box .current-key span {
+	font-weight: normal;
+}
+
+.activate-crm-box .button-group a {
+	font-weight: bold;
+	margin-right: 10px;
 }
 
 .invalid {

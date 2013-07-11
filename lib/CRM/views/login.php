@@ -3,11 +3,11 @@
 if (!is_array($crm_list)) { return; }
 ?>
 
-<div class="">
+<div class="login-header-wrapper">
 	<h2>Integrate with a CRM Provider</h2>
 </div>
 
-<div class="crm-options-box">
+<div class="crm-options-grid">
 	<?php foreach ($crm_list as $id => $info): ?>
 		<div id="<?php echo $id; ?>-box" class="crm-box">
 			<div class="login-logo">
