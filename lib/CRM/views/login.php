@@ -4,7 +4,7 @@ if (!is_array($crm_list)) { return; }
 ?>
 
 <div class="login-header-wrapper">
-	<h2>Integrate with a CRM Provider</h2>
+	<h2>Integrate your CRM Provider(s)</h2>
 </div>
 
 <div class="crm-options-grid">
