@@ -16,15 +16,16 @@ $table_id = "contacts_grid";
 ?>
 
 <div class="crm-browse-box">
-	<div class="">
-		<a href="#" class="deactivate-button">Choose a different CRM</a>
+	<div class="header-wrapper">
+		<h2>Your site's CRM is integrated with <?php echo $display_name; ?></h2>
+		<a href="#" class="deactivate-button button-secondary">Choose a different CRM</a>
 	</div>
 
-	<div class="browse-logo">
+	<!-- <div class="browse-logo">
 		<img src="<?php echo $logo_img; ?>" />
-	</div>
+	</div> -->
 
-	<div>
+	<div class="">
 		<h3>Render Search Form here...</h3>
 	</div>
 

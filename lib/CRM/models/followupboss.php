@@ -42,6 +42,7 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 		// 	"id" => array(
 		// 		"display" => "ID",
 		// 		"searchable" => true
+		// 	),
 		// 	"firstName" => "First Name",
 		// 	"lastName" => "Last Name",
 		// 	"emails" => "E-mail(s)",

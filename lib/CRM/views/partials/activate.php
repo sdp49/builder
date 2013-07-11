@@ -14,10 +14,10 @@ if (empty($api_key)) {
 ?>
 <div class="activate-crm-box">
 	<div>
-		API Key set to: <span><?php echo $api_key; ?></span>
-		<a href="#" id="reset_<?php echo $id ?>" class="reset-creds-button">Enter new API Key</a>
+		API Key: <span><?php echo $api_key; ?></span>
 	</div>
 	<div>
-		<a href="#" id="activate_<?php echo $id ?>" class="activate-button">Activate CRM</a>
-	</div>	
+		<a href="#" id="reset_<?php echo $id ?>" class="reset-creds-button button-secondary">Enter new API Key</a>
+		<a href="#" id="activate_<?php echo $id ?>" class="activate-button button-primary">Activate CRM</a>
+	</div>
 </div>

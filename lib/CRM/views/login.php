@@ -3,9 +3,13 @@
 if (!is_array($crm_list)) { return; }
 ?>
 
+<div class="">
+	<h2>Integrate with a CRM Provider</h2>
+</div>
+
 <div class="crm-options-box">
 	<?php foreach ($crm_list as $id => $info): ?>
-		<div id="<?php echo $id; ?>-box" class="">
+		<div id="<?php echo $id; ?>-box" class="crm-box">
 			<div class="login-logo">
 				<img src="<?php echo $info["logo_img"]; ?>" />
 			</div>
