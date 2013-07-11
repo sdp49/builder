@@ -93,6 +93,16 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 		$filters["limit"] = ( empty($filters["limit"]) || !is_numeric($filters["limit"]) ? 10 : $filters["limit"] );
 		$filters["page"] = ( empty($filters["page"]) || !is_numeric($filters["page"]) ? 1 : $filters["page"] );
 
+		// Translate traditional "offset" field into a valid page number...
+		if (isset($filters["offset"])) {
+			$limit = $filters["limit"];
+			$offset = $filters["offset"];
+
+			// Pages are indexed from 1, so an offset of 0 must translate to the first page and so on...
+			$filters["page"] = round(($offset + $limit)/$limit);
+			error_log("Page #: " . $filters["page"]);
+		}
+
 		// This is a GET request, so mark all filters as query string params...
 		$args = array("query_params" => $filters);
 

@@ -11,7 +11,7 @@
 }
 
 .crm-options-grid {
-	width: 825px;
+	width: 850px;
 	background-color: #f5f5f5;
 	border-width: 1px;
 	border-style: solid;
@@ -95,7 +95,7 @@
 	margin-right: 10px;
 }
 
-.invalid {
+input.invalid {
 	border-color: red;
 }
 

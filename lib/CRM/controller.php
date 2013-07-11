@@ -16,6 +16,8 @@ class PL_CRM_Controller {
 		// Load any necessary non-CRM plugin libs...
 		$curr_dir = trailingslashit(dirname(__FILE__));
 		include_once("{$curr_dir}../../models/options.php");
+		include_once("{$curr_dir}../../lib/caching.php");
+		include_once("{$curr_dir}../../lib/form.php");
 
 		// Register main AJAX endpoint for all CRM calls...
 		add_action("wp_ajax_crm_ajax_controller", array(__CLASS__, "ajaxController"));

@@ -42,6 +42,33 @@ jQuery(document).ready(function($) {
 		return api_key;
 	}
 
+	function overlaySpinner (id) {
+		var attrID = id ? id : 'spinner';
+		var barCount = 8;
+
+		// Construct spinner components...
+		var spinnerElem = '<div id="' + attrID + '" class="spinningBars">';
+	   	for (var i = 1; i <= barCount; i++) {
+	   		spinnerElem += ('<div class="bar' + i + '"></div>');
+	   	}
+		spinnerElem += '</div>';
+
+		return spinnerElem;				   
+	}
+
+	// Pre-load this image initially for quick access at-will...
+	var loadingGifSrc = window.location.protocol + '//' + window.location.host + '/wp-admin/images/wpspin_light.gif';
+	var loadingGifImg = new Image();
+	loadingGifImg.src = loadingGifSrc;
+
+	function showLoading (parentElem) {
+		parentElem.append('<img id="loading_img" src="' + loadingGifSrc + '" style="margin: 0px 0px -3px 3px" />');
+	}
+
+	function hideLoading (parentElem) {
+		parentElem.children('#loading_img').remove();
+	}
+
 	// Initialize this variable outside of the setting function below, for closure-wide scope...
 	var contacts_datatable;
 
@@ -59,7 +86,7 @@ jQuery(document).ready(function($) {
 	            aoData.push({name: 'action', value: 'crm_ajax_controller'});
 	            aoData.push({name: 'crm_method', value: 'getContactGridData'});
 	            aoData.push({name: 'response_format', value: 'JSON'});
-	            //aoData = my_listings_search_params(aoData);
+	            //aoData = parse_search_params(aoData);
 	        }
 	    });
 	}
@@ -77,7 +104,8 @@ jQuery(document).ready(function($) {
 
 	view.on('click', '.integrate-button', function (event) {
 		event.preventDefault();
-		
+		showLoading($(this).parent());
+
 		// Extract CRM id from clicked element's actual id...
 		var id = $(this).attr('id')
 		var CRMid = id.replace('integrate_', '');
@@ -86,7 +114,9 @@ jQuery(document).ready(function($) {
 		// If API key wasn't entered or is invalid, prompt the user and exit...
 		if (APIkey == null) {
 			// Prompt of invalid API key entry...
-			console.log("Bad API key...");
+			$('#' + CRMid + '_api_key').addClass('invalid');
+
+			hideLoading($(this).parent());
 			return;
 		}
 
@@ -102,6 +132,7 @@ jQuery(document).ready(function($) {
 
 	view.on('click', '.activate-button', function (event) {
 		event.preventDefault();
+		showLoading($(this).parent());
 		
 		// Extract CRM id from clicked element's actual id...
 		var id = $(this).attr('id')
@@ -121,6 +152,7 @@ jQuery(document).ready(function($) {
 
 	view.on('click', '.reset-creds-button', function (event) {
 		event.preventDefault();
+		showLoading($(this).parent());
 
 		// Extract CRM id from clicked element's actual id...
 		var id = $(this).attr('id')
