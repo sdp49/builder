@@ -87,9 +87,11 @@ abstract class PL_CRM_Base {
 	 * Contacts
 	 */
 
-	abstract public function getContacts ($filters);
+	abstract public function contactFieldMeta ();
 
-	abstract public function getContactFieldsMeta ();
+	abstract public function contactFieldLabels ();
+
+	abstract public function getContacts ($filters);
 
 	abstract public function createContact ($args);
 

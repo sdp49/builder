@@ -9,7 +9,7 @@ extract($crm_info);
 $crm_obj = new $class();
 
 // Retrieve this CRM's contact fields' labels for rendering the grid to display them...
-$field_labels = array_values($crm_obj->getContactFieldsMeta());
+$field_labels = $crm_obj->contactFieldLabels();
 
 // HTML element ID of the grid's table element...
 $table_id = "contacts_grid";

@@ -8,7 +8,7 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 	private static $apiURL = "https://www.contactually.com/api";
 	private static $version = "v1";
 
-	private static $contactFieldsMeta = array();
+	private static $contactFieldMeta = array();
 
 	public static function init () {
 		// Register this CRM implementation with the controller...
@@ -26,12 +26,22 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 		}
 
 		// Initialize contact field -- NOTE: Specific to this CRM's API!!!
-		self::$contactFieldsMeta = array(
-			"id" => "ID",
-			"first_name" => "First Name",
-			"last_name" => "Last Name",
-			"email_addresses" => "E-mail(s)",
-			"phone_numbers" => "Phone(s)"
+		self::$contactFieldMeta = array(
+			"id" => array(
+				"label" => "ID"
+			),
+			"first_name" => array(
+				"label" => "First Name"
+			),
+			"last_name" => array(
+				"label" => "Last Name"
+			),
+			"email_addresses" => array(
+				"label" => "E-mail(s)"
+			),
+			"phone_numbers" => array(
+				"label" => "Phone(s)"
+			)
 		);
 	}
 
@@ -64,8 +74,18 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 	 * Contacts
 	 */
 
-	public function getContactFieldsMeta () {
-		return self::$contactFieldsMeta;
+	public function contactFieldMeta () {
+		return self::$contactFieldMeta;
+	}  
+
+	public function contactFieldLabels () {
+		$labels = array();
+
+		foreach (self::$contactFieldMeta as $field => $meta) {
+			$labels[] = $meta["label"]; 
+		}
+
+		return $labels;
 	}
 
 	public function getContacts ($filters = array()) {

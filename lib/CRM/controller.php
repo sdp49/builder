@@ -157,7 +157,7 @@ class PL_CRM_Controller {
 
 		// Format grid data in a form dataTables.js expects for rendering...
 		$grid_rows = array();
-		$ordered_field_keys = array_keys($crm_obj->getContactFieldsMeta());
+		$ordered_field_keys = array_keys($crm_obj->contactFieldMeta());
 
 		if (!empty($data["contacts"]) && is_array($data["contacts"])) {
 			foreach ($data["contacts"] as $index => $contact) {

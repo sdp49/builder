@@ -8,7 +8,7 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 	private static $apiURL = "https://api.followupboss.com";
 	private static $version = "v1";
 
-	private static $contactFieldsMeta = array();
+	private static $contactFieldMeta = array();
 
 	public static function init () {
 		// Register this CRM implementation with the controller...
@@ -26,32 +26,62 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 		}
 
 		// Initialize contact field -- NOTE: Specific to this CRM's API!!!
-		self::$contactFieldsMeta = array(
-			"id" => "ID",
-			"firstName" => "First Name",
-			"lastName" => "Last Name",
-			"emails" => "E-mail(s)",
-			"phones" => "Phone(s)",
-			"stage" => "Stage",
-			"source" => "Source",
-			"lastActivity" => "Last Activity",
-			"contacted" => "Contacted"
+		self::$contactFieldMeta = array(
+			"id" => array(
+				"label" => "ID",
+				"data_format" => "integer",
+				"searchable" => false,
+				"type" => "text"
+			),
+			"firstName" => array(
+				"label" => "First Name",
+				"data_format" => "string",
+				"searchable" => true,
+				"type" => "text"
+			),
+			"lastName" => array(
+				"label" => "Last Name",
+				"data_format" => "string",
+				"searchable" => true,
+				"type" => "text"
+			),
+			"emails" => array(
+				"label" => "E-mail(s)",
+				"data_format" => "object",
+				"searchable" => false,
+				"type" => "text"
+			),
+			"phones" => array(
+				"label" => "Phone(s)",
+				"data_format" => "object",
+				"searchable" => false,
+				"type" => "text"
+			),
+			"stage" => array(
+				"label" => "Stage",
+				"data_format" => "string",
+				"searchable" => true,
+				"type" => "text"
+			),
+			"source" => array(
+				"label" => "Source",
+				"data_format" => "string",
+				"searchable" => true,
+				"type" => "text"
+			),
+			"lastActivity" => array(
+				"label" => "Last Activity",
+				"data_format" => "datetime",
+				"searchable" => false,
+				"type" => "text"
+			),
+			"contacted" => array(
+				"label" => "Contacted",
+				"data_format" => "boolean",
+				"searchable" => true,
+				"type" => "checkbox"
+			)
 		);
-
-		// $contactFields = array(
-		// 	"id" => array(
-		// 		"display" => "ID",
-		// 		"searchable" => true
-		// 	),
-		// 	"firstName" => "First Name",
-		// 	"lastName" => "Last Name",
-		// 	"emails" => "E-mail(s)",
-		// 	"phones" => "Phone(s)",
-		// 	"stage" => "Stage",
-		// 	"source" => "Source",
-		// 	"lastActivity" => "Last Activity",
-		// 	"contacted" => "Contacted"
-		// );
 	}
 
 	public function __construct () {
@@ -81,8 +111,18 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 	 * Contacts
 	 */
 
-	public function getContactFieldsMeta () {
-		return self::$contactFieldsMeta;
+	public function contactFieldMeta () {
+		return self::$contactFieldMeta;
+	}  
+
+	public function contactFieldLabels () {
+		$labels = array();
+
+		foreach (self::$contactFieldMeta as $field => $meta) {
+			$labels[] = $meta["label"]; 
+		}
+
+		return $labels;
 	}
 
 	public function getContacts ($filters = array()) {

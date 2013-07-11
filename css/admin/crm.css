@@ -11,7 +11,7 @@
 }
 
 .crm-options-grid {
-	width: 800px;
+	width: 825px;
 	background-color: #f5f5f5;
 	border-width: 1px;
 	border-style: solid;
@@ -24,7 +24,7 @@
 }
 
 .crm-box {
-	height: 100px;
+	height: 120px;
 	clear: both;
 	border-bottom: 1px dotted lightgrey;
 }
@@ -35,7 +35,7 @@
 
 .crm-box > div {
 	height: 70px;
-	margin: 15px 20px 15px 20px;
+	margin: 25px 20px 25px 20px;
 	float: left;
 }
 
@@ -57,7 +57,7 @@
 }
 
 .integrate-crm-box .enter-creds input {
-	width: 275px;
+	width: 300px;
 	font-weight: normal;
 	font-family: "courier new";
 }
@@ -69,6 +69,7 @@
 .integrate-crm-box .cred-lookup span, 
 .integrate-crm-box .sign-up span {
 	font-style: italic;
+	margin-right: 3px;
 }
 
 .activate-crm-box div {
@@ -83,6 +84,10 @@
 .activate-crm-box .current-key span {
 	font-weight: normal;
 	font-family: "courier new"
+}
+
+.activate-crm-box .button-group {
+	margin-top: 5px;
 }
 
 .activate-crm-box .button-group a {
