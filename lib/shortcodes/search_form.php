@@ -52,8 +52,7 @@ class PL_Form_CPT extends PL_SC_Base {
 	);
 
 	protected static $template = array(
-		'snippet_body'	=> array( 'type' => 'textarea', 'label' => 'HTML', 
-			'default' => '
+		'snippet_body'	=> array( 'type' => 'textarea', 'label' => 'HTML', 'css' => 'mime_html', 'default' => '
 <div class="my-searchform-body">
 	<div class="my-searchform-item">
 		<label>Bedrooms:</label>[bedrooms]
@@ -65,8 +64,7 @@ class PL_Form_CPT extends PL_SC_Base {
 			'description'	=> '
 You can use any valid HTML in this field to format the subcodes.' ),
 
-		'css'			=> array( 'type' => 'textarea', 'label' => 'CSS', 
-			'default' => '
+		'css'			=> array( 'type' => 'textarea', 'label' => 'CSS', 'css' => 'mime_css', 'default' => '
 /* sample div used to wrap the slideshow plus any additonal html */
 .my-searchform {
 	margin: 5px 0;

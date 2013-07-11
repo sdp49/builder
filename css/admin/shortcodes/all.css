@@ -31,6 +31,7 @@
 }
 
 .pl-sc-wrap label.textarea {
+	float: none;
 	margin: .8em 0 .2em 0;
 	width: auto;
 	height: auto;
@@ -55,9 +56,35 @@
 	height: 2em;
 }
 
-.pl-sc-wrap .inside textarea {
-	height: 20em;
-	line-height: 1.5em;
+/* CodeMirror for template */
+.CodeMirror {
+	height: auto;
+	min-height: 4em;
+}
+
+.CodeMirror-foldmarker {
+	color: blue;
+	text-shadow: #b9f 1px 1px 2px, #b9f -1px -1px 2px, #b9f 1px -1px 2px, #b9f -1px 1px 2px;
+	font-family: arial;
+	line-height: .3;
+	cursor: pointer;
+}
+
+.CodeMirror-foldgutter {
+	width: .7em;
+}
+
+.CodeMirror-foldgutter-open,.CodeMirror-foldgutter-folded {
+	color: #555;
+	cursor: pointer;
+}
+
+.CodeMirror-foldgutter-open:after {
+	content: "\25BE";
+}
+
+.CodeMirror-foldgutter-folded:after {
+	content: "\25B8";
 }
 
 .embed-link {
@@ -72,7 +99,8 @@
 
 .span8,
 .span6,
-.span4 {
+.span4,
+.span2 {
 	float: left;
 	overflow: hidden;
 	margin-right: 2%;
@@ -87,6 +115,10 @@
 
 .span4 {
 	width: 38%;
+}
+
+.span2 {
+	width: 18%;
 }
 
 /* preview pane */
@@ -134,15 +166,6 @@
 /* Shortcode editor */
 
 
-#pl_location_tax {
-	float: left;
-	width: 20em;
-}
-
-#pl_location_tax label {
-	width: auto;
-}
-
 .pl_template_block, 
 .edit-sc-template-edit {
 	float: left;
@@ -168,10 +191,6 @@
 	float: none;
 }
 
-#pl_sc_tpl_edit .pl_template_block textarea {
-	width: 100%;
-}
-
 #subshortcodes {
 	float: left;
 }
@@ -184,11 +203,10 @@
 	margin-right: .8em;
 }
 
-.pl-sc-wrap .before_widget textarea,
-.pl-sc-wrap .inside .after_widget textarea {
-	height: 5em;
+.before_widget a,
+.after_widget a {
+	text-decoration: none;
 }
-
 
 
 /* Featured Listings */

@@ -56,7 +56,7 @@ jQuery(document).ready(function($){
 		var iframe_content = $('#preview_meta_widget').html();
 		//TODO get width/height
 		var options_width = '100%';
-		var options_height = '100%';
+		var options_height = '99%';
 
 		$('#pl_review_popup').html( iframe_content );
 		$('#pl_review_popup iframe').css('width', options_width);
@@ -183,16 +183,13 @@ jQuery(document).ready(function($){
 	$('#pl_sc_edit .trigger_datepicker').each(function(){
 		$(this).datepicker();
 	});
-
 	// setup view based on current shortcode type, etc
 	wptitlehint();
 	$('#pl_sc_shortcode_type').trigger('change');
-
 	// setup preview window if loading prexisting shortcode
 	if ($('#preview_meta_widget').html()) {
 		$('#pl_sc_edit .pl_review_link').show();
 	}
-	
 	// call the preview update for every changed input and select in the shortcode edit view
 	$('#pl_sc_edit input, #pl_sc_edit select').change(function() {
 		sc_update_preview();
@@ -237,7 +234,16 @@ jQuery(document).ready(function($){
 		
 		// display template blocks
 		$('#pl_sc_tpl_edit .pl_template_block').each(function() {
-			$(this).css('display', ($(this).hasClass(shortcode) ? 'block' : 'none'));
+			if ($(this).hasClass(shortcode)) {
+				$(this).show();
+				// activate the codemirror object
+				$('.CodeMirror').each(function(i, el){
+				    el.CodeMirror.refresh();
+				});
+			}
+			else {
+				$(this).hide();
+			}
 		});
 	}
 	
@@ -257,9 +263,8 @@ jQuery(document).ready(function($){
 		});
 	}
 	
-
+	// update view when shortcode changed
 	$('#pl_sc_tpl_shortcode').change(tpl_type_selected);
-
 	// call the custom autosave for every changed input and select in the template edit view
 	$('#pl_sc_tpl_edit').find('input, select, textarea').change(function() {
 		tpl_update_preview();
@@ -268,25 +273,33 @@ jQuery(document).ready(function($){
 	$('#pl_sc_tpl_edit input[type="submit"]').click(function() {
 		_changesMade = false;
 	});
-	
-	
 	// Update preview when creating a new template
 	$('.save_snippet').click(function() {
 		$('#pl_sc_tpl_post_type').trigger('change');
 	});
-
+	// Preview popup link
 	$('#popup_existing_template').click(function(e){
 		e.preventDefault();
 	});
-	
-	$('#pl_sc_tpl_edit').find('.before_widget, .after_widget').each(function(){
-		$(this).find('textarea').each(function(){
-			$(this).css('display', ($(this).val() ? 'block' : 'none'));
+	// Add CodeMirror support to edit boxes
+	$('#pl_sc_tpl_edit .pl_template_block textarea').each(function() {
+		CodeMirror.fromTextArea(document.getElementById($(this).attr('id')), {
+		    mode: $(this).closest('section').hasClass('mime_css')?"text/css":"text/html",
+		    lineNumbers: true,
+		    lineWrapping: true,
+		    extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }},
+		    foldGutter: true,
+		    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
 		});
+	});
+	// Make before/after appear only if there is something in them
+	$('#pl_sc_tpl_edit').find('.before_widget, .after_widget').each(function(){
+		if (!$(this).find('textarea').val()) {
+			$(this).find('.CodeMirror').hide();
+		}
 		$(this).find('label').wrap('<a href="#" />').click(function(e) {
 			e.preventDefault();
-			var id = $(this).attr('for');
-			$('#'+id).toggle();
+			$(this).closest('section').find('.CodeMirror').toggle().get(0).CodeMirror.refresh();
 		});
 	});
 

@@ -61,6 +61,7 @@ abstract class PL_SC_Base {
 		//		'snippet_body'	=> array(
 		//		'type'		=> 'textarea',
 		//		'label'		=> '<Pretty Form Name>',
+		//		'css'		=> '<css_class mime_type>', 		// used for CodeMirror
 		//		'default'	=> '',
 		//	),
 	);

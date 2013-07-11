@@ -53,7 +53,7 @@ $pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs();
 		<section class="row-fluid sc-meta-section">
 
 			<!-- Template HTML/CSS -->
-			<div class="span6">
+			<div class="span8">
 
 				<?php /*
 				<!-- Use existing template lightbox -->
@@ -70,6 +70,7 @@ $pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs();
 						else {
 							$_POST[$pl_shortcode][$field] = !empty( $values[$field] ) ? $values[$field] : '';
 						}
+						$f_args['css'] .= (empty($f_args['css'])?'':' ').$field;
 						PL_Form::item($field, $f_args, 'POST', $pl_shortcode, 'pl-sc-tpl-edit', true);
 					}?>
 					</div>
@@ -80,7 +81,7 @@ $pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs();
 			</div>
 
 			<!-- Search Sub-Shortcodes -->
-			<div id="subshortcodes" class="span4">
+			<div id="subshortcodes" class="span2">
 				<?php foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ) :?>
 					<?php if(!empty($sct_args['subcodes'])):?>
 						<div class="shortcode_block <?php echo $pl_shortcode?>" style="display: none;">
@@ -89,7 +90,7 @@ $pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs();
 							<?php foreach($sct_args['subcodes'] as $subcode=>$atts): ?>
 								<?php $subcodes .= '<span class="subcode">[' . $subcode . ']</span>';?>
 								<?php if (!empty($atts['help'])):?>
-									<?php $subcodes .= '<span class="description subcode-help">'. $atts['help'] .'</span>';?>
+									<?php $subcodes .= '<br /><span class="description subcode-help">'. $atts['help'] .'</span>';?>
 								<?php endif;?>
 								<?php $subcodes .= '<br />';?>
 							<?php endforeach;?>

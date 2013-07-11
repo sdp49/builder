@@ -40,10 +40,10 @@ class PL_Neighborhood_CPT extends PL_SC_Base {
 	);
 
 	protected static $template = array(
-		'snippet_body'	=> array( 'type' => 'textarea', 'label' => 'HTML', 'default' => 'Put subcodes here to build your form...' ),
-		'css'			=> array( 'type' => 'textarea', 'label' => 'CSS', 'default' => '' ),
-		'before_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content before the template', 'default' => '' ),
-		'after_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content after the template', 'default' => '' ),
+		'snippet_body'	=> array( 'type' => 'textarea', 'label' => 'HTML', 'css' => 'mime_html', 'default' => 'Put subcodes here to build your form...' ),
+		'css'			=> array( 'type' => 'textarea', 'label' => 'CSS', 'css' => 'mime_css', 'default' => '' ),
+		'before_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content before the template', 'css' => 'mime_html', 'default' => '' ),
+		'after_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content after the template', 'css' => 'mime_html', 'default' => '' ),
 	);
 }
 

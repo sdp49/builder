@@ -99,10 +99,11 @@ class PL_Css_Helper {
 		}
 		
 		if ( $hook == 'placester_page_placester_shortcodes_template_edit') {
+			self::register_enqueue_if_not('codemirror', trailingslashit(PL_JS_URL) . 'lib/codemirror/codemirror.css');
 			self::register_enqueue_if_not('placester-widget', trailingslashit(PL_CSS_ADMIN_URL) . 'shortcodes/all.css');
 			self::register_enqueue_if_not('placester-widget-chosen', trailingslashit(PL_JS_URL) . 'lib/chosen/chosen.css');
 		}
-
+		
 		if ($hook == 'placester_page_placester_crm') {
 			self::register_enqueue_if_not('crm', trailingslashit(PL_CSS_ADMIN_URL) . 'crm.css');	
 		}

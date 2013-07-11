@@ -120,8 +120,15 @@ class PL_Js_Helper {
 			));
 		}
 		if ($hook == 'placester_page_placester_shortcodes_template_edit') {
-			self::register_enqueue_if_not('shortcodes-admin', trailingslashit(PL_JS_URL) .  'admin/shortcodes/all.js', array('jquery'));
-			
+			self::register_enqueue_if_not('shortcodes-admin', trailingslashit(PL_JS_URL) . 'admin/shortcodes/all.js', array('jquery'));
+			self::register_enqueue_if_not('codemirror', trailingslashit(PL_JS_URL) . 'lib/codemirror/codemirror.js');
+			self::register_enqueue_if_not('codemirror-foldcode', trailingslashit(PL_JS_URL) . 'lib/codemirror/addon/fold/foldcode.js', array('codemirror'));
+			self::register_enqueue_if_not('codemirror-foldgutter', trailingslashit(PL_JS_URL) . 'lib/codemirror/addon/fold/foldgutter.js', array('codemirror'));
+			self::register_enqueue_if_not('codemirror-brace-fold', trailingslashit(PL_JS_URL) . 'lib/codemirror/addon/fold/brace-fold.js', array('codemirror'));
+			self::register_enqueue_if_not('codemirror-xml-fold', trailingslashit(PL_JS_URL) . 'lib/codemirror/addon/fold/xml-fold.js', array('codemirror'));
+			self::register_enqueue_if_not('codemirror-xml', trailingslashit(PL_JS_URL) . 'lib/codemirror/mode/xml/xml.js', array('codemirror'));
+			self::register_enqueue_if_not('codemirror-css', trailingslashit(PL_JS_URL) . 'lib/codemirror/mode/css/css.js', array('codemirror'));
+				
 			wp_localize_script('shortcodes-admin', 'autosaveL10n', array(
 				'saveAlert' => __('The changes you made will be lost if you navigate away from this page.')
 			));

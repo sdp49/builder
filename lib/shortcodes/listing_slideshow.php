@@ -46,8 +46,7 @@ class PL_Listing_Slideshow_CPT extends PL_SC_Base {
 	);
 
 	protected static $template = array(
-		'snippet_body'	=> array( 'type' => 'textarea', 'label' => 'Caption text for each slideshow image', 
-			'default'	=> 
+		'snippet_body'	=> array( 'type' => 'textarea', 'label' => 'Caption text for each slideshow image', 'css' => 'mime_html', 'default'	=> 
 			'
 <div id="caption-[ls_index]" class="orbit-caption">
 	<p class="caption-title"><a href="[ls_url]">[ls_address]</a></p>
@@ -58,7 +57,7 @@ class PL_Listing_Slideshow_CPT extends PL_SC_Base {
 You can use any valid HTML in this field to format the subcodes, but you must ensure that it is contained in a block similar to:
 <div id="caption-[ls_index]" class="orbit-caption">...</div>.'),
 
-		'css'			=> array( 'type' => 'textarea', 'label' => 'CSS to style your slideshow', 'default' => '
+		'css'			=> array( 'type' => 'textarea', 'label' => 'CSS to style your slideshow', 'css' => 'mime_css', 'default' => '
 /* sample div used to wrap the slideshow plus any addiitonal html */
 .my-slideshow {
 	overflow: hidden;;
@@ -102,16 +101,14 @@ You can use any valid HTML in this field to format the subcodes, but you must en
 			'description'	=> '
 You can use any valid CSS in this field to customize the caption, which will also inherit the CSS from the theme.' ),
 
-		'before_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content before the slideshow', 
-			'default' => '
+		'before_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content before the slideshow', 'css' => 'mime_html', 'default' => '
 <div class="my-slideshow">
 	<div class="my-slideshow-wrapper">',
 			'description'	=> '
 You can use any valid HTML in this field and it will appear before the slideshow images. 
 For example, you can wrap the whole slideshow with a <div> element to apply borders, etc, by placing the opening <div> tag in this field and the closing </div> tag in the following field.' ),
 
-		'after_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content after the slideshow', 
-			'default' => '
+		'after_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content after the slideshow', 'css' => 'mime_html', 'default' => '
 	</div>
 </div>',
 			'description'	=> '
