@@ -54,18 +54,7 @@ jQuery(document).ready(function($) {
 	        sPaginationType: 'full_numbers',
 	        sDom: '<"dataTables_top"pi>lftpir',
 	        sAjaxSource: ajaxurl,
-	        // "aoColumns" : [
-	        //     { sWidth: '100px' },    //images
-	        //     { sWidth: '300px' },    //address
-	        //     { sWidth: '70px' },     //zip
-	        //     { sWidth: '100px' },     //type
-	        //     { sWidth: '100px' },     //property
-	        //     { sWidth: '60px' },     //beds
-	        //     { sWidth: '60px' },     //baths
-	        //     { sWidth: '70px' },     //price
-	        //     { sWidth: '100px' },    //sqft
-	        //     { sWidth: '100px' }     //available
-	        // ], 
+	        aoColumnDefs: [ {bSortable: false, aTargets: ["_all"]} ], 
 	        fnServerParams: function (aoData) {
 	            aoData.push({name: 'action', value: 'crm_ajax_controller'});
 	            aoData.push({name: 'crm_method', value: 'getContactGridData'});

@@ -31,8 +31,26 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 			"firstName" => "First Name",
 			"lastName" => "Last Name",
 			"emails" => "E-mail(s)",
-			"phones" => "Phone(s)"
+			"phones" => "Phone(s)",
+			"stage" => "Stage",
+			"source" => "Source",
+			"lastActivity" => "Last Activity",
+			"contacted" => "Contacted"
 		);
+
+		// $contactFields = array(
+		// 	"id" => array(
+		// 		"display" => "ID",
+		// 		"searchable" => true
+		// 	"firstName" => "First Name",
+		// 	"lastName" => "Last Name",
+		// 	"emails" => "E-mail(s)",
+		// 	"phones" => "Phone(s)",
+		// 	"stage" => "Stage",
+		// 	"source" => "Source",
+		// 	"lastActivity" => "Last Activity",
+		// 	"contacted" => "Contacted"
+		// );
 	}
 
 	public function __construct () {
