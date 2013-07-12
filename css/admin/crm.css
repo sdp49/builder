@@ -264,3 +264,17 @@ section.pls_search_form {
     font-weight: normal;
     text-shadow: rgba(255, 255, 255, 1) 0 1px 0
 }
+
+/*
+ * Contact details pane
+ */
+
+.contact-details-pane {
+    border: 2px dotted grey;
+    width: 600px;
+    position: fixed;
+    left: 50%;
+    margin-left: -300px;
+    top: 230px;
+    z-index: 10000;
+}

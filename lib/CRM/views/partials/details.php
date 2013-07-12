@@ -14,6 +14,6 @@
 	$contact_data = $crm_obj->getContact($contact_id);
 ?>
 
-<div class="contact-details-box">
-	<?php error_log(var_export($contact_data, true)); ?>
+<div class="contact-details-pane">
+	<?php var_export($contact_data); ?>
 </div>

@@ -201,7 +201,7 @@ jQuery(document).ready(function($) {
 
     	// Retrieve details on the clicked contact and display them...
 		call_CRM_AJAX('getPartial', {partial: 'details', partial_args: {contact_id: userID}}, function (result) {
-			console.log(result);
+			view.append(result);
 		});
     });
 
