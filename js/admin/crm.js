@@ -73,17 +73,12 @@ jQuery(document).ready(function($) {
 	var contacts_datatable;
 
 	// Parses search form and bundles parameters
-    function parse_search_params () {
-        var filters = [];
-
+    function parse_search_params (aoData) {
         $.each($('#contacts_grid_search').serializeArray(), function(i, field) {
-            // console.log(field);
             if (field.value !== '') {
-            	filters.push({name: field.name, value: field.value});
+            	aoData.push({name: field.name, value: field.value});
         	}
         });
-        console.log(filters);
-        return filters;
     }
 
 	function intializeContactsGrid () {
@@ -100,7 +95,7 @@ jQuery(document).ready(function($) {
 	            aoData.push({name: 'action', value: 'crm_ajax_controller'});
 	            aoData.push({name: 'crm_method', value: 'getContactGridData'});
 	            aoData.push({name: 'response_format', value: 'JSON'});
-	            // aoData.push({name: 'filters', value: parse_search_params(aoData)});
+	            parse_search_params(aoData);
 	        }
 	    });
 	}

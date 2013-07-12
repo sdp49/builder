@@ -143,13 +143,23 @@ class PL_CRM_Controller {
 	public static function getContactGridData ($args = array()) {
 		error_log("In getGridData...");
 		error_log(var_export($args, true));
-		error_log(var_export($args["filters"], true));
 
 		// Try to create an instance...
 		$crm_id = self::getActiveCRM();
 		$crm_obj = self::getCRMInstance($crm_id);
 		
+		// Grab field keys for setting filters and returning a subset of the data in order...
+		$field_meta = $crm_obj->contactFieldMeta();
+
 		$filters = array();
+
+		// Check for keys in the args array that match the CRM's predefined contact fields
+		// in order to build a list of filters for the getContacts call...
+		foreach ($field_meta as $field_key => $meta) {
+			if (isset($args[$field_key])) {
+				$filters[$field_key] = $args[$field_key];
+			}
+		}
 
 		// Pagination
 		$filters["limit"] = $args["iDisplayLength"];
@@ -160,11 +170,9 @@ class PL_CRM_Controller {
 
 		// Format grid data in a form dataTables.js expects for rendering...
 		$grid_rows = array();
-		$ordered_field_keys = array_keys($crm_obj->contactFieldMeta());
-
 		if (!empty($data["contacts"]) && is_array($data["contacts"])) {
 			foreach ($data["contacts"] as $index => $contact) {
-				foreach ($ordered_field_keys as $key) {
+				foreach (array_keys($field_meta) as $key) {
 					$val = empty($contact[$key]) ? "" : $contact[$key];
 					$grid_rows[$index][] = $val;
 				}
