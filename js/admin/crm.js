@@ -205,4 +205,8 @@ jQuery(document).ready(function($) {
 		});
 	});
 
+	view.on('click', '.contact-details-overlay', function (event) {
+		$('.contact-details-overlay, .contact-details-pane').remove();
+	});
+
 });
