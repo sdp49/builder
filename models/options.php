@@ -20,4 +20,7 @@ class PL_Options {
  		return $outcome;
 	}
 
+	public static function delete ($option) {
+		return delete_option($option);
+	}
 }

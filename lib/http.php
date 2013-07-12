@@ -174,9 +174,13 @@ Class PL_HTTP extends WP_Http {
 		curl_setopt($ch, CURLOPT_URL, $url );
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, ( $ssl_verify === true ) ? 2 : false );
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, $ssl_verify );
-		// use a local cert to make sure we have a valid one
-		curl_setopt($ch, CURLOPT_CAINFO, trailingslashit(PL_PARENT_DIR) . 'config/cacert.pem');
-		// most important: curl assumes @field as file field
+		
+		// Use a local cert to make sure we have a valid one when not on the hosted network...
+		if (!defined("HOSTED_PLUGIN_KEY")) {
+			curl_setopt($ch, CURLOPT_CAINFO, trailingslashit(PL_PARENT_DIR) . "config/cacert.pem");
+		}
+
+		// Most importantly, cURL assumes @field as file field...
 		$post_array = array(
 			"file"=>"@".$file_location
 		);

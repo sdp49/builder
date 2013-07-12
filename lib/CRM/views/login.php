@@ -1,14 +1,17 @@
 <?php
-// Ensure the var containing info about the registered CRM providers is a valid array...
-if (!is_array($crm_list)) { return; }
+	// Ensure the var containing info about the registered CRM providers is a valid array...
+	if (!is_array($crm_list)) { return; }
 ?>
 
-<div class="crm-options-box">
+<div class="login-header-wrapper">
+	<h2>Integrate your CRM Provider(s)</h2>
+</div>
+
+<div class="crm-options-grid">
 	<?php foreach ($crm_list as $id => $info): ?>
-		<div id="<?php echo $id; ?>-box" class="">
-			<div class="logo">
-				<?php $img_url = plugin_dir_url(trailingslashit(dirname(__FILE__)) . "images/{$info['logo_img']}") . $info["logo_img"]; ?>
-				<img src="<?php echo $img_url; ?>" />
+		<div id="<?php echo $id; ?>-box" class="crm-box">
+			<div class="login-logo">
+				<img src="<?php echo $info["logo_img"]; ?>" />
 			</div>
 			<?php
 				$crm_class = $info["class"];
@@ -16,13 +19,16 @@ if (!is_array($crm_list)) { return; }
 
 				// Find out if this particular CRM has been "integrated"
 				// (i.e., user has already entered account credentials for this provider)
-				$not_integrated = is_null($crm_obj->getAPIKey());
+				$api_key = $crm_obj->getAPIKey();
+				$not_integrated = is_null($api_key);
 			?>
-			<?php if ($not_integrated): ?>
-				<?php include("partials/integrate.php"); ?>
-			<?php else: ?>
-				<?php include("partials/activate.php"); ?>
-			<?php endif; ?>
+			<div class="action-box">
+				<?php if ($not_integrated): ?>
+					<?php include("partials/integrate.php"); ?>
+				<?php else: ?>
+					<?php include("partials/activate.php"); ?>
+				<?php endif; ?>
+			</div>				
 		</div>
 	<?php endforeach; ?>
 </div>
