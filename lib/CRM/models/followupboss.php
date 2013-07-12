@@ -174,7 +174,9 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 	public function getContact ($id) {
 		// Make API Call...
 		$response = $this->callAPI("people/{$id}", "GET");
-		error_log(var_export($response, true));
+		// error_log(var_export($response, true));
+
+		return $response;
 	}
 
 	public function createContact ($args) {

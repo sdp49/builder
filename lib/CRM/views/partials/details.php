@@ -11,7 +11,7 @@
 	}
 
 	$crm_obj = PL_CRM_Controller::getCRMInstance($crm_id);
-	$contact_data = $crm_obj->getContactDetails($contact_id);
+	$contact_data = $crm_obj->getContact($contact_id);
 ?>
 
 <div class="contact-details-box">
