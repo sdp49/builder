@@ -90,7 +90,7 @@ define( 'PL_THEME_SKIN_DIR', trailingslashit(PL_PARENT_DIR) . 'config/customizer
  * This directive allows CRM functionality to be isolated and executed with minimal overhead...
  */
 if (defined('DOING_AJAX') && isset($_POST['action']) && $_POST['action'] == 'crm_ajax_controller') {
-    include_once('lib/crm/controller.php');
+    include_once('lib/CRM/controller.php');
 
     // This will end execution of this script, returning to the point where the caller included 'placester.php'...
     return;
