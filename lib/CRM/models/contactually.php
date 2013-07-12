@@ -31,16 +31,58 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 				"label" => "ID"
 			),
 			"first_name" => array(
-				"label" => "First Name"
+				"label" => "First Name",
+				"data_format" => "string",
+				"searchable" => true,
+				"type" => "text"
 			),
 			"last_name" => array(
-				"label" => "Last Name"
+				"label" => "Last Name",
+				"data_format" => "string",
+				"searchable" => true,
+				"type" => "text"
 			),
 			"email_addresses" => array(
-				"label" => "E-mail(s)"
+				"label" => "E-mail(s)",
+				"data_format" => "string",
+				"searchable" => true,
+				"type" => "text"
 			),
 			"phone_numbers" => array(
-				"label" => "Phone(s)"
+				"label" => "Phone(s)",
+				"data_format" => "string",
+				"searchable" => true,
+				"type" => "text"
+			),
+			"company" => array(
+				"label" => "Company",
+				"data_format" => "string",
+				"searchable" => true,
+				"type" => "text"
+			),
+			"user_bucket" => array(
+				"label" => "User Bucket",
+				"data_format" => "string",
+				"searchable" => true,
+				"type" => "text"
+			),
+			"tags" => array(
+				"label" => "Tags",
+				"data_format" => "array",
+				"searchable" => true,
+				"type" => "text"
+			),
+			"last_contacted" => array(
+				"label" => "Last Contacted",
+				"data_format" => "datetime",
+				"searchable" => false,
+				"type" => "text"
+			),
+			"hits" => array(
+				"label" => "Hits",
+				"data_format" => "integer",
+				"searchable" => false,
+				"type" => "text"
 			)
 		);
 	}

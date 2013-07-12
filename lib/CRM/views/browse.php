@@ -13,6 +13,9 @@ $field_labels = $crm_obj->contactFieldLabels();
 
 // HTML element ID of the grid's table element...
 $table_id = "contacts_grid";
+
+// PL_Form::generate_form(PL_Config::PL_API_LISTINGS('get', 'args'),array('method' => "POST", 'title' => true, 'include_submit' => false, 'id' => 'pls_admin_my_listings'));
+
 ?>
 
 <div class="crm-browse-box">
