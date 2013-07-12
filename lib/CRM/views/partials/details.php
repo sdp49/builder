@@ -17,5 +17,13 @@
 <div class="contact-details-overlay"></div>
 
 <div class="contact-details-pane">
-	<?php var_export($contact_data); ?>
+	<?php // error_log(var_export($contact_data, true)); ?>
+	<table>
+		<?php foreach ($contact_data as $key => $value): ?>
+			<tr>
+				<td><?php echo $key; ?></td>
+				<td><?php echo $value; ?></td>
+			</tr>
+		<?php endforeach; ?>
+	</table>
 </div>
