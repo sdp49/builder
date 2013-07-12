@@ -195,4 +195,8 @@ jQuery(document).ready(function($) {
         contacts_datatable.fnDraw();
     });
 
+    view.on('click', '#contacts_grid tbody tr', function (event) {
+    	console.log("Clicked on a contact grid row...");
+    });
+
 });

@@ -151,6 +151,12 @@ section.pls_search_form {
  * Styles used by Datatables object in Admin interface
  */
 
+.widefat tbody tr.even:hover,
+.widefat tbody tr.odd:hover {
+    background-color: lightblue;
+    cursor: pointer;
+}
+
 .paging_full_numbers { 
     margin-top: 12px; 
     text-align: right;

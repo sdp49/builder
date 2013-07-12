@@ -7,4 +7,5 @@
 ?>
 
 <div class="contact-details-box">
+	<?php error_log(var_export($contact_data, true)); ?>
 </div>
