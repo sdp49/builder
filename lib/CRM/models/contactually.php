@@ -177,7 +177,7 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 	}
 
 	public function pushEvent ($event) {
-		
+		//
 	}
 }
 
