@@ -283,13 +283,25 @@ jQuery(document).ready(function($){
 	});
 	// Add CodeMirror support to edit boxes
 	$('#pl_sc_tpl_edit .pl_template_block textarea').each(function() {
-		CodeMirror.fromTextArea(document.getElementById($(this).attr('id')), {
+		var cm = CodeMirror.fromTextArea(document.getElementById($(this).attr('id')), {
 		    mode: $(this).closest('section').hasClass('mime_css')?"text/css":"text/html",
 		    lineNumbers: true,
 		    lineWrapping: true,
 		    extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }},
 		    foldGutter: true,
-		    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
+		    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+
+		});
+		// copy cm changes back to hidden field so the preview will work
+		cm.on('change', function(){
+			if (_previewWait) {
+				clearTimeout(_previewWait);
+			}
+			_previewWait = setTimeout(function(){
+				cm.save();
+				tpl_update_preview();
+				_changesMade = true;
+			}, 1000);
 		});
 	});
 	// Make before/after appear only if there is something in them
@@ -317,6 +329,7 @@ jQuery(document).ready(function($){
 	// All forms - check for unsaved edits
 	////////////////////////////////////////
 	var _changesMade = false;
+	var _previewWait = 0;
 	
 	$(window).bind('beforeunload', function() {
 		if (_changesMade)
