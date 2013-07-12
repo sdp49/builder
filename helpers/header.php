@@ -5,28 +5,51 @@ PL_Helper_Header::init();
 class PL_Helper_Header {
     
     private static $page;
+    private static $sub_pages = array();
 
-    public static function init () {
-        add_action('admin_enqueue_scripts', array(__CLASS__, 'set_page' ) );
+    public function init() {
+      add_action('admin_enqueue_scripts', array(__CLASS__, 'set_page' ) );
+	  add_action('admin_head', array(__CLASS__, 'hide_sub_pages'));
+    }
+
+    public static function add_sub_page($parent_slug, $page_slug, $hook) {
+    	self::$sub_pages[$page_slug] = $parent_slug;
+
+   		// Fudge the highlighted subnav item when on a sub page
+		add_action( "admin_head-$hook", array(__CLASS__, 'highlight_admin_menu') );
+    }
+    
+	public static function hide_sub_pages() {
+    	foreach(self::$sub_pages as $sub_page => $parent) {
+  			remove_submenu_page('placester', $sub_page);
+    	}
+    }
+    
+    public static function highlight_admin_menu() {
+    	global $plugin_page, $submenu_file;
+    	$submenu_file = self::$sub_pages[$plugin_page];
     }
 
     public static function set_page ($hook) {
         self::$page = $hook;
     }
 
-    public static function pl_settings_subpages () {
-        global $settings_subpages;
+    public function pl_settings_subpages() {
+    	global $settings_subpages;
+    	$base_page = 'placester_settings';
+    	return self::pl_subpages($base_page, $settings_subpages, 'Settings Pages');
+    }
+
+    public function pl_subpages($base_page, $subpages=array(), $title='') {
         global $submenu;
-        
-        $base_page = 'placester_settings';
         $base_url = 'admin.php?page='.$base_page;
         
         ob_start();
         ?>
           <div class="settings_sub_nav">
             <ul>
-              <li class="submenu-title">Settings Pages:</li>
-              <?php foreach ($settings_subpages as $page_title => $page_url): ?>
+              <li class="submenu-title"><?php echo $title.($title?':':'')?></li>
+              <?php foreach ($subpages as $page_title => $page_url): ?>
                 <li>
                   <?php
                     $current_page = ( !empty($page_url) ? strpos(self::$page, $page_url) : ($_REQUEST['page'] == $base_page) );
@@ -78,7 +101,7 @@ class PL_Helper_Header {
         ?>
             <div class='clear'></div>
             <!-- <div id="icon-options-general" class="icon32 placester_icon"><br /></div> -->
-            <h2 id="placester-admin-menu">
+            <h2 id="placester-admin-menu" class="nav-tab-wrapper">
             <?php 
                 echo $current_title; 
                 echo $title_postfix; 

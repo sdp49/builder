@@ -89,11 +89,20 @@ define( 'PL_THEME_SKIN_DIR', trailingslashit(PL_PARENT_DIR) . 'config/customizer
 /* 
  * This directive allows CRM functionality to be isolated and executed with minimal overhead...
  */
-if (defined('DOING_AJAX') && $_POST['action'] == 'crm_ajax_controller') {
+if (defined('DOING_AJAX') && isset($_POST['action']) && $_POST['action'] == 'crm_ajax_controller') {
     include_once('lib/crm/controller.php');
 
     // This will end execution of this script, returning to the point where the caller included 'placester.php'...
     return;
+}
+
+if (is_admin()) {
+
+	$prev_ver = get_option('pl_plugin_version', PL_PLUGIN_VERSION);
+	if ($prev_ver != PL_PLUGIN_VERSION) {
+		include_once('lib/shortcode-cpt.php');
+		include_once('updater.php');
+	}
 }
 
 //config
@@ -122,10 +131,9 @@ include_once('lib/menus.php');
 include_once('lib/posts.php');
 include_once('lib/membership.php');
 include_once('lib/caching.php');
-include_once('lib/shortcode_wrapper.php');
+include_once('lib/shortcode-cpt.php');
 include_once('lib/component_entities.php');
 include_once('lib/shortcodes.php');
-include_once('lib/featured_listings_post_type.php');
 include_once('lib/demo_data.php');
 include_once('lib/customizer.php');
 include_once('lib/customizer_entities.php');
@@ -134,8 +142,6 @@ include_once('lib/analytics.php');
 include_once('lib/bootup.php');
 include_once('lib/global-filters.php');
 
-//post types
-include_once('lib/post_types/pl_post_type_manager.php');
 
 //models
 include_once('models/listing.php');
@@ -169,8 +175,6 @@ include_once('helpers/education-com.php');
 include_once('helpers/caching.php');
 include_once('helpers/membership.php');
 include_once('helpers/lead-capture.php');
-include_once('helpers/snippet.php');
-include_once('helpers/template.php');
 include_once('helpers/customizer.php');
 include_once('helpers/logging.php');
 
@@ -234,12 +238,28 @@ function placester_admin_menu() {
     );
 
     foreach ($settings_subpages as $name => $page_url) {
+        // Leave parent slug empty to add pages without adding them to the menu...
         add_submenu_page( 'placester', '', $name, 'edit_pages', 'placester_settings' . $page_url, array('PL_Router','settings' . $page_url) );
     }
-    
+
+    global $shortcode_subpages;
+    $shortcode_subpages = array(
+        'All Custom Shortcodes' => '',
+        'Create Custom Shortcode' => '_shortcode_edit',
+        'Shortcode Templates' => '_templates',
+        'Create Shortcode Template' => '_template_edit'
+    );
+
+    foreach ($shortcode_subpages as $name => $page_url) {
+    	// Leave parent slug empty to add pages without adding them to the menu...
+    	$hook = add_submenu_page( 'placester', '', $name, 'edit_pages', 'placester_shortcodes' . $page_url, array('PL_Router','shortcodes' . $page_url));
+    	PL_Helper_Header::add_sub_page('placester_shortcodes', 'placester_shortcodes' . $page_url, $hook);
+    	PL_Shortcodes::admin_buffer_op($hook);
+    }
+    add_submenu_page('placester', '', 'Shortcodes', 'edit_pages', 'placester_shortcodes', array('PL_Router','shortcodes'));
+
     // TODO: Integrate shortcode and social pages into existing menu control structure...
     add_submenu_page( 'placester', 'Lead Capture', 'Lead Capture', 'edit_pages', 'placester_lead_capture', array('PL_Router','lead_capture') );
-    add_submenu_page( 'placester', 'Shortcodes', 'Shortcodes', 'edit_pages', 'edit.php?post_type=pl_general_widget' );
     add_submenu_page( 'placester', 'IDX / MLS', 'IDX / MLS', 'edit_pages', 'placester_integrations', array('PL_Router','integrations') );
     add_submenu_page( 'placester', 'CRM', 'CRM', 'edit_pages', 'placester_crm', array('PL_Router','crm') );
     add_submenu_page( 'placester', 'Support', 'Support', 'edit_pages', 'placester_support', array('PL_Router','support') );
