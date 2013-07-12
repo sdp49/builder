@@ -203,6 +203,6 @@ jQuery(document).ready(function($) {
 		call_CRM_AJAX('getPartial', {partial: 'details', partial_args: {contact_id: userID}}, function (result) {
 			view.append(result);
 		});
-    });
+	});
 
 });
