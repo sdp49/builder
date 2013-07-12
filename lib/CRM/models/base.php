@@ -63,11 +63,12 @@ abstract class PL_CRM_Base {
 			curl_setopt($handle, CURLOPT_CAINFO, trailingslashit(PL_PARENT_DIR) . "config/cacert.pem");
 		}
 
+		// Set the HTTP method...
 		curl_setopt($handle, CURLOPT_CUSTOMREQUEST, $method);
-		curl_setopt($handle, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
 		
 		// Set payload if it exists...
 		if (!empty($args["body"])) {
+			curl_setopt($handle, CURLOPT_HTTPHEADER, array("Content-Type: application/json"));
 			curl_setopt($handle, CURLOPT_POSTFIELDS, json_encode($args["body"]));
 		}
 
@@ -102,6 +103,12 @@ abstract class PL_CRM_Base {
 	// abstract public function updateContact ($contact_id, $args);
 
 	// abstract public function deleteContact ($contact_id);
+
+	/*
+	 * Events
+	 */
+
+	abstract public function pushEvent ($event);
 
 	/*
 	 * Tasks
@@ -150,10 +157,6 @@ abstract class PL_CRM_Base {
 	// abstract public function updateGroup ($group_id, $args);
 
 	// abstract public function deleteGroup ($group_id);
-
-	/*
-	 * Events
-	 */	
 }
 
 ?>

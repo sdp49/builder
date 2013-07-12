@@ -50,14 +50,14 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 			),
 			"emails" => array(
 				"label" => "E-mail(s)",
-				"data_format" => "object",
+				"data_format" => "custom",
 				"searchable" => false,
 				"group" => "Search",
 				"type" => "text"
 			),
 			"phones" => array(
 				"label" => "Phone(s)",
-				"data_format" => "object",
+				"data_format" => "custom",
 				"searchable" => false,
 				"group" => "Search",
 				"type" => "text"
@@ -178,7 +178,45 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 	}
 
 	public function createContact ($args) {
+		//
+	}
+
+	public function pushEvent ($event) {
 		// NOTE: Use events endpoint for this!!!
+		// event data
+		$event = array(
+		    "source" => "MyAwesomeWebsite.com",
+		    "type" => "Property Inquiry",
+		    "message" => "I would like to receive more information about 1234 High Oak St, Rochester, WA 98579.",
+		    "person" => array(
+		        "firstName" => "John",
+		        "lastName" => "Smith",
+		        "emails" => array(array("value" => "john.smith@gmail.com", "type" => "home")),
+		        "phones" => array(array("value" => "555-555-5555", "type" => "home")),
+		        "tags" => "Buyer, South"
+		    ),
+		    "property" => array(
+		        "street" => "1234 High Oak St",
+		        "city" => "Rochester",
+		        "state" => "WA",
+		        "code" => "98579",
+		        "mlsNumber" => "1234567",
+		        "price" => 449000,
+		        "forRent" => false,
+		        "url" => "http://www.myawesomewebsite.com/property/1234567-1234-high-oak-st-rochester-wa-98579/",
+		        "type" => "Single-Family Home",
+		        "bedrooms" => 3,
+		        "bathrooms" => 2,
+		        "area" => 2888,
+		        "lot" => 0.98
+		    )
+		);
+
+		// Set field the caller is expecting to set request payload...
+		$args["body"] = $event;
+
+		// Make API Call...
+		$response = $this->callAPI("events", "GET", $args);
 	}
 }
 
