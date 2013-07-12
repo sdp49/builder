@@ -130,6 +130,12 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 		return $labels;
 	}
 
+	public function generateContactSearchForm () {
+		// $form_args = array("method" => "POST", "title" => true, "include_submit" => false, "id" => "contacts_grid_search")
+		// PL_Form::generate_form($this->contactFieldMeta(), $form_args);
+		return "";
+	}
+
 	public function getContacts ($filters = array()) {
 		// Need to set these as this API does enforce sane defaults..
 		$filters["limit"] = ( empty($filters["limit"]) || !is_numeric($filters["limit"]) ? 10 : $filters["limit"] );
@@ -142,7 +148,6 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 
 			// Pages are indexed from 1, so an offset of 0 must translate to the first page and so on...
 			$filters["page"] = round(($offset + $limit)/$limit);
-			error_log("Page #: " . $filters["page"]);
 		}
 
 		// This is a GET request, so mark all filters as query string params...
@@ -151,7 +156,7 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 		// Make API Call...
 		$response = $this->callAPI("contacts", "GET", $args);
 
-		error_log(var_export($response, true));
+		// error_log(var_export($response, true));
 
 		// Translate API specific response into standard contacts collection...
 		$data = array();
@@ -159,6 +164,12 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 		$data["contacts"] = (empty($response["contacts"]) || !is_array($response["contacts"])) ? array() : $response["contacts"];
 
 		return $data;
+	}
+
+	public function getContact ($id) {
+		// Make API Call...
+		$response = $this->callAPI("contacts/{$id}", "GET");
+		error_log(var_export($response, true));
 	}
 
 	public function createContact ($args) {

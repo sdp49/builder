@@ -1,6 +1,6 @@
 <?php
-// Ensure the var containing info about the registered CRM providers is a valid array...
-if (!is_array($crm_list)) { return; }
+	// Ensure the var containing info about the registered CRM providers is a valid array...
+	if (!is_array($crm_list)) { return; }
 ?>
 
 <div class="login-header-wrapper">

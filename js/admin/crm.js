@@ -72,6 +72,20 @@ jQuery(document).ready(function($) {
 	// Initialize this variable outside of the setting function below, for closure-wide scope...
 	var contacts_datatable;
 
+	// Parses search form and bundles parameters
+    function parse_search_params () {
+        var filters = [];
+
+        $.each($('#contacts_grid_search').serializeArray(), function(i, field) {
+            // console.log(field);
+            if (field.value !== '') {
+            	filters.push({name: field.name, value: field.value});
+        	}
+        });
+        console.log(filters);
+        return filters;
+    }
+
 	function intializeContactsGrid () {
 		contacts_datatable = $('#contacts_grid').dataTable({
 	        bFilter: false,
@@ -86,7 +100,7 @@ jQuery(document).ready(function($) {
 	            aoData.push({name: 'action', value: 'crm_ajax_controller'});
 	            aoData.push({name: 'crm_method', value: 'getContactGridData'});
 	            aoData.push({name: 'response_format', value: 'JSON'});
-	            //aoData = parse_search_params(aoData);
+	            // aoData.push({name: 'filters', value: parse_search_params(aoData)});
 	        }
 	    });
 	}
@@ -170,6 +184,7 @@ jQuery(document).ready(function($) {
 
 	view.on('click', '.deactivate-button', function (event) {
 		event.preventDefault();
+		showLoading($(this).parent());
 
 		// Specify call to return altered view that results from CRM deactivation...
 		retSpec = {method: 'mainView'};
@@ -179,5 +194,10 @@ jQuery(document).ready(function($) {
 			view.html(result);
 		});
 	});
+
+    view.on('change', '#contacts_grid_search', function (event) {
+        event.preventDefault();
+        contacts_datatable.fnDraw();
+    });
 
 });

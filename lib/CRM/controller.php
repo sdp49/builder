@@ -143,6 +143,7 @@ class PL_CRM_Controller {
 	public static function getContactGridData ($args = array()) {
 		error_log("In getGridData...");
 		error_log(var_export($args, true));
+		error_log(var_export($args["filters"], true));
 
 		// Try to create an instance...
 		$crm_id = self::getActiveCRM();

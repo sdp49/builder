@@ -39,7 +39,7 @@ abstract class PL_CRM_Base {
 
 	abstract protected function constructURL ($endpoint);
 
-	public function callAPI ($endpoint, $method, $args) {
+	public function callAPI ($endpoint, $method, $args = array()) {
 		// init cURL handle...
 		$handle = curl_init();
 		$api_key = $this->getAPIKey();
@@ -91,7 +91,11 @@ abstract class PL_CRM_Base {
 
 	abstract public function contactFieldLabels ();
 
+	abstract public function generateContactSearchForm ();
+
 	abstract public function getContacts ($filters);
+
+	abstract public function getContact ($id);
 
 	abstract public function createContact ($args);
 

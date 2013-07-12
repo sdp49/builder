@@ -99,6 +99,54 @@ input.invalid {
 	border-color: red;
 }
 
+.browse-header {
+	height: 60px;
+}
+
+.browse-header > * {
+	float: left;
+}
+
+.browse-header a {
+	margin-top: 12px;
+}
+
+/*
+ * Styles used in the contact grid search form
+ */
+
+section.pls_search_form {
+  height: 36px;
+}
+.form_group {
+  float: left;
+  clear: both;
+  margin: 10px 0;
+}
+.form_group section.pls_search_form {
+  width: 200px;
+  float: left;
+}
+.form_group section.pls_search_form label {
+  width: 170px;
+  float: left;
+}
+.form_group section.pls_search_form input, .form_group section.pls_search_form select {
+  width: 150px;
+  float: left;
+}
+.form_group section.pls_search_form input[type="checkbox"] {
+  width: 20px;
+  float: left;
+}
+
+.form_group h3 {
+  float: left;
+  width: 100px;
+  margin: 10px 10px 10px 0;
+  height: 40px;
+}
+
 /*
  * Styles used by Datatables object in Admin interface
  */

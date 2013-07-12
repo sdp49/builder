@@ -1,16 +1,16 @@
 <?php 
-// Display when no creds are stored for this CRM, allow user to enter them OR sign-up for a new account.
-//
-// NOTE: $id string and $info array should be defined by the script including this one...
+	// Display when no creds are stored for this CRM, allow user to enter them OR sign-up for a new account.
+	//
+	// NOTE: $id string and $info array should be defined by the script including this one...
 
-if (empty($id)) { return; }
+	if (empty($id)) { return; }
 
-// Populate the CRM info object if it's not set...
-if (empty($info)) {
-	$info = PL_CRM_Controller::getCRMInfo($id);
-}
-
+	// Populate the CRM info object if it's not set...
+	if (empty($info)) {
+		$info = PL_CRM_Controller::getCRMInfo($id);
+	}
 ?>
+
 <div class="integrate-crm-box">
 	<div class="enter-creds">
 		<span>Enter your API Key:</span>
