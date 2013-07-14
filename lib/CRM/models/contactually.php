@@ -204,8 +204,23 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 		// Make API Call...
 		$response = $this->callAPI("contacts/{$id}", "GET");
 		// error_log(var_export($response, true));
+		
+		$contact = array();
+		$field_meta = $this->contactFieldMeta();
 
-		return $response;
+		if (!empty($response) && is_array($response)) {
+			foreach ($response as $key => $value) {
+				// Format value with CRM specific method...
+				if (!empty($field_meta[$key]["data_format"])) {
+					$contact[$field_meta[$key]["label"]] = $this->formatContactData($value, $field_meta[$key]["data_format"]);
+				}
+				else {
+					$contact[$key] = $value;
+				}
+			}
+		}
+
+		return $contact;
 	}
 
 	public function createContact ($args) {

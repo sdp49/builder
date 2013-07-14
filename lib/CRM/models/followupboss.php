@@ -206,7 +206,22 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 		$response = $this->callAPI("people/{$id}", "GET");
 		// error_log(var_export($response, true));
 
-		return $response;
+		$contact = array();
+		$field_meta = $this->contactFieldMeta();
+
+		if (!empty($response) && is_array($response)) {
+			foreach ($response as $key => $value) {
+				// Format value with CRM specific method...
+				if (!empty($field_meta[$key]["data_format"])) {
+					$contact[$field_meta[$key]["label"]] = $this->formatContactData($value, $field_meta[$key]["data_format"]);
+				}
+				else {
+					$contact[$key] = $value;
+				}
+			}
+		}
+
+		return $contact;
 	}
 
 	public function createContact ($args) {
