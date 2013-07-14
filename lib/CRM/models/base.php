@@ -94,6 +94,8 @@ abstract class PL_CRM_Base {
 
 	abstract public function generateContactSearchForm ();
 
+	abstract public function formatContactData ($value, $format);
+
 	abstract public function getContacts ($filters);
 
 	abstract public function getContact ($id);

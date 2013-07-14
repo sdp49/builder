@@ -29,7 +29,7 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 		self::$contactFieldMeta = array(
 			"id" => array(
 				"label" => "ID",
-				"data_format" => "integer",
+				"data_format" => "string",
 				"searchable" => false,
 				"group" => "Search",
 				"type" => "text"
@@ -50,14 +50,14 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 			),
 			"emails" => array(
 				"label" => "E-mail(s)",
-				"data_format" => "custom",
+				"data_format" => "array",
 				"searchable" => false,
 				"group" => "Search",
 				"type" => "text"
 			),
 			"phones" => array(
 				"label" => "Phone(s)",
-				"data_format" => "custom",
+				"data_format" => "array",
 				"searchable" => false,
 				"group" => "Search",
 				"type" => "text"
@@ -152,6 +152,36 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 		);
 
 		return PL_Form::generate_form($search_fields, $form_args);
+	}
+
+	public function formatContactData ($value, $format) {
+		$newVal = $value;
+		
+		switch($format) {
+			case "boolean":
+				$newVal = empty($value) ? "No" : "Yes";
+				break;
+			case "datetime":
+				$newVal = $value;
+				break;
+			case "array":
+				$newVal = "";
+				if (is_array($value)) {
+					foreach ($value as $item) {
+						$type = empty($item["type"]) ? "" : "(<i>{$item['type']}</i>)<br/>";
+						$val = empty($item["value"]) ? "" : "{$item['value']} ";
+						$newVal .= "{$val}{$type}";
+					}
+					// $newVal = rtrim($newVal, ", ");
+				}
+				break;
+			case "string":
+			default:
+				// Do nothing...
+				break;
+		}
+
+		return $newVal;
 	}
 
 	public function getContacts ($filters = array()) {
