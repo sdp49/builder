@@ -205,8 +205,17 @@ jQuery(document).ready(function($) {
 		});
 	});
 
+    function removeDetailsOverlay () {
+    	$('.contact-details-overlay, .contact-details-pane').remove();
+    }
+
 	view.on('click', '.contact-details-overlay', function (event) {
-		$('.contact-details-overlay, .contact-details-pane').remove();
+		removeDetailsOverlay();
 	});
 
+	// Bind esc key to removing the details panel overlay...
+	$(document).on('keyup', function (event) {
+		if (event.keyCode == 27) { removeDetailsOverlay(); }
+	});
+	
 });
