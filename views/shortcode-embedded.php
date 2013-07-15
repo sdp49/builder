@@ -18,10 +18,10 @@ if( $widget_page = $widget_cache->get( $post->ID ) ) {
 
 ob_start();
 
-$widget_class = !empty($_GET['widget_class']) ? $_GET['widget_class'] : '';
+$widget_class = !empty($_GET['widget_class']) ? $_GET['widget_class'] : (!empty($sc_options['widget_class'])?$sc_options['widget_class']:'');
 
 ?>
-<html style="margin-top: 0 !important; overflow: hidden;">
+<html style="margin-top: 0 !important; overflow: hidden;" class="<?php echo $widget_class ?>">
 <head>
 <style type="text/css">
 body {
@@ -51,7 +51,7 @@ p {
 	add_filter('show_admin_bar', '__return_false');
 	add_action('wp_enqueue_scripts', isset( $drop_modernizr ) ? 'pl_template_drop_modernizr': 'pl_template_add_modernizr' );
 
-	echo '<div class="pls_embedded_widget_wrapper '.$widget_class.'">';
+	echo '<div class="pls_embedded_widget_wrapper">';
 	echo do_shortcode( isset( $shortcode ) ? $shortcode : $post->post_content );
 	echo '<div>';
 

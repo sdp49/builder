@@ -121,6 +121,7 @@ abstract class PL_SC_Base {
 
 		if( !empty($post) && $post->post_type == 'pl_general_widget') {
 			$sc_str = $post->post_content;
+			$sc_options = PL_Shortcode_CPT::load_shortcode($post->ID);
 			include(PL_VIEWS_DIR . 'shortcode-embedded.php');
 			die;			
 		}
