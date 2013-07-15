@@ -28,7 +28,10 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 		// Initialize contact field -- NOTE: Specific to this CRM's API!!!
 		self::$contactFieldMeta = array(
 			"id" => array(
-				"label" => "ID"
+				"label" => "ID",
+				"data_format" => "string",
+				"searchable" => true,
+				"type" => "text"
 			),
 			"first_name" => array(
 				"label" => "First Name",
@@ -44,13 +47,13 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 			),
 			"email_addresses" => array(
 				"label" => "E-mail(s)",
-				"data_format" => "string",
+				"data_format" => "array",
 				"searchable" => true,
 				"type" => "text"
 			),
 			"phone_numbers" => array(
 				"label" => "Phone(s)",
-				"data_format" => "string",
+				"data_format" => "array",
 				"searchable" => true,
 				"type" => "text"
 			),
@@ -62,7 +65,7 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 			),
 			"user_bucket" => array(
 				"label" => "User Bucket",
-				"data_format" => "string",
+				"data_format" => "object",
 				"searchable" => true,
 				"type" => "text"
 			),
@@ -80,7 +83,7 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 			),
 			"hits" => array(
 				"label" => "Hits",
-				"data_format" => "integer",
+				"data_format" => "string",
 				"searchable" => false,
 				"type" => "text"
 			)
@@ -136,6 +139,37 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 		return "";
 	}
 
+	public function formatContactData ($value, $format) {
+		$newVal = $value;
+		
+		switch($format) {
+			case "boolean":
+				$newVal = empty($value) ? "No" : "Yes";
+				break;
+			case "datetime":
+				$newVal = $value;
+				break;
+			case "array":
+				$newVal = "";
+				if (is_array($value)) {
+					foreach ($value as $item) {
+						$newVal .= "{$item}, ";
+					}
+					$newVal = rtrim($newVal, ", ");
+				}
+				break;
+			case "object":
+				$newVal = empty($value["name"]) ? "" : $value["name"];
+				break;
+			case "string":
+			default:
+				// Do nothing...
+				break;
+		}
+
+		return $newVal;
+	}
+
 	public function getContacts ($filters = array()) {
 		// Need to set these as this API does enforce sane defaults..
 		$filters["limit"] = ( empty($filters["limit"]) || !is_numeric($filters["limit"]) ? 10 : $filters["limit"] );
@@ -169,13 +203,33 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 	public function getContact ($id) {
 		// Make API Call...
 		$response = $this->callAPI("contacts/{$id}", "GET");
-		error_log(var_export($response, true));
+		// error_log(var_export($response, true));
+		
+		$contact = array();
+		$field_meta = $this->contactFieldMeta();
+
+		if (!empty($response) && is_array($response)) {
+			foreach ($response as $key => $value) {
+				// Format value with CRM specific method...
+				if (!empty($field_meta[$key]["data_format"])) {
+					$contact[$field_meta[$key]["label"]] = $this->formatContactData($value, $field_meta[$key]["data_format"]);
+				}
+				else {
+					$contact[$key] = $value;
+				}
+			}
+		}
+
+		return $contact;
 	}
 
 	public function createContact ($args) {
 		//
 	}
 
+	public function pushEvent ($event) {
+		//
+	}
 }
 
 ?>

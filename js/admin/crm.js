@@ -195,4 +195,18 @@ jQuery(document).ready(function($) {
         contacts_datatable.fnDraw();
     });
 
+    view.on('click', '#contacts_grid tbody tr', function (event) {
+    	// console.log("Clicked on a contact grid row...");
+    	var userID =  $(this).children('td:first-child').text();
+
+    	// Retrieve details on the clicked contact and display them...
+		call_CRM_AJAX('getPartial', {partial: 'details', partial_args: {contact_id: userID}}, function (result) {
+			view.append(result);
+		});
+	});
+
+	view.on('click', '.contact-details-overlay', function (event) {
+		$('.contact-details-overlay, .contact-details-pane').remove();
+	});
+
 });

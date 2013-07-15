@@ -4,7 +4,7 @@
 ?>
 
 <div class="login-header-wrapper">
-	<h2>Integrate your CRM Provider(s)</h2>
+	<h2>Select a CRM Provider:</h2>
 </div>
 
 <div class="crm-options-grid">

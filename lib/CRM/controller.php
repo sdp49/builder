@@ -59,7 +59,6 @@ class PL_CRM_Controller {
 
 			// Handle formatting response if set to JSON...
 			if (!empty($_POST["response_format"]) && $_POST["response_format"] == "JSON") {
-		 		error_log("Formatted as JSON...");
 		 		$response = json_encode($response);
 	 		}
  		}
@@ -141,8 +140,8 @@ class PL_CRM_Controller {
 	}
 
 	public static function getContactGridData ($args = array()) {
-		error_log("In getGridData...");
-		error_log(var_export($args, true));
+		// error_log("In getGridData...");
+		// error_log(var_export($args, true));
 
 		// Try to create an instance...
 		$crm_id = self::getActiveCRM();
@@ -172,8 +171,14 @@ class PL_CRM_Controller {
 		$grid_rows = array();
 		if (!empty($data["contacts"]) && is_array($data["contacts"])) {
 			foreach ($data["contacts"] as $index => $contact) {
-				foreach (array_keys($field_meta) as $key) {
-					$val = empty($contact[$key]) ? "" : $contact[$key];
+				foreach ($field_meta as $field_key => $meta) {
+					$val = empty($contact[$field_key]) ? "" : $contact[$field_key];
+
+					// Format value with CRM specific method...
+					if (!empty($meta["data_format"])) {
+						$val = $crm_obj->formatContactData($val, $meta["data_format"]);
+					}
+
 					$grid_rows[$index][] = $val;
 				}
 			}
