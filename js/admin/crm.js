@@ -201,7 +201,7 @@ jQuery(document).ready(function($) {
 
     	// Retrieve details on the clicked contact and display them...
 		call_CRM_AJAX('getPartial', {partial: 'details', partial_args: {contact_id: userID}}, function (result) {
-			view.append(result);
+			$('body').append(result);
 		});
 	});
 
@@ -217,5 +217,5 @@ jQuery(document).ready(function($) {
 	$(document).on('keyup', function (event) {
 		if (event.keyCode == 27) { removeDetailsOverlay(); }
 	});
-	
+
 });

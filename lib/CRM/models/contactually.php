@@ -147,7 +147,8 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 				$newVal = empty($value) ? "No" : "Yes";
 				break;
 			case "datetime":
-				$newVal = $value;
+				$date = new DateTime($value);
+				$newVal = $date->format("m/d/Y");
 				break;
 			case "array":
 				$newVal = "";
@@ -162,6 +163,8 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 				$newVal = empty($value["name"]) ? "" : $value["name"];
 				break;
 			case "string":
+				$newVal = trim($value);
+				break;
 			default:
 				// Do nothing...
 				break;
@@ -205,20 +208,36 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 		$response = $this->callAPI("contacts/{$id}", "GET");
 		// error_log(var_export($response, true));
 		
-		$contact = array();
+		$details = array();
 		$field_meta = $this->contactFieldMeta();
 
 		if (!empty($response) && is_array($response)) {
 			foreach ($response as $key => $value) {
 				// Format value with CRM specific method...
 				if (!empty($field_meta[$key]["data_format"])) {
-					$contact[$field_meta[$key]["label"]] = $this->formatContactData($value, $field_meta[$key]["data_format"]);
+					$details[$field_meta[$key]["label"]] = $this->formatContactData($value, $field_meta[$key]["data_format"]);
 				}
 				else {
-					$contact[$key] = $value;
+					$details[$key] = $value;
 				}
 			}
 		}
+		
+		$contact = array("name" => "", "details" => array());
+
+		// Translate CRM-specific name field to top-level and remove from details...
+		if (!empty($details["full_name"])) {
+			$contact["name"] = $details["full_name"];
+			unset($details["full_name"]);
+		}
+
+		// Handle CRM-specific image field...
+		if (!empty($details["avatar"])) {
+			$contact["img_url"] = $details["avatar"];
+			unset($details["avatar"]);
+		}
+
+		$contact["details"] = $details;
 
 		return $contact;
 	}
