@@ -7,7 +7,7 @@ include_once(PL_LIB_DIR . 'shortcodes/search_listings.php');
 
 class PL_Featured_Listings_CPT extends PL_Search_Listing_CPT {
 
-	protected static $pl_post_type = 'pl_featured_listings';
+	protected static $pl_post_type = 'featured_listings';
 
 	protected static $shortcode = 'featured_listings';
 

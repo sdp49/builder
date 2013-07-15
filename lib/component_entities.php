@@ -836,17 +836,6 @@ class PL_Component_Entity {
 		return $pl_featured_listing_meta;
 	}
 
-	private static function get_filters_by_listing( $static_listing_id ) {
-		$static_listings = get_post_meta($static_listing_id, false);
-
-		if( ! empty( $static_listings ) && isset( $static_listings['pl_static_listings_option'] ) ) {
-			$static_listing_filters = unserialize( $static_listings['pl_static_listings_option'][0] );
-			return $static_listing_filters;
-		}
-
-		return array();
-	}
-
 	private static function print_filters( $static_listing_filters, $context = 'listings_search' ) {
 
 		wp_enqueue_script('filters-featured.js', trailingslashit(PLS_JS_URL) . 'scripts/filters.js', array('jquery'));

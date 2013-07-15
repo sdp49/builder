@@ -150,7 +150,7 @@ class PL_Shortcodes_Table extends WP_List_Table {
 				SELECT $wpdb->posts.ID, $wpdb->posts.post_status, $wpdb->posts.post_title AS title, $wpdb->postmeta.meta_key, $wpdb->postmeta.meta_value AS type
 				FROM $wpdb->posts, $wpdb->postmeta
 				WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id $where
-				AND ($wpdb->postmeta.meta_key = 'shortcode' OR $wpdb->postmeta.meta_key = 'pl_post_type')
+				AND $wpdb->postmeta.meta_key = 'shortcode'
 				AND $wpdb->posts.post_type = 'pl_general_widget'
 				AND $wpdb->posts.post_status $status
 				$orderstr");
@@ -320,13 +320,13 @@ class PL_Shortcodes_Table extends WP_List_Table {
 
 		$post_type_object = get_post_type_object( $this->post_type );
 		$can_edit_post = current_user_can( $post_type_object->cap->edit_post, $post->ID );
-		$shortcode_str = '['.$post->type." id='".$post->ID."']";
 		$sc_options = PL_Shortcode_CPT::get_shortcode_options($post->type, $post->ID);
 		if ($sc_options!==false && !empty($sc_options['width']) && !empty($sc_options['height'])) {
 			$embed_str = htmlentities('<script id="plwidget-'.$post->ID.'" src="'.PL_PARENT_URL.'js/fetch-widget.js?id='.$post->ID.'" style="width:'.$sc_options['width'].'px;height:'.$sc_options['height'].'px"></script>');
+			$shortcode_str = '['.$post->type." id='".$post->ID."']";
 		}
 		else {	
-			$embed_str = '';
+			$shortcode_str = $embed_str = '';
 		}
 
 		$alternate = 'alternate' == $alternate ? '' : 'alternate';

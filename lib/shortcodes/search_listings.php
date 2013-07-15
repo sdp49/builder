@@ -5,7 +5,7 @@
  */
 class PL_Search_Listing_CPT extends PL_SC_Base {
 
-	protected static $pl_post_type = 'pl_search_listing';
+	protected static $pl_post_type = 'pl_search_listings';
 
 	protected static $shortcode = 'search_listings';
 

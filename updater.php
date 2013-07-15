@@ -46,14 +46,13 @@ class PL_Updater {
 		}
 	}
 
-	private static function _1_1_9() {
+	private static function _1_1_12() {
 		global $wpdb;
 		// update old shortcode templates
-		$template_opts = array('pls_search_map','pls_search_form','pls_search_listings','pls_pl_neighborhood','pls_listing_slideshow','pls_featured_listings','pls_static_listings');
-		foreach($template_opts as $template_opt) {
+		$template_opts = array('pl_map'=>'search_map','pl_form'=>'search_form','pl_search_listings'=>'search_listings','pl_neighborhood'=>'pl_neighborhood','pl_slideshow'=>'listing_slideshow','featured_listings'=>'featured_listings','static_listings'=>'static_listings');
+		foreach($template_opts as $template_opt=>$shortcode) {
 			$query = "SELECT * FROM ".$wpdb->prefix."options WHERE option_name LIKE '".$template_opt."_%'";
 			$results = $wpdb->get_results($query);
-			$shortcode = substr($template_opt, 4);
 			$fields = array('before_widget'=>'', 'after_widget'=>'', 'snippet_body'=>'', 'widget_css'=>'');
 			foreach($results as $result) {
 				$matches = array();
@@ -74,17 +73,14 @@ class PL_Updater {
 		}
 		// update shortcodes
 		$sc_attrs = PL_Shortcode_CPT::get_shortcode_attrs();
-		$scs = get_posts(array('post_type'=>'pl_general_widget'));
+		$scs = get_posts(array('post_type'=>'pl_general_widget', 'numberposts'=>-1));
 		foreach ($scs as $sc) {
 			$postmeta = get_post_meta($sc->ID);
-			if (!empty($postmeta['pl_post_type'])) {
-				if (empty($postmeta['shortcode'])) {
-					foreach($sc_attrs as $shortcode=>$attrs) {echo $attrs['pl_post_type'];
-						if ($postmeta['pl_post_type'][0] == $attrs['pl_post_type']) {
-							update_post_meta($sc->ID, 'shortcode', $shortcode);
-							break;
-						}
-					}
+			if (!empty($postmeta['pl_post_type']) && empty($postmeta['shortcode']) && !empty($template_opts[$postmeta['pl_post_type'][0]])) {
+				$shortcode = $template_opts[$postmeta['pl_post_type'][0]]; 
+				update_post_meta($sc->ID, 'shortcode', $shortcode);
+				if (($shortcode=='static_listings' || $shortcode=='search_listings') && !empty($postmeta['pl_static_listings_option'])) {
+					update_post_meta($sc->ID, 'pl_filters', maybe_unserialize($postmeta['pl_static_listings_option'][0]));
 				}
 			}
 		}

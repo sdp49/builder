@@ -140,8 +140,8 @@ abstract class PL_SC_Base {
 		$class = get_called_class();
 		if ($post = get_post($id, ARRAY_A, array('post_type'=>'pl_general_widget'))) {
 			$postmeta = get_post_meta($id);
-			if (!empty($postmeta['pl_'.$class::$shortcode.'_option'])) {
-				$filters = maybe_unserialize($postmeta['pl_'.$class::$shortcode.'_option'][0]);
+			if (!empty($postmeta['pl_filters'])) {
+				$filters = maybe_unserialize($postmeta['pl_filters'][0]);
 				return $filters;
 			}
 		}

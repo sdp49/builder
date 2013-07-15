@@ -285,7 +285,7 @@ class PL_Shortcode_CPT {
 				if (!$shortcode || $p_shortcode==$shortcode) {
 					$options = array();
 					foreach($postmeta as $key=>$val) {
-						if ($key=='pl_'.$p_shortcode.'_option') {
+						if ($key=='pl_filters') {
 							// filters
 							$options = maybe_unserialize($val[0]);
 							continue;
@@ -406,7 +406,7 @@ class PL_Shortcode_CPT {
 						}
 					}
 				}
-				$db_key = 'pl_'.$shortcode.'_option';
+				$db_key = 'pl_filters';
 				update_post_meta($id, $db_key, $filters);
 			}
 
