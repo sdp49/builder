@@ -12,7 +12,7 @@ class PL_Updater {
 	
 	private static $opt = 'placester_update_notices';
 			
-	static function init() {
+	public static function init() {
 		$prev_ver = get_option('pl_plugin_version', PL_PLUGIN_VERSION);
 		if ($prev_ver != PL_PLUGIN_VERSION) {
 			add_action('admin_notices', array('PL_Updater', 'admin_notices'));

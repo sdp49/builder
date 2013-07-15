@@ -146,11 +146,17 @@ class PL_Pages {
 		if ( PL_PLUGIN_VERSION ) {
 			$old_version = get_option('pl_plugin_version');
 			if ($old_version != PL_PLUGIN_VERSION) {
+				// Update version in DB
 				update_option('pl_plugin_version', PL_PLUGIN_VERSION);
+				
 				global $wp_rewrite;
 				$wp_rewrite->flush_rules();
-				PL_Cache::invalidate();
 				
+				// Run the updater script...
+				include_once(trailingslashit(PL_LIB_DIR) . 'updater.php');
+
+				PL_Cache::invalidate();
+
 				self::delete_all();
 			}
 		}

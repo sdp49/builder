@@ -96,15 +96,6 @@ if (defined('DOING_AJAX') && isset($_POST['action']) && $_POST['action'] == 'crm
     return;
 }
 
-if (is_admin()) {
-
-	$prev_ver = get_option('pl_plugin_version', PL_PLUGIN_VERSION);
-	if ($prev_ver != PL_PLUGIN_VERSION) {
-		include_once('lib/shortcode-cpt.php');
-		include_once('updater.php');
-	}
-}
-
 //config
 include_once('config/toggle_form_sections.php');
 include_once('config/api/custom_attributes.php');
