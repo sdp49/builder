@@ -59,7 +59,6 @@ class PL_CRM_Controller {
 
 			// Handle formatting response if set to JSON...
 			if (!empty($_POST["response_format"]) && $_POST["response_format"] == "JSON") {
-		 		error_log("Formatted as JSON...");
 		 		$response = json_encode($response);
 	 		}
  		}

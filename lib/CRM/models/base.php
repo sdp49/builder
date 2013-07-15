@@ -47,13 +47,13 @@ abstract class PL_CRM_Base {
 		// Set call credentials using CRM specific method...
 		$this->setCredentials($handle, $args);
 
-		error_log(var_export($args, true));
+		// error_log(var_export($args, true));
 
 		// Construct URL...
 		$query_str = isset($args["query_params"]) ? $this->constructQueryString($args["query_params"]) : "";
 		$url = $this->constructURL($endpoint) . $query_str;
 
-		error_log($url);
+		// error_log($url);
 
 		curl_setopt($handle, CURLOPT_URL, $url);
 		curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
