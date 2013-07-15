@@ -46,6 +46,7 @@ class PL_Shortcode_CPT {
 		add_action( 'wp_ajax_pl_sc_changed', array( $this, 'ajax_shortcode_changed') );
 		add_action( 'wp_ajax_pl_sc_preview', array( $this, 'shortcode_preview') );
 		// tpl editing
+		add_action( 'wp_ajax_pl_sc_template_changed', array( $this, 'template_changed') );
 		add_action( 'wp_ajax_pl_sc_template_preview', array( $this, 'template_preview') );
 		// embedded sc support (fetch-widget.js)
 		add_action( 'wp_ajax_handle_widget_script', array( $this, 'handle_iframe_cross_domain' ) );
@@ -422,22 +423,41 @@ class PL_Shortcode_CPT {
 
 
 	/**
-	 * We have to save settings as a template in order for ajax driven forms such as search listings
-	 * to work. We always use the same name '_preview' for the template name.
+	 * Have to save settings as a template in order for preview to work. 
+	 * Use the special id 'pls_<shortcode>__preview' for the preview template name.
+	 */
+	public function template_changed() {
+		$response = array();
+		$shortcode = (!empty($_POST['shortcode']) ? stripslashes($_POST['shortcode']) : '');
+		$shortcode_args = $this->get_shortcode_attrs();
+		if (!$shortcode || empty($shortcode_args[$shortcode]) || empty($_POST[$shortcode])) {
+			die;
+		}
+		// set the defaults
+		$template_id = 'pls_'.$shortcode.'___preview';
+
+		$args = wp_parse_args($_POST[$shortcode], array('shortcode'=>$shortcode, 'title'=>'_preview'));
+		$this->save_custom_template($template_id, $args);
+
+		header( "Content-Type: application/json" );
+		echo json_encode($response);
+		die;
+	}
+
+	/**
+	 * Generate a preview of the template.
+	 * We always use the same id 'pls_<shortcode>__preview' for the template name.
 	 */
 	public function template_preview() {
-
 		$shortcode = (!empty($_GET['shortcode']) ? stripslashes($_GET['shortcode']) : '');
 		$shortcode_args = $this->get_shortcode_attrs();
-		if (!$shortcode || empty($shortcode_args[$shortcode]) || empty($_GET[$shortcode])) {
+		if (!$shortcode || empty($shortcode_args[$shortcode])) {
 			die;
 		}
 		// set the defaults
 		$template_id = 'pls_'.$shortcode.'___preview';
 		$args = wp_parse_args($_GET, array('context'=>$template_id));
 		$sc_str = $this->generate_shortcode_str($shortcode, $args);
-		$args = wp_parse_args($_GET[$shortcode], array('shortcode'=>$shortcode, 'title'=>'_preview'));
-		$this->save_custom_template($template_id, $args);
 
 		include(PL_VIEWS_ADMIN_DIR . 'shortcodes/preview.php');
 		die;
