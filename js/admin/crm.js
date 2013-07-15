@@ -209,7 +209,7 @@ jQuery(document).ready(function($) {
     	$('.contact-details-overlay, .contact-details-pane').remove();
     }
 
-	view.on('click', '.contact-details-overlay', function (event) {
+	$('body').on('click', '.contact-details-overlay', function (event) {
 		removeDetailsOverlay();
 	});
 
