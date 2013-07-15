@@ -147,7 +147,7 @@ class PL_Pages {
 			$old_version = get_option('pl_plugin_version');
 			if ($old_version != PL_PLUGIN_VERSION) {
 				// Run the updater script before updating the version number...
-				include_once(trailingslashit(PL_LIB_DIR) . 'updater.php');
+				include_once(trailingslashit(PL_PARENT_DIR) . 'updater.php');
 
 				// Update version in DB
 				update_option('pl_plugin_version', PL_PLUGIN_VERSION);

@@ -14,14 +14,15 @@ class PL_Updater {
 			
 	public static function init() {
 		$prev_ver = get_option('pl_plugin_version', PL_PLUGIN_VERSION);
+		add_action('admin_notices', array('PL_Updater', 'admin_notices'));
+
 		if ($prev_ver != PL_PLUGIN_VERSION) {
-			add_action('admin_notices', array('PL_Updater', 'admin_notices'));
 			$updates = get_class_methods('PL_Updater');
 			$updates = preg_replace(array('/^_/','/([0-9]+)_/'), array('', '$1.'), $updates);
 			usort($updates, 'version_compare');
 			$notices = get_option(self::$opt, array());
     		foreach($updates as $update) {
-				if (!is_numeric(substr($update,1,2)) || version_compare($prev_ver, $update)>=0) continue;
+				if (!is_numeric(substr($update,1,2)) || version_compare($prev_ver, $update)>0) continue;
 				$func = 'PL_Updater::_'.str_replace('.', '_', $update);
 				call_user_func($func);
 		    	$notices[]= "Upgraded data to version $update";
