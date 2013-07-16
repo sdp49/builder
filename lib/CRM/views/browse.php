@@ -25,7 +25,7 @@
 		<img src="<?php // echo $logo_img; ?>" />
 	</div> -->
 
-	<div class="">
+	<div class="crm-search-box">
 		<?php echo $crm_obj->generateContactSearchForm(); ?>
 	</div>
 

@@ -92,9 +92,25 @@ abstract class PL_CRM_Base {
 
 	abstract public function contactFieldLabels ();
 
-	abstract public function generateContactSearchForm ();
+	public function generateContactSearchForm () {
+		// Get all "searchable" contact fields...
+		$search_fields = array();
+		foreach ($this->contactFieldMeta() as $field => $meta) {
+			if (isset($meta["searchable"]) && $meta["searchable"] === true) {
+				$search_fields[$field] = $meta;
+			}
+		}
 
-	abstract public function formatContactData ($value, $format);
+		$form_args = array(
+			"method" => "POST", 
+			"title" => true, 
+			"include_submit" => false, 
+			"echo_form" => false, 
+			"id" => "contacts_grid_search"
+		);
+
+		return PL_Form::generate_form($search_fields, $form_args);
+	}
 
 	abstract public function getContacts ($filters);
 
