@@ -117,6 +117,7 @@ class PL_Static_Listing_CPT extends PL_Search_Listing_CPT {
 .non-row-wrapper .dataTables_paginate a.paginate_active, .non-row-wrapper .dataTables_paginate a:visited.paginate_active { font-weight: 600; }
 .non-row-wrapper .dataTables_paginate a.previous, .non-row-wrapper .dataTables_paginate a:visited.previous { padding-right: 30px; margin-top: -8px; }
 .non-row-wrapper .dataTables_paginate a.next, .non-row-wrapper .dataTables_paginate a:visited.next { padding-left: 30px; margin-top: -8px; }
+@media (max-width: 767px) { .non-row-wrapper #placester_listings_list_length, .non-row-wrapper .sort_wrapper { display: none !important; } }
 			',
 			'description'	=> 'You can use any valid CSS in this field to customize the listings, which will also inherit the CSS from the theme.' ),
 
