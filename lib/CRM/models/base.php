@@ -112,6 +112,8 @@ abstract class PL_CRM_Base {
 		return PL_Form::generate_form($search_fields, $form_args);
 	}
 
+	abstract public function formatContactData ($value, $format);
+
 	abstract public function getContacts ($filters);
 
 	abstract public function getContact ($id);
