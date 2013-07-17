@@ -220,12 +220,10 @@ jQuery(document).ready(function($) {
 
     view.on('change', '#contacts_grid_search', function (event) {
         event.preventDefault();
-        // view.find('.browser-header').append(createSpinner());
         contacts_datatable.fnDraw();
     });
 
     view.on('click', '#contacts_grid tbody tr', function (event) {
-    	// console.log("Clicked on a contact grid row...");
     	var userID =  $(this).children('td:first-child').text();
 
     	// Retrieve details on the clicked contact and display them...
