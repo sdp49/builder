@@ -54,7 +54,7 @@ abstract class PL_CRM_Base {
 		$query_str = isset($args["query_params"]) ? $this->constructQueryString($args["query_params"]) : "";
 		$url = $this->constructURL($endpoint) . $query_str;
 
-		error_log($url);
+		// error_log($url);
 
 		curl_setopt($handle, CURLOPT_URL, $url);
 		curl_setopt($handle, CURLOPT_RETURNTRANSFER, true);
