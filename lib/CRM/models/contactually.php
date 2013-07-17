@@ -197,7 +197,7 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 		
 		// If search term string isn't empty/is valid, add it as a filter...
 		if (!empty($term_str)) {
-			$new_filters["term"] = urlencode($term_str);
+			$new_filters["term"] = $term_str;
 		}
 
 		// This is a GET request, so mark all filters as query string params...
