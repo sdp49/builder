@@ -24,8 +24,6 @@ class PL_Featured_Listings_CPT extends PL_Search_Listing_CPT {
 		'pl_featured_listing_meta' => array( 'type' => 'featured_listing_meta', 'default' => '' ),
 	);
 
-	protected static $filters = array();
-
 	// Use the same subcodes, template as search listings shortcode
 	// protected static $subcodes = array();
 	// protected static $template = array();

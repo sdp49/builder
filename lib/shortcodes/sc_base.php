@@ -35,7 +35,7 @@ abstract class PL_SC_Base {
 	//	),
 	);
 	// subclass should use this for a list of shortcode filter subcodes
-	protected static $filters = array(
+	protected $filters = array(
 		//		'<field_name>'		=> array(
 		//			'type'		=> '[text|select|subgrp]'		// type of form control
 		//														// text:	text field
@@ -55,7 +55,7 @@ abstract class PL_SC_Base {
 	protected static $allowable_tags = "<a><p><script><div><span><section><label><br><h1><h2><h3><h4><h5><h6><scr'+'ipt><style><article><ul><ol><li><strong><em><button><aside><blockquote><footer><header><form><nav><input><textarea><select>";
 	// built in templates 
 	// TODO: build dynamically
-	protected static $default_tpls = array('twentyten', 'twentyeleven');
+	protected $default_tpls = array();
 	// default layout for template
 	protected static $template = array(							// defines template fields
 		//		'snippet_body'	=> array(
@@ -88,8 +88,11 @@ abstract class PL_SC_Base {
 	 * @return multitype:
 	 */
 	public function get_args() {
-		if (empty($this::$filters)) {
-			$this::$filters = $this->_get_filters();
+		if (empty($this->filters)) {
+			$this->filters = $this->_get_filters();
+		}
+		if (empty($this->default_tpls)) {
+			$this->default_tpls = $this->_get_builtin_templates();
 		}
 		return array(
 				'shortcode'		=> $this::$shortcode,
@@ -97,9 +100,9 @@ abstract class PL_SC_Base {
 				'title'			=> $this::$title,
 				'help'			=> $this::$help,
 				'options'		=> $this::$options,
-				'filters'		=> $this::$filters,
+				'filters'		=> $this->filters,
 				'subcodes'		=> $this::$subcodes,
-				'default_tpls'	=> $this::$default_tpls,
+				'default_tpls'	=> $this->default_tpls,
 				'template'		=> $this::$template,
 		);
 	}
@@ -128,6 +131,29 @@ abstract class PL_SC_Base {
 	}
 
 	/**
+	 * Return array of templates for this shortcode supplied with the plugin.
+	 */
+	public function get_builtin_templates() {
+		if (empty($this->default_tpls)) {
+			$this->default_tpls = $this->_get_builtin_templates();
+		}
+		return $this->default_tpls;
+	}
+
+	/**
+	 * Return array of templates for this shortcode supplied with the plugin.
+	 */
+	protected function _get_builtin_templates() {
+		$tpls = array();
+		if (file_exists($dir = PL_VIEWS_SHORT_DIR . $this::$shortcode)) {
+			$regex = new RegexIterator(new DirectoryIterator($dir), '#^(.+)\.php$#Di', RegexIterator::REPLACE);
+			$regex->replacement = '$1';
+			$tpls = iterator_to_array($regex);
+		}
+		return $tpls;
+	}
+
+	/**
 	 * Return array of filters used to configure this shortcode.
 	 */
 	protected function _get_filters() {return array();}
@@ -138,7 +164,6 @@ abstract class PL_SC_Base {
 	 * @return array
 	 */
 	public static function get_filters($id) {
-		$class = get_called_class();
 		if ($post = get_post($id, ARRAY_A, array('post_type'=>'pl_general_widget'))) {
 			$postmeta = get_post_meta($id);
 			if (!empty($postmeta['pl_filters'])) {
@@ -203,7 +228,7 @@ abstract class PL_SC_Base {
 
 		// prepare filters
 		$subcodes = '';
-		$class_filters = $class::$filters;
+		$class_filters = $class->filters;
 		foreach($class_filters as $f_id => $f_atts) {
 			if (!empty($args[$f_id])) {
 				if(count($f_atts) && empty($f_atts['type'])) {
