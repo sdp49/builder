@@ -223,10 +223,10 @@ jQuery(document).ready(function($) {
     loadState(wizard_global.active_state);
   });
 
-  // Detect any submission/input button clicks from inside the pane...
-  // $('.control-container input[type=button]').on('click', function (event) {
-
-  // });
+  // Bind move-to-next-state event to custom buttons...
+  $('#customize_integration_no').on('click', function (event) {
+    loadState(wizard_global.active_state);
+  });
 
   // Custom additional handler for submit theme that prevents the beforeunload prompt...
   $('#submit_theme').on('click', function (event) {

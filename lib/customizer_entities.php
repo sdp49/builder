@@ -85,7 +85,7 @@ function define_custom_controls()
 					</div>
 
 					<div class="row" id="customizer_mls_request_buttons">
-						<input type="button" id="customize_integration_no" class="bt-norm" value="Manually enter listings." />
+						<input type="button" id="customize_integration_no" class="bt-norm" value="Manually enter listings" />
 						<input type="button" id="customize_integration_submit" class="bt-norm bt-green" value="Request IDX Integration" />
 					</div>
 					

@@ -214,6 +214,10 @@ jQuery(document).ready(function($) {
   * Handles integration pane...
   */
 
+  	$('#customize_integration_no').on('click', function() { 
+  		$('#logo').trigger('click');
+  	});
+
 	$('#customize_integration_submit').on('click', function() {
 
 		$.post(ajaxurl, {action: "start_subscription_trial", source: "wci"}, function (result) {
@@ -419,8 +423,6 @@ jQuery(document).ready(function($) {
 
 		// Remove any latent error messages if they exist...
 		container.find('#message.error').remove();
-
-
 
 		// Check if user is trying to activate a Premium theme, and act accordingly...
 		var type = $('option:selected').parent().attr('label');
