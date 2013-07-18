@@ -55,7 +55,7 @@ abstract class PL_SC_Base {
 	protected $allowable_tags = "<a><p><script><div><span><section><label><br><h1><h2><h3><h4><h5><h6><scr'+'ipt><style><article><ul><ol><li><strong><em><button><aside><blockquote><footer><header><form><nav><input><textarea><select>";
 	// built in templates
 	// TODO: build dynamically
-	protected $default_tpls = array();
+	protected $default_tpls = array('twentyten', 'twentyeleven');
 	// default layout for template
 	protected $template = array(							// defines template fields
 		//		'snippet_body'	=> array(

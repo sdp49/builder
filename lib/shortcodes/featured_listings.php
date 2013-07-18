@@ -125,9 +125,8 @@ class PL_Featured_Listings_CPT extends PL_Search_Listing_CPT {
 
 /* SC Listing Styles */
 .sc-listing { font-family: Arial; margin-bottom: 20px; }
-.sc-listing .sc-listing-thumb { position: relative; }
 .sc-listing .sc-listing-thumb img { float: left; }
-.sc-listing .sc-listing-thumb .sc-price { color: white; text-decoration: none; font-size: 0.9em; margin: 0; padding: 10px 15px; position: absolute; left: 0; bottom: 0; background: black; background: rgba(0, 0, 0, 0.8); }
+.sc-listing .sc-listing-thumb .sc-price { color: white; text-decoration: none; font-size: 0.9em; padding: 10px 15px; margin: -36px 0 0 0; float: left; background: black; background: rgba(0, 0, 0, 0.8); }
 .sc-listing .sc-listing-info { float: left; }
 .sc-listing .sc-listing-info a.sc-listing-address { color: #4b4b4b; text-decoration: none; font-size: 1.1em; }
 .sc-listing .sc-listing-info .sc-basic-details { font-size: 0.8em; color: #b7b7b7; float: left; width: 100%; margin-top: 0; }
