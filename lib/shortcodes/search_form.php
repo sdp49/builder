@@ -6,20 +6,20 @@
 
 class PL_Form_CPT extends PL_SC_Base {
 
-	protected static $pl_post_type = 'pl_form';
+	protected $pl_post_type = 'pl_form';
 
-	protected static $shortcode = 'search_form';
+	protected $shortcode = 'search_form';
 
-	protected static $title = 'Search Form';
+	protected $title = 'Search Form';
 
-	protected static $help = 
+	protected $help =
 		'<p>
-		You can insert your "activated" Search Form snippet by using the [search_form] shortcode in a page or a post. 
-		This control is intended to be used alongside the [search_listings] shortcode to display the search 
+		You can insert your "activated" Search Form snippet by using the [search_form] shortcode in a page or a post.
+		This control is intended to be used alongside the [search_listings] shortcode to display the search
 		form\'s results.
 		</p>';
 
-	protected static $options = array(
+	protected $options = array(
 		'context'			=> array( 'type' => 'select', 'label' => 'Template', 'default' => ''),
 		'width'				=> array( 'type' => 'numeric', 'label' => 'Width(px)', 'default' => 250 ),
 		'height'			=> array( 'type' => 'numeric', 'label' => 'Height(px)', 'default' => 250 ),
@@ -30,7 +30,7 @@ class PL_Form_CPT extends PL_SC_Base {
 	);
 
 	//TODO build from the api
-	protected static $subcodes = array(
+	protected $subcodes = array(
 		'bedrooms'			=> array('help' => 'Drop list to select an exact number of bedrooms.'),
 		'min_beds'			=> array('help' => 'Drop list to select the minimum number of bedrooms.'),
 		'max_beds'			=> array('help' => 'Drop list to select the maximum number of bedrooms.'),
@@ -51,7 +51,7 @@ class PL_Form_CPT extends PL_SC_Base {
 		'max_price_rental'	=> array('help' => 'Drop list to select the maximum rental price.'),
 	);
 
-	protected static $template = array(
+	protected $template = array(
 		'snippet_body'	=> array( 'type' => 'textarea', 'label' => 'HTML', 'css' => 'mime_html', 'default' => '
 <div class="my-searchform-body">
 	<div class="my-searchform-item">
@@ -73,12 +73,12 @@ You can use any valid HTML in this field to format the subcodes.' ),
 }
 /* format the body of our form */
 .my-searchform-body {
-}				
+}
 /* format our form items */
 .my-searchform-item {
 	float: left;
 	width: 50%;
-}				
+}
 /* line up the drop lists */
 .my-searchform label {
 	display: block;
@@ -112,6 +112,13 @@ For example, you can wrap the whole form with a <div> element to apply borders, 
 			'description'	=> '
 You can use any valid HTML in this field and it will appear after the form.' ),
 	);
+
+
+
+
+	public static function init() {
+		parent::_init(__CLASS__);
+	}
 }
 
-PL_Form_CPT::init(__CLASS__);
+PL_Form_CPT::init();

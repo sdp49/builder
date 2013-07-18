@@ -6,13 +6,13 @@
 
 class PL_Map_CPT extends PL_SC_Base {
 
-	protected static $pl_post_type = 'pl_map';
+	protected $pl_post_type = 'pl_map';
 
-	protected static $shortcode = 'search_map';
+	protected $shortcode = 'search_map';
 
-	protected static $title = 'Map';
+	protected $title = 'Map';
 
-	protected static $options = array(
+	protected $options = array(
 		'context'		=> array( 'type' => 'select', 'label' => 'Template', 'default' => ''),
 		'width'			=> array( 'type' => 'numeric', 'label' => 'Width(px)', 'default' => 600 ),
 		'height'		=> array( 'type' => 'numeric', 'label' => 'Height(px)', 'default' => 400 ),
@@ -22,7 +22,7 @@ class PL_Map_CPT extends PL_SC_Base {
 //				'default' => '' ),
 	);
 
-	protected static $template = array(
+	protected $template = array(
 		'css'			=> array( 'type' => 'textarea', 'label' => 'CSS', 'css' => 'mime_css', 'default' => '
 /* sample div used to wrap the map plus any addiitonal html */
 .my-map {
@@ -46,6 +46,13 @@ For example, you can wrap the whole map with a <div> element to apply borders, e
 			'description'	=> '
 You can use any valid HTML in this field and it will appear after the map.' ),
 	);
+
+
+
+
+	public static function init() {
+		parent::_init(__CLASS__);
+	}
 }
 
-PL_Map_CPT::init(__CLASS__);
+PL_Map_CPT::init();

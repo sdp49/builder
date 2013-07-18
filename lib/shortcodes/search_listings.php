@@ -5,13 +5,13 @@
  */
 class PL_Search_Listing_CPT extends PL_SC_Base {
 
-	protected static $pl_post_type = 'pl_search_listings';
+	protected $pl_post_type = 'pl_search_listings';
 
-	protected static $shortcode = 'search_listings';
+	protected $shortcode = 'search_listings';
 
-	protected static $title = 'Search Listings';
+	protected $title = 'Search Listings';
 
-	protected static $help = 
+	protected $help =
 		'<p>
         You can insert your "activated" Listings snippet by using the [search_form] shortcode in a page or a post.
         The listings view is intended to be used alongside the [search_form] shortcode defined above as a container
@@ -19,7 +19,7 @@ class PL_Search_Listing_CPT extends PL_SC_Base {
         the search criteria will be displayed.
 		</p>';
 
-	protected static $subcodes = array(
+	protected $subcodes = array(
 		'price'			=> array('help' => 'Property price'),
 		'sqft'			=> array('help' => 'Total square feet'),
 		'beds'			=> array('help' => 'Number of bedrooms'),
@@ -50,7 +50,7 @@ class PL_Search_Listing_CPT extends PL_SC_Base {
 		'compliance'	=> array('help' => 'MLS compliance statement'),
 	);
 
-	protected static $template = array(
+	protected $template = array(
 		'snippet_body'	=> array( 'type' => 'textarea', 'label' => 'HTML to format each individual listing', 'css' => 'mime_html', 'default' => '
 <section class="my-lu">
 	<div class="my-lu-head">
@@ -108,7 +108,7 @@ You can use any valid HTML in this field to format the subcodes.' ),
 }
 
 /* format the table that holds the listings */
-				
+
 .my-listings .placester_properties,
 .my-listings table#placester_listings_list tr {
 	margin: 0;
@@ -127,23 +127,23 @@ You can use any valid HTML in this field to format the subcodes.' ),
 .my-listings .dataTables_paginate span {
 }
 
-/* section defined above to hold a single listing */				
+/* section defined above to hold a single listing */
 section.my-lu {
 	margin-bottom: 2px;
 	background: #efefef;
 	padding: 10px;
 }
-/* section defined above to hold the body of the listing */				
+/* section defined above to hold the body of the listing */
 .my-lu-body {
 	width: 100%;
 	position: relative;
 	overflow: hidden;
 }
-/* section defined above to hold the listing heading */				
+/* section defined above to hold the listing heading */
 .my-lu-head {
 	margin: 3px 0;
 }
-/* section defined above to hold the listing image */				
+/* section defined above to hold the listing image */
 .my-lu-image {
 	float: left;
 	margin-right: 10px;
@@ -153,7 +153,7 @@ section.my-lu {
 	width: 100%;
 	height: auto;
 }
-/* sections defined above to hold the details of the listing */				
+/* sections defined above to hold the details of the listing */
 .my-lu-details {
 	margin-left: 190px;
 	font-size: 12px;
@@ -196,6 +196,10 @@ You can use any valid HTML in this field and it will appear after the listings.'
 
 
 
+	public static function init() {
+		parent::_init(__CLASS__);
+	}
+
 	/**
 	 * Get list of filter options from the api.
 	 * @see PL_SC_Base::_get_filters()
@@ -210,4 +214,4 @@ You can use any valid HTML in this field and it will appear after the listings.'
 	}
 }
 
-PL_Search_Listing_CPT::init(__CLASS__);
+PL_Search_Listing_CPT::init();
