@@ -25,7 +25,8 @@ abstract class PL_CRM_Base {
 		if (!empty($query_params) && is_array($query_params)) {
 			$query_string = "?";
 			foreach ($query_params as $key => $value) {
-				$query_string .= "{$key}={$value}&";
+				$val = urlencode($value);
+				$query_string .= "{$key}={$val}&";
 			}
 		}
 
