@@ -50,17 +50,17 @@ class PL_Search_Listing_CPT extends PL_SC_Base {
 		'compliance'	=> array('help' => 'MLS compliance statement'),
 	);
 
-	protected static $template = array(
+	protected $template = array(
 		'snippet_body'	=> array(
 			'type' => 'textarea',
 			'label' => 'HTML to format each individual listing',
-			'css' => 'mime_html', 
+			'css' => 'mime_html',
 			'default' => '
 <!-- Listing -->
 <div class="wf-listing">
 	<div class="wf-image">
 		<a href="[url]">
-			[image width=300]							
+			[image width=300]
 		</a>
 		<p class="wf-price">[price]</p>
 	</div>
@@ -72,7 +72,8 @@ class PL_Search_Listing_CPT extends PL_SC_Base {
 	</p>
 </div>
 			',
-			'description'	=> 'You can use any valid HTML in this field to format the subcodes.' ),
+			'description' => 'You can use any valid HTML in this field to format the subcodes.'
+		),
 
 		'css' => array(
 			'type' => 'textarea',
@@ -149,21 +150,24 @@ class PL_Search_Listing_CPT extends PL_SC_Base {
 .non-row-wrapper .dataTables_paginate a.next, .non-row-wrapper .dataTables_paginate a:visited.next { padding-left: 30px; margin-top: -8px; }
 @media (max-width: 767px) { .non-row-wrapper #placester_listings_list_length, .non-row-wrapper .sort_wrapper { display: none !important; } }
 			',
-			'description'	=> 'You can use any valid CSS in this field to customize the listings, which will also inherit the CSS from the theme.' ),
+			'description' => 'You can use any valid CSS in this field to customize the listings, which will also inherit the CSS from the theme.'
+		),
 
 		'before_widget'	=> array(
 			'type' => 'textarea',
 			'label' => 'Add content before the listings',
 			'css' => 'mime_html',
 			'default' => '<div class="non-row-wrapper">',
-			'description'	=> 'You can use any valid HTML in this field and it will appear before the listings. For example, you can wrap the whole list with a <div> element to apply borders, etc, by placing the opening <div> tag in this field and the closing </div> tag in the following field.' ),
+			'description' => 'You can use any valid HTML in this field and it will appear before the listings. For example, you can wrap the whole list with a <div> element to apply borders, etc, by placing the opening <div> tag in this field and the closing </div> tag in the following field.'
+		),
 
 		'after_widget'	=> array(
 			'type' => 'textarea',
 			'label' => 'Add content after the listings',
 			'css' => 'mime_html',
 			'default' => '</div>',
-			'description'	=> 'You can use any valid HTML in this field and it will appear after the listings.' ),
+			'description' => 'You can use any valid HTML in this field and it will appear after the listings.'
+		),
 	);
 
 

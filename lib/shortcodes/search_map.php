@@ -23,7 +23,11 @@ class PL_Map_CPT extends PL_SC_Base {
 	);
 
 	protected $template = array(
-		'css'			=> array( 'type' => 'textarea', 'label' => 'CSS', 'css' => 'mime_css', 'default' => '
+		'css' => array(
+			'type' => 'textarea',
+			'label' => 'CSS',
+			'css' => 'mime_css',
+			'default' => '
 /* sample div used to wrap the map plus any addiitonal html */
 .my-map {
 	overflow: hidden;
@@ -34,17 +38,25 @@ class PL_Map_CPT extends PL_SC_Base {
 	border: 1px solid #000;
 	padding: 10px;
 }',
-			'description'	=> '
-You can use any valid CSS in this field to customize your HTML, which will also inherit the CSS from the theme.' ),
+			'description' => 'You can use any valid CSS in this field to customize your HTML, which will also inherit the CSS from the theme.'
+		),
 
-		'before_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content before the map', 'css' => 'mime_html', 'default' => '<div class="my-map">',
-			'description'	=> '
-You can use any valid HTML in this field and it will appear before the map.
-For example, you can wrap the whole map with a <div> element to apply borders, etc, by placing the opening <div> tag in this field and the closing </div> tag in the following field.' ),
+		'before_widget'	=> array(
+			'type' => 'textarea',
+			'label' => 'Add content before the map',
+			'css' => 'mime_html',
+			'default' => '<div class="my-map">',
+			'description' => 'You can use any valid HTML in this field and it will appear before the map.
+For example, you can wrap the whole map with a <div> element to apply borders, etc, by placing the opening <div> tag in this field and the closing </div> tag in the following field.'
+		),
 
-		'after_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content after the map', 'css' => 'mime_html', 'default' => '</div>',
-			'description'	=> '
-You can use any valid HTML in this field and it will appear after the map.' ),
+		'after_widget'	=> array(
+			'type' => 'textarea',
+			'label' => 'Add content after the map',
+			'css' => 'mime_html',
+			'default' => '</div>',
+			'description' => 'You can use any valid HTML in this field and it will appear after the map.'
+		),
 	);
 
 

@@ -28,40 +28,34 @@ class PL_Featured_Listings_CPT extends PL_Search_Listing_CPT {
 	// protected $subcodes = array();
 	// protected $template = array();
 
-
-
-
-	public static function init() {
-		parent::_init(__CLASS__);
-	}
-	
-	protected static $template = array(
-		'snippet_body'	=> array(
+	protected $template = array(
+		'snippet_body' => array(
 			'type' => 'textarea',
 			'label' => 'HTML to format each individual listing',
-			'css' => 'mime_html', 
+			'css' => 'mime_html',
 			'default' => '
 <!-- Listing -->
 <div class="sc-listing sc-listing-620-max row-fluid">
-    <div class="sc-listing-thumb span6">
-        <a href="[url]">
-            [image width=300]
-        </a>
-        <p class="sc-price">[price]</p>
-    </div>
-    <div class="sc-listing-info span6">
-        <p>
-            <a href="[url]" class="sc-listing-address">[address] [locality], [region]</a>
-        </p>
-        <p class="sc-basic-details">
-            <span class="sc-beds hidden-phone">Beds: <strong>[beds]</strong></span>
-            <span class="sc-baths hidden-phone">Baths: <strong>[baths]</strong></span>
-	        <span class="sc-mls hidden-phone">MLS #: <strong>[mls_id]</strong></span>
-        </p>
-    </div>
+	<div class="sc-listing-thumb span6">
+		<a href="[url]">
+			[image width=300]
+		</a>
+		<p class="sc-price">[price]</p>
+	</div>
+	<div class="sc-listing-info span6">
+		<p>
+			<a href="[url]" class="sc-listing-address">[address] [locality], [region]</a>
+		</p>
+		<p class="sc-basic-details">
+			<span class="sc-beds hidden-phone">Beds: <strong>[beds]</strong></span>
+			<span class="sc-baths hidden-phone">Baths: <strong>[baths]</strong></span>
+			<span class="sc-mls hidden-phone">MLS #: <strong>[mls_id]</strong></span>
+		</p>
+	</div>
 </div>
-			',
-			'description'	=> 'You can use any valid HTML in this field to format the subcodes.' ),
+',
+			'description' => 'You can use any valid HTML in this field to format the subcodes.' 
+		),
 
 		'css' => array(
 			'type' => 'textarea',
@@ -131,8 +125,9 @@ class PL_Featured_Listings_CPT extends PL_Search_Listing_CPT {
 
 /* SC Listing Styles */
 .sc-listing { font-family: Arial; margin-bottom: 20px; }
+.sc-listing .sc-listing-thumb { position: relative; }
 .sc-listing .sc-listing-thumb img { float: left; }
-.sc-listing .sc-listing-thumb .sc-price { color: white; text-decoration: none; font-size: 0.9em; padding: 10px 15px; margin: -36px 0 0 0; float: left; background: black; background: rgba(0, 0, 0, 0.8); }
+.sc-listing .sc-listing-thumb .sc-price { color: white; text-decoration: none; font-size: 0.9em; margin: 0; padding: 10px 15px; position: absolute; left: 0; bottom: 0; background: black; background: rgba(0, 0, 0, 0.8); }
 .sc-listing .sc-listing-info { float: left; }
 .sc-listing .sc-listing-info a.sc-listing-address { color: #4b4b4b; text-decoration: none; font-size: 1.1em; }
 .sc-listing .sc-listing-info .sc-basic-details { font-size: 0.8em; color: #b7b7b7; float: left; width: 100%; margin-top: 0; }
@@ -171,22 +166,32 @@ class PL_Featured_Listings_CPT extends PL_Search_Listing_CPT {
 @media print { .visible-print { display: inherit !important; }
   .hidden-print { display: none !important; } }
 			',
-			'description'	=> 'You can use any valid CSS in this field to customize the listings, which will also inherit the CSS from the theme.' ),
+			'description' => 'You can use any valid CSS in this field to customize the listings, which will also inherit the CSS from the theme.' 
+		),
 
 		'before_widget'	=> array(
 			'type' => 'textarea',
 			'label' => 'Add content before the listings',
 			'css' => 'mime_html',
 			'default' => '<div class="non-row-wrapper">',
-			'description'	=> 'You can use any valid HTML in this field and it will appear before the listings. For example, you can wrap the whole list with a <div> element to apply borders, etc, by placing the opening <div> tag in this field and the closing </div> tag in the following field.' ),
+			'description' => 'You can use any valid HTML in this field and it will appear before the listings. For example, you can wrap the whole list with a <div> element to apply borders, etc, by placing the opening <div> tag in this field and the closing </div> tag in the following field.'
+		),
 
-		'after_widget'	=> array(
+		'after_widget' => array(
 			'type' => 'textarea',
 			'label' => 'Add content after the listings',
 			'css' => 'mime_html',
 			'default' => '</div>',
-			'description'	=> 'You can use any valid HTML in this field and it will appear after the listings.' ),
+			'description' => 'You can use any valid HTML in this field and it will appear after the listings.'
+		),
 	);
+
+
+
+
+	public static function init() {
+		parent::_init(__CLASS__);
+	}
 
 	/**
 	 * No filters

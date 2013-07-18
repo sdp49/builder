@@ -14,8 +14,8 @@ class PL_Listing_Slideshow_CPT extends PL_SC_Base {
 
 	protected $help =
 		'<p>
-        You can create a slideshow for your Featured Listings by using the
-        [listing_slideshow post_id="<em>slideshowid</em>"] shortcode.
+		You can create a slideshow for your Featured Listings by using the
+		[listing_slideshow post_id="<em>slideshowid</em>"] shortcode.
 		</p>';
 
 	protected $options = array(
@@ -46,19 +46,27 @@ class PL_Listing_Slideshow_CPT extends PL_SC_Base {
 	);
 
 	protected $template = array(
-		'snippet_body'	=> array( 'type' => 'textarea', 'label' => 'Caption text for each slideshow image', 'css' => 'mime_html', 'default'	=>
-			'
+		'snippet_body' => array(
+			'type' => 'textarea',
+			'label' => 'Caption text for each slideshow image',
+			'css' => 'mime_html',
+			'default' =>
+'
 <div id="caption-[ls_index]" class="orbit-caption">
 	<p class="caption-title"><a href="[ls_url]">[ls_address]</a></p>
 	<p class="caption-subtitle"><span class="price">[ls_beds] beds</span>, <span class="baths">[ls_baths] baths</span></p>
 	<a class="button details" href="[ls_url]"><span></span></a>
 </div>',
-			'description'	=> '
-You can use any valid HTML in this field to format the subcodes, but you must ensure that it is contained in a block similar to:
-<div id="caption-[ls_index]" class="orbit-caption">...</div>.'),
+			'description' => 'You can use any valid HTML in this field to format the subcodes, but you must ensure that it is contained in a block similar to:
+<div id="caption-[ls_index]" class="orbit-caption">...</div>.'
+		),
 
-		'css'			=> array( 'type' => 'textarea', 'label' => 'CSS to style your slideshow', 'css' => 'mime_css', 'default' => '
-/* sample div used to wrap the slideshow plus any addiitonal html */
+		'css' => array(
+			'type' => 'textarea',
+			'label' => 'CSS to style your slideshow',
+			'css' => 'mime_css',
+			'default' => '
+/* sample div used to wrap the slideshow plus any additional html */
 .my-slideshow {
 	overflow: hidden;;
 }
@@ -98,21 +106,29 @@ You can use any valid HTML in this field to format the subcodes, but you must en
 	color: #fff;
 	text-decoration: underline;
 }',
-			'description'	=> '
-You can use any valid CSS in this field to customize the caption, which will also inherit the CSS from the theme.' ),
+			'description' => 'You can use any valid CSS in this field to customize the caption, which will also inherit the CSS from the theme.'
+		),
 
-		'before_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content before the slideshow', 'css' => 'mime_html', 'default' => '
+		'before_widget'	=> array(
+			'type' => 'textarea',
+			'label' => 'Add content before the slideshow',
+			'css' => 'mime_html',
+			'default' => '
 <div class="my-slideshow">
 	<div class="my-slideshow-wrapper">',
-			'description'	=> '
-You can use any valid HTML in this field and it will appear before the slideshow images.
-For example, you can wrap the whole slideshow with a <div> element to apply borders, etc, by placing the opening <div> tag in this field and the closing </div> tag in the following field.' ),
+			'description'	=> 'You can use any valid HTML in this field and it will appear before the slideshow images.
+For example, you can wrap the whole slideshow with a <div> element to apply borders, etc, by placing the opening <div> tag in this field and the closing </div> tag in the following field.'
+		),
 
-		'after_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content after the slideshow', 'css' => 'mime_html', 'default' => '
+		'after_widget'	=> array(
+			'type' => 'textarea',
+			'label' => 'Add content after the slideshow',
+			'css' => 'mime_html',
+			'default' => '
 	</div>
 </div>',
-			'description'	=> '
-You can use any valid HTML in this field and it will appear after the slideshow images.' ),
+			'description' => 'You can use any valid HTML in this field and it will appear after the slideshow images.'
+		),
 	);
 
 

@@ -51,7 +51,7 @@ class PL_Form_CPT extends PL_SC_Base {
 		'max_price_rental'	=> array('help' => 'Drop list to select the maximum rental price.'),
 	);
 
-	protected static $template = array(
+	protected $template = array(
 		'snippet_body'	=> array(
 			'type' => 'textarea',
 			'label' => 'HTML',
@@ -78,6 +78,7 @@ class PL_Form_CPT extends PL_SC_Base {
 			',
 			'description'	=> 'You can use any valid HTML in this field to format the subcodes.'
 		),
+
 		'css' => array(
 			'type' => 'textarea',
 			'label' => 'CSS',
@@ -91,17 +92,19 @@ form.pls_search_form_listings .search-item label { float: left; width: 100%; }
 @media (max-width: 420px) { form.pls_search_form_listings .search-item { margin-left: 2%; width: 97%; } }
 form.pls_search_form_listings .search-item select, form.pls_search_form_listings .search-item .chzn-container { width: 80% !important; }
 			',
-			'description'	=> 'You can use any valid CSS in this field to customize the form, which will also inherit the CSS from the theme.'
+			'description' => 'You can use any valid CSS in this field to customize the form, which will also inherit the CSS from the theme.'
 		),
+
 		'before_widget'	=> array(
 			'type' => 'textarea',
 			'label' => 'Add content before the form',
 			'default' => '<div class="my-searchform">',
-			'description'	=> 'You can use any valid HTML in this field and it will appear before the form. For example, you can wrap the whole form with a <div> element to apply borders, etc, by placing the opening <div> tag in this field and the closing </div> tag in the following field.'
+			'description' => 'You can use any valid HTML in this field and it will appear before the form. For example, you can wrap the whole form with a <div> element to apply borders, etc, by placing the opening <div> tag in this field and the closing </div> tag in the following field.'
 		),
+
 		'after_widget'	=> array( 'type' => 'textarea', 'label' => 'Add content after the form', 'default' => '<div style="clear:both"></div></div>',
-			'description'	=> '
-You can use any valid HTML in this field and it will appear after the form.' ),
+			'description' => 'You can use any valid HTML in this field and it will appear after the form.'
+		),
 	);
 
 
