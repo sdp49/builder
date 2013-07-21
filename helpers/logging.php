@@ -118,6 +118,7 @@ class PL_Logging {
 					"wordpress_location": "<?php echo site_url(); ?>",
 					"wordpress_version": "<?php echo get_bloginfo('version'); ?>",
 					"wordpress_language": "<?php echo get_bloginfo('language'); ?>",
+					"install_type": "<?php echo ( defined('HOSTED_PLUGIN_KEY') ? 'hosted' : 'remote' ); ?>"
 				};
 				//append them to every request.
 				mixpanel.register_once(core_properties);
