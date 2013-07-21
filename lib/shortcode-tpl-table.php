@@ -189,6 +189,7 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 		$edit_link = admin_url('admin.php?page=placester_shortcodes_template_edit&action=edit&id=');
 		$delete_link = admin_url('admin.php?page=placester_shortcodes_template_edit&action=delete&id=');
 		$copy_link = admin_url('admin.php?page=placester_shortcodes_template_edit&action=copy&id=');
+		$builtin_copy_link = admin_url('admin.php?page=placester_shortcodes_template_edit&action=copy');
 		
 		foreach ( $columns as $column_name => $column_display_name ) {
 			$class = "class=\"$column_name column-$column_name\"";
@@ -228,6 +229,7 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 					}
 					else {
 						$actions['edit'] = __('Non-editable built-in template.');
+						$actions['copy'] = '<a href="' . $builtin_copy_link . '&default='.$template['id'].'&shortcode='.$template['shortcode'].'" title="' . esc_attr( __( 'Copy this item' ) ) . '">' . __( 'Copy' ) . '</a>';
 					}
 					echo $this->row_actions( $actions, true );
 					?>

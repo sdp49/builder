@@ -916,7 +916,9 @@ class PL_Component_Entity {
 	 * Template functions to override template
 	 */
 
-	// Provide template layout for featured listings
+	/**
+	 * Format single featured listing
+	 */
 	public static function featured_listings_templates( $item_html, $listing, $context_var ) {
 		$shortcode = 'featured_listings';
 		self::$listing = $listing;
@@ -925,7 +927,10 @@ class PL_Component_Entity {
 		$template = substr(current_filter(), 30);
 
 		$snippet_body = PL_Shortcodes::get_active_snippet_body( $shortcode, $template );
-		return do_shortcode( $snippet_body );
+		if (empty($snippet_body)) {
+			return $item_html;
+		}
+		return do_shortcode($snippet_body);
 	}
 
 	public static function search_form_templates($form, $form_html, $form_options, $section_title, $form_data) {
@@ -937,17 +942,25 @@ class PL_Component_Entity {
 		$template = substr(current_filter(), 31);
 
 		$snippet_body = PL_Shortcodes::get_active_snippet_body( $shortcode, $template );
+		if (empty($snippet_body)) {
+			return $form;
+		}
 		return do_shortcode($snippet_body);
 	}
 
+	/**
+	 * Format single slideshow caption
+	 */
 	public static function listing_slideshow_templates( $caption_html, $listing, $context, $context_var, $index ) {
 		$shortcode = 'listing_slideshow';
 		self::$listing = $listing;
 		self::$slideshow_caption_index = $index;
 
-		// TODO: can we cache that
 		$snippet_body = PL_Shortcodes::get_active_snippet_body( $shortcode, $context );
-		return do_shortcode( $snippet_body );
+		if (empty($snippet_body)) {
+			return $caption_html;
+		}
+		return do_shortcode($snippet_body);
 	}
 
 	// that would work fine for output styling, not caption-specific
@@ -958,10 +971,7 @@ class PL_Component_Entity {
 		}
 		self::$listing = $data['listing'];
 
-		// get the template attached as a context arg, 33 is the length of the filter prefix
-		$template = $context;
-
-		$snippet_body = PL_Shortcodes::get_active_snippet_body( $shortcode, $template );
+		$snippet_body = PL_Shortcodes::get_active_snippet_body( $shortcode, $context );
 		return do_shortcode($snippet_body . $html);
 	}
 
@@ -982,7 +992,10 @@ class PL_Component_Entity {
 			$template = substr( $template, 16 );
 		}
 
-		$snippet_body = PL_Shortcodes::get_active_snippet_body($shortcode, $template);
+		$snippet_body = PL_Shortcodes::get_active_snippet_body( $shortcode, $template );
+		if (empty($snippet_body)) {
+			return $item_html;
+		}
 		return do_shortcode($snippet_body);
 	}
 

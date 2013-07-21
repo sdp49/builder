@@ -171,6 +171,9 @@
 	float: left;
 	margin-right: 1em;
 }
+.edit-sc-template-edit {
+	padding-top: 2px;	
+}
 
 
 /* Template Editor */
