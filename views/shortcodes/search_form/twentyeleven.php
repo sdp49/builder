@@ -3,28 +3,29 @@
 $template = array(
 
 'css' => '
-.pl-tpl-sf-twentyten {
+.pl-tpl-sf-twentyeleven {
 	margin-bottom: 10px 0;
 	padding: 0;
 	width: 100%;
+	font-family: "Helvetica Neue", Arial, Helvetica, "Nimbus Sans L", sans-serif;
 }
-.pl-tpl-sf-twentyten h3 {
+.pl-tpl-sf-twentyeleven h3 {
 }
-.pl-tpl-sf-twentyten h6 {
+.pl-tpl-sf-twentyeleven h6 {
 }
-.pl-tpl-sf-twentyten form {
+.pl-tpl-sf-twentyeleven form {
 	clear: both;
 	margin: 0 !important;
 	border: none !important;
 	padding: 0 !important;
 }
-.pl-tpl-sf-twentyten .form-grp {
+.pl-tpl-sf-twentyeleven .form-grp {
 	float: left !important;
 	margin: 0 0 7px 0 !important;
 	width: 50% !important;
 	min-width: 12em !important;
 }
-.pl-tpl-sf-twentyten h6 {
+.pl-tpl-sf-twentyeleven h6 {
 	margin: 0 0 7px 0 !important;
 	padding: 0px !important;
 	line-height: 1em !important;
@@ -32,12 +33,12 @@ $template = array(
 	font-size: 16px !important;
 	font-weight: bold !important;
 }
-.pl-tpl-sf-twentyten .select-grp {
+.pl-tpl-sf-twentyeleven .select-grp {
 	margin: 0 !important;
 	padding: 0 !important;
 	padding-bottom: 10px;
 }
-.pl-tpl-sf-twentyten label {
+.pl-tpl-sf-twentyeleven label {
 	display: block !important;
 	float: left;
 	margin: 0 0 .1em 0 !important;
@@ -47,7 +48,7 @@ $template = array(
 	font-size: 14px !important;
 	font-weight: normal !important;
 }
-.pl-tpl-sf-twentyten .select-grp select {
+.pl-tpl-sf-twentyeleven .select-grp select {
 	vertical-align: top !important;
 	margin: 0 0 .2em .1em !important;
 	width: 10em !important;
@@ -55,16 +56,16 @@ $template = array(
 	font-size: 14px !important;
 }
 /* styling for Chosen if used */
-.pl-tpl-sf-twentyten .chzn-container {
+.pl-tpl-sf-twentyeleven .chzn-container {
 	margin: -.2em 0 .3em 0;
 }
 /* search button */
-.pl-tpl-sf-twentyten #search-button {
+.pl-tpl-sf-twentyeleven #search-button {
 	float: left !important;
 	margin: 0 !important;
 }
 /* result count */
-.pl-tpl-sf-twentyten .search_results {
+.pl-tpl-sf-twentyeleven .search_results {
 	float: right !important;
 	margin: 0 !important;
 	padding: 0 !important;
@@ -147,7 +148,7 @@ $template = array(
 </form>
 ',
 
-'before_widget' => '<div class="pl-tpl-sf-twentyten">',
+'before_widget' => '<div class="pl-tpl-sf-twentyeleven">',
 
 'after_widget' => '</div>',
 
