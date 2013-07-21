@@ -94,7 +94,7 @@ class PL_Logging {
 
 	public static function mixpanel_inline_js() {
 
-		$whoami = PLS_Plugin_API::get_user_details();
+		$whoami = PL_Helper_User::whoami();
 
 		ob_start();
 	 	?>
