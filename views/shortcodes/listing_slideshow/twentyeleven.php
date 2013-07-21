@@ -4,12 +4,12 @@ $template = array(
 
 'css' => '
 /* controls background of caption area */
-.pl-listing_slideshow-twentyeleven .orbit-caption {
+.pl-tpl-lss-twentyeleven .orbit-caption {
 	padding: 20px 0 !important;
 	height: auto !important;
 	background: none repeat scroll 0 0 rgba(0, 0, 0, 0.6) !important;
 }
-.pl-listing_slideshow-twentyeleven p {
+.pl-tpl-lss-twentyeleven p {
 	float: none !important;
 	margin: 0 20px !important;
 	padding: 0 !important;
@@ -17,19 +17,19 @@ $template = array(
 	font-family: "Helvetica Neue", Arial, Helvetica, "Nimbus Sans L", sans-serif !important;
 	color: #fff !important;
 }
-.pl-listing_slideshow-twentyeleven p.caption-title {
+.pl-tpl-lss-twentyeleven p.caption-title {
 	font-size: 1.5em !important;
 }
-.pl-listing_slideshow-twentyeleven a,
-.pl-listing_slideshow-twentyeleven a:visited {
+.pl-tpl-lss-twentyeleven a,
+.pl-tpl-lss-twentyeleven a:visited {
 	color: #fff !important;
 	text-decoration: none !important;
 }
-.pl-listing_slideshow-twentyeleven img {
+.pl-tpl-lss-twentyeleven img {
 	border: none !important;
 	max-width: none !important;
 }
-.pl-listing_slideshow-twentyeleven ul.orbit-bullets {
+.pl-tpl-lss-twentyeleven ul.orbit-bullets {
 	float: none !important;
 	position: absolute !important;
 	right: 10px !important;
@@ -51,7 +51,7 @@ $template = array(
 </div>
 ',
 
-'before_widget' => '<div class="pl-listing_slideshow-twentyeleven">',
+'before_widget' => '<div class="pl-tpl-lss-twentyeleven">',
 
 'after_widget' => '</div>',
 
