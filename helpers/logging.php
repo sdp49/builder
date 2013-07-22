@@ -44,8 +44,7 @@ class PL_Logging {
 	//logic to help determine which pages mixpanel fires on.
 	//no need to fire mixpanel on non-placester pages.
 	public static function start () {
-
-		if ( self::is_placester_page() ) {
+		if (self::is_placester_page()) {
 			echo self::mixpanel_inline_js();	
 		} else {
 			return false;
