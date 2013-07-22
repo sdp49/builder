@@ -48,6 +48,7 @@ class PL_Search_Listing_CPT extends PL_SC_Base {
 		//'amenities'		=> array('help' => ''),
 		'price_unit'	=> array('help' => 'Unit price'),
 		'compliance'	=> array('help' => 'MLS compliance statement'),
+		'favorite_link_toggle' => array('help' => 'Link to add/remove from favorites'),
 	);
 
 	protected $template = array(

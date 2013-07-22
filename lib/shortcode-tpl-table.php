@@ -128,7 +128,7 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 	}
 
 	public function no_items() {
-		return "No shortcode templates found.";
+		_e("No shortcode templates found.");
 	}
 
 	public function get_views() {
@@ -169,9 +169,6 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 		}
 
 		add_filter( 'the_title', 'esc_html' );
-
-		// Create array of post IDs.
-		$post_ids = array();
 
 		foreach ( $templates as $id=>$template ) {
 			$this->single_row( $id, $template );
