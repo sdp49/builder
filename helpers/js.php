@@ -135,7 +135,7 @@ class PL_Js_Helper {
 		}
 		
 		// Listing customizer
-		if ($hook == 'placester_page_placester_listing_customizer') {
+		if ($hook == 'placester_page_placester_shortcodes_listing_customizer') {
 			self::register_enqueue_if_not('listing-customizer', trailingslashit(PL_JS_URL) . 'admin/listing-customizer.js', array('jquery'));
 			self::register_enqueue_if_not('codemirror', trailingslashit(PL_JS_URL) . 'lib/codemirror/codemirror.js');
 			self::register_enqueue_if_not('codemirror-foldcode', trailingslashit(PL_JS_URL) . 'lib/codemirror/addon/fold/foldcode.js', array('codemirror'));

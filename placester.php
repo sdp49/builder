@@ -237,7 +237,8 @@ function placester_admin_menu() {
         'All Custom Shortcodes' => '',
         'Create Custom Shortcode' => '_shortcode_edit',
         'Shortcode Templates' => '_templates',
-        'Create Shortcode Template' => '_template_edit'
+        'Create Shortcode Template' => '_template_edit',
+    	'Listing Page Customizer' => '_listing_customizer',
     );
     foreach ($shortcode_subpages as $name => $page_url) {
     	// Leave parent slug empty to add pages without adding them to the menu...
@@ -246,8 +247,6 @@ function placester_admin_menu() {
     	PL_Shortcodes::admin_buffer_op($hook);
     }
     add_submenu_page('placester', 'Shortcodes', 'Shortcodes', 'edit_pages', 'placester_shortcodes', array('PL_Router','shortcodes'));
-
-    add_submenu_page('placester', 'Listing Page Customizer', 'Listing Page Customizer', 'edit_pages', 'placester_listing_customizer', array('PL_Router','listing_customizer'));
     
     // TODO: Integrate shortcode and social pages into existing menu control structure...
     add_submenu_page( 'placester', 'Lead Capture', 'Lead Capture', 'edit_pages', 'placester_lead_capture', array('PL_Router','lead_capture') );

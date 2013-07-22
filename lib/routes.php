@@ -127,7 +127,7 @@ class PL_Router {
 		self::router('shortcodes/template-edit.php', array());
 	}
 	
-	public static function listing_customizer () {
+	public static function shortcodes_listing_customizer () {
 		self::router('listing-customizer/template-edit.php', array());
 	}
 	

@@ -104,7 +104,7 @@ class PL_Css_Helper {
 			self::register_enqueue_if_not('placester-widget-chosen', trailingslashit(PL_JS_URL) . 'lib/chosen/chosen.css');
 		}
 		
-		if ( $hook == 'placester_page_placester_listing_customizer') {
+		if ( $hook == 'placester_page_placester_shortcodes_listing_customizer') {
 			self::register_enqueue_if_not('codemirror', trailingslashit(PL_JS_URL) . 'lib/codemirror/codemirror.css');
 			self::register_enqueue_if_not('placester-widget', trailingslashit(PL_CSS_ADMIN_URL) . 'shortcodes/all.css');
 			self::register_enqueue_if_not('placester-widget-chosen', trailingslashit(PL_JS_URL) . 'lib/chosen/chosen.css');
