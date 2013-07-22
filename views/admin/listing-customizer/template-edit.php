@@ -90,7 +90,7 @@ $tpl_args = PL_Listing_Customizer::get_args();
 							
 										<!-- Search Sub-Shortcodes -->
 										<div id="subshortcodes" class="span2">
-											<h3>Subcodes</h3>
+											<h3>Template Tags</h3>
 											<?php $subcodes = '';?>
 											<?php foreach($tpl_args['subcodes'] as $subcode=>$atts): ?>
 												<?php $subcodes .= '<span class="subcode">[' . $subcode . ']</span>';?>
@@ -99,7 +99,7 @@ $tpl_args = PL_Listing_Customizer::get_args();
 												<?php endif;?>
 												<?php $subcodes .= '<br />';?>
 											<?php endforeach;?>
-											<p>Use the following subcodes to customize your template:<br /><?php echo $subcodes?></p>
+											<p>Use the following tags to customize your template. When the template is rendered in a web page, the tag will be replaced with the corresponding attribute of the property listing:<br /><?php echo $subcodes?></p>
 										</div>
 							
 									</section><!-- /Template Contents -->

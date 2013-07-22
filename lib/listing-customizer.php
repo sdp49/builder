@@ -40,8 +40,8 @@ class PL_Listing_Customizer {
 		'mls_id'		=> array('help' => 'MLS #'),
 		//'map'			=> array('help' => ''),
 		'listing_type'	=> array('help' => 'Type of listing'),
-		'img_gallery'	=> array('help' => 'Image gallery'),
-		//'amenities'		=> array('help' => ''),
+		'gallery'		=> array('help' => 'Image gallery'),
+		'amenities'		=> array('help' => 'List of amenties'),
 		'price_unit'	=> array('help' => 'Unit price'),
 		'compliance'	=> array('help' => 'MLS compliance statement'),
 		'favorite_link_toggle' => array('help' => 'Link to add/remove from favorites'),
@@ -66,7 +66,7 @@ You can use any valid CSS in this field to customize the listing, which will als
 			'label'			=> 'Page Body',
 			'description'	=> '
 You can use any valid HTML in this field to format the subcodes. 
-If you leave this section empty the page will be rendered using the default template which you can style using CSS in the block above.',
+If you leave this section empty the page will be rendered using the default template, which you can style using CSS in the block above.',
 			'css'			=> 'mime_html', 					// used for CodeMirror
 			'default'		=> '',
 		),
@@ -225,8 +225,31 @@ If you leave this section empty the page will be rendered using the default temp
 	
 	public static function custom_property_details_html_filter($content) {
 		global $post;
+		
+		$listing_data = PLS_Plugin_API::get_listing_in_loop();
+		// add in js to init the map
+		// TODO: move this to subcode handler?
+		$js = "
+			<script type=\"text/javascript\">
+			jQuery(document).ready(function( $ ) {
+				var map = new Map();
+				var listing = new Listings({
+					single_listing : ".json_encode($listing_data).",
+					map: map
+				});
+				map.init({
+					type: 'single_listing',
+					listings: listing,
+					lat : ".json_encode($listing_data['location']['coords'][0]).",
+					lng : ".json_encode($listing_data['location']['coords'][1]).",
+					zoom : 14
+				});
+				listing.init();
+			});
+			</script>
+		";
 
-		return PL_Shortcodes::single_listing_template(self::$active_template['snippet_body'], PLS_Plugin_API::get_listing_in_loop());
+		return PL_Shortcodes::single_listing_template(self::$active_template['snippet_body'], $listing_data).$js;
 	}
 }
 

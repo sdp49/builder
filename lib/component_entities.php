@@ -558,12 +558,11 @@ class PL_Component_Entity {
 			case 'image':
 				$width = !empty($atts['width']) ? (int)$atts['width'] : 180;
 				$height = !empty($atts['height']) ? (int)$atts['height'] : 120;
-				$val = PLS_Image::load($listing_list['images'][0]['url'],
+				$val = PLS_Image::load(!empty($listing_list['images'][0]['url']) ? $listing_list['images'][0]['url'] : '',
 						array('resize' => array('w' => $width, 'h' => $height),
-								'fancybox' => true,
-								'as_html' => true,
-								'html' => array('alt' => $listing_list['location']['full_address'],
-										'itemprop' => 'image')));
+							'fancybox' => true,
+							'as_html' => true,
+							'html' => array('alt' => empty($listing_list['location']['full_address']) ? $listing_list['location']['address'] : $listing_list['location']['full_address'], 'itemprop' => 'image')));
 				break;
 			case 'gallery':
 				ob_start();
@@ -586,9 +585,18 @@ class PL_Component_Entity {
 				$val = ob_get_clean();
 				break;
 			case 'map':
-				$val = PLS_Map::lifestyle($listing_list, array('width' => 590, 'height' => 250, 'zoom' => 16, 'life_style_search' => true,
-				'show_lifestyle_controls' => true, 'show_lifestyle_checkboxes' => true,
-				'lat' => $listing_list['location']['coords'][0], 'lng' => $listing_list['location']['coords'][1]));
+				$width = !empty($atts['width']) ? (int)$atts['width'] : 590;
+				$height = !empty($atts['height']) ? (int)$atts['height'] : 250;
+				if (!empty($atts['type']) && $atts['type']=='lifestyle') {
+					$val = PLS_Map::lifestyle($listing_list, array('width' => $width, 'height' => $height, 'zoom' => 16, 'life_style_search' => true,
+					'show_lifestyle_controls' => true, 'show_lifestyle_checkboxes' => true,
+					'lat' => $listing_list['location']['coords'][0], 'lng' => $listing_list['location']['coords'][1]));
+				}
+				else {
+					$val = PLS_Map::dynamic($listing_list, array('width' => $width, 'height' => $height, 'zoom' => 16, 'life_style_search' => true,
+					'show_lifestyle_controls' => false, 'show_lifestyle_checkboxes' => false,
+					'lat' => $listing_list['location']['coords'][0], 'lng' => $listing_list['location']['coords'][1]));
+				}
 				break;
 			case 'price':
 				$val = PLS_Format::number($listing_list['cur_data']['price'], array('abbreviate' => false, 'add_currency_sign' => true));
@@ -598,7 +606,7 @@ class PL_Component_Entity {
 				break;
 			case 'amenities':
 				$amenities = PLS_Format::amenities_but($listing_list, array('half_baths', 'beds', 'baths', 'url', 'sqft', 'avail_on', 'price', 'desc'));
-				$amen_type = array_key_exists('type', $atts) ? (string)$atts['type'] : 'list';
+				$amen_type = empty($atts['type']) ? 'list' : (string)$atts['type'];
 				ob_start();
 				?>
 				<div class="amenities-section grid_8 alpha">
