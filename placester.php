@@ -131,7 +131,7 @@ include_once('lib/social_networks.php');
 include_once('lib/analytics.php');
 include_once('lib/bootup.php');
 include_once('lib/global-filters.php');
-
+include_once('lib/listing-customizer.php');
 
 //models
 include_once('models/listing.php');
@@ -239,15 +239,16 @@ function placester_admin_menu() {
         'Shortcode Templates' => '_templates',
         'Create Shortcode Template' => '_template_edit'
     );
-
     foreach ($shortcode_subpages as $name => $page_url) {
     	// Leave parent slug empty to add pages without adding them to the menu...
-    	$hook = add_submenu_page( 'placester', '', $name, 'edit_pages', 'placester_shortcodes' . $page_url, array('PL_Router','shortcodes' . $page_url));
+    	$hook = add_submenu_page( 'placester', 'Shortcodes - '.$name, $name, 'edit_pages', 'placester_shortcodes' . $page_url, array('PL_Router','shortcodes' . $page_url));
     	PL_Helper_Header::add_sub_page('placester_shortcodes', 'placester_shortcodes' . $page_url, $hook);
     	PL_Shortcodes::admin_buffer_op($hook);
     }
-    add_submenu_page('placester', '', 'Shortcodes', 'edit_pages', 'placester_shortcodes', array('PL_Router','shortcodes'));
+    add_submenu_page('placester', 'Shortcodes', 'Shortcodes', 'edit_pages', 'placester_shortcodes', array('PL_Router','shortcodes'));
 
+    add_submenu_page('placester', 'Listing Page Customizer', 'Listing Page Customizer', 'edit_pages', 'placester_listing_customizer', array('PL_Router','listing_customizer'));
+    
     // TODO: Integrate shortcode and social pages into existing menu control structure...
     add_submenu_page( 'placester', 'Lead Capture', 'Lead Capture', 'edit_pages', 'placester_lead_capture', array('PL_Router','lead_capture') );
     add_submenu_page( 'placester', 'IDX / MLS', 'IDX / MLS', 'edit_pages', 'placester_integrations', array('PL_Router','integrations') );
