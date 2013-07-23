@@ -126,7 +126,6 @@ include_once('lib/shortcode-cpt.php');
 include_once('lib/component_entities.php');
 include_once('lib/shortcodes.php');
 include_once('lib/customizer.php');
-include_once('lib/customizer_entities.php');
 include_once('lib/social_networks.php');
 include_once('lib/analytics.php');
 include_once('lib/bootup.php');
