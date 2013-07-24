@@ -187,7 +187,7 @@ abstract class PL_SC_Base {
 	 */
 	public function get_options($id) {
 		$options = array();
-		if (($post = get_post($id, ARRAY_A, array('post_type'=>'pl_general_widget'))) && $post['post_status']=='publish') {
+		if ($id && ($post = get_post($id, ARRAY_A, array('post_type'=>'pl_general_widget'))) && $post['post_status']=='publish') {
 			$postmeta = get_post_meta($id);
 			foreach($this->options as $attr=>$vals) {
 				if ($attr == 'context') {
