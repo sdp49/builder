@@ -100,6 +100,10 @@ $PL_API_LISTINGS = array(
 				)
 				
 			),
+			'rets' => array(
+				'aid' => array('type' => 'text', 'group' => 'basic', 'label' => 'Agent ID'),
+				'oid' => array('type' => 'text', 'group' => 'basic', 'label' => 'Office ID'),
+			),
 			// binds to keys / values of all attributes (cur + uncur)
 			'metadata' => array(
 				'beds' => array(
