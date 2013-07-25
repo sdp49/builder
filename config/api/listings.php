@@ -185,24 +185,14 @@ $PL_API_LISTINGS = array(
                 'price'  => array(),// => array('type' => 'text', 'group' => 'basic'),
                 'max_price' => array(
                 	'label' => 'Max Price',
-	                'type' => 'select',
+	                'type' => 'text',
 	                'group' => 'basic',
-					'bound' => array(
-						'class' => 'PL_Listing_Helper',
-						'method' => 'pricing_min_options',
-						'params' => 'max'
-					)
 					
 	            ),
                 'min_price' => array(
                 	'label' => 'Min Price',
-	                'type' => 'select',
-	                'group' => 'basic',
-					'bound' => array(
-						'class' => 'PL_Listing_Helper',
-						'method' => 'pricing_min_options',
-						'params' => 'min'
-					)
+	                'type' => 'text',
+	                'group' => 'basic'
 					
 	            ),
                 'sqft' => array(),// => array('type' => 'text', 'group' => 'basic'),
