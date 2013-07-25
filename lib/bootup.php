@@ -3,7 +3,6 @@
 PL_Bootup::init();
 class PL_Bootup {
 
-    private static $switching = false;
     private static $items_that_can_be_created = array(
         'pages' => array(),
         'menus' => array(),
@@ -14,16 +13,7 @@ class PL_Bootup {
     );
 
     public static function init () {
-        // Make sure this action is NOT added/executed for an AJAX request...
-        if ( !defined('DOING_AJAX') ) {
-            add_action('after_switch_theme', array( __CLASS__, 'theme_switch_user_prompt' ));
-        }
-
         add_action('wp_ajax_add_dummy_data', array( __CLASS__, 'add_dummy_data_ajax') );
-    }
-
-    public static function is_theme_switched () {
-        return self::$switching;
     }
 
     public static function add_dummy_data () {
@@ -79,15 +69,8 @@ class PL_Bootup {
     }
 
     public static function theme_switch_user_prompt () {
-        self::$switching = true;
-
-        if (!PL_Customizer_Helper::is_onboarding()) {
-            PL_Router::load_builder_partial('theme-switch.php');
-            PL_Router::load_builder_partial('dummy-data-confirmation.php');
-        }
-        else {
-            self::add_dummy_data();
-        }
+        PL_Router::load_builder_partial('theme-switch.php');
+        PL_Router::load_builder_partial('dummy-data-confirmation.php');
     }
 
 	private static function parse_manifest_to_array () {

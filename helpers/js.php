@@ -31,7 +31,8 @@ class PL_Js_Helper {
 			echo ob_get_clean();
 			
 			// Launch dialog after theme is switched...
-			if ( PL_Bootup::is_theme_switched() ) {
+			if ( isset($_GET['activated']) && $_GET['activated'] == 'true' ) {
+				PL_Bootup::theme_switch_user_prompt();
 	    		self::register_enqueue_if_not('theme-switch', trailingslashit(PL_JS_URL) . 'admin/theme-switch.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 	    	}
 
@@ -158,10 +159,10 @@ class PL_Js_Helper {
 
 	public static function admin_menu_url () {
 		?>
-		<script type="text/javascript">
-			var adminurl = '<?php echo ADMIN_MENU_URL; ?>';
-			var siteurl = '<?php echo site_url(); ?>';
-		</script>
+			<script type="text/javascript">
+				var adminurl = '<?php echo ADMIN_MENU_URL; ?>';
+				var siteurl = '<?php echo site_url(); ?>';
+			</script>
 		<?php
 	}
 
@@ -189,7 +190,8 @@ class PL_Js_Helper {
 		self::register_enqueue_if_not('global', trailingslashit(PL_JS_URL) . 'admin/global.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 		self::register_enqueue_if_not('free-trial', trailingslashit(PL_JS_URL) . 'admin/free-trial.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 
-		if ( PL_Bootup::is_theme_switched() && !PL_Customizer_Helper::is_onboarding() ) {
+		if ( isset($_GET['theme_changed']) && $_GET['theme_changed'] == 'true' && !PL_Customizer_Helper::is_onboarding() ) {
+			PL_Bootup::theme_switch_user_prompt();
 			self::register_enqueue_if_not('theme-switch', trailingslashit(PL_JS_URL) . 'admin/theme-switch.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 		}
 	}

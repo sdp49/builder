@@ -189,7 +189,13 @@ class PL_Customizer_Helper
 			// Assume stylesheet and template name are the same for now...
 			switch_theme( $new_theme, $new_theme );
 
-			echo json_encode(array('success' => 'true'));
+			// Automatically add dummy post and menu data when the theme is switched from the customizer in onboarding mode...
+			if (self::is_onboarding()) {
+				error_log("Theme changed in onboarding, automatically creating dummy data...");
+				PL_Bootup::add_dummy_data();
+			}
+
+			echo json_encode(array('success' => true));
 		}
 
 		die();
