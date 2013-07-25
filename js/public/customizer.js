@@ -295,6 +295,13 @@ jQuery(document).ready(function($) {
 
 	function activateTheme () {
 		var data = { action: 'change_theme', new_theme: $('#theme_choices').val() };
+		var curr_href = window.location.href;
+
+		// Let AJAX endpoint know if customizer is in onboarding mode...
+		var onboarding = (curr_href.indexOf('onboard=true') != -1);
+		if (onboarding) {
+			data.onboarding = true;
+		}
 
 		// Show spinner to indicate theme activation is in progress...
 		var infoElem = $('#theme_info');
@@ -305,19 +312,17 @@ jQuery(document).ready(function($) {
 		submitElem.attr('disabled', 'disabled');
 		submitElem.addClass('bt-disabled');
 
-		//pass pane opened event to mixpanel
+		// Pass pane opened event to mixpanel
 		mixpanel.track("Customizer - Theme Changed", {'theme' : $('#theme_choices').val() });
 
 		$.post(ajaxurl, data, function (response) {
 	        if ( response && response.success ) {
-	            // Reload customizer to display new theme...
-	            var curr_href = window.location.href;
-        
         		// Append a query arg that indicates theme is changing if it doesn't already exist...
 	           	if ( curr_href.indexOf('theme_changed=true') == -1 ) {
-	            	curr_href += ( curr_href.indexOf('onboard=true') == -1 ? '?theme_changed=true' : '&theme_changed=true' );
+	            	curr_href += ( onboarding ? '&theme_changed=true' : '?theme_changed=true' );
 	            }
 
+	            // Reload customizer to display new theme...
 	            window.location.href = curr_href;
 	        }
 	        else {

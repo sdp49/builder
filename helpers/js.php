@@ -33,7 +33,7 @@ class PL_Js_Helper {
 			// Launch dialog after theme is switched...
 			if ( isset($_GET['activated']) && $_GET['activated'] == 'true' ) {
 				PL_Bootup::theme_switch_user_prompt();
-	    		self::register_enqueue_if_not('theme-switch', trailingslashit(PL_JS_URL) . 'admin/theme-switch.js', array('jquery-ui-core', 'jquery-ui-dialog'));
+				self::register_enqueue_if_not('theme-switch', trailingslashit(PL_JS_URL) . 'admin/theme-switch.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 	    	}
 
 			// Don't load any other scripts...
