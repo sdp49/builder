@@ -182,12 +182,10 @@ class PL_Search_Listing_CPT extends PL_SC_Base {
 	 * @see PL_SC_Base::_get_filters()
 	 */
 	protected function _get_filters() {
-		if (class_exists('PL_Config')) {
-			return PL_Config::PL_API_LISTINGS('get', 'args');
+		if (empty($this->filters) && class_exists('PL_Config')) {
+			$this->filters = PL_Config::PL_API_LISTINGS('get', 'args');
 		}
-		else {
-			return array();
-		}
+		return $this->filters;
 	}
 }
 

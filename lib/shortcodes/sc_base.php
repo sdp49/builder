@@ -35,7 +35,7 @@ abstract class PL_SC_Base {
 	//	),
 	);
 	// subclass should use this for a list of shortcode filter subcodes
-	protected $filters = array(
+	private $filters = array(
 		//		'<field_name>'		=> array(
 		//			'type'		=> '[text|select|subgrp]'		// type of form control
 		//														// text:	text field
@@ -90,9 +90,6 @@ abstract class PL_SC_Base {
 	 * @return multitype:
 	 */
 	public function get_args() {
-		if (empty($this->filters)) {
-			$this->filters = $this->_get_filters();
-		}
 		if (empty($this->default_tpls)) {
 			$this->default_tpls = $this->_get_builtin_templates();
 		}
@@ -102,7 +99,7 @@ abstract class PL_SC_Base {
 				'title'			=> $this->title,
 				'help'			=> $this->help,
 				'options'		=> $this->options,
-				'filters'		=> $this->filters,
+				'filters'		=> $this->_get_filters(),
 				'subcodes'		=> $this->subcodes,
 				'default_tpls'	=> $this->default_tpls,
 				'template'		=> $this->template,
@@ -160,9 +157,11 @@ abstract class PL_SC_Base {
 	}
 
 	/**
-	 * Return array of filters used to configure this shortcode.
+	 * Return array of filters used to configure this shortcode type.
 	 */
-	protected function _get_filters() {return array();}
+	protected function _get_filters() {
+		$this->filters;
+	}
 
 	/**
 	 * Return array of filters used to configure this custom shortcode
@@ -230,7 +229,7 @@ abstract class PL_SC_Base {
 
 		// prepare filters
 		$subcodes = '';
-		$class_filters = $this->filters;
+		$class_filters = $this->_get_filters();
 		foreach($class_filters as $f_id => $f_atts) {
 			if (!empty($args[$f_id])) {
 				if(count($f_atts) && empty($f_atts['type'])) {
