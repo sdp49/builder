@@ -97,7 +97,12 @@ $PL_API_LISTINGS = array(
 						'method' => 'locations_for_options',
 						'params' => array('county', false)
 					)
-				)
+				),
+				'address'  => array(
+					'label' => 'At or near this street address',
+					'type' => 'text',
+					'group' => 'location'
+				),
 				
 			),
 			'rets' => array(
