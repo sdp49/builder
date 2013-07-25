@@ -181,7 +181,6 @@ class PL_Helper_User {
 			return array('default_country' => 'US');
 		} 
 		return array('default_country' => $response);
-		
 	}
 	
 	public static function enable_community_pages() {
