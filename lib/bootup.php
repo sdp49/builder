@@ -9,6 +9,8 @@ class PL_Bootup {
         'posts' => array(),
         'agents' => array(),
         'testimonials' => array(),
+        'services' => array(),
+        'videos' => array(),
         'settings' => array()
     );
 
@@ -36,7 +38,8 @@ class PL_Bootup {
         $all_cpts = array(
             'agent' => $agents,
             'testimonial' => $testimonials,
-            'service' => $services
+            'service' => $services,
+            'video' => $videos
         );
 
         // create CPT posts
