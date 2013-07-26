@@ -57,7 +57,7 @@ abstract class PL_SC_Base {
 	// TODO: build dynamically
 	protected $default_tpls = array('twentyten', 'twentyeleven');
 	// default layout for template
-	protected $template = array(							// defines template fields
+	protected $template = array(								// defines template fields
 		//		'snippet_body'	=> array(
 		//		'type'		=> 'textarea',
 		//		'label'		=> '<Pretty Form Name>',
@@ -220,7 +220,12 @@ abstract class PL_SC_Base {
 				if (!empty($class_options[$option])
 					&& $class_options[$option]['type'] != 'featured_listing_meta'
 					) {
-					$sc_args .= ' '.$option."='".$value."'";
+					if (is_array($value)) {
+						$sc_args .= ' '.$option."='".implode(',',$value)."'";
+					}
+					else {
+						$sc_args .= ' '.$option."='".$value."'";
+					}
 				}
 			}
 		}

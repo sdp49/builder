@@ -123,14 +123,38 @@ class PL_Component_Entity {
 				unset($atts['id']);
 			}
 		}
-		$atts = wp_parse_args($atts, array('id' => 0, 'limit' => 5, 'featured_id' => 'custom', 'context' => 'shortcode'));
+		// get default values
+		$sc_attrs = PL_Shortcode_CPT::get_shortcode_attrs('static_listings');
+		foreach ($sc_attrs['options'] as $key=>$vals) {
+			if (empty($atts[$key]) && !empty($vals['default'])) {
+				$atts[$key] = $vals['default'];
+			}
+			if (!empty($atts[$key]) && $vals['type']=='multiselect') {
+				$okeys = array_map('trim',explode(",", $atts[$key]));
+				$values = array();
+				$optvals = get_option('pl_static_listings_formval_'.$key, $vals['options']);
+				foreach($okeys as $okey) {
+					if (!empty($optvals[$okey])) {
+						$values[$okey] = $optvals[$okey];
+					}
+				}
+				if (empty($values)) {
+					unset($atts[$key]);
+				}
+				else {
+					$atts[$key] = $values;
+				}
+			}
+		}
+
+		$atts = wp_parse_args($atts, array('id' => 0, 'query_limit' => 5, 'featured_id' => 'custom', 'context' => 'shortcode', 'sort_by' => 'cur_data.price', 'table_id' => 'placester_listings_list'));
 
 		// set limit per page if any
 		if( ! empty( $atts['query_limit'] ) ) {
 			global $pl_listings_query_limit;
 			$pl_listings_query_limit = $atts['query_limit'];
-
-			add_action( 'static_listings_limit_default', array( __CLASS__, 'add_length_limit_default'  ));
+			// TODO init the js directly instead
+			add_action( 'listings_limit_default', array( __CLASS__, 'add_length_limit_default'  ));
 			unset ( $pl_listings_query_limit );
 		}
 
@@ -150,11 +174,9 @@ class PL_Component_Entity {
 		$atts['context'] = 'static_listings' . (empty($atts['context']) ? '' : '_'.$atts['context']);
 
 		ob_start();
-		self::hide_unnecessary_controls( $atts );
+		self::hide_unnecessary_controls($atts);
 		self::print_filters( $filters . $filters_string, $atts['context'] );
-		echo PLS_Partials::get_listings_list_ajax( 'context=' . $atts['context'] . '&'
-				. 'table_id=placester_listings_list'
-				.( empty( $atts['query_limit'] ) ? '' : '&query_limit=' . $atts['query_limit'] ));
+		echo PLS_Partials::get_listings_list_ajax($atts);
 		return $header.ob_get_clean().$footer;
 	}
 
@@ -194,8 +216,33 @@ class PL_Component_Entity {
 			if (empty($atts[$key]) && !empty($vals['default'])) {
 				$atts[$key] = $vals['default'];
 			}
+			if (!empty($atts[$key]) && $vals['type']=='multiselect') {
+				$okeys = array_map('trim',explode(",", $atts[$key]));
+				$values = array();
+				$optvals = get_option('pl_search_listings_formval_'.$key, $vals['options']);
+				foreach($okeys as $okey) {
+					if (!empty($optvals[$okey])) {
+						$values[$okey] = $optvals[$okey];
+					}
+				}
+				if (empty($values)) {
+					unset($atts[$key]);
+				}
+				else {
+					$atts[$key] = $values;
+				}
+			}
 		}
-		$atts = wp_parse_args($atts, array('context' => 'shortcode'));
+		$atts = wp_parse_args($atts, array('context' => 'shortcode', 'sort_by' => 'cur_data.price'));
+
+		// set limit per page if any
+		if( ! empty( $atts['query_limit'] ) ) {
+			global $pl_listings_query_limit;
+			$pl_listings_query_limit = $atts['query_limit'];
+			// TODO init the js directly instead
+			add_action( 'listings_limit_default', array( __CLASS__, 'add_length_limit_default'  ));
+			unset ( $pl_listings_query_limit );
+		}
 
 		// add template formatting
 		$header = $footer = '';
@@ -214,7 +261,7 @@ class PL_Component_Entity {
 
 		ob_start();
 		self::print_filters( $filters . $filters_string, $atts['context'] );
-		PLS_Partials_Get_Listings_Ajax::load(array('context' => $atts['context']));
+		PLS_Partials_Get_Listings_Ajax::load($atts);
 		return $header.ob_get_clean().$footer;
 	}
 
@@ -857,7 +904,7 @@ class PL_Component_Entity {
 					filter : filter,
 					'class': '.placester_listings_list',
 					listings: listings,
-					<?php echo do_action('static_listings_limit_default'); ?>
+					<?php echo do_action('listings_limit_default'); ?>
 					context: '<?php echo $context; ?>'
 				});
 
@@ -907,12 +954,12 @@ class PL_Component_Entity {
 		return ob_get_clean();
 	}
 
-	
+
 	/**
 	 * Templating functions for the shortcodes
 	 */
 
-	
+
 	/**
 	 * Format single featured listing
 	 */
@@ -932,7 +979,7 @@ class PL_Component_Entity {
 
 	/**
 	 * Format the search form body using any template we might have.
-	 * Called from PLS_Partials_Listing_Search_Form 
+	 * Called from PLS_Partials_Listing_Search_Form
 	 */
 	public static function search_form_inner_template($form, $form_html, $form_options, $section_title, $context_var) {
 		$shortcode = 'search_form';
@@ -951,7 +998,7 @@ class PL_Component_Entity {
 
 	/**
 	 * Format and style the search form using any template we might have.
-	 * Called from PLS_Partials_Listing_Search_Form 
+	 * Called from PLS_Partials_Listing_Search_Form
 	 */
 	public static function search_form_outer_template($form, $form_html, $form_options, $section_title, $form_data, $form_id, $context_var) {
 		// get the template attached as a context arg, 31 is the length of the filter prefix

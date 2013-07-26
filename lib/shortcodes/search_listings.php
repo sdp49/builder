@@ -19,6 +19,28 @@ class PL_Search_Listing_CPT extends PL_SC_Base {
         the search criteria will be displayed.
 		</p>';
 
+	protected $options = array(
+		'context'			=> array( 'type' => 'select', 'label' => 'Template', 'default' => ''),		// these should always exist
+		'width'				=> array( 'type' => 'numeric', 'label' => 'Width(px)', 'default' => 250 ),
+		'height'			=> array( 'type' => 'numeric', 'label' => 'Height(px)', 'default' => 250 ),
+		'widget_class'		=> array( 'type' => 'text', 'label' => 'Widget Class', 'default' => 'sss' ),
+		'sort_by_options'	=> array( 'type' => 'multiselect', 'label' => 'Items in "Sort By" list', 
+			'options'	=> array(	// options we always want to show even if they are not part of the filter set
+				'location.address'	=> 'Address', 
+				'cur_data.price'	=> 'Price',
+				'cur_data.sqft'		=> 'Square Feet',
+				'cur_data.lt_sz'	=> 'Lot Size',
+				'compound_type'		=> 'Listing Type',
+				'cur_data.avail_on'	=> 'Available On',
+			),
+			'default'	=> array('cur_data.price','cur_data.beds','cur_data.baths','location.locality'), 
+		),
+		'sort_by'			=> array( 'type' => 'select', 'label' => 'Default sort by', 'options' => array(), 'default' => 'cur_data.price' ),
+		'sort_type'			=> array( 'type' => 'select', 'label' => 'Default sort direction', 'options' => array('asc'=>'Ascending', 'desc'=>'Descending'), 'default' => 'desc' ),
+		// TODO: sync up with js list			
+		'query_limit'		=> array( 'type' => 'select', 'label' => 'Default number of results', 'options' => array('10'=>'10', '25'=>'25', '25'=>'25', '50'=>'50', '100'=>'100', '200'=>'200', '-1'=>'All'), 'default' => '10' ),
+	);
+
 	protected $subcodes = array(
 		'price'			=> array('help' => 'Property price'),
 		'sqft'			=> array('help' => 'Total square feet'),

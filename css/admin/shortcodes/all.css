@@ -54,7 +54,13 @@
 .sc-meta-section #pl_static_listing_block select {
     float: left;
 	margin: 0 .5em .5em 0;
-	height: 2em;
+	height: auto;
+}
+.sc-meta-section select[multiple] {
+	height: 12em;
+}
+.sc-meta-section input[type="checkbox"] {
+	margin: .3em .5em 0 0;
 }
 
 /* CodeMirror for template */
@@ -91,6 +97,9 @@
 .embed-link {
     margin-top: 8px;
     padding: 0 10px 0 4px;
+}
+.embed-link span {
+	word-wrap: break-word;
 }
 
 .pl-sc-wrap .inside strong {
