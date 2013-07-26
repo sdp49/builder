@@ -10,6 +10,7 @@ class PL_Logging {
 	  'placester_page_placester_settings' => 'Settings - General', 
 	  'placester_page_placester_support' => 'Property Support', 
 	  'placester_page_placester_theme_gallery' => 'Property Theme Gallery',
+	  'placester_page_placester_lead_capture' => 'Lead Capture - General',
 	  'placester_page_placester_settings_client' => 'Settings - Client',
 	  'placester_page_placester_settings_filtering' => 'Settings - Global Filtering',
 	  'placester_page_placester_settings_polygons' => 'Settings - Polygons',
@@ -43,8 +44,7 @@ class PL_Logging {
 	//logic to help determine which pages mixpanel fires on.
 	//no need to fire mixpanel on non-placester pages.
 	public static function start () {
-
-		if ( self::is_placester_page() ) {
+		if (self::is_placester_page()) {
 			echo self::mixpanel_inline_js();	
 		} else {
 			return false;
@@ -93,7 +93,7 @@ class PL_Logging {
 
 	public static function mixpanel_inline_js() {
 
-		$whoami = PLS_Plugin_API::get_user_details();
+		$whoami = PL_Helper_User::whoami();
 
 		ob_start();
 	 	?>
@@ -117,6 +117,7 @@ class PL_Logging {
 					"wordpress_location": "<?php echo site_url(); ?>",
 					"wordpress_version": "<?php echo get_bloginfo('version'); ?>",
 					"wordpress_language": "<?php echo get_bloginfo('language'); ?>",
+					"install_type": "<?php echo ( defined('HOSTED_PLUGIN_KEY') ? 'hosted' : 'remote' ); ?>"
 				};
 				//append them to every request.
 				mixpanel.register_once(core_properties);

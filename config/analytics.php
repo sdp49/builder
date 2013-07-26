@@ -35,6 +35,14 @@ $PL_ANALYTICS_CONFIG = array(
 	"contact_submitted" => array(
 		"category" => "contact",
 		"allowed_params" => array("phone", "e-mail")
+	),
+	"home_view" => array(
+		"category" => "home",
+		"allowed_params" => array()
+	),
+	"page_view" => array(
+		"category" => "none",
+		"allowed_params" => array()
 	)
 );
 

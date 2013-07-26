@@ -64,7 +64,8 @@ class PL_Cache {
 		}
 	
 		// Create and store item's cache key...
-		$this->transient_id = self::build_cache_key($this->group, func_get_args());
+		$args = func_get_args();
+		$this->transient_id = self::build_cache_key($this->group, $args);
 
         $transient = get_transient($this->transient_id);
         // Return as is -- if transient doesn't exist, it's up to the caller to check...

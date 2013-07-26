@@ -39,16 +39,16 @@ class PL_Pages {
 		$page_details['name'] = $api_listing['id'];
 		$page_details['content'] = '';
 		$page_details['taxonomies'] = array(
-										'zip' => $api_listing['location']['postal'], 
-										'city' => $api_listing['location']['locality'],
-										'state' => $api_listing['location']['region'],
-										'neighborhood' => $api_listing['location']['neighborhood'],
-										'street' => $api_listing['location']['address'],
-										'beds' => (string) $api_listing['cur_data']['beds'],
-										'baths' => (string) $api_listing['cur_data']['beds'],
-										'half-baths' => (string) $api_listing['cur_data']['half_baths'],
-										'mlsid' => (string) $api_listing['rets']['mls_id']
-									);
+			'zip' => $api_listing['location']['postal'], 
+			'city' => $api_listing['location']['locality'],
+			'state' => $api_listing['location']['region'],
+			'neighborhood' => $api_listing['location']['neighborhood'],
+			'street' => $api_listing['location']['address'],
+			'beds' => (string) $api_listing['cur_data']['beds'],
+			'baths' => (string) $api_listing['cur_data']['beds'],
+			'half-baths' => (string) $api_listing['cur_data']['half_baths'],
+			'mlsid' => (string) $api_listing['rets']['mls_id']
+		);
 		// pls_dump($page_details['taxonomies']);
 		return self::manage($page_details);
 	}
@@ -133,7 +133,6 @@ class PL_Pages {
 
 	function create_taxonomies() {
 		register_post_type(self::$property_post_type, array('labels' => array('name' => __( 'Properties' ),'singular_name' => __( 'property' )),'public' => true,'has_archive' => true, 'rewrite' => true, 'query_var' => true, 'taxonomies' => array('category', 'post_tag')));
-		include_once trailingslashit( PL_PARENT_DIR ) . 'lib/featured_listings_post_type.php';
 		
 		global $wp_rewrite;
 	    $property_structure = '/property/%state%/%city%/%zip%/%neighborhood%/%street%/%'.self::$property_post_type.'%';
@@ -143,16 +142,21 @@ class PL_Pages {
         remove_post_type_support( self::$property_post_type, 'comments' );
 	}
 
-
 	function force_rewrite_update () {
 		if ( PL_PLUGIN_VERSION ) {
 			$old_version = get_option('pl_plugin_version');
 			if ($old_version != PL_PLUGIN_VERSION) {
+				// Run the updater script before updating the version number...
+				include_once(trailingslashit(PL_PARENT_DIR) . 'updater.php');
+
+				// Update version in DB
 				update_option('pl_plugin_version', PL_PLUGIN_VERSION);
+				
 				global $wp_rewrite;
 				$wp_rewrite->flush_rules();
+
 				PL_Cache::invalidate();
-				// PL_HTTP::clear_cache();
+
 				self::delete_all();
 			}
 		}

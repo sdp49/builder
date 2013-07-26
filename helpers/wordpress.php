@@ -9,7 +9,11 @@ class PL_WordPress_Helper {
 	}
 
 	function report_theme () {
-		$theme = strtolower(wp_get_theme());
+		$theme = 'not sure';
+		//I don't believe this function is registered at the time this is hooked in. 
+		if (function_exists('wp_get_theme')) {
+			$theme = strtolower(wp_get_theme());
+		}
 		$response = PL_WordPress::set(array_merge(array('theme' => $theme), array('url' => site_url() ) ) );
 		return $response;
 	}
@@ -17,11 +21,6 @@ class PL_WordPress_Helper {
 	function report_url () {
 		$request = array('url' => site_url());
 		$response = PL_WordPress::set($request);
-	}
-
-	function report_filters () {
-		$response = PL_WordPress::set(array_merge(PL_Helper_User::get_global_filters(), array('url' => site_url() ) ) );
-		return $response;
 	}
 
 	function remote_filter_update ($args = array()) {

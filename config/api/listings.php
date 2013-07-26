@@ -9,18 +9,19 @@ $PL_API_LISTINGS = array(
 		),
 		'args' => array(
 			'listing_ids'  => array(),
-			'listing_types' => array(
-				'label' => 'Listing Types',
-				'group' => 'listing types',
+			'compound_type' => array(
+				'label' => 'Listing Type',
+				'group' => 'Basic Details',
 				'type' => 'select',
 				'options' => array(
-					'false' => 'Any',
-					'Sublet' => 'Sublet',
-					'Residential Sale' => 'Residential Sale',
-					'Vacation Rental' => 'Vacation Rental',
-					'Residential Rental' => 'Residential Rental',
-					'Commercial Rental' => 'Commercial Rental',
-					'Commercial Sale' => 'Commercial Sale',
+					'false' => 'Not Set',
+					'res_sale' => 'Residential Sale',
+					'res_rental' => 'Residential Rental',
+					'vac_rental' => 'Vacation Rental',
+					'park_rental' => 'Parking',
+					'comm_rental' => 'Commercial Rental',
+					'comm_sale' => 'Commercial Sale',
+					'sublet' => 'Sublet'
 				)
 			),
 			'zoning_types' => array(
@@ -96,8 +97,17 @@ $PL_API_LISTINGS = array(
 						'method' => 'locations_for_options',
 						'params' => array('county', false)
 					)
-				)
+				),
+				'address'  => array(
+					'label' => 'At or near this street address',
+					'type' => 'text',
+					'group' => 'location'
+				),
 				
+			),
+			'rets' => array(
+				'aid' => array('type' => 'text', 'group' => 'basic', 'label' => 'Agent ID'),
+				'oid' => array('type' => 'text', 'group' => 'basic', 'label' => 'Office ID'),
 			),
 			// binds to keys / values of all attributes (cur + uncur)
 			'metadata' => array(
@@ -151,7 +161,7 @@ $PL_API_LISTINGS = array(
 					)
 	            ),
                 'max_baths' => array(),// => array('type' => 'text', 'group' => 'advanced', 'label' => 'Max Baths'),
-                'min_baths' => array(),//=> array('type' => 'text', 'group' => 'advanced', 'label' => 'Min Baths'),
+                'min_baths' => array(),// => array('type' => 'text', 'group' => 'advanced', 'label' => 'Min Baths'),
                 'half_baths' => array(
                 	'label' => 'Half Baths',
 	                'type' => 'select',
@@ -180,24 +190,14 @@ $PL_API_LISTINGS = array(
                 'price'  => array(),// => array('type' => 'text', 'group' => 'basic'),
                 'max_price' => array(
                 	'label' => 'Max Price',
-	                'type' => 'select',
+	                'type' => 'text',
 	                'group' => 'basic',
-					'bound' => array(
-						'class' => 'PL_Listing_Helper',
-						'method' => 'pricing_min_options',
-						'params' => 'max'
-					)
 					
 	            ),
                 'min_price' => array(
                 	'label' => 'Min Price',
-	                'type' => 'select',
-	                'group' => 'basic',
-					'bound' => array(
-						'class' => 'PL_Listing_Helper',
-						'method' => 'pricing_min_options',
-						'params' => 'min'
-					)
+	                'type' => 'text',
+	                'group' => 'basic'
 					
 	            ),
                 'sqft' => array(),// => array('type' => 'text', 'group' => 'basic'),
@@ -227,7 +227,7 @@ $PL_API_LISTINGS = array(
                 'ngb_pubsch' => array(),
 			),
 			'agency_only' => array('type' => 'checkbox', 'group' => 'advanced', 'label' => 'My Offices Listings'),
-			'non_import' => array('type' => 'checkbox',  'group' => 'advanced', 'label' => 'Non MLS Listigns'),
+			'non_import' => array('type' => 'checkbox',  'group' => 'advanced', 'label' => 'Non MLS Listings'),
 			'custom' => array(
 				'type' => 'bundle',
 				'group' => '',
@@ -254,6 +254,7 @@ $PL_API_LISTINGS = array(
 		),
 		'returns' => array(
 			'id' => false,
+			'compound_type' => false,
 			'property_type' => array(),
 			'zoning_types' => array(),
 			'purchase_types' => array(),
@@ -378,7 +379,7 @@ $PL_API_LISTINGS = array(
                 'avail_on' => array('type' => 'date', 'group' => 'basic details', 'label' => 'Available On'),
                 'desc' => array('type' => 'textarea', 'group' => 'description', 'label' => 'Description'),
                 //rentals
-                'lse_trms' => array('type' => 'select', 'options' => array('false' => 'Not Set', 'per_mnt' => 'Per Month','per_ngt' => 'Per Month', 'per_wk' => 'Per Week', 'per_yr' => 'Per Year'), 'group' => 'Transaction Details','label' => 'Lease Terms'),
+                'lse_trms' => array('type' => 'select', 'options' => array('false' => 'Not Set', 'per_mnt' => 'Per Month','per_ngt' => 'Per Night', 'per_wk' => 'Per Week', 'per_yr' => 'Per Year'), 'group' => 'Transaction Details','label' => 'Lease Terms'),
                 'lse_type' => array('type' => 'select', 'options' => array('false' => 'Not Set', 'ind_grs' => 'Full Service','ind_grs' => 'Industrial Gross', 'mod_grs' => 'Modified Gross', 'mod_net' => 'Modified Net', 'na' => 'N/A', 'other' => 'Other' ), 'group' => 'Transaction Details','label' => 'Lease Type'),
                 'sublse' => array('type' => 'checkbox', 'group' => 'Transaction Details','label' => 'Sublease'),
                 'rate_unit' => array('type' => 'select', 'options' => array('false' => 'Not Set', 'amt_mnt' => 'Amount/Month','amt_yr' => 'Amount/Year', 'sf_mnt' => 'Sqft/Month', 'sf_yr' => 'Sqft/Year'), 'group' => 'Transaction Details','label' => 'Rental Rate'),

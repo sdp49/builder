@@ -4,14 +4,19 @@ PL_Analytics::init();
 
 class PL_Analytics {
 
-	public static function init() {
-		// Nothing yet...
+	public static function init () {
+		// Hook this event for general actions in the page's footer...
+		add_action('wp_footer', array(__CLASS__, 'print_footer_scripts'));
+
+		// AJAX endpoint for retrieving data/hash...
+		add_action('wp_ajax_analytics_data', array(__CLASS__, 'get_data_ajax'));
+		add_action('wp_ajax_nopriv_analytics_data', array(__CLASS__, 'get_data_ajax'));
 	}
 
-	public static function can_collect() {
+	public static function can_collect () {
 		$can_collect;
 		
-		if (defined('HOSTED_PLUGIN_KEY')) {
+		if (defined("HOSTED_PLUGIN_KEY")) {
 			$can_collect = true;
 		}
 		else { // i.e., not on the hosted platform...
@@ -21,7 +26,7 @@ class PL_Analytics {
 		return $can_collect;
 	}
 
-	private static function get_admin_info() {
+	private static function get_admin_info () {
 		// Use for API key ID + web_secret
 		$whoami = PL_Helper_User::whoami();
 
@@ -73,7 +78,7 @@ class PL_Analytics {
 		foreach ($type_config["allowed_params"] as $param) {
 			if (isset($args[$param])) {
 				$data[$param] = $args[$param];
-			}	
+			}
 		}
 
 		// Add the "time" arg + value...
@@ -93,20 +98,75 @@ class PL_Analytics {
 	}
 
 	public static function listing_search ($args = array()) {
+		// error_log(var_export($args, true));
 		return self::produce_data("listing_search", $args);
 	}
 
-	public static function log_snippet_js ($data) {
+	public static function home_view () {
+		return self::produce_data("home_view");
+	}
+
+	public static function page_view () {
+		return self::produce_data("page_view");
+	}
+
+	public static function get_data_ajax () {
+		$event = isset($_POST["event"]) ? $_POST["event"] : "";
+		$response = array();
+
+		switch ($event) {
+			case "listing_view":
+				if (isset($_POST["prop_id"])) 
+					{ $response["hash"] = self::listing_view($_POST["prop_id"]); }
+				else
+					{ $response["error_msg"] = "Missing required event attributes"; }
+				break;
+			case "home_view":
+				$response["hash"] = self::home_view();
+				break;
+			case "page_view":
+				$response["hash"] = self::page_view();
+				break;				
+			default:
+				$response["error_msg"] = "Invalid event type or none passed";
+		}
+
+		echo json_encode($response);
+		die();
+	}
+
+	public static function log_snippet_js ($event, $attributes = array()) {
 	  	ob_start();
 	  	?>
 	  		<script type="text/javascript">
-	  			if (PlacesterAnalytics) {
-	    			PlacesterAnalytics.log("<?php echo $data; ?>");  
+	  			if (typeof PlacesterAnalytics !== 'undefined') {
+	  				var data = {action: "analytics_data", event: "<?php echo $event; ?>"};
+
+	  			  <?php foreach ($attributes as $key => $value): ?>
+	  				data.<?php echo $key; ?> = "<?php echo $value; ?>";
+	  			  <?php endforeach; ?>
+
+					jQuery.post(info.ajaxurl, data, function (response) {
+						if (response && response.hash) { 
+							PlacesterAnalytics.log(response.hash);
+							// console.log("Sent this hash: ", response.hash);
+						}
+					}, 'json');
 	  			}
 	  		</script>
 	  	<?php
 
 	  	return ob_get_clean();
+	}
+
+	public static function print_footer_scripts () {
+		global $i_am_a_placester_theme;
+
+		// If the site is using a Placester theme, add footer script...
+		if ($i_am_a_placester_theme === true) {
+			$event = ( is_home() ? "home_view" : "page_view" );
+			echo self::log_snippet_js($event);
+		}
 	}
 }
 
@@ -119,7 +179,7 @@ class PL_Base64 {
 		// Start with the standard base64 encoding...
 		$base = base64_encode($str);
 
-		// Make base64 encoding comply with 'strict' standards...
+		// Make base64 encoding comply with 'strict' standards -- currently, that requires no extra work!
 		$strict = $base;
 		
 		return $strict;
