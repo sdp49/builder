@@ -99,7 +99,7 @@ $PL_API_LISTINGS = array(
 					)
 				),
 				'address'  => array(
-					'label' => 'At or near this street address',
+					'label' => 'Street',
 					'type' => 'text',
 					'group' => 'location'
 				),
