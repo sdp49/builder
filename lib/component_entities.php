@@ -130,10 +130,12 @@ class PL_Component_Entity {
 				$atts[$key] = $vals['default'];
 			}
 			if (!empty($atts[$key]) && $vals['type']=='multiselect') {
-				$okeys = array_map('trim',explode(",", $atts[$key]));
+				if (!is_array($atts[$key])) {
+					$atts[$key] = array_map('trim',explode(",", $atts[$key]));
+				}
 				$values = array();
 				$optvals = get_option('pl_static_listings_formval_'.$key, $vals['options']);
-				foreach($okeys as $okey) {
+				foreach($atts[$key] as $okey) {
 					if (!empty($optvals[$okey])) {
 						$values[$okey] = $optvals[$okey];
 					}
@@ -146,7 +148,6 @@ class PL_Component_Entity {
 				}
 			}
 		}
-
 		$atts = wp_parse_args($atts, array('id' => 0, 'query_limit' => 5, 'featured_id' => 'custom', 'context' => 'shortcode', 'sort_by' => 'cur_data.price', 'table_id' => 'placester_listings_list'));
 
 		// set limit per page if any
@@ -217,10 +218,12 @@ class PL_Component_Entity {
 				$atts[$key] = $vals['default'];
 			}
 			if (!empty($atts[$key]) && $vals['type']=='multiselect') {
-				$okeys = array_map('trim',explode(",", $atts[$key]));
+				if (!is_array($atts[$key])) {
+					$atts[$key] = array_map('trim',explode(",", $atts[$key]));
+				}
 				$values = array();
 				$optvals = get_option('pl_search_listings_formval_'.$key, $vals['options']);
-				foreach($okeys as $okey) {
+				foreach($atts[$key] as $okey) {
 					if (!empty($optvals[$okey])) {
 						$values[$okey] = $optvals[$okey];
 					}
