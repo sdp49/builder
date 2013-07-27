@@ -127,6 +127,7 @@ class PL_Form {
 				</section>
 			<?php
 		} elseif ( $type == 'bundle' ) {
+			$parent = empty($parent) ? $item : $parent . '['.$item.']';
 			$bundle = '';
 			foreach (self::prepare_custom_item($options, $method, $parent) as $key => $form_items) {
 				$bundle .= "<section class='form_group' id='".$id.'-'.preg_replace('/[^a-z]/i', '_', $key)."'>";

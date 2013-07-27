@@ -20,10 +20,10 @@ class PL_Search_Listing_CPT extends PL_SC_Base {
 		</p>';
 
 	protected $options = array(
-		'context'			=> array( 'type' => 'select', 'label' => 'Template', 'default' => ''),		// these should always exist
+		'context'			=> array( 'type' => 'select', 'label' => 'Template', 'default' => ''),
 		'width'				=> array( 'type' => 'numeric', 'label' => 'Width(px)', 'default' => 250 ),
 		'height'			=> array( 'type' => 'numeric', 'label' => 'Height(px)', 'default' => 250 ),
-		'widget_class'		=> array( 'type' => 'text', 'label' => 'Widget Class', 'default' => 'sss' ),
+		'widget_class'		=> array( 'type' => 'text', 'label' => 'Widget Class', 'default' => '' ),
 		'sort_by_options'	=> array( 'type' => 'multiselect', 'label' => 'Items in "Sort By" list', 
 			'options'	=> array(	// options we always want to show even if they are not part of the filter set
 				'location.address'	=> 'Address', 
@@ -33,7 +33,7 @@ class PL_Search_Listing_CPT extends PL_SC_Base {
 				'compound_type'		=> 'Listing Type',
 				'cur_data.avail_on'	=> 'Available On',
 			),
-			'default'	=> array('cur_data.price','cur_data.beds','cur_data.baths','location.locality'), 
+			'default'	=> array('cur_data.price','cur_data.beds','cur_data.baths','cur_data.sqft','location.locality','location.postal'), 
 		),
 		'sort_by'			=> array( 'type' => 'select', 'label' => 'Default sort by', 'options' => array(), 'default' => 'cur_data.price' ),
 		'sort_type'			=> array( 'type' => 'select', 'label' => 'Default sort direction', 'options' => array('asc'=>'Ascending', 'desc'=>'Descending'), 'default' => 'desc' ),

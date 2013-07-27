@@ -235,9 +235,9 @@ abstract class PL_SC_Base {
 		// prepare filters
 		$subcodes = '';
 		$class_filters = $this->_get_filters();
-		foreach($class_filters as $f_id => $f_atts) {
-			if (!empty($args[$f_id])) {
-				if(count($f_atts) && empty($f_atts['type'])) {
+		foreach($class_filters as $f_id => $f_atts) { 
+			if (empty($class_options[$f_id]) && !empty($args[$f_id])) {
+				if (count($f_atts) && empty($f_atts['type'])) {
 					// probably group filter
 					if (is_array($args[$f_id])) {
 						foreach( $f_atts as $key => $value ) {
@@ -247,7 +247,16 @@ abstract class PL_SC_Base {
 						}
 					}
 				}
+				elseif (!empty($f_atts['type']) && $f_atts['type']=='bundle') {
+					// custom data which is a group also
+					foreach( $args[$f_id] as $key => $value ) {
+						if (!empty($args[$f_id][$key]) && $args[$f_id][$key]!='false') {
+							$subcodes .= " [pl_filter group='" . $f_id. "' filter='" . $key . "' value='" . $args[$f_id][$key] . "'] ";
+						}
+					}
+				}
 				else {
+					// single items
 					if (!empty($f_atts['type']) && $f_atts['type']=='multiselect') {
 						if (is_array($args[$f_id])) {
 							$subcodes .= " [pl_filter filter='" . $f_id . "' value='". implode(',', $args[$f_id]) . "'] ";

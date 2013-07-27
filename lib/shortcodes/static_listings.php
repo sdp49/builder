@@ -34,7 +34,7 @@ class PL_Static_Listing_CPT extends PL_Search_Listing_CPT {
 				'compound_type'		=> 'Listing Type',
 				'cur_data.avail_on'	=> 'Available On',
 			),
-			'default'	=> array('cur_data.price','cur_data.beds','cur_data.baths','location.locality'), 
+			'default'	=> array('cur_data.price','cur_data.beds','cur_data.baths','cur_data.sqft','location.locality','location.postal'), 
 		),
 		'sort_by'				=> array( 'type' => 'select', 'label' => 'Default sort by', 'options' => array(), 'default' => 'cur_data.price' ),
 		'sort_type'				=> array( 'type' => 'select', 'label' => 'Default sort direction', 'options' => array('asc'=>'Ascending', 'desc'=>'Descending'), 'default' => 'desc' ),
