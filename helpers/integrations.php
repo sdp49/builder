@@ -10,10 +10,9 @@ class PL_Integration_Helper {
 		add_action('wp_ajax_idx_prompt_completed', array(__CLASS__, 'idx_prompt_completed_ajax') );
 	}
 
-	public static function create() {
+	public static function create () {
 		// TODO: Handle Phone Number if it exists!!!
-		if (isset($_POST['phone']))
-		{
+		if (isset($_POST['phone'])) {
 			// Send update to user options with new phone...
 			$usr_response = PL_Helper_User::update_user(array('phone' => $_POST['phone']));
 			//pls_dump($usr_response);
@@ -35,12 +34,12 @@ class PL_Integration_Helper {
 		die();
 	}
 
-	public static function new_integration_view() {
+	public static function new_integration_view () {
 		PL_Router::load_builder_partial('integration-form.php', array('wizard' => true));
 		die();
 	}
 
-	public static function idx_prompt_view() {
+	public static function idx_prompt_view () {
 		PL_Router::load_builder_partial('idx-prompt.php');
 		die();
 	}
@@ -58,12 +57,12 @@ class PL_Integration_Helper {
 		return $exists;
 	}
 
-	public static function idx_prompt_completed_ajax() {
+	public static function idx_prompt_completed_ajax () {
 		self::idx_prompt_completed(isset($_POST['mark_completed']));
 		die();
 	}
 
-	public static function get() {
+	public static function get () {
 		$response = array();
 		$integration = PL_Integration::get();
 		$whoami = PL_Helper_User::whoami();
@@ -72,7 +71,7 @@ class PL_Integration_Helper {
 		return array('integration_status' => array('integration' => $integration, 'whoami' => $whoami, 'listings' => $listings, 'locations' => $locations));
 	}
 
-	public static function mls_list() {
+	public static function mls_list () {
 		$mls_list = PL_Integration::mls_list();
 		return $mls_list;
 	}

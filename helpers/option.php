@@ -5,7 +5,7 @@ function placester_get_api_key() { return PL_Option_Helper::api_key(); }
 
 class PL_Option_Helper {
 	
-	public static function api_key() {
+	public static function api_key () {
 	    $api_key = PL_Options::get('placester_api_key');
 		if (strlen($api_key) <= 0) {
 			return false;
@@ -13,7 +13,7 @@ class PL_Option_Helper {
 	    return $api_key;	    
 	}
 
-	public static function set_api_key($new_api_key) {
+	public static function set_api_key ($new_api_key) {
 		if (empty($new_api_key) ) {
 			return array('result' => false,'message' => 'API key must not be empty');
 		}
@@ -52,15 +52,6 @@ class PL_Option_Helper {
 		return $places_api_key;
 	}
 	
-	public static function get_community_pages_enabled() {
-		$response = get_option('pls_enable_community_pages', false);
-		
-		if ($response == NULL ) {
-			return false;
-		}
-		return $response;
-	}
-
 	public static function post_slug() {
 	    $url_slug = get_option('placester_url_slug');
 	    if (strlen($url_slug) <= 0) {
@@ -97,34 +88,33 @@ class PL_Option_Helper {
 		return PL_Options::get('pls_global_search_filters');		
 	}
 
-	public static function set_community_pages ($enable_pages = 0) {
+	public static function set_community_pages ($enable_pages = false) {
 		$response = PL_Options::set('pls_enable_community_pages', $enable_pages);
 		return $response;
 	}
 
-	public static function set_log_errors ($report_errors = 1) {
+	public static function get_community_pages () {
+		$response = get_option('pls_enable_community_pages', false);
+		return $response;
+	}
+
+	public static function set_log_errors ($report_errors = true) {
 		$response = PL_Options::set('pls_log_errors', $report_errors);
 		return $response;
 	}
 
 	public static function get_log_errors () {
-		$response = PL_Options::get('pls_log_errors');	
-		if ($response == NULL) {
-			return true;
-		}
+		$response = PL_Options::get('pls_log_errors', true);
 		return $response;
 	}
 
-	public static function set_block_address ($block_address = 0) {
+	public static function set_block_address ($block_address = false) {
 		$response = PL_Options::set('pls_block_address', $block_address);
 		return $response;
 	}
 
 	public static function get_block_address () {
-		$response = PL_Options::get('pls_block_address');	
-		if ($response == NULL) {
-			return true;
-		}
+		$response = PL_Options::get('pls_block_address', true);
 		return $response;
 	}
 
@@ -155,6 +145,6 @@ class PL_Option_Helper {
 		$response = PL_Options::get('pls_demo_data_flag');
 		return $response;
 	}
-
+	
 //end of class
 }
