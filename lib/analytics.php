@@ -20,7 +20,7 @@ class PL_Analytics {
 			$can_collect = true;
 		}
 		else { // i.e., not on the hosted platform...
-			$can_collect = !empty(PL_Option_Helper::get_log_errors());
+			$can_collect = PL_Option_Helper::get_log_errors();
 		}
 
 		return $can_collect;
