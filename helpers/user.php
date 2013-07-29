@@ -129,7 +129,7 @@ class PL_Helper_User {
 			$message = "You successfully turned {$action} error reporting";
 		} 
 		else {
-			$message = 'There was an error -- please try again.';
+			$message = 'There was an error -- please try again';
 		}
 
 		echo json_encode(array('result' => $result, 'message' => $message));
