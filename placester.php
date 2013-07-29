@@ -175,7 +175,7 @@ include_once('third-party/mixpanel/mixpanel.php');
 
 // Register hook to load blueprint from plugin if the active theme has yet to do so...
 add_action( 'after_setup_theme', 'load_blueprint_from_plugin', 18 );
-function load_blueprint_from_plugin() {
+function load_blueprint_from_plugin () {
     if (!class_exists('Placester_Blueprint')) {
         // Load script that contains main blueprint class, and instantiate an object...
         require_once('blueprint/blueprint.php');
@@ -185,7 +185,7 @@ function load_blueprint_from_plugin() {
 }
 
 // This takes care of what a theme's functions.php file normally handles...
-function plugin_blueprint_settings() {
+function plugin_blueprint_settings () {
     remove_theme_support('pls-default-css');
     remove_theme_support('pls-default-style');
     remove_theme_support('pls-default-960');
@@ -196,13 +196,9 @@ function plugin_blueprint_settings() {
 
 // Build plugin settings tabs/UI...
 add_action('admin_menu', 'placester_admin_menu');
-function placester_admin_menu() {
-    // Add separator
-    global $menu;
-    $menu['3a'] = array( '', 'read', 'separator1', '', 'wp-menu-separator' );
-
+function placester_admin_menu () {
     // Add Placester Menu
-    add_menu_page('Placester', 'Placester', 'edit_pages', 'placester', array('PL_Router','my_listings'), plugins_url('images/icons/logo_16.png', __FILE__ ), '3b' /* position between 3 and 4 */ );
+    add_menu_page('Placester', 'Placester', 'edit_pages', 'placester', array('PL_Router','my_listings'), plugins_url('images/icons/logo_16.png', __FILE__ ), '3.5' /* position between 3 and 4 */ );
 
     // Avoid submenu to start with menu function
     global $submenu;
@@ -228,7 +224,7 @@ function placester_admin_menu() {
 
     foreach ($settings_subpages as $name => $page_url) {
         // Leave parent slug empty to add pages without adding them to the menu...
-        add_submenu_page( 'placester', '', $name, 'edit_pages', 'placester_settings' . $page_url, array('PL_Router','settings' . $page_url) );
+        add_submenu_page( 'placester', $name, $name, 'edit_pages', 'placester_settings' . $page_url, array('PL_Router','settings' . $page_url) );
     }
 
     global $shortcode_subpages;
@@ -257,14 +253,14 @@ function placester_admin_menu() {
 
 register_activation_hook(__FILE__, 'placester_activate');
 // register_deactivation_hook( __FILE__, 'placester_deactivate' );
-function placester_activate() {
+function placester_activate () {
     $metrics = new MetricsTracker("9186cdb540264089399036dd672afb10");
     $metrics->track('Activation');
     PL_WordPress_Helper::report_url();
 }
 
 add_action('admin_notices', 'on_first_activation');
-function on_first_activation() {
+function on_first_activation () {
     if (!get_option('placester_activation_redirect', false)) {
         ?>
             <script type="text/javascript">    
@@ -278,7 +274,7 @@ function on_first_activation() {
 }
 
 add_action('wp_head', 'placester_info_bar');
-function placester_info_bar() {
+function placester_info_bar () {
     if ( PL_Option_Helper::get_demo_data_flag() && current_user_can('manage_options') ) {
         PL_Router::load_builder_partial('infobar.php');
     }
