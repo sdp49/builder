@@ -29,15 +29,13 @@ class PL_Logging {
 	public static function create_page_list () {
 		global $submenu;
 	 	// error_log(var_export($submenu['placester'], true));
-
+	 	
 	 	if (!empty($submenu['placester'])) {
 	 		foreach ($submenu['placester'] as $page) {
 	 			$hook = "placester_page_{$page[2]}";
 	 			self::$pages[$hook] = $page[3];
 	 		}
 	 	}
-
-	 	error_log(var_export(self::$pages, true));
 	}
 	
 	public static function record_page ($hook) {
