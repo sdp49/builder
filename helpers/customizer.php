@@ -61,7 +61,7 @@ class PL_Customizer_Helper
 			}
 
 			// Conditionally display integration pane...
-			if ( !PL_Option_Helper::api_key() || PL_Integration_Helper::idx_prompt_completed() ) {
+			if ( !PL_Option_Helper::api_key() || PL_Integration_Helper::idx_prompt_completed() || PL_Integration_Helper::integration_pending() ) {
 				$excluded_opts []= 'mls';
 			}
 
