@@ -38,9 +38,6 @@ define( 'PL_LIB_URL', trailingslashit(PL_PARENT_URL) . 'lib/' );
 define( 'PL_HLP_DIR', trailingslashit(PL_PARENT_DIR) . 'helpers/' );
 define( 'PL_HLP_URL', trailingslashit(PL_PARENT_URL) . 'helpers/' );
 
-define( 'PL_VIEWS_DIR', trailingslashit(PL_PARENT_DIR) . 'views/' );
-define( 'PL_VIEWS_URL', trailingslashit(PL_PARENT_URL) . 'views/' );
-
 define( 'PL_JS_DIR', trailingslashit(PL_PARENT_DIR) . 'js/' );
 define( 'PL_JS_URL', trailingslashit(PL_PARENT_URL) . 'js/' );
 
@@ -64,6 +61,9 @@ define( 'PL_CSS_CLIENT_URL', trailingslashit(PL_CSS_URL) . 'client/' );
 
 define( 'PL_IMG_DIR', trailingslashit(PL_PARENT_DIR) . 'images/' );
 define( 'PL_IMG_URL', trailingslashit(PL_PARENT_URL) . 'images/' );
+
+define( 'PL_VIEWS_DIR', trailingslashit(PL_PARENT_DIR) . 'views/' );
+define( 'PL_VIEWS_URL', trailingslashit(PL_PARENT_URL) . 'views/' );
 
 define( 'PL_VIEWS_ADMIN_DIR', trailingslashit(PL_VIEWS_DIR) . 'admin/' );
 define( 'PL_VIEWS_ADMIN_URL', trailingslashit(PL_VIEWS_URL) . 'admin/' );
