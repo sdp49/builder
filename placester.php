@@ -32,32 +32,20 @@ define('PL_PLUGIN_VERSION','1.1.15');
 define( 'PL_PARENT_DIR', plugin_dir_path(__FILE__) );
 define( 'PL_PARENT_URL', plugin_dir_url(__FILE__) );
 
-define( 'PL_VIEWS_DIR', trailingslashit(PL_PARENT_DIR) . 'views/' );
-define( 'PL_VIEWS_URL', trailingslashit(PL_PARENT_URL) . 'views/' );
-
-define( 'PL_FRONTEND_DIR', trailingslashit(PL_VIEWS_DIR) . 'frontend/' );
-define( 'PL_FRONTEND_URL', trailingslashit(PL_VIEWS_URL) . 'frontend/' );
-
-define( 'PL_VIEWS_ADMIN_DIR', trailingslashit(PL_VIEWS_DIR) . 'admin/' );
-define( 'PL_VIEWS_ADMIN_URL', trailingslashit(PL_VIEWS_URL) . 'admin/' );
-
-define( 'PL_VIEWS_CLIENT_DIR', trailingslashit(PL_VIEWS_DIR) . 'client/' );
-define( 'PL_VIEWS_CLIENT_URL', trailingslashit(PL_VIEWS_URL) . 'client/' );
-
-define( 'PL_VIEWS_PART_DIR', trailingslashit(PL_VIEWS_DIR) . 'partials/' );
-define( 'PL_VIEWS_PART_URL', trailingslashit(PL_VIEWS_URL) . 'partials/' );
-
-define( 'PL_VIEWS_SHORT_DIR', trailingslashit(PL_VIEWS_DIR) . 'shortcodes/' );
-define( 'PL_VIEWS_SHORT_URL', trailingslashit(PL_VIEWS_URL) . 'shortcodes/' );
-
-define( 'PL_JS_DIR', trailingslashit(PL_PARENT_DIR) . 'js/' );
-define( 'PL_JS_URL', trailingslashit(PL_PARENT_URL) . 'js/' );
-
 define( 'PL_LIB_DIR', trailingslashit(PL_PARENT_DIR) . 'lib/' );
 define( 'PL_LIB_URL', trailingslashit(PL_PARENT_URL) . 'lib/' );
 
 define( 'PL_HLP_DIR', trailingslashit(PL_PARENT_DIR) . 'helpers/' );
 define( 'PL_HLP_URL', trailingslashit(PL_PARENT_URL) . 'helpers/' );
+
+define( 'PL_VIEWS_DIR', trailingslashit(PL_PARENT_DIR) . 'views/' );
+define( 'PL_VIEWS_URL', trailingslashit(PL_PARENT_URL) . 'views/' );
+
+define( 'PL_JS_DIR', trailingslashit(PL_PARENT_DIR) . 'js/' );
+define( 'PL_JS_URL', trailingslashit(PL_PARENT_URL) . 'js/' );
+
+define( 'PL_JS_ADMIN_DIR', trailingslashit(PL_JS_DIR) . 'admin/' );
+define( 'PL_JS_ADMIN_URL', trailingslashit(PL_JS_URL) . 'admin/' );
 
 define( 'PL_JS_LIB_DIR', trailingslashit(PL_JS_DIR) . 'lib/' );
 define( 'PL_JS_LIB_URL', trailingslashit(PL_JS_URL) . 'lib/' );
@@ -68,14 +56,29 @@ define( 'PL_JS_PUB_URL', trailingslashit(PL_JS_URL) . 'public/' );
 define( 'PL_CSS_DIR', trailingslashit(PL_PARENT_DIR) . 'css/' );
 define( 'PL_CSS_URL', trailingslashit(PL_PARENT_URL) . 'css/' );
 
-define( 'PL_IMG_DIR', trailingslashit(PL_PARENT_DIR) . 'images/' );
-define( 'PL_IMG_URL', trailingslashit(PL_PARENT_URL) . 'images/' );
-
 define( 'PL_CSS_ADMIN_DIR', trailingslashit(PL_CSS_DIR) . 'admin/' );
 define( 'PL_CSS_ADMIN_URL', trailingslashit(PL_CSS_URL) . 'admin/' );
 
 define( 'PL_CSS_CLIENT_DIR', trailingslashit(PL_CSS_DIR) . 'client/' );
 define( 'PL_CSS_CLIENT_URL', trailingslashit(PL_CSS_URL) . 'client/' );
+
+define( 'PL_IMG_DIR', trailingslashit(PL_PARENT_DIR) . 'images/' );
+define( 'PL_IMG_URL', trailingslashit(PL_PARENT_URL) . 'images/' );
+
+define( 'PL_VIEWS_ADMIN_DIR', trailingslashit(PL_VIEWS_DIR) . 'admin/' );
+define( 'PL_VIEWS_ADMIN_URL', trailingslashit(PL_VIEWS_URL) . 'admin/' );
+
+define( 'PL_VIEWS_CLIENT_DIR', trailingslashit(PL_VIEWS_DIR) . 'client/' );
+define( 'PL_VIEWS_CLIENT_URL', trailingslashit(PL_VIEWS_URL) . 'client/' );
+
+define( 'PL_FRONTEND_DIR', trailingslashit(PL_VIEWS_DIR) . 'frontend/' );
+define( 'PL_FRONTEND_URL', trailingslashit(PL_VIEWS_URL) . 'frontend/' );
+
+define( 'PL_VIEWS_PART_DIR', trailingslashit(PL_VIEWS_DIR) . 'partials/' );
+define( 'PL_VIEWS_PART_URL', trailingslashit(PL_VIEWS_URL) . 'partials/' );
+
+define( 'PL_VIEWS_SHORT_DIR', trailingslashit(PL_VIEWS_DIR) . 'shortcodes/' );
+define( 'PL_VIEWS_SHORT_URL', trailingslashit(PL_VIEWS_URL) . 'shortcodes/' );
 
 define( 'PL_THIRD_PARTY_DIR', trailingslashit(PL_PARENT_DIR) . 'third-party/' );
 define( 'PL_THIRD_PARTY_URL', trailingslashit(PL_PARENT_URL) . 'third-party/' );
