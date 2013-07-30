@@ -5,16 +5,18 @@
 }
 
 #poststuff .sc-meta-section h3 {
+	clear: both;
 	margin-bottom: .4em;
 	background: none;
 	padding-left: 0;
 }
 
 .sc-meta-section .pl_widget_block {
+	clear: both;
 	width: 100%;
 }
 
-.pl-sc-wrap section,
+.pl-sc-wrap .row-fluid,
 .sc-meta-section .pl_widget_block section,
 .sc-meta-section #pl_static_listing_block section { /* required to override featured listings css */
 	overflow: hidden;
@@ -23,11 +25,15 @@
 
 .pl-sc-wrap .pl-sc-meta-box label {
 	display: block;
+	clear: both;
 	float: left;
 	width: 20em;
 	height: 2em;
 	line-height: 2em;
 	white-space: pre-wrap;
+}
+.pl-sc-wrap .pl-sc-meta-box section label {
+	clear: none;
 }
 
 .pl-sc-wrap label.textarea {
@@ -52,7 +58,8 @@
 .sc-meta-section select,
 .sc-meta-section #pl_static_listing_block input, 	/* required to override featured listings css */
 .sc-meta-section #pl_static_listing_block select {
-    float: left;
+	display: block;
+	float: left;
 	margin: 0 .5em .5em 0;
 	height: auto;
 }
@@ -60,6 +67,7 @@
 	height: 12em;
 }
 .sc-meta-section input[type="checkbox"] {
+	clear: both;
 	margin: .3em .5em 0 0;
 }
 
