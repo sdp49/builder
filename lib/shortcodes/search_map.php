@@ -22,6 +22,8 @@ class PL_Map_CPT extends PL_SC_Base {
 //				'default' => '' ),
 	);
 
+	protected $default_tpls = array('twentyten', 'twentyeleven');
+	
 	protected $template = array(
 		'css' => array(
 			'type' => 'textarea',

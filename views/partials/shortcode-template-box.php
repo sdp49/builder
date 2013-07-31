@@ -68,7 +68,7 @@ $pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs();
 							$_POST[$pl_shortcode][$field] = !empty($f_args['default']) ? $f_args['default'] : '';
 						}
 						else {
-							$_POST[$pl_shortcode][$field] = !empty( $values[$field] ) ? $values[$field] : '';
+							$_POST[$pl_shortcode][$field] = !empty( $values[$field] ) ? htmlentities($values[$field]) : '';
 						}
 						$f_args['css'] = (!empty($f_args['css'])?$f_args['css'].' ':'').$field;
 						PL_Form::item($field, $f_args, 'POST', $pl_shortcode, 'pl-sc-tpl-edit', true);

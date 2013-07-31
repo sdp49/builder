@@ -156,9 +156,9 @@ $template = array(
 		<div class="listing-thumbnail">
 			[image]
 		</div>
-		
+
 		<div class="listing-item-details">
-		
+
 			<div class="basic-details">
 				<ul>
 					<li>[beds]<span> Bed(s)</span></li>
@@ -172,11 +172,11 @@ $template = array(
 
 			<p class="desc">[desc]</p>
 			<p class="compliance">[compliance]</p>
-		
+
 		</div><!--listing-item-details-->
 		<div class="actions">
 			[favorite_link_toggle]
-			<div class="view-details"> 
+			<div class="view-details">
 				<a href="[url]">View Listing Details</a>
 			</div>
 		</div>

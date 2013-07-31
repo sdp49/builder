@@ -5,7 +5,7 @@ $template = array(
 'css' => '
 /*
 This template has no html body because it uses the built in listing renderer.
-It can be used as a guide for making a custom template that styles output created by the built in renderer. 
+It can be used as a guide for making a custom template that styles output created by the built in renderer.
 */
 .pl-tpl-fl-twentyten {
 }

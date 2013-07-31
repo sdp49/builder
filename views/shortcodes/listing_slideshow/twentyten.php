@@ -5,7 +5,7 @@ $template = array(
 'css' => '
 /*
 This template has no html body because it uses the built in listing renderer.
-It can be used as a guide for making a custom template that styles output created by the built in renderer. 
+It can be used as a guide for making a custom template that styles output created by the built in renderer.
 */
 
 /* controls background of caption area */
@@ -44,7 +44,7 @@ It can be used as a guide for making a custom template that styles output create
 	margin: 0 !important;
 	padding: 0 !important;
 	width: auto !important;
-}		
+}
 ',
 
 'snippet_body' => '',

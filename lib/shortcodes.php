@@ -379,7 +379,7 @@ class PL_Shortcodes
 			$template = PL_Shortcode_CPT::load_template($snippet_name, $shortcode);
 		}
 		if (!empty($template['snippet_body'])) {
-			$html = html_entity_decode($template['snippet_body'], ENT_QUOTES);
+			$html = $template['snippet_body'];
 		}
 		return $html;
 	}

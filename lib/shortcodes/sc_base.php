@@ -55,7 +55,7 @@ abstract class PL_SC_Base {
 	protected $allowable_tags = "<a><p><script><div><span><section><label><br><h1><h2><h3><h4><h5><h6><scr'+'ipt><style><article><ul><ol><li><strong><em><button><aside><blockquote><footer><header><form><nav><input><textarea><select>";
 	// built in templates
 	// TODO: build dynamically
-	protected $default_tpls = array('twentyten', 'twentyeleven');
+	protected $default_tpls = array('twentyten', 'twentyeleven', 'responsive');
 	// default layout for template
 	protected $template = array(								// defines template fields
 		//		'snippet_body'	=> array(
@@ -160,7 +160,7 @@ abstract class PL_SC_Base {
 	 * Return array of filters used to configure this shortcode type.
 	 */
 	protected function _get_filters() {
-		$this->filters;
+		return $this->filters;
 	}
 
 	/**
@@ -235,14 +235,18 @@ abstract class PL_SC_Base {
 		// prepare filters
 		$subcodes = '';
 		$class_filters = $this->_get_filters();
-		foreach($class_filters as $f_id => $f_atts) { 
+		foreach($class_filters as $f_id => $f_atts) {
 			if (empty($class_options[$f_id]) && !empty($args[$f_id])) {
+				$gname = $f_id;
+				if ($gname == 'custom') {
+					$gname = 'metadata';
+				}
 				if (count($f_atts) && empty($f_atts['type'])) {
 					// probably group filter
 					if (is_array($args[$f_id])) {
 						foreach( $f_atts as $key => $value ) {
 							if (!empty($args[$f_id][$key]) && $args[$f_id][$key]!='false') {
-								$subcodes .= " [pl_filter group='" . $f_id. "' filter='" . $key . "' value='" . $args[$f_id][$key] . "'] ";
+								$subcodes .= " [pl_filter group='" . $gname. "' filter='" . $key . "' value='" . $args[$f_id][$key] . "'] ";
 							}
 						}
 					}
@@ -251,7 +255,7 @@ abstract class PL_SC_Base {
 					// custom data which is a group also
 					foreach( $args[$f_id] as $key => $value ) {
 						if (!empty($args[$f_id][$key]) && $args[$f_id][$key]!='false') {
-							$subcodes .= " [pl_filter group='" . $f_id. "' filter='" . $key . "' value='" . $args[$f_id][$key] . "'] ";
+							$subcodes .= " [pl_filter group='" . $gname. "' filter='" . $key . "' value='" . $args[$f_id][$key] . "'] ";
 						}
 					}
 				}
@@ -259,12 +263,12 @@ abstract class PL_SC_Base {
 					// single items
 					if (!empty($f_atts['type']) && $f_atts['type']=='multiselect') {
 						if (is_array($args[$f_id])) {
-							$subcodes .= " [pl_filter filter='" . $f_id . "' value='". implode(',', $args[$f_id]) . "'] ";
+							$subcodes .= " [pl_filter filter='" . $gname . "' value='". implode(',', $args[$f_id]) . "'] ";
 						}
 					}
 					else {
 						if (!is_array($args[$f_id]) && $args[$f_id]!='false') {
-							$subcodes .= " [pl_filter filter='" . $f_id . "' value='". $args[$f_id] . "'] ";
+							$subcodes .= " [pl_filter filter='" . $gname . "' value='". $args[$f_id] . "'] ";
 						}
 					}
 				}
