@@ -356,7 +356,7 @@ class PL_Shortcode_CPT {
 								update_post_meta($id, $key, 'true');
 							}
 							break;
-						case 'numeric':
+						case 'int':
 							if( !empty($args) && !empty($args[$option])) {
 								$args[$option] = (int)$args[$option];
 							}

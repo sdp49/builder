@@ -19,8 +19,8 @@ class PL_Featured_Listings_CPT extends PL_Search_Listing_CPT {
 
 	protected $options = array(
 		'context'			=> array( 'type' => 'select', 'label' => 'Template', 'default' => ''),
-		'width'				=> array( 'type' => 'numeric', 'label' => 'Width(px)', 'default' => 250 ),
-		'height'			=> array( 'type' => 'numeric', 'label' => 'Height(px)', 'default' => 250 ),
+		'width'				=> array( 'type' => 'int', 'label' => 'Width(px)', 'default' => 250 ),
+		'height'			=> array( 'type' => 'int', 'label' => 'Height(px)', 'default' => 250 ),
 		'pl_featured_listing_meta' => array( 'type' => 'featured_listing_meta', 'default' => '' ),
 	);
 

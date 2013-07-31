@@ -17,8 +17,8 @@ abstract class PL_SC_Base {
 	// subclass should use this for basic display options/shortcode arguments
 	protected $options = array(
 		'context'			=> array( 'type' => 'select', 'label' => 'Template', 'default' => ''),		// these should always exist
-		'width'				=> array( 'type' => 'numeric', 'label' => 'Width(px)', 'default' => 250 ),
-		'height'			=> array( 'type' => 'numeric', 'label' => 'Height(px)', 'default' => 250 ),
+		'width'				=> array( 'type' => 'int', 'label' => 'Width(px)', 'default' => 250 ),
+		'height'			=> array( 'type' => 'int', 'label' => 'Height(px)', 'default' => 250 ),
 		'widget_class'		=> array( 'type' => 'text', 'label' => 'Widget Class', 'default' => '' ),
 	//	'<field_name>'		=> array(
 	//			'type'		=> '[text|numeric|select|subgrp]'	// type of form control:
