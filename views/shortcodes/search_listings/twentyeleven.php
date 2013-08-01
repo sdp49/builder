@@ -102,9 +102,9 @@ $template = array(
 .pl-tpl-sl-twentyeleven p.mls {
 	font-size: 12px !important;
 }
-/* description ands compliance */
+/* description and compliance */
 .pl-tpl-sl-twentyeleven p.desc,
-.pl-tpl-sl-twentyeleven p.compliance {
+.pl-tpl-sl-twentyeleven .compliance-wrapper p {
 	margin-bottom: 5px !important;
 	max-height: 52px !important;
 	max-width: 370px !important;
@@ -112,11 +112,14 @@ $template = array(
 	font-size: 14px !important;
 	overflow: hidden !important;
 }
+.pl-tpl-sl-twentyeleven .compliance-wrapper p {
+	font-size: .8em !important;
+}
 .pl-tpl-sl-twentyeleven .actions {
 	display: block !important;
 	clear: both !important;
 	float: right !important;
-	margin: -10px 0 0 0 !important;
+	margin: 0 !important;
 	padding: 0 !important;
 	font-size: 15px !important;
 	text-decoration: none !important;
@@ -129,7 +132,7 @@ $template = array(
 	padding: 0 !important;
 }
 .pl-tpl-sl-twentyeleven .view-details a {
-	margin-left: 2em;
+	margin-left: 2em !important;
 }
 
 /* controls */
@@ -219,7 +222,7 @@ $template = array(
 			</div>
 
 			<p class="desc">[desc]</p>
-			<p class="compliance">[compliance]</p>
+			[compliance]
 
 		</div><!--listing-item-details-->
 		<div class="actions">
