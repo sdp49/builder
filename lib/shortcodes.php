@@ -372,12 +372,7 @@ class PL_Shortcodes
 	 */
 	public static function get_active_snippet_body ($shortcode, $template_name = '') {
 		$html = '';
-		if (!$template_name || !($template = PL_Shortcode_CPT::load_template($template_name, $shortcode)) || empty($template['snippet_body'])) {
-			// Get default template ID associated with this shortcode...
-			$option_key = 'pls_' . $shortcode;
-			$snippet_name = get_option($option_key, self::$defaults[$shortcode][0]);
-			$template = PL_Shortcode_CPT::load_template($snippet_name, $shortcode);
-		}
+		$template = PL_Shortcode_CPT::load_template($template_name, $shortcode);
 		if (!empty($template['snippet_body'])) {
 			$html = $template['snippet_body'];
 		}
