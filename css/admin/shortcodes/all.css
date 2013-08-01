@@ -55,7 +55,6 @@
 }
 
 .sc-meta-section input,
-.sc-meta-section select,
 .sc-meta-section #pl_static_listing_block input, 	/* required to override featured listings css */
 .sc-meta-section #pl_static_listing_block select {
 	display: block;
@@ -63,12 +62,20 @@
 	margin: 0 .5em .5em 0;
 	height: auto;
 }
+.sc-meta-section select {
+	display: block;
+	float: left;
+	margin: 0 .5em .5em 0;
+}
 .sc-meta-section select[multiple] {
 	height: 12em;
 }
 .sc-meta-section input[type="checkbox"] {
 	clear: both;
 	margin: .3em .5em 0 0;
+}
+.sc-meta-section input.form_item_int {
+	width: 5em;
 }
 
 /* CodeMirror for template */

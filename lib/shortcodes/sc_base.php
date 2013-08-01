@@ -246,7 +246,7 @@ abstract class PL_SC_Base {
 					if (is_array($args[$f_id])) {
 						foreach( $f_atts as $key => $value ) {
 							if (!empty($args[$f_id][$key]) && $args[$f_id][$key]!='false') {
-								$subcodes .= " [pl_filter group='" . $gname. "' filter='" . $key . "' value='" . $args[$f_id][$key] . "'] ";
+								$subcodes .= " [pl_filter group='" . $gname. "' filter='" . $key . "' value='" . htmlentities($args[$f_id][$key]) . "'] ";
 							}
 						}
 					}
@@ -254,8 +254,11 @@ abstract class PL_SC_Base {
 				elseif (!empty($f_atts['type']) && $f_atts['type']=='bundle') {
 					// custom data which is a group also
 					foreach( $args[$f_id] as $key => $value ) {
+						if (strpos($key, 'limit_')===0 && isset($args[$f_id][$value.substr($key,6)])) {
+							continue;
+						}
 						if (!empty($args[$f_id][$key]) && $args[$f_id][$key]!='false') {
-							$subcodes .= " [pl_filter group='" . $gname. "' filter='" . $key . "' value='" . $args[$f_id][$key] . "'] ";
+							$subcodes .= " [pl_filter group='" . $gname. "' filter='" . $key . "' value='" . htmlentities($args[$f_id][$key]) . "'] ";
 						}
 					}
 				}
@@ -263,12 +266,12 @@ abstract class PL_SC_Base {
 					// single items
 					if (!empty($f_atts['type']) && $f_atts['type']=='multiselect') {
 						if (is_array($args[$f_id])) {
-							$subcodes .= " [pl_filter filter='" . $gname . "' value='". implode(',', $args[$f_id]) . "'] ";
+							$subcodes .= " [pl_filter filter='" . $gname . "' value='". implode(',', htmlentities($args[$f_id])) . "'] ";
 						}
 					}
 					else {
 						if (!is_array($args[$f_id]) && $args[$f_id]!='false') {
-							$subcodes .= " [pl_filter filter='" . $gname . "' value='". $args[$f_id] . "'] ";
+							$subcodes .= " [pl_filter filter='" . $gname . "' value='". htmlentities($args[$f_id]) . "'] ";
 						}
 					}
 				}

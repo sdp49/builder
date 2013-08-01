@@ -194,7 +194,7 @@ jQuery(document).ready(function($){
 		update_template_links();
 	});
 	// force int fields to int or empty TODO: move to form class
-	$('#pl_sc_edit input[data-attr_type=int]').change(function(){
+	$('#pl_sc_edit .form_item_int').change(function(){
 		var val = this.value;
 		if (val.length) {
 			val = parseInt(val);
@@ -203,13 +203,28 @@ jQuery(document).ready(function($){
 		}
 	});
 	// support min max filters
-	$('#pl_sc_edit .form_group_custom input[data-attr_type=int]').each(function(){
+	$('#pl_sc_edit .form_item_int[id*=-custom-]').each(function(){
 		var field = this;
-		var minmaxSelect = $('<select><option value="">equals</option><option value="min_">minimum</option><option value="max_">maximum</option></select>').change(function (){integerLimit(this, field);});
-		$(this).attr('data-orig_name', $(this).attr('name')).before(minmaxSelect);
+		var fname = $(this).attr('name').match(/([a-zA-Z_]+)\]$/);
+		fname = fname[1];
+		var fval='', sval='';
+		if (form_data[form_data.shortcode]!= undefined && form_data[form_data.shortcode]['custom']!= undefined) {
+			if (form_data[form_data.shortcode]['custom']['max_'+fname]) {
+				sval = 'max_';
+			}
+			else if (form_data[form_data.shortcode]['custom']['min_'+fname]) {
+				sval = 'min_';
+			}
+			fval = form_data[form_data.shortcode]['custom'][sval+fname];
+		}
+		var sname = $(this).attr('name').replace(/([a-zA-Z_]+\]*)$/, 'limit_$1');
+		var minmaxSelect = $('<select name="'+sname+'"><option value="">equals</option><option value="min_">minimum</option><option value="max_">maximum</option></select>').val(sval).change(function (){integerLimit(this, field);});
+		$(this).before(minmaxSelect);
+		$(this).attr('data-orig_name', $(this).attr('name')).val(fval);
+		integerLimit(minmaxSelect.get(0), this);
 	});
 	// date pickers
-	$('#pl_sc_edit .trigger_datepicker').each(function(){
+	$('#pl_sc_edit .form_item_date').each(function(){
 		$(this).datepicker();
 	});
 	// setup view based on current shortcode type, etc
