@@ -8,6 +8,11 @@ This template has no html body because it uses the built in listing renderer.
 It can be used as a guide for making a custom template that styles output created by the built in renderer.
 */
 
+.pl-tpl-lss-twentyten {
+	clear: both;
+	float: none;
+}
+
 /* controls background of caption area */
 .pl-tpl-lss-twentyten .orbit-caption {
 	padding: 20px 0 !important;
