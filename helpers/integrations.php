@@ -1,13 +1,15 @@
-<?php 
+<?php
 
 PL_Integration_Helper::init();
 class PL_Integration_Helper {
-	
+
 	public static function init() {
 		add_action('wp_ajax_create_integration', array(__CLASS__, 'create' ) );
 		add_action('wp_ajax_new_integration_view', array(__CLASS__, 'new_integration_view') );
 		add_action('wp_ajax_idx_prompt_view', array(__CLASS__, 'idx_prompt_view') );
 		add_action('wp_ajax_idx_prompt_completed', array(__CLASS__, 'idx_prompt_completed_ajax') );
+		add_action('wp_ajax_prompt_create_sample_view', array(__CLASS__, 'prompt_create_sample') );
+		add_action('wp_ajax_create_sample_view', array(__CLASS__, 'create_sample') );
 	}
 
 	public static function create () {
@@ -53,12 +55,54 @@ class PL_Integration_Helper {
 		// If $mark_complete is true, try to set the option and store the outcome -- otherwise,
 		// check if it currently exists and retrieve its value...
 		$exists = ( $mark_completed ? PL_Options::set($key, true) : $exists = PL_Options::get($key) );
-		
+
 		return $exists;
 	}
 
 	public static function idx_prompt_completed_ajax () {
 		self::idx_prompt_completed(isset($_POST['mark_completed']));
+		die();
+	}
+
+	public static function prompt_create_sample () {
+		PL_Router::load_builder_partial('sample-page-prompt.php');
+		die();
+	}
+
+	public static function create_sample () {
+		global $wpdb;
+
+		$demodata = PL_Option_Helper::get_demo_data_flag();
+
+		$querystr = "
+			SELECT $wpdb->posts.*
+			FROM $wpdb->posts, $wpdb->postmeta
+			WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id
+			AND $wpdb->postmeta.meta_key = 'pl_sample'
+			AND $wpdb->postmeta.meta_value = 'property-search'
+			AND $wpdb->posts.post_status = 'publish'
+			AND $wpdb->posts.post_type = 'page'
+			AND $wpdb->posts.post_content LIKE '%[search_form]%[search_listings]%'
+			ORDER BY $wpdb->posts.post_date DESC
+		";
+		$pages = $wpdb->get_results($querystr, OBJECT);
+		if ($pages) {
+			$page = $pages[0];
+			PL_Router::load_builder_partial('sample-page.php', array('page'=>$page, 'newpage'=>false, 'demodata' => $demodata));
+		}
+		else {
+			$page_args = array(
+					'post_name' => 'property-search',
+					'post_title' => 'Real Estate Search',
+					'post_content' => "[search_form]\n[search_listings]\n",
+					'post_type' => 'page',
+					'post_status' => 'publish',
+			);
+			$ID = wp_insert_post($page_args);
+			update_post_meta($ID, 'pl_sample', 'property-search');
+			$page = get_post($ID);
+			PL_Router::load_builder_partial('sample-page.php', array('page'=>$page, 'newpage'=>true, 'demodata' => $demodata));
+		}
 		die();
 	}
 

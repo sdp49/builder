@@ -5,9 +5,9 @@ jQuery(document).ready(function($) {
             text: "Don't activate yet",
             class: "linkify-button",
             click: function() {
-                $(this).dialog("close");
+				$(this).dialog("close");
             }
-        },  
+        },
         2 : {
             text: "I already have an account",
             class: "linkify-button",
@@ -22,9 +22,8 @@ jQuery(document).ready(function($) {
             	// Instrument...
             	mixpanel.track("Registration - Submitted");
 
-                new_sign_up(function () { 
-                	construct_modal(idx_args); 
-                	$(this).dialog("close");
+                new_sign_up(function () {
+                	construct_modal(idx_args);
                 });
             }
         }
@@ -35,7 +34,7 @@ jQuery(document).ready(function($) {
 			text: "Don't Activate Yet",
 			class: "linkify-button",
 			click: function() {
-				 $(this).dialog("close");
+				$(this).dialog("close");
 			}
 		},
 		2 : {
@@ -64,14 +63,13 @@ jQuery(document).ready(function($) {
 				// Remove current dialog area, add "Add Listings Manually" dialog area.
 				$('#idx-add-inner').addClass('hide');
 				$('#idx-none-inner').removeClass('hide');
-				
+
 				// Hide buttons, show new buttons
 				$('.yes-idx-btn, .no-thanks-idx-btn').addClass('hide');
 				$('.add-listings-manually-btn').removeClass('hide');
 
 				// Change title
-				$('.ui-dialog-title h3').html("Add Listings to your Website Manually");
-				$(".ui-dialog-title").parent().parent().css("top", 90);
+				$(this).dialog('option', 'title', "Add Listings to your Website Manually");
             }
         },
         2 : {
@@ -81,11 +79,11 @@ jQuery(document).ready(function($) {
 				// Remove current dialog area, add phone # dialog area.
 				$('#idx-add-inner').addClass('hide');
 				$('#idx-contact-inner').removeClass('hide');
-				
+
 				// Hide buttons, show new buttons
 				$('.yes-idx-btn, .no-thanks-idx-btn').addClass('hide');
 				$('.i-prefer-email-btn, .call-me-btn').removeClass('hide');
-				
+
 				// Instrument...
 				mixpanel.track("Registration - Integration Requested");
 
@@ -94,19 +92,24 @@ jQuery(document).ready(function($) {
 					// Instrument...
 					mixpanel.track("Registration - Trial Started",  {'source' : 'Activation Modal'});
 				}, "json");
-            }            
-        },  
+            }
+        },
         3 : {
             text: "All set!",
-            class: "linkify-button hide add-listings-manually-btn right-btn",
+            class: "hide add-listings-manually-btn right-btn green-btn",
             click: function() {
-				// Direct to Add Listings page
-				$(this).dialog("close");
-				
-				// Reload page to reflect the addition of an API key...
-				setTimeout(function () { window.location.href = window.location.href; }, 1000);
-            }
-        }, 
+				if (pl_signup_data.placester_theme) {
+					// Direct to Add Listings page
+					$(this).dialog("close");
+
+					// Reload page to reflect the addition of an API key...
+					setTimeout(function () { window.location.href = window.location.href; }, 1000);
+				}
+				else {
+					construct_modal(create_sample);
+				}
+			}
+        },
         4 : {
             text: "I prefer email",
             class: "linkify-button hide i-prefer-email-btn",
@@ -116,7 +119,7 @@ jQuery(document).ready(function($) {
 
 				// remove current dialog
 				$('#idx-contact-inner').addClass('hide');
-				$('.ui-dialog-title h3').html("Congratulations! IDX / MLS Request Submitted");
+				$(this).dialog('option', 'title', "Congratulations! IDX / MLS Request Submitted");
 
 				// Show email dialog
 				$('#idx-success-inner span#action').text("email");
@@ -141,14 +144,14 @@ jQuery(document).ready(function($) {
 					// Instrument...
 					mixpanel.track("Registration - Phone Number");
 
-					$('.ui-dialog-title h3').html("Congratulations! IDX / MLS Request Submitted");
+					$(this).dialog('option', 'title', "Congratulations! IDX / MLS Request Submitted");
 
 					// Valid Phone Number
 					$('#idx-contact-inner').prepend("YEP!");
 
 					// remove current dialog
 					$('#idx-contact-inner').addClass('hide');
-					
+
 					// Show email dialog
 					$('#idx-success-inner span#action').text("call");
 					$('#idx-success-inner').removeClass('hide');
@@ -157,7 +160,7 @@ jQuery(document).ready(function($) {
 					$('.i-prefer-email-btn, .call-me-btn').addClass('hide');
 					$('.request-done-btn').removeClass('hide');
 					$("#phone-validation-message").html('');
-					
+
 					// Move to top of the screen
 					$(".ui-dialog-title").parent().parent().css("top", 90);
 
@@ -165,34 +168,73 @@ jQuery(document).ready(function($) {
 					$.post(ajaxurl, {action: 'update_user', phone: phone_number}, function (result) {
 						// console.log(result);
 					}, "json");
-				} 
+				}
 				else {
 					// Invalid Phone Number
 					$("#callme-idx-phone").addClass('red');
 					$("#phone-validation-message").html("Phone number is not valid");
 				}
-            }            
+			}
         },
         6 : {
             text: "All set!",
-            class: "linkify-button hide request-done-btn right-btn",
+            class: "hide request-done-btn right-btn green-btn",
             click: function() {
             	// Instrument...
             	mixpanel.track("Registration - Complete");
 
 				// Marks flag that prevents similar IDX prompts elsewhere in the app from firing in the future...
 				$.post(ajaxurl, {action: 'idx_prompt_completed', mark_completed: true}, function (result) { }, "json");
+				pl_signup_data.valid_key = true;
 
-				// Reload page to reflect the addition of an API key...
-				setTimeout(function () { window.location.href = window.location.href; }, 2000);            
-			}            
+				if (pl_signup_data.placester_theme) {
+					// Reload page to reflect the addition of an API key...
+					setTimeout(function () { window.location.href = window.location.href; }, 2000);
+				}
+				else {
+					construct_modal(create_sample);
+				}
+			}
+		}
+	};
+
+	var create_sample_buttons = {
+		1 : {
+			text: "No Thank You",
+			class: "",
+			click: function() {
+				// Reload page to reflect any addition of an API key, etc
+				setTimeout(function () { window.location.href = window.location.href; }, 1000);
+			}
+		},
+		2 : {
+			text: "Yes Please",
+			class: "green-btn right-btn",
+			click: function() {
+				// Instrument...
+				mixpanel.track("Create sample page");
+				construct_modal(sample_created);
+			}
 		}
     };
+
+	var sample_created_buttons = {
+		1 : {
+			text: "Done",
+			class: "green-btn right-btn",
+			click: function() {
+				// Reload page to reflect any addition of an API key, etc
+				setTimeout(function () { window.location.href = window.location.href; }, 1000);
+			}
+		}
+	};
 
 	// Dialog config args...
 	var new_acct_args = { ajax: 'new_api_key_view', title: 'Activate Your Plugin', buttons: new_buttons, width: 500 };
 	var existing_acct_args = { ajax: 'existing_api_key_view', title: 'Use an Existing Placester Account', buttons: existing_buttons, width: 700 };
 	var idx_args = { ajax: 'idx_prompt_view', title: 'Add IDX / MLS To My Website', buttons: idx_buttons, width: 500 };
+	var create_sample = { ajax: 'prompt_create_sample_view', title: 'Create Real Estate Search Page', buttons: create_sample_buttons, width: 500 };
+	var sample_created = { ajax: 'create_sample_view', title: 'Real Estate Search Page Created', buttons: sample_created_buttons, width: 500 };
 
 	function construct_modal(args) {
 		$.post(ajaxurl, {action: args.ajax}, function (result) {
@@ -222,5 +264,5 @@ jQuery(document).ready(function($) {
 	$('.wrapper').on('click', function() {
 		$("#signup_wizard").dialog("open");
 	});
-	
+
 });
