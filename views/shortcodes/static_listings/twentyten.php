@@ -9,6 +9,9 @@ It can be used as a guide for making a custom template that styles output create
 */
 .pl-tpl-stl-twentyten {
 }
+.pl-tpl-stl-twentyten .clear {
+	clear: both;
+}
 .pl-tpl-stl-twentyten form {
 	clear: both;
 	padding: 1em 0 0 0;
@@ -194,6 +197,6 @@ It can be used as a guide for making a custom template that styles output create
 
 'before_widget' => '<div class="pl-tpl-stl-twentyten">',
 
-'after_widget' => '</div>',
+'after_widget' => '<div class="clear"></div></div>',
 
 );

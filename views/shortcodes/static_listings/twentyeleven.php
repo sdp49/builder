@@ -6,6 +6,9 @@ $template = array(
 .pl-tpl-stl-twentyeleven {
 	font-family: "Helvetica Neue", Arial, Helvetica, "Nimbus Sans L", sans-serif;
 }
+.pl-tpl-stl-twentyeleven .clear {
+	clear: both;
+}
 .pl-tpl-stl-twentyeleven .listing-item {
 	display: block !important;
 	float: none !important;
@@ -240,6 +243,6 @@ $template = array(
 
 'before_widget' => '<div class="pl-tpl-stl-twentyeleven">',
 
-'after_widget' => '</div>',
+'after_widget' => '<div class="clear"></div></div>',
 
 );
