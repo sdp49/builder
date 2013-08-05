@@ -369,6 +369,10 @@ jQuery(document).ready(function($){
 			$(this).closest('section').find('.CodeMirror').toggle().get(0).CodeMirror.refresh();
 		});
 	});
+	$('.subcode').click(function(e) {
+		e.preventDefault();
+		$(this).next('.subcode-help').toggle();
+	});
 
 	// trigger an event to set up the preview pane on page load
 	$('#pl_sc_tpl_shortcode').trigger('change');

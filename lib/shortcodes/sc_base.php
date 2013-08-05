@@ -78,7 +78,9 @@ abstract class PL_SC_Base {
 		if (class_exists('PL_Shortcode_CPT')) {
 			$inst = new $class();
  			PL_Shortcode_CPT::register_shortcode($inst->shortcode, $inst);
+ 			return $inst;
  		}
+ 		return null;
 	}
 
 	public function __construct() {
@@ -287,5 +289,133 @@ abstract class PL_SC_Base {
 		}
 
 		return $shortcode;
+	}
+
+	protected static function _do_templatetags($class, $tags, $content) {
+		$subcode = implode('|', $tags);
+		$pattern =
+			  '\\['                              // Opening bracket
+			. '(\\[?)'                           // 1: Optional second opening bracket for escaping shortcodes: [[tag]]
+			. "($subcode)"                       // 2: Shortcode name
+			. '\\b'                              // Word boundary
+			. '('                                // 3: Unroll the loop: Inside the opening shortcode tag
+			.     '[^\\]\\/]*'                   // Not a closing bracket or forward slash
+			.     '(?:'
+			.         '\\/(?!\\])'               // A forward slash not followed by a closing bracket
+			.         '[^\\]\\/]*'               // Not a closing bracket or forward slash
+			.     ')*?'
+			. ')'
+			. '(?:'
+			.     '(\\/)'                        // 4: Self closing tag ...
+			.     '\\]'                          // ... and closing bracket
+			. '|'
+			.     '\\]'                          // Closing bracket
+			.     '(?:'
+			.         '('                        // 5: Unroll the loop: Optionally, anything between the opening and closing shortcode tags
+			.             '[^\\[]*+'             // Not an opening bracket
+			.             '(?:'
+			.                 '\\[(?!\\/\\2\\])' // An opening bracket not followed by the closing shortcode tag
+			.                 '[^\\[]*+'         // Not an opening bracket
+			.             ')*+'
+			.         ')'
+			.         '\\[\\/\\2\\]'             // Closing shortcode tag
+			.     ')?'
+			. ')'
+			. '(\\]?)';                          // 6: Optional second closing brocket for escaping shortcodes: [[tag]]
+
+		return preg_replace_callback( "/$pattern/s", array($class, 'templatetag_callback'), $content );
+	}
+
+	protected static function form_item($item, $attr, $value = '', $parent = false, $echo = false) {
+		$name = $item;
+		$name = preg_replace('/[^a-zA-Z\-_\[\]]/', '_', $name);
+		if (empty($parent)) {
+			if (!empty($_REQUEST[$name])) $value = $_REQUEST[$name];
+		}
+		else {
+			$parent = preg_replace('/[^a-zA-Z\-_\[\]]/', '_', $parent);
+			if (!empty($_REQUEST[$parent][$name])) $value = $_REQUEST[$parent][$name];
+			$name = $parent.'['.$name.']';
+		}
+		$id = str_replace(array('[',']'), array('-',''), $name);
+		$attr = $attr + array('type' => 'text', 'options' => '', 'css_class' => '');
+		$class = empty($attr['css']) ? '' : 'class="'. $attr['css'] .'"';
+
+		ob_start();
+		switch ($attr['type']) {
+			case 'checkbox':
+				?>
+				<input id="<?php echo $id ?>" <?php echo $class ?> type="<?php echo $attr['type'] ?>"
+						name="<?php echo $name ?>" value="true"
+						<?php echo $value ? 'checked' : '' ?> />
+				<?php
+				break;
+			case 'radio':
+				?>
+				<input id="<?php echo $id.'-'.preg_replace('/[^a-zA-Z\-_\[\]]/', '_', $value) ?>" <?php echo $class ?> type="radio"
+					name="<?php echo $name ?>" value="<?php echo $value ?>" />
+				<?php
+				break;
+			case 'textarea':
+				$rows = ! empty ( $attributes ['rows'] ) ? $attributes ['rows'] : 2;
+				$cols = ! empty ( $attributes ['cols'] ) ? $attributes ['cols'] : 20;
+				?>
+				<textarea id="<?php echo $id ?>" <?php echo $class ?> name="<?php echo $name ?>"
+					rows="<?php echo $rows ?>" cols="<?php echo $cols ?>"><?php echo $value ?></textarea>
+				<?php
+				break;
+			case 'select':
+				$options = self::_option_explode($attr['options']);
+				?>
+				<select id="<?php echo $id ?>" <?php echo $class ?> name="<?php echo $name ?>">
+				<?php foreach ($options as $key => $text): ?>
+					<option value="<?php echo htmlentities($key) ?>"
+					<?php echo ($key == $value ? 'selected="selected"' : '' ) ?>><?php echo htmlentities($text) ?></option>
+				<?php endforeach ?>
+				</select>
+				<?php
+				break;
+			case 'multiselect':
+				$options = self::_option_explode($attr['options']);
+				if (!is_array($value)) {
+					$value = self::_option_explode($value);
+				}
+				?>
+				<select id="<?php echo $id ?>" <?php echo $class ?> multiple="multiple" name="<?php echo $name ?>[]">
+				<?php foreach ($options as $key => $text): ?>
+					<option value="<?php echo htmlentities($key) ?>"
+					<?php echo ((is_array($value) && in_array($key, $value) ) ? 'selected="selected"' : '' ) ?>><?php echo htmlentities($text) ?></option>
+				<?php endforeach ?>
+				</select>
+				<?php
+				break;
+			case 'hidden':
+				?>
+				<input id="<?php echo $id ?>" type="hidden" name="<?php echo $name ?>"
+						value="<?php echo htmlentities($value) ?>" />
+				<?php
+				break;
+			case 'date':
+			default:
+				?>
+				<input id="<?php echo $id ?>" <?php echo $class ?> type="text"
+					name="<?php echo $name ?>" <?php echo !empty($value) ? 'value="'.$value.'"' : '' ?>
+					data-attr_type="<?php echo $attr['type'] ?>" />
+				<?php
+				break;
+		}
+		return ob_get_clean();
+	}
+
+	private static function _option_explode($option) {
+		// TODO: regex?
+		$options = array_map('trim', explode(',', $option));
+		$vals = array();
+		foreach ($options as $option) {
+			$ex = array_map('trim', explode('|', $option, 2));
+			if (empty($ex[1])) $ex[1] = $ex[0];
+			$vals[$ex[0]] = $ex[1];
+		}
+		return $vals;
 	}
 }

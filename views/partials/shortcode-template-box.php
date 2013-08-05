@@ -88,11 +88,10 @@ $pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs();
 							<h3>Template Tags</h3>
 							<?php $subcodes = '';?>
 							<?php foreach($sct_args['subcodes'] as $subcode=>$atts): ?>
-								<?php $subcodes .= '<span class="subcode">[' . $subcode . ']</span>';?>
+								<?php $subcodes .= '<h4 class="subcode"><a href="#">[' . $subcode . ']</a></h4>';?>
 								<?php if (!empty($atts['help'])):?>
-									<?php $subcodes .= '<br /><span class="description subcode-help">'. $atts['help'] .'</span>';?>
+									<?php $subcodes .= '<div class="description subcode-help">'. $atts['help'] .'</div>';?>
 								<?php endif;?>
-								<?php $subcodes .= '<br />';?>
 							<?php endforeach;?>
 							<p>Use the following tags to customize your shortcode template:<br /><?php echo $subcodes?></p>
 						</div>

@@ -41,28 +41,6 @@ class PL_Shortcodes
 
 	public static $subcodes = array(
 		'search_form' => array(
-			'bedrooms',
-            'min_beds',
-            'max_beds',
-            'bathrooms',
-            'min_baths',
-            'max_baths',
-            'price',
-            'half_baths',
-            'property_type',
-            'listing_types',
-            'zoning_types',
-            'purchase_types',
-            'available_on',
-            'cities',
-            'states',
-            'zips',
-            'neighborhood',
-            'county',
-            'min_price',
-            'max_price',
-            'min_price_rental',
-			'max_price_rental'
 		),
 		'listing' => array(
 			'price',
@@ -138,6 +116,7 @@ class PL_Shortcodes
 		add_filter('property_details_filter', array(__CLASS__, 'prop_details_shortcode_context'), 10, 2);
 		*/
 
+		// TODO: sc cleanup
 		// Ensure all of shortcodes are set to some snippet...
 		foreach (self::$codes as $code) {
 			add_option( ('pls_' . $code), self::$defaults[$code][0] );

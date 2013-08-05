@@ -1006,7 +1006,7 @@ class PL_Component_Entity {
 		if (empty($template['snippet_body'])) {
 			return $form;
 		}
-		return do_shortcode($template['snippet_body']);
+		return PL_Form_CPT::do_templatetags($template['snippet_body'], $form_html);
 	}
 
 	/**
