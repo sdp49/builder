@@ -151,8 +151,8 @@ form.pls_search_form_listings .search-item select, form.pls_search_form_listings
 		elseif ($tag == 'custom' && !empty($attr['attribute'])) {
 			$attr = wp_parse_args($attr, array('group'=>'metadata', 'type'=>'text', 'strict_match' => '', 'value' => '', 'css_class' => ''));
 			$field = $m[1] . self::form_item($attr['attribute'], $attr, $attr['value'], $attr['group']) . $m[6];
-			if (!empty($attr['strict_match']))  {
-				$field .= self::form_item($attr['attribute'].'_match', array('type'=>'hidden'), $attr['strict_match']=='false'?'like':'exact', $attr['group']);
+			if (!empty($attr['strict_match']) && $attr['strict_match']=='false')  {
+				$field .= self::form_item($attr['attribute'].'_match', array('type'=>'hidden'), 'like', $attr['group']);
 			}
 			return $field;
 		}
