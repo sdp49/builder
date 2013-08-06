@@ -1,9 +1,19 @@
 <div id="searchpage-inner" class="hide">
 	<ul>
 		<?php if ($page):?>
-			<p style="font-size: 23px; line-height: 1.2">We have created a real estate serach for you. Check it out <a href="<?php echo get_permalink($page->ID)?>" target="_blank">here</a></p>
+			<p class="major-subtitle">We have created a real estate search for you. 
+			Check it out <a href="<?php echo get_permalink($page->ID)?>" target="_blank" data-mixpanel="Registration - View search page">here</a></p>
+			<p class="subtitle">The search is powered by Placester Shortcodes. 
+			Placester Shortcodes allow you to customize the way your real estate search looks (or create new search pages). 
+			Learn more about shortcodes <a class="link_shortcode_overview" href="https://placester.com/developers/placester-shortcode-overview/" target="_blank" data-mixpanel="Registration - Shortcodes overview">here</a> or to view them, click <a class="link_shortcode_edit" href="<?php echo admin_url('admin.php?page=placester_shortcodes_shortcode_edit') ?>" target="_blank" data-mixpanel="Registration - Shortcode edit">here</a>.</p>
+		<?php else: ?>
+			<p class="major-subtitle">Your Real Estate website is now set up. 
+			Checkout the home page <a href="<?php echo get_home_url()?>" target="_blank" data-mixpanel="Registration - View home page">here</a>.</p>
+			<p class="subtitle">You can create additional search pages using shortcodes.</p> 
+			<p class="subtitle">Placester Shortcodes allow you to customize the way your real estate search looks (or create new search pages).</p> 
+			<p class="subtitle">Learn more about shortcodes <a class="link_shortcode_overview" href="https://placester.com/developers/placester-shortcode-overview/" target="_blank" data-mixpanel="Registration - Shortcodes overview">here</a> or to view them, click <a class="link_shortcode_edit" href="<?php echo admin_url('admin.php?page=placester_shortcodes_shortcode_edit') ?>" target="_blank" data-mixpanel="Registration - Shortcode edit">here</a>.</p>
 		<?php endif ?>
-		<p style="font-size: 14px;">The search is powered by Placester Shortcodes. Placester Shortcodes allow you to customize the way your real estate search looks (or create new search pages). Learn more about shortcodes <a href="https://placester.com/developers/placester-shortcode-overview/" target="_blank">here</a> or to view them, click <a href="<?php echo admin_url('admin.php?page=placester_shortcodes_shortcode_edit') ?>" target="_blank">here</a>.</p>
-		<p style="font-size: 14px; color: #f70820">Right now we're showing example listings. To turn this off, go <a href="<?php echo admin_url('admin.php?page=placester_settings') ?>" target="_blank">here</a>.</p>
+		<p class="subtitle" style="color: #f70820">Right now we're showing example listings. 
+		To turn this off, go <a class="link_demo_setting" href="<?php echo admin_url('admin.php?page=placester_settings') ?>" target="_blank" data-mixpanel="Registration - Turn off demo data">here</a>.</p>
 	</ul>
 </div>

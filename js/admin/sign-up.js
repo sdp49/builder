@@ -20,7 +20,7 @@ jQuery(document).ready(function($) {
             class: "green-btn right-btn",
             click: function() {
             	// Instrument...
-            	mixpanel.track("Registration - Submitted");
+            	signup_progress("Registration - Submitted");
 
                 new_sign_up(function () {
                 	construct_modal(idx_args);
@@ -60,7 +60,7 @@ jQuery(document).ready(function($) {
             text: "No thanks",
             class: "linkify-button no-thanks-idx-btn",
             click: function() {
-				// Remove current dialog area, add "Add Listings Manually" dialog area.
+				// Remove current dialog area, show final page.
 				$('#idx-add-inner').addClass('hide');
 				$('#idx-none-inner').removeClass('hide');
 				$('#searchpage-inner').removeClass('hide');
@@ -74,6 +74,9 @@ jQuery(document).ready(function($) {
 
 				// Change title
 				$(this).dialog('option', 'title', "Set Up Complete!");
+
+				// Instrumentation
+				signup_progress("Registration - Complete");
             }
         },
         2 : {
@@ -89,7 +92,7 @@ jQuery(document).ready(function($) {
 				$('.i-prefer-email-btn, .call-me-btn').removeClass('hide');
 
 				// Instrument...
-				mixpanel.track("Registration - Integration Requested");
+				signup_progress("Registration - Integration Requested");
 				pl_signup_data.mls_int = true;
 
 				// Start free trial...
@@ -104,7 +107,7 @@ jQuery(document).ready(function($) {
             class: "linkify-button hide i-prefer-email-btn",
             click: function() {
             	// Instrument...
-            	mixpanel.track("Registration - MLS through Email");
+            	signup_progress("Registration - MLS through Email");
 
 				// remove current dialog
 				$('#idx-contact-inner').addClass('hide');
@@ -123,6 +126,9 @@ jQuery(document).ready(function($) {
 				if (!pl_signup_data.placester_theme) {
 					$('.custom-search-page-btn').removeClass('hide');
 				}
+
+				// Instrumentation
+				signup_progress("Registration - Complete");
             }
         },
         5 : {
@@ -135,7 +141,7 @@ jQuery(document).ready(function($) {
 
 				if (valid) {
 					// Instrument...
-					mixpanel.track("Registration - Phone Number");
+					signup_progress("Registration - Phone Number");
 
 					$(this).dialog('option', 'title', "Set Up Complete!");
 
@@ -160,6 +166,9 @@ jQuery(document).ready(function($) {
 						$('.custom-search-page-btn').removeClass('hide');
 					}
 
+					// Instrumentation
+					signup_progress("Registration - Complete");
+
 					// Update user's account with phone number in Rails...
 					$.post(ajaxurl, {action: 'update_user', phone: phone_number}, function (result) {
 						// console.log(result);
@@ -177,6 +186,7 @@ jQuery(document).ready(function($) {
 			class: "hide add-listings-manually-btn request-done-btn left-btn",
 			click: function() {
 				mark_mls_complete();
+				signup_progress("Registration - Close button");
 				$(this).dialog("close");
 				// Reload page to reflect any addition of an API key, etc
 				window.location.href = window.location.href;
@@ -187,6 +197,7 @@ jQuery(document).ready(function($) {
 			class: "hide custom-search-page-btn green-btn right-btn",
 			click: function() {
 				mark_mls_complete();
+				signup_progress("Registration - View search page button");
 				$(this).dialog("close");
 				window.location.href = pl_signup_data.search_page;
 			}
@@ -196,6 +207,7 @@ jQuery(document).ready(function($) {
 			class: "hide add-listings-manually-btn request-done-btn green-btn right-btn",
 			click: function() {
 				mark_mls_complete();
+				signup_progress("Registration - Create a property button");
 				$(this).dialog("close");
 				window.location.href = pl_signup_data.listing_page;
 			}
@@ -219,29 +231,49 @@ jQuery(document).ready(function($) {
 						result = result.html;
 					}
 				}
+				$('#signup_wizard').dialog('close');
 				$('#signup_wizard').html(result);
-				$("#signup_wizard").dialog('close');
-				$("#signup_wizard").dialog({
+				$('#signup_wizard').dialog({
 					autoOpen: true,
 					draggable: false,
 					modal: true,
 					position: 'center',
 					title: args.title,
 					width: args.width,
-					buttons: args.buttons
+					buttons: args.buttons,
+					close: function(event,ui) {
+						if (event.originalEvent && $(event.originalEvent.target).closest('.ui-dialog-titlebar-close').length) {
+							// user clicked close icon
+							signup_progress('Registration - Dialog close icon');
+						}
+					}
 				});
-			};
+				$("#signup_wizard").find('a[data-mixpanel]').click(function() {
+					signup_progress($(this).attr('data-mixpanel'));
+				});
+			}
 		});
 	}
-	
-	function mark_mls_complete() {
-    	// Instrument...
-    	mixpanel.track("Registration - Complete");
 
+	function mark_mls_complete() {
 		// Marks flag that prevents similar IDX prompts elsewhere in the app from firing in the future...
 		if (pl_signup_data.mls_int) {
 			$.post(ajaxurl, {action: 'idx_prompt_completed', mark_completed: true}, function (result) { }, "json");
 		}
+	}
+
+	function signup_progress(string) {
+		setTimeout(
+			function() {
+				try {
+					mixpanel.track(string);
+				}
+				catch(err) {
+					if (typeof console !== "undefined") {
+						console.log('Mixpanel error: '+err.message);
+					}					
+				}
+			}, 500);
 	}
 
 	// Create the sign-up wizard dialog container on initial page load...
