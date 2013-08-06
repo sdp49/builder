@@ -8,8 +8,6 @@ class PL_Integration_Helper {
 		add_action('wp_ajax_new_integration_view', array(__CLASS__, 'new_integration_view') );
 		add_action('wp_ajax_idx_prompt_view', array(__CLASS__, 'idx_prompt_view') );
 		add_action('wp_ajax_idx_prompt_completed', array(__CLASS__, 'idx_prompt_completed_ajax') );
-		add_action('wp_ajax_prompt_create_sample_view', array(__CLASS__, 'prompt_create_sample') );
-		add_action('wp_ajax_create_sample_view', array(__CLASS__, 'create_sample') );
 	}
 
 	public static function create () {
@@ -42,7 +40,50 @@ class PL_Integration_Helper {
 	}
 
 	public static function idx_prompt_view () {
-		PL_Router::load_builder_partial('idx-prompt.php');
+		global $wpdb, $i_am_a_placester_theme;
+	
+
+		PL_Option_Helper::set_demo_data_flag(true);
+
+		$html = PL_Router::load_builder_partial('idx-prompt.php', null, true);
+		$page = $pagelink = null;
+		
+		if (!$i_am_a_placester_theme) {
+			$querystr = "
+				SELECT $wpdb->posts.*
+				FROM $wpdb->posts, $wpdb->postmeta
+				WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id
+				AND $wpdb->postmeta.meta_key = 'pl_sample'
+				AND $wpdb->postmeta.meta_value = 'property-search'
+				AND $wpdb->posts.post_status = 'publish'
+				AND $wpdb->posts.post_type = 'page'
+				AND $wpdb->posts.post_content LIKE '%[search_form]%[search_listings]%'
+				ORDER BY $wpdb->posts.post_date DESC
+			";
+			$pages = $wpdb->get_results($querystr, OBJECT);
+			if ($pages) {
+				$page = $pages[0];
+			}
+			else {
+				$page_args = array(
+						'post_name' => 'property-search',
+						'post_title' => 'Real Estate Search',
+						'post_content' => "[search_form]\n[search_listings]\n",
+						'post_type' => 'page',
+						'post_status' => 'publish',
+				);
+				$ID = wp_insert_post($page_args);
+				update_post_meta($ID, 'pl_sample', 'property-search');
+				$page = get_post($ID);
+			}
+		}
+		$html .= PL_Router::load_builder_partial('sample-page.php', array('page'=>$page, 'placestertheme'=>$i_am_a_placester_theme), true);
+		if ($page) {
+			$pagelink = get_permalink($page->ID);
+		}
+		
+		header( "Content-Type: application/json" );
+		echo json_encode(array('html'=>$html, 'data'=>array('search_page'=>$pagelink, 'listing_page' => admin_url('admin.php?page=placester_property_add'))));
 		die();
 	}
 
@@ -61,48 +102,6 @@ class PL_Integration_Helper {
 
 	public static function idx_prompt_completed_ajax () {
 		self::idx_prompt_completed(isset($_POST['mark_completed']));
-		die();
-	}
-
-	public static function prompt_create_sample () {
-		PL_Router::load_builder_partial('sample-page-prompt.php');
-		die();
-	}
-
-	public static function create_sample () {
-		global $wpdb;
-
-		$demodata = PL_Option_Helper::get_demo_data_flag();
-
-		$querystr = "
-			SELECT $wpdb->posts.*
-			FROM $wpdb->posts, $wpdb->postmeta
-			WHERE $wpdb->posts.ID = $wpdb->postmeta.post_id
-			AND $wpdb->postmeta.meta_key = 'pl_sample'
-			AND $wpdb->postmeta.meta_value = 'property-search'
-			AND $wpdb->posts.post_status = 'publish'
-			AND $wpdb->posts.post_type = 'page'
-			AND $wpdb->posts.post_content LIKE '%[search_form]%[search_listings]%'
-			ORDER BY $wpdb->posts.post_date DESC
-		";
-		$pages = $wpdb->get_results($querystr, OBJECT);
-		if ($pages) {
-			$page = $pages[0];
-			PL_Router::load_builder_partial('sample-page.php', array('page'=>$page, 'newpage'=>false, 'demodata' => $demodata));
-		}
-		else {
-			$page_args = array(
-					'post_name' => 'property-search',
-					'post_title' => 'Real Estate Search',
-					'post_content' => "[search_form]\n[search_listings]\n",
-					'post_type' => 'page',
-					'post_status' => 'publish',
-			);
-			$ID = wp_insert_post($page_args);
-			update_post_meta($ID, 'pl_sample', 'property-search');
-			$page = get_post($ID);
-			PL_Router::load_builder_partial('sample-page.php', array('page'=>$page, 'newpage'=>true, 'demodata' => $demodata));
-		}
 		die();
 	}
 
