@@ -16,7 +16,7 @@ $pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs();
 if (empty($action)) {
 	// show a transiton spinner page because while the page is loading
 	// TODO: load the settings options after page load instead.
-	PL_Router::router('shortcodes/loading.php', array('location'=>site_url($_SERVER['REQUEST_URI'].'&action=edit')));
+	PL_Router::router('shortcodes/loading.php', array('location'=>add_query_arg(array('action'=>'edit'))));
 	return;
 }
 

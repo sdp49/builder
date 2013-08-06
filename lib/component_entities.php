@@ -81,7 +81,7 @@ class PL_Component_Entity {
 				unset($atts['id']);
 			}
 		}
-		$atts = wp_parse_args($atts, array('context' => 'shortcode'));
+		$atts = wp_parse_args($atts, array('context' => 'shortcode', 'limit' => 0, 'sort_type' => ''));
 		
 		// add template formatting
 		$header = $footer = '';
