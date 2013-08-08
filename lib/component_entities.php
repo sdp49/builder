@@ -81,7 +81,7 @@ class PL_Component_Entity {
 				unset($atts['id']);
 			}
 		}
-		$atts = wp_parse_args($atts, array('context' => 'shortcode'));
+		$atts = wp_parse_args($atts, array('context' => 'shortcode', 'limit' => 0, 'sort_type' => ''));
 		
 		// add template formatting
 		$header = $footer = '';
@@ -580,9 +580,11 @@ class PL_Component_Entity {
 		return $val;
 	}
 
+	/**
+	 * Helper function for formatting individual listing fields.
+	 * self::$listing should contain the listing values.
+	 */
 	public static function listing_sub_entity( $atts, $content, $tag ) {
-		$val = '';
-
 		$listing_list = array();
 
 		if( !empty( self::$listing ) ) {
@@ -603,12 +605,12 @@ class PL_Component_Entity {
 			$val = $listing_list['rets'][$tag];
 		}
 		else {
+			$val = '';
 		}
 
 		// This is an example of handling a specific tag in a different way
 		// TODO: make this more elegant...
-		switch ($tag)
-		{
+		switch ($tag) {
 			case 'desc':
 				$max_len = !empty($atts['maxlen']) ? (int)$atts['maxlen'] : 500;
 				$val = substr($val, 0, $max_len);
@@ -617,10 +619,10 @@ class PL_Component_Entity {
 				$width = !empty($atts['width']) ? (int)$atts['width'] : 180;
 				$height = !empty($atts['height']) ? (int)$atts['height'] : 120;
 				$val = PLS_Image::load(!empty($listing_list['images'][0]['url']) ? $listing_list['images'][0]['url'] : '',
-						array('resize' => array('w' => $width, 'h' => $height),
-							'fancybox' => true,
-							'as_html' => true,
-							'html' => array('alt' => empty($listing_list['location']['full_address']) ? $listing_list['location']['address'] : $listing_list['location']['full_address'], 'itemprop' => 'image')));
+					array('resize' => array('w' => $width, 'h' => $height),
+						'fancybox' => true,
+						'as_html' => true,
+						'html' => array('alt' => empty($listing_list['location']['full_address']) ? $listing_list['location']['address'] : $listing_list['location']['full_address'], 'itemprop' => 'image')));
 				break;
 			case 'gallery':
 				ob_start();
@@ -631,9 +633,9 @@ class PL_Component_Entity {
 							<?php foreach ($listing_list['images'] as $image): ?>
 							<li><?php echo PLS_Image::load($image['url'],
 									array('resize' => array('w' => 100, 'h' => 75),
-																		'fancybox' => true,
-																		'as_html' => false,
-																		'html' => array('itemprop' => 'image'))); ?>
+										'fancybox' => true,
+										'as_html' => false,
+										'html' => array('itemprop' => 'image'))); ?>
 							</li>
 							<?php endforeach ?>
 						</ul>
@@ -682,13 +684,44 @@ class PL_Component_Entity {
 				break;
 			case 'compliance':
 				ob_start();
-				PLS_Listing_Helper::get_compliance(array('context' => 'listings',
-				'agent_name' => $listing_list['rets']['aname'] ,
-				'office_name' => $listing_list['rets']['oname'],
-				'office_phone' => PLS_Format::phone($listing_list['contact']['phone'])));
+				PLS_Listing_Helper::get_compliance(array('context' => 'inline_search',
+					'agent_name' => $listing_list['rets']['aname'] ,
+					'office_name' => $listing_list['rets']['oname'],
+					'office_phone' => PLS_Format::phone($listing_list['contact']['phone'])));
 				$val = ob_get_clean();
 				break;
+			case 'custom':
+				// TODO: format based on data type
+				if (!empty($atts['attribute'])) {
+					if(!empty($listing_list['uncur_data'][$atts['attribute']]) && $listing_list['uncur_data'][$atts['attribute']]!='') {
+						$val = $listing_list['uncur_data'][$atts['attribute']];
+					}
+					elseif (!empty($atts['value'])) {
+						$val = $atts['value'];
+					}
+					if (!empty($atts['type'])) {
+						switch($atts['type']) {
+							case 'list':
+								$vals = array_map('trim', explode(',', $val));
+								if (!empty($vals[0])) {
+									$val = '<ul>';
+									foreach($vals as $item) {
+										$val .= '<li>'.$item.'</li>';
+									}
+									$val .= '</ul>';
+								}
+								break;
+							case 'currency':
+								$val = PLS_Format::number($val, array('abbreviate' => false, 'add_currency_sign' => true));
+								break;
+						}
+					}
+				}
+				else {
+					$val = '[custom]';
+				}
 			default:
+				// print as is
 		}
 
 		return $val;
@@ -987,7 +1020,7 @@ class PL_Component_Entity {
 		if (empty($snippet_body)) {
 			return $item_html;
 		}
-		return do_shortcode($snippet_body);
+		return PL_Featured_Listings_CPT::do_templatetags($snippet_body, $listing);
 	}
 
 	/**
@@ -1067,7 +1100,6 @@ class PL_Component_Entity {
 	 */
 	public static function search_listings_templates( $item_html, $listing, $context_var ) {
 		$shortcode = 'search_listings';
-		self::$listing = $listing;
 
 		// get the template attached as a context arg, 33 is the length of the filter prefix
 		$template = substr(current_filter(), 33);
@@ -1083,7 +1115,7 @@ class PL_Component_Entity {
 		if (empty($snippet_body)) {
 			return $item_html;
 		}
-		return do_shortcode($snippet_body);
+		return PL_Search_Listing_CPT::do_templatetags($snippet_body, $listing);
 	}
 
 	/**
