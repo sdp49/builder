@@ -72,6 +72,7 @@ It can be used as a guide for making a custom template that styles output create
 	padding: 0 !important;
 }
 .pl-tpl-stl-twentyten p.h4 {
+	max-width: 570px !important;
 	font-size: 18px !important;
 }
 .pl-tpl-stl-twentyten .h4 a {
