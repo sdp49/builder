@@ -122,6 +122,7 @@ include_once('lib/validation.php');
 include_once('lib/pages.php');
 include_once('lib/community-pages.php');
 include_once('lib/menus.php');
+include_once('lib/taxonomies.php');
 include_once('lib/posts.php');
 include_once('lib/membership.php');
 include_once('lib/caching.php');
