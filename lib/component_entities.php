@@ -103,7 +103,7 @@ class PL_Component_Entity {
 		ob_start();
 		// output listings formatted w/ template
 		echo PLS_Partials::get_listings($atts);
-		return $header.ob_get_clean().$footer;
+		return do_shortcode($header.ob_get_clean().$footer);
 	}
 
 	/**
@@ -184,7 +184,7 @@ class PL_Component_Entity {
 		self::hide_unnecessary_controls($atts);
 		self::print_filters( $filters . $filters_string, $atts['context'] );
 		echo PLS_Partials::get_listings_list_ajax($atts);
-		return $header.ob_get_clean().$footer;
+		return do_shortcode($header.ob_get_clean().$footer);
 	}
 
 	public static function add_length_limit_default() {
@@ -271,7 +271,7 @@ class PL_Component_Entity {
 		ob_start();
 		self::print_filters( $filters . $filters_string, $atts['context'] );
 		PLS_Partials_Get_Listings_Ajax::load($atts);
-		return $header.ob_get_clean().$footer;
+		return do_shortcode($header.ob_get_clean().$footer);	
 	}
 
 	/**
@@ -689,6 +689,9 @@ class PL_Component_Entity {
 					'office_name' => $listing_list['rets']['oname'],
 					'office_phone' => PLS_Format::phone($listing_list['contact']['phone'])));
 				$val = ob_get_clean();
+				break;
+			case 'favorite_link_toggle':
+				$val = PLS_Plugin_API::placester_favorite_link_toggle(array('property_id' => $listing_list['id']));
 				break;
 			case 'custom':
 				// TODO: format based on data type
