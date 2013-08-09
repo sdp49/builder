@@ -74,18 +74,25 @@ class PL_Search_Listing_CPT extends PL_SC_Base {
 		'oname'			=> array('help' => 'Office name'),
 		'custom'		=> array('help' => 'Use to display a custom listing attribute.<br />
 Format is as follows:<br />
-<code>[custom attribute=\'some_attribute_name\' type=\'text\' value=\'some_value\']</code><br />
+<code>[custom group=\'group_name\' attribute=\'some_attribute_name\' type=\'text\' value=\'some_value\']</code><br />
 where:<br />
-<code>attribute</code> - (required) The unique identifier of the custom listing attribute.<br />
-<code>type</code> - (optional, default is \'text\') Can be <code>text</code>, <code>currency</code>, <code>list</code>. Used to indicate how the field should be formatted.<br />
-<code>value</code> - (optional) Indicates text to be displayed if the listing field is empty.<br />
+<code>group</code> - The group identifier if the listing attribute is part of a group. Possible values are <code>location</code>, <code>rets</code>, <code>metadata</code>, <code>uncur_data</code>.<br />
+<code>attribute</code> - (required) The unique identifier of the listing attribute.<br />
+<code>type</code> - (optional, default is \'text\') Can be <code>text</code>, <code>currency</code>, <code>list</code>. Used to indicate how the attribute should be formatted.<br />
+<code>value</code> - (optional) Indicates text to be displayed if the listing attribute is empty.<br />
 '),
-		'if'			=> array('help' => 'Use to conditionally display some content depending on the value of a listing\'s field.<br />
+		'if'			=> array('help' => 'Use to conditionally display some content depending on the value of a listing\'s attribute.<br />
+Format is as follows:<br />
+<code>[if group=\'group_name\' attribute=\'some_attribute_name\' value=\'some_value\']some HTML that will be displayed if the condition is true[/if]</code><br />
+where:<br />
+<code>group</code> - The group identifier if the listing attribute is part of a group. Possible values are <code>location</code>, <code>rets</code>, <code>metadata</code>, <code>uncur_data</code>.<br />
+<code>attribute</code> - (required) The unique identifier of the listing attribute.<br />
+<code>value</code> - (optional) By default the condition is true if the attribute has any value other than being empty. If you wish to test if the attribute matches a specific value, then set that value in this parameter.<br />
 For example, to only display bedroom and bathroom details if the property is residential:<br />
 <code>[if attribute=\'compound_type\' value=\'res_sale\']Beds: [beds] Baths: [baths][/if]</code><br />
 To add some text to your listings:<br />
-<code>[if attribute=\'rets.aid\' value=\'MY_MLS_AGENT_ID\']&lt;span&gt;Featured Listing&lt;/span&gt;[/if]</code>'),
-	);
+<code>[if group=\'rets\' attribute=\'aid\' value=\'MY_MLS_AGENT_ID\']&lt;span&gt;Featured Listing&lt;/span&gt;[/if]</code>'),
+);
 
 	protected $template = array(
 		'snippet_body'	=> array(
@@ -242,16 +249,18 @@ To add some text to your listings:<br />
 		$content = $m[5];
 		
 		if ($tag == 'if') {
-			if (!empty($atts['attribute'])) {
-				if (strpos($atts['attribute'], '.') === false && (empty(PL_Component_Entity::$listing[$atts['attribute']]) || (isset($atts['value']) && $atts['value'] != PL_Component_Entity::$listing[$atts['attribute']]))) {
-					return '';
-				}
-				elseif (($key = explode('.', $atts['attribute'], 2)) && count($key) == 2 &&
-					(empty(PL_Component_Entity::$listing[$key[0]][$key[1]]) || (isset($atts['value']) && $atts['value'] != PL_Component_Entity::$listing[$key[0]][$key[1]]))) {
-					return '';
+			$val = isset($atts['value']) ? $atts['value'] : null;
+			if (empty($atts['group'])) { 
+				if ((!isset(PL_Component_Entity::$listing[$atts['attribute']]) && $val==='') ||
+					(isset(PL_Component_Entity::$listing[$atts['attribute']]) && (PL_Component_Entity::$listing[$atts['attribute']]===$val || (is_null($val) && PL_Component_Entity::$listing[$atts['attribute']])))) {
+					return self::_do_templatetags(__CLASS__, array_keys(self::$singleton->subcodes), $content);
 				}
 			}
-			return self::_do_templatetags(__CLASS__, array_keys(self::$singleton->subcodes), $content);
+			elseif ((!isset(PL_Component_Entity::$listing[$atts['group']][$atts['attribute']]) && $val==='') ||
+				(isset(PL_Component_Entity::$listing[$atts['group']][$atts['attribute']]) && (PL_Component_Entity::$listing[$atts['group']][$atts['attribute']]===$val || (is_null($val) && PL_Component_Entity::$listing[$atts['group']][$atts['attribute']])))) {
+				return self::_do_templatetags(__CLASS__, array_keys(self::$singleton->subcodes), $content);
+			}
+			return '';
 		}
 		$content = PL_Component_Entity::listing_sub_entity( $atts, $content, $tag );
 		return self::wrap( 'listing_sub', $content );

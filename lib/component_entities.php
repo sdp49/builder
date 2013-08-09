@@ -31,7 +31,7 @@ class PL_Component_Entity {
 			add_filter( 'pls_listing_featured_listings_' . $template, array(__CLASS__,'featured_listings_templates'), 10, 3 );
 		}
 		add_filter( 'pls_listing_featured_listings_shortcode', array(__CLASS__,'featured_listings_templates'), 10, 3 );
-		
+
 		$search_form_templates = PL_Shortcode_CPT::template_list('search_form', true);
 		foreach ($search_form_templates as $id => $attr) {
 			add_filter( 'pls_listings_search_form_inner_' . $id, array(__CLASS__,'search_form_inner_template'), 10, 5 );
@@ -39,7 +39,7 @@ class PL_Component_Entity {
 		}
 		add_filter( 'pls_listings_search_form_inner_shortcode', array(__CLASS__,'search_form_inner_template'), 10, 5 );
 		add_filter( 'pls_listings_search_form_outer_shortcode', array(__CLASS__,'search_form_outer_template'), 10, 7 );
-		
+
 		$listing_slideshow_templates = PL_Shortcode_CPT::template_list('listing_slideshow', true);
 		foreach ($listing_slideshow_templates as $id => $attr) {
 			add_filter( 'pls_slideshow_single_caption_' . $id, array( __CLASS__, 'listing_slideshow_templates' ), 10, 5 );
@@ -47,19 +47,19 @@ class PL_Component_Entity {
 			// add_filter( 'pls_slideshow_data_' . $template, array(__CLASS__,'listing_slideshow_templates'), 10, 3 );
 		}
 		add_filter( 'pls_slideshow_single_caption_shortcode', array( __CLASS__, 'listing_slideshow_templates' ), 10, 5 );
-		
+
 		$search_listings_templates = PL_Shortcode_CPT::template_list('search_listings', true);
 		foreach ($search_listings_templates as $id => $attr) {
 			add_filter( 'pls_listings_list_ajax_item_html_search_listings_' . $id, array(__CLASS__,'search_listings_templates'), 10, 3 );
 		}
 		//add_filter( 'pls_listings_list_ajax_item_html_search_listings_shortcode', array(__CLASS__,'search_listings_templates'), 10, 3 );
-		
+
 		$static_listings_templates = PL_Shortcode_CPT::template_list('static_listings', true);
 		foreach ($static_listings_templates as $id => $attr) {
 			add_filter( 'pls_listings_list_ajax_item_html_static_listings_' . $id, array(__CLASS__, 'search_listings_templates'), 10, 3 );
 		}
 		//add_filter( 'pls_listings_list_ajax_item_html_static_listings_shortcode', array(__CLASS__, 'search_listings_templates'), 10, 3 );
-		
+
 		$neighborhood_templates = PL_Shortcode_CPT::template_list('pl_neighborhood', true);
 		foreach ($neighborhood_templates as $id => $attr) {
 			add_filter( 'pls_neighborhood_html_' . $id, array(__CLASS__, 'neighborhood_templates'), 10, 4 );
@@ -82,7 +82,7 @@ class PL_Component_Entity {
 			}
 		}
 		$atts = wp_parse_args($atts, array('context' => 'shortcode', 'limit' => 0, 'sort_type' => ''));
-		
+
 		// add template formatting
 		$header = $footer = '';
 		$template = PL_Shortcode_CPT::load_template($atts['context'], 'featured_listings');
@@ -103,7 +103,7 @@ class PL_Component_Entity {
 		ob_start();
 		// output listings formatted w/ template
 		echo PLS_Partials::get_listings($atts);
-		return $header.ob_get_clean().$footer;
+		return do_shortcode($header.ob_get_clean().$footer);
 	}
 
 	/**
@@ -184,7 +184,7 @@ class PL_Component_Entity {
 		self::hide_unnecessary_controls($atts);
 		self::print_filters( $filters . $filters_string, $atts['context'] );
 		echo PLS_Partials::get_listings_list_ajax($atts);
-		return $header.ob_get_clean().$footer;
+		return do_shortcode($header.ob_get_clean().$footer);
 	}
 
 	public static function add_length_limit_default() {
@@ -271,7 +271,7 @@ class PL_Component_Entity {
 		ob_start();
 		self::print_filters( $filters . $filters_string, $atts['context'] );
 		PLS_Partials_Get_Listings_Ajax::load($atts);
-		return $header.ob_get_clean().$footer;
+		return do_shortcode($header.ob_get_clean().$footer);
 	}
 
 	/**
@@ -690,13 +690,19 @@ class PL_Component_Entity {
 					'office_phone' => PLS_Format::phone($listing_list['contact']['phone'])));
 				$val = ob_get_clean();
 				break;
+			case 'favorite_link_toggle':
+				$val = PLS_Plugin_API::placester_favorite_link_toggle(array('property_id' => $listing_list['id']));
+				break;
 			case 'custom':
 				// TODO: format based on data type
 				if (!empty($atts['attribute'])) {
-					if(!empty($listing_list['uncur_data'][$atts['attribute']]) && $listing_list['uncur_data'][$atts['attribute']]!='') {
-						$val = $listing_list['uncur_data'][$atts['attribute']];
+					if (empty($atts['group']) && isset($listing_list[$atts['attribute']])) {
+						$val = $listing_list[$atts['attribute']];
 					}
-					elseif (!empty($atts['value'])) {
+					elseif (!empty($atts['group']) && isset($listing_list[$atts['group']]) && isset($listing_list[$atts['group']][$atts['attribute']])) {
+						$val = $listing_list[$atts['group']][$atts['attribute']];
+					}
+					if ($val == '' && !empty($atts['value'])) {
 						$val = $atts['value'];
 					}
 					if (!empty($atts['type'])) {
