@@ -143,7 +143,6 @@ class PL_Helper_User {
 		if ($result) {
 			// All stored property pages must be erased, as their addresses will likely change...
 			PL_Pages::delete_all();
-			error_log($block_address);
 			$message = ($block_address ? 
 				'You successfully turned Block Addresses on.' :
 				'You successfully turned Block Addresses off. Exact Addresses will be used.'
