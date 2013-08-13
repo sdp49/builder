@@ -358,7 +358,7 @@ $PL_API_LISTINGS = array(
 						'method' => 'supported_countries',
 						'default' => array('PL_Listing_Helper','convert_default_country')
 					)
-				 )
+				)
 			),
 			// // binds to keys / values of all attributes (cur + uncur)	
 			'metadata' => array(

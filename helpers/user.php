@@ -143,13 +143,12 @@ class PL_Helper_User {
 		if ($result) {
 			// All stored property pages must be erased, as their addresses will likely change...
 			PL_Pages::delete_all();
-			$message = ($block_address ? 
-				'You successfully turned Block Addresses on.' :
-				'You successfully turned Block Addresses off. Exact Addresses will be used.'
-			);
+			
+			$action = ($block_address ? 'on' : 'off');
+			$message = "You successfully turned {$action} block addresses";
 		} 
 		else {
-			$message = 'There was an error -- please try again.';
+			$message = 'There was an error -- please try again';
 		}
 
 		echo json_encode(array('result' => $result, 'message' => $message));
