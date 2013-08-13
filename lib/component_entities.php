@@ -103,6 +103,7 @@ class PL_Component_Entity {
 		ob_start();
 		// output listings formatted w/ template
 		echo PLS_Partials::get_listings($atts);
+		// support shortcodes in the header or footer
 		return do_shortcode($header.ob_get_clean().$footer);
 	}
 
@@ -184,6 +185,7 @@ class PL_Component_Entity {
 		self::hide_unnecessary_controls($atts);
 		self::print_filters( $filters . $filters_string, $atts['context'] );
 		echo PLS_Partials::get_listings_list_ajax($atts);
+		// support shortcodes in the header or footer
 		return do_shortcode($header.ob_get_clean().$footer);
 	}
 
@@ -271,6 +273,7 @@ class PL_Component_Entity {
 		ob_start();
 		self::print_filters( $filters . $filters_string, $atts['context'] );
 		PLS_Partials_Get_Listings_Ajax::load($atts);
+		// support shortcodes in the header or footer
 		return do_shortcode($header.ob_get_clean().$footer);
 	}
 
@@ -996,7 +999,8 @@ class PL_Component_Entity {
 						$top_key = 'metadata';
 					}
 					foreach( $top_value as $key => $value ) {
-						echo 'listings.default_filters.push( { "name": "' . $top_key . '[' .  $key . ']", "value" : "'. $value . '" } );';
+						$skey = is_int($key) ? '' : $key;
+						echo 'listings.default_filters.push( { "name": "' . $top_key . '[' .  $skey . ']", "value" : "'. $value . '" } );';
 					}
 				} else {
 					echo 'listings.default_filters.push( { "name": "'. $top_key . '", "value" : "'. $top_value . '" } );';
