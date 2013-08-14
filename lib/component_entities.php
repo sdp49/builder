@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Generate output for the shortcodes
+ * Generate output for the shortcodes and templates
  *
  */
 
@@ -18,6 +18,8 @@ class PL_Component_Entity {
 	public static $neighborhood_term;
 
 	public static $slideshow_caption_index;
+	
+	public static $template_tags = array();
 
 
 
@@ -1273,5 +1275,101 @@ class PL_Component_Entity {
 		$css .= '</style>';
 
 		echo $css;
+	}
+	
+	/**
+	 * Helper function to parse template tags out of a template and replace them with their values
+	 * @param function $callback	: callback that will provide a value for any tags found
+	 * @param array $tags			: list of tags the callback supports
+	 * @param string $content		: actual content to be parsed
+	 * @return string
+	 */
+	static function do_templatetags($callback, $tags, $content) {
+		self::$template_tags = $tags;
+		$subcode = implode('|', $tags);
+		$pattern =
+		'\\['                              // Opening bracket
+		. '(\\[?)'                           // 1: Optional second opening bracket for escaping shortcodes: [[tag]]
+		. "($subcode)"                       // 2: Shortcode name
+		. '\\b'                              // Word boundary
+		. '('                                // 3: Unroll the loop: Inside the opening shortcode tag
+		.     '[^\\]\\/]*'                   // Not a closing bracket or forward slash
+		.     '(?:'
+				.         '\\/(?!\\])'               // A forward slash not followed by a closing bracket
+				.         '[^\\]\\/]*'               // Not a closing bracket or forward slash
+				.     ')*?'
+				. ')'
+				. '(?:'
+				.     '(\\/)'                        // 4: Self closing tag ...
+				.     '\\]'                          // ... and closing bracket
+				. '|'
+				.     '\\]'                          // Closing bracket
+				.     '(?:'
+						.         '('                        // 5: Unroll the loop: Optionally, anything between the opening and closing shortcode tags
+						.             '[^\\[]*+'             // Not an opening bracket
+						.             '(?:'
+								.                 '\\[(?!\\/\\2\\])' // An opening bracket not followed by the closing shortcode tag
+								.                 '[^\\[]*+'         // Not an opening bracket
+								.             ')*+'
+								.         ')'
+								.         '\\[\\/\\2\\]'             // Closing shortcode tag
+								.     ')?'
+								. ')'
+								. '(\\]?)';                          // 6: Optional second closing brocket for escaping shortcodes: [[tag]]
+	
+		return preg_replace_callback( "/$pattern/s", $callback, $content );
+	}
+	
+	/**
+	 * Helper function to substitute values for template tags.
+	 * Used by templates for: individual listing pages.
+	 */
+	public static function listing_templatetag_callback($m) {
+		if ( $m[1] == '[' && $m[6] == ']' ) {
+			return substr($m[0], 1, -1);
+		}
+	
+		$tag = $m[2];
+		$atts = shortcode_parse_atts($m[3]);
+		$content = $m[5];
+	
+		if ($tag == 'if') {
+			$val = isset($atts['value']) ? $atts['value'] : null;
+			if (empty($atts['group']) && !empty($atts['attribute'])) {
+				if (array_key_exists($atts['attribute'], self::$listing['cur_data'])) {
+					$atts['group'] = 'cur_data';
+				}else if (array_key_exists($atts['attribute'], self::$listing['location'])) {
+					$atts['group'] = 'location';
+				}else if (array_key_exists($atts['attribute'], self::$listing['contact'])) {
+					$atts['group'] = 'contact';
+				}else if (array_key_exists($atts['attribute'], self::$listing['rets'])) {
+					$atts['group'] = 'rets';
+				}
+			}
+			if (empty($atts['group'])) {
+				if ((!isset(self::$listing[$atts['attribute']]) && $val==='') ||
+				(isset(self::$listing[$atts['attribute']]) && (PL_Component_Entity::$listing[$atts['attribute']]===$val || (is_null($val) && PL_Component_Entity::$listing[$atts['attribute']])))) {
+					return self::do_templatetags(array(__CLASS__, 'listing_templatetag_callback'), self::$template_tags, $content);
+				}
+			}
+			elseif ((!isset(self::$listing[$atts['group']][$atts['attribute']]) && $val==='') ||
+					(isset(self::$listing[$atts['group']][$atts['attribute']]) && (PL_Component_Entity::$listing[$atts['group']][$atts['attribute']]===$val || (is_null($val) && PL_Component_Entity::$listing[$atts['group']][$atts['attribute']])))) {
+				return self::do_templatetags(array(__CLASS__, 'listing_templatetag_callback'), self::$template_tags, $content);
+			}
+			return '';
+		}
+		$content = self::listing_sub_entity( $atts, $content, $tag );
+		return self::wrap( 'listing_sub', $content );
+	}
+	
+	/**
+	 * Give theme, etc a chance to customize template output on a per item basis
+	 */
+	public static function wrap( $shortcode, $content = '' ) {
+		ob_start();
+		do_action( $shortcode . '_pre_header' );
+		echo $content;
+		do_action( $shortcode . '_post_footer' );
+		return ob_get_clean();
 	}
 }
