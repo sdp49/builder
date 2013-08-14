@@ -90,7 +90,7 @@ class PL_Form {
 					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
 					<select name="<?php echo $name ?>" id="<?php echo $id ?>">
 						<?php foreach ($options as $key => $text): ?>
-							<option value="<?php echo htmlentities($key, ENT_QUOTES, 'UTF-8', false) ?>" <?php echo ($key == $value ? 'selected="selected"' : '' ) ?>><?php echo htmlentities($text, ENT_QUOTES, 'UTF-8', false) ?></option>
+							<option value="<?php echo htmlentities($key, ENT_QUOTES) ?>" <?php echo ($key == $value ? 'selected="selected"' : '' ) ?>><?php echo htmlentities($text, ENT_QUOTES, 'UTF-8', false) ?></option>
 						<?php endforeach ?>
 					</select>
 				</section>
@@ -101,7 +101,7 @@ class PL_Form {
 					<label for="<?php echo $id ?>"><?php echo $text ?></label>	
 					<select name="<?php echo $name ?>[]" id="<?php echo $id ?>" <?php echo ($type == 'multiselect' ? 'multiple="multiple"' : '') ?> >
 						<?php foreach ($options as $key => $text): ?>
-							<option value="<?php echo htmlentities($key, ENT_QUOTES, 'UTF-8', false) ?>" <?php echo ((is_array($value) && in_array($key, $value) ) ? 'selected="selected"' : '' ) ?>><?php echo htmlentities($text, ENT_QUOTES, 'UTF-8', false) ?></option>
+							<option value="<?php echo htmlentities($key, ENT_QUOTES) ?>" <?php echo ((is_array($value) && in_array($key, $value) ) ? 'selected="selected"' : '' ) ?>><?php echo htmlentities($text, ENT_QUOTES, 'UTF-8', false) ?></option>
 						<?php endforeach ?>
 					</select>
 				</section>

@@ -104,7 +104,7 @@ class PL_Component_Entity {
 		// output listings formatted w/ template
 		echo PLS_Partials::get_listings($atts);
 		// support shortcodes in the header or footer
-		return do_shortcode($header.ob_get_clean().$footer);
+		return do_shortcode($header).ob_get_clean().do_shortcode($footer);
 	}
 
 	/**
@@ -186,7 +186,7 @@ class PL_Component_Entity {
 		self::print_filters( $filters . $filters_string, $atts['context'] );
 		echo PLS_Partials::get_listings_list_ajax($atts);
 		// support shortcodes in the header or footer
-		return do_shortcode($header.ob_get_clean().$footer);
+		return do_shortcode($header).ob_get_clean().do_shortcode($footer);
 	}
 
 	public static function add_length_limit_default() {
@@ -274,7 +274,7 @@ class PL_Component_Entity {
 		self::print_filters( $filters . $filters_string, $atts['context'] );
 		PLS_Partials_Get_Listings_Ajax::load($atts);
 		// support shortcodes in the header or footer
-		return do_shortcode($header.ob_get_clean().$footer);
+		return do_shortcode($header).ob_get_clean().do_shortcode($footer);
 	}
 
 	/**
@@ -1000,7 +1000,12 @@ class PL_Component_Entity {
 					}
 					foreach( $top_value as $key => $value ) {
 						$skey = is_int($key) ? '' : $key;
-						echo 'listings.default_filters.push( { "name": "' . $top_key . '[' .  $skey . ']", "value" : "'. $value . '" } );';
+						if ($skey || count($top_value)>1) {
+							$skey = '['.$skey.']';
+						}
+						if (!empty($value)) {
+							echo 'listings.default_filters.push( { "name": "' . $top_key .  $skey . '", "value" : "'. $value . '" } );';
+						}
 					}
 				} else {
 					echo 'listings.default_filters.push( { "name": "'. $top_key . '", "value" : "'. $top_value . '" } );';
