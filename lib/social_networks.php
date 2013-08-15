@@ -47,7 +47,7 @@ class PL_Social_Networks {
 		add_action( 'add_meta_boxes', array( __CLASS__, 'add_post_metaboxes' ) );
 		add_action( 'save_post', array( __CLASS__, 'save_post_social_messages' ) );
 		
-		// add_action( 'admin_menu', array( __CLASS__, 'add_social_settings_page' ) );
+		add_action( 'admin_menu', array( __CLASS__, 'add_social_settings_page' ) );
 		
 		add_action( 'pls_add_future_post', array( __CLASS__, 'publish_post_scheduled_delay' ), 10, 2 );
 		
@@ -196,10 +196,13 @@ class PL_Social_Networks {
 		// Mandatory configs
 		include_once PL_LIB_DIR . 'twitteroauth/config.php';
 		include_once PL_LIB_DIR . 'twitteroauth/twitteroauth/twitteroauth.php';
-			
+
+		$transName = 'list_tweets';
+		$cacheTime = 10;
+
 		// Step 5 - we already know the user, he's authorized, we have the data in DB
 		if( self::is_twitter_authenticated() ) {
-			pls_log_socials( 'logins.txt', 'step5' );
+			// pls_log_socials( 'logins.txt', 'step5' );
 			$connection = new TwitterOAuth( CONSUMER_KEY, CONSUMER_SECRET, self::$user_token, self::$user_token_secret );
 		
 			if( isset( $_GET['postme'] ) ) {
@@ -218,9 +221,9 @@ class PL_Social_Networks {
 		} else {
 			// Steps 1 through 4 for authentication
 			if( isset( $_GET['oauth_token'] ) && isset( $_GET['oauth_verifier'] ) ) {
-				pls_log_socials( 'logins.txt', 'step3:' );
+				// pls_log_socials( 'logins.txt', 'step3:' );
 				// If session is empty, then it's probably auto flushed after step 3
-				if( is_null( $_SESSION ) ) {
+				if( empty( $_SESSION ) || is_null( $_SESSION ) ) {
 					self::step4_login();
 				} elseif( ! isset( $_SESSION['first_token'] ) ) {
 					$_SESSION['first_token'] = $_GET['oauth_token'];
@@ -229,15 +232,15 @@ class PL_Social_Networks {
 					// Update session due to step 3 if not automatically done
 					session_destroy();
 					session_start();
-					pls_log_socials( 'logins.txt', 'step4' );
+					// pls_log_socials( 'logins.txt', 'step4' );
 					self::step4_login();
 				}
 			}
 			else if( isset( $_GET['social_action'] ) && $_GET['social_action'] === 'twitter-redirect' ) {
-				pls_log_socials( 'logins.txt', 'step2' );
+				// pls_log_socials( 'logins.txt', 'step2' );
 				self::step2_login();
 			} else {
-				pls_log_socials( 'logins.txt', 'step1' );
+				// pls_log_socials( 'logins.txt', 'step1' );
 				self::step1_login();
 			}
 		}
@@ -254,7 +257,7 @@ class PL_Social_Networks {
 		
 		/* Build an image link to start the redirect process. */
 		$content = '<a href="' . self::$admin_redirect_uri . '&social_action=twitter-redirect"><img src="' .  trailingslashit(PL_IMG_URL) .'social/twlogin.png" alt="Sign in with Twitter"/></a>';
-			
+			// error_log(var_export(self::$admin_redirect_uri, true));
 		echo $content;
 		/* Include HTML to display on the page. */
 	}
@@ -686,6 +689,23 @@ class PL_Social_Networks {
 		return true;
 	}
 	
+	/**
+	 * Get Twitter Username
+	 * @return Username or false
+	 */
+	public static function get_twitter_username( $current_user_id = 0 ) {
+		if( self::is_twitter_authenticated( $current_user_id ) ) {
+			include_once PL_LIB_DIR . 'twitteroauth/config.php';
+			include_once PL_LIB_DIR . 'twitteroauth/twitteroauth/twitteroauth.php';
+			$username = TwitterOAuth::get();
+			$connection = new TwitterOAuth( CONSUMER_KEY, CONSUMER_SECRET, self::$user_token, self::$user_token_secret );
+			
+			return $connection;
+		}
+		
+		return false;
+	}
+
 	/**
 	 * Helper functions for getting the objects for Twitter/Facebook management
 	 */
