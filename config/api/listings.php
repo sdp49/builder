@@ -44,7 +44,16 @@ $PL_API_LISTINGS = array(
 					'rental' => 'Rental'
 				)
 			),
-			'property_type' => array(),
+			'property_type'  => array(
+				'label' => 'Property Type',
+				'type' => 'multiselect',
+				'group' => 'listing types',
+				'bound' => array(
+					'class' => 'PL_Listing_Helper',
+					'method' => 'types_for_options',
+					'params' => array()
+				)
+			),
 			// binds to building id
 			'building_id' => array(),// => array('type' => 'text'),
 			'location' => array(
