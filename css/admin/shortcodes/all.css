@@ -5,16 +5,18 @@
 }
 
 #poststuff .sc-meta-section h3 {
+	clear: both;
 	margin-bottom: .4em;
 	background: none;
 	padding-left: 0;
 }
 
 .sc-meta-section .pl_widget_block {
+	clear: both;
 	width: 100%;
 }
 
-.pl-sc-wrap section,
+.pl-sc-wrap .row-fluid,
 .sc-meta-section .pl_widget_block section,
 .sc-meta-section #pl_static_listing_block section { /* required to override featured listings css */
 	overflow: hidden;
@@ -23,11 +25,15 @@
 
 .pl-sc-wrap .pl-sc-meta-box label {
 	display: block;
+	clear: both;
 	float: left;
 	width: 20em;
 	height: 2em;
 	line-height: 2em;
 	white-space: pre-wrap;
+}
+.pl-sc-wrap .pl-sc-meta-box section label {
+	clear: none;
 }
 
 .pl-sc-wrap label.textarea {
@@ -49,18 +55,31 @@
 }
 
 .sc-meta-section input,
-.sc-meta-section select,
 .sc-meta-section #pl_static_listing_block input, 	/* required to override featured listings css */
 .sc-meta-section #pl_static_listing_block select {
-    float: left;
+	display: block;
+	float: left;
 	margin: 0 .5em .5em 0;
 	height: auto;
 }
+.sc-meta-section select {
+	display: block;
+	float: left;
+	margin: 0 .5em .5em 0;
+}
 .sc-meta-section select[multiple] {
 	height: 12em;
+	min-width: 15em;
 }
 .sc-meta-section input[type="checkbox"] {
+	clear: both;
 	margin: .3em .5em 0 0;
+}
+.sc-meta-section input.form_item_int {
+	width: 5em;
+}
+.sc-meta-section input.form_item_text {
+	width: 15em;
 }
 
 /* CodeMirror for template */
@@ -113,22 +132,22 @@
 .span2 {
 	float: left;
 	overflow: hidden;
-	margin-right: 2%;
+	margin: 0;
 }
 .span8 {
-	width: 78%;
+	width: 80%;
 }
 
 .span6 {
-	width: 58%;
+	width: 60%;
 }
 
 .span4 {
-	width: 38%;
+	width: 40%;
 }
 
 .span2 {
-	width: 18%;
+	width: 20%;
 }
 
 /* preview pane */
@@ -176,13 +195,13 @@
 /* Shortcode editor */
 
 
-.pl_template_block, 
+.pl_template_block,
 .edit-sc-template-edit {
 	float: left;
 	margin-right: 1em;
 }
 .edit-sc-template-edit {
-	padding-top: 2px;	
+	padding-top: 2px;
 }
 
 
@@ -212,8 +231,19 @@
 	clear: both;
 }
 
-.subcode {
-	margin-right: .8em;
+h4.subcode {
+	margin: 0;
+	padding: 0;
+}
+
+.subcode-help {
+	display: none;
+}
+.subcode-help code {
+	margin: 0;
+	padding: 0;
+	font-style: normal;
+	word-wrap: break-word;
 }
 
 .before_widget a,

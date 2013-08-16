@@ -11,6 +11,18 @@ $template = array(
 	padding: 0 !important;
 	width: 100% !important;
 }
+.pl-tpl-fl-twentyeleven .clear {
+	clear: both;
+}
+.pl-tpl-fl-twentyeleven p {
+	display: block !important;
+	float: none !important;
+	border: none !important;
+	margin: 0 0 .1em 0 !important;
+	padding: 0 !important;
+	background: none !important;
+	line-height: 1.2em !important;
+}
 
 /* style each listing... */
 .pl-tpl-fl-twentyeleven .listing-item {
@@ -23,11 +35,7 @@ $template = array(
 	padding: 5px 0 !important;
 	width: 100% !important;
 	font-size: 14px !important;
-	font-weight: 300 !important;
 	overflow: hidden !important;
-}
-/* style every other listing */
-.pl-tpl-fl-twentyeleven .listing-item:nth-child(2n) {
 }
 /* heading */
 .pl-tpl-fl-twentyeleven .listing-head {
@@ -66,21 +74,11 @@ $template = array(
 	height: 120px !important;
 }
 /* details block */
-.pl-tpl-fl-twentyeleven .listing-item-details {
-}
-.pl-tpl-fl-twentyeleven .listing-item-details p {
-	float: none !important;
-	border: none !important;
-	margin: 0 0 .1em 0 !important;
-	padding: 0 !important;
-	background: none !important;
-	line-height: 1.2em !important;
-}
-/* feature list */
 .pl-tpl-fl-twentyeleven .listing-item-details ul {
 	float: none !important;
 	margin: 0 !important;
 	padding: 0 !important;
+	min-width: 100px;
 	list-style-type: none !important;
 	list-style-image: none !important;
 	overflow: hidden !important;
@@ -113,9 +111,9 @@ $template = array(
 .pl-tpl-fl-twentyeleven p.mls {
 	font-size: 12px !important;
 }
-/* description ands compliance */
+/* description and compliance */
 .pl-tpl-fl-twentyeleven p.desc,
-.pl-tpl-fl-twentyeleven p.compliance {
+.pl-tpl-fl-twentyeleven .listing-item .compliance-wrapper p {
 	margin-bottom: 5px !important;
 	max-height: 52px !important;
 	max-width: 370px !important;
@@ -123,11 +121,18 @@ $template = array(
 	font-size: 14px !important;
 	overflow: hidden !important;
 }
+.pl-tpl-fl-twentyeleven .listing-item .compliance-wrapper p,
+.pl-tpl-fl-twentyeleven .pl-tpl-footer .compliance-wrapper p {
+	font-size: .8em !important;
+}
+.pl-tpl-fl-twentyeleven .listing-item .clear {
+	clear: none;
+}
 .pl-tpl-fl-twentyeleven .actions {
 	display: block !important;
 	clear: both !important;
 	float: right !important;
-	margin: -10px 0 0 0 !important;
+	margin: 0 !important;
 	padding: 0 !important;
 	font-size: 15px !important;
 	text-decoration: none !important;
@@ -140,12 +145,19 @@ $template = array(
 	padding: 0 !important;
 }
 .pl-tpl-fl-twentyeleven .view-details a {
-	margin-left: 2em;
+	margin-left: 2em !important;
 }
+
+/* compliance -shortcode- in the footer */
+.pl-tpl-fl-twentyeleven .pl-tpl-footer .compliance-wrapper {
+	margin: .5em 0;
+	padding: 0;
+}
+
 ',
 
 'snippet_body' => '
-<section class="listing-item">
+<div class="listing-item">
 
 	<div class="listing-head">
 		<h4><a href="[url]">[address] [locality], [region]</a></h4>
@@ -156,9 +168,9 @@ $template = array(
 		<div class="listing-thumbnail">
 			[image]
 		</div>
-		
+
 		<div class="listing-item-details">
-		
+
 			<div class="basic-details">
 				<ul>
 					<li>[beds]<span> Bed(s)</span></li>
@@ -171,12 +183,12 @@ $template = array(
 			</div>
 
 			<p class="desc">[desc]</p>
-			<p class="compliance">[compliance]</p>
-		
+			[compliance]
+
 		</div><!--listing-item-details-->
 		<div class="actions">
 			[favorite_link_toggle]
-			<div class="view-details"> 
+			<div class="view-details">
 				<a href="[url]">View Listing Details</a>
 			</div>
 		</div>
@@ -184,11 +196,11 @@ $template = array(
 
 	</div>
 
-</section><!--listing-item-->
+</div><!--listing-item-->
 ',
 
 'before_widget' => '<div class="pl-tpl-fl-twentyeleven">',
 
-'after_widget' => '</div>',
+'after_widget' => '<div class="pl-tpl-footer">[compliance]</div></div>',
 
 );

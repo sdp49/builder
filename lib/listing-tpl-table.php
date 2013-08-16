@@ -1,8 +1,8 @@
 <?php
 /**
- * Construct a table to manage custom shortcode templates
+ * Construct a table to manage custom listing page templates
  */
-class PL_Shortcode_Tpl_Table extends WP_List_Table {
+class PL_Listing_Tpl_Table extends WP_List_Table {
 
 	private $base_page;
 	private $per_page = 20;
@@ -21,13 +21,11 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 			array(
 					//'cb' 		=> '<input type="checkbox" />',
 					'title'		=> 'Name',
-					'shortcode'	=> 'For Shortcode Type',
 					'id'		=> 'Template ID',
 			),
 			array(),
 			array(
 					'title' => array('title', ''),
-					'shortcode' => array('shortcode', ''),
 			),
 		);
 		$this->items = array();
@@ -45,18 +43,13 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 	 */
 	private static function _fetch_items() {
 		if (empty(self::$_items)) {
-			$shortcodes = PL_Shortcode_CPT::get_shortcode_list();
-			$sc_attr = PL_Shortcode_CPT::get_shortcode_attrs();
-			foreach($shortcodes as $shortcode=>$inst) {
-				$sc_tpls = PL_Shortcode_CPT::template_list($shortcode);
-				$shortcode_name = $sc_attr[$shortcode]['title'];
-				$tpls_in_use = PL_Shortcode_CPT::templates_in_use($shortcode);
-				foreach($sc_tpls as $sc_tpl) {
-					$status = in_array($sc_tpl['id'], $tpls_in_use) ? 'in_use' : 'inactive';
-					self::$_viewcnt[$status]++;
-					if ($sc_tpl['type']=='default') self::$_viewcnt['built_in']++;
-					self::$_items[] = array_merge($sc_tpl, array('shortcode'=>$shortcode, 'shortcode_name'=>$shortcode_name, 'status'=>$status));
-				}
+			$tpls = PL_Listing_Customizer::get_template_list();
+			$active_template_id = PL_Listing_Customizer::get_active_template_id();
+			foreach($tpls as $tpl) {
+				$status = $tpl['id']==$active_template_id ? 'in_use' : 'inactive';
+				self::$_viewcnt[$status]++;
+				if ($tpl['type']=='default') self::$_viewcnt['built_in']++;
+				self::$_items[] = array_merge($tpl, array('status'=>$status));
 			}
 		}
 		return self::$_items;
@@ -75,7 +68,7 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 		$this->items = array();
 		foreach($this->_fetch_items() as $item) {
 			if ((!$status || $status==$item['status']) &&
-				(!$type || $type==$item['type']) && 
+				(!$type || $type==$item['type']) &&
 				(!$search || strpos($item['title'], $search)!==false)) {
 				$this->items[] = $item;
 			}
@@ -84,9 +77,6 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 		// sort
 		if ($orderby == 'title') {
 			uasort($this->items, array($this, $order=='asc' ? 'sort_by_title_asc' : 'sort_by_title_desc'));
-		}
-		else {
-			uasort($this->items, array($this, $order=='asc' ? 'sort_by_type_asc' : 'sort_by_type_desc'));
 		}
 
 		// get page counts
@@ -115,18 +105,6 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 		return -strcasecmp($a['title'], $b['title']);
 	}
 
-	public static function sort_by_type_asc($a, $b) {
-		$cmp = strcasecmp($a['shortcode_name'], $b['shortcode_name']);
-		if ($cmp != 0) return $cmp;
-		return strcasecmp($a['title'], $b['title']);
-	}
-
-	public static function sort_by_type_desc($a, $b) {
-		$cmp = strcasecmp($a['shortcode_name'], $b['shortcode_name']);
-		if ($cmp != 0) return -$cmp;
-		return -strcasecmp($a['title'], $b['title']);
-	}
-
 	public function no_items() {
 		_e("No shortcode templates found.");
 	}
@@ -134,30 +112,12 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 	public function get_views() {
 		$status_links = array();
 
-		$count = count(self::$_items);
-		$class = empty($_REQUEST['s']) && empty($_REQUEST['status']) ? ' class="current"' : '';
-		$status_links['all'] = '<a href="'.$this->base_page.'"'.$class.'>'.sprintf(_nx('All <span class="count">(%s)</span>', 'All <span class="count">(%s)</span>', $count, 'templates'), number_format_i18n($count)).'</a>';
-
-		if (self::$_viewcnt['in_use']) {
-			$class = !empty($_REQUEST['status']) && $_REQUEST['status']=='in_use' ? ' class="current"' : '';
-			$status_links['in_use'] = '<a href="'.$this->base_page.'&status=in_use"'.$class.'>'.sprintf(_nx('In Use <span class="count">(%s)</span>', 'In Use <span class="count">(%s)</span>', self::$_viewcnt['in_use'], 'templates'), number_format_i18n(self::$_viewcnt['in_use'])).'</a>';
-		}
-
-		if (self::$_viewcnt['inactive']) {
-			$class = empty($class) && !empty($_REQUEST['status']) && $_REQUEST['status']=='inactive' ? ' class="current"' : '';
-			$status_links['inactive'] = '<a href="'.$this->base_page.'&status=inactive"'.$class.'>'.sprintf(_nx('Not In Use <span class="count">(%s)</span>', 'Not In Use <span class="count">(%s)</span>', self::$_viewcnt['inactive'], 'templates'), number_format_i18n(self::$_viewcnt['inactive'])).'</a>';
-		}
-
-		if (self::$_viewcnt['built_in']) {
-			$class = empty($class) && !empty($_REQUEST['status']) && $_REQUEST['status']=='builtin' ? ' class="current"' : '';
-			$status_links['built_in'] = '<a href="'.$this->base_page.'&type=default"'.$class.'>'.sprintf(_nx('Built In <span class="count">(%s)</span>', 'Built In <span class="count">(%s)</span>', self::$_viewcnt['built_in'], 'templates'), number_format_i18n(self::$_viewcnt['built_in'])).'</a>';
-		}
-
 		return $status_links;
 	}
 
 	public function get_bulk_actions() {
 		$actions = array();
+
 		return $actions;
 	}
 
@@ -176,18 +136,16 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 	}
 
 	public function single_row( $id, $template ) {
-
 		?>
 		<tr id="sc-template-<?php echo $id; ?>" class="sc-template-<?php echo $template['type']?>" valign="top">
 		<?php
 
 		list( $columns, $hidden ) = $this->get_column_info();
 
-		$edit_link = admin_url('admin.php?page=placester_shortcodes_template_edit&action=edit&id=');
-		$delete_link = admin_url('admin.php?page=placester_shortcodes_template_edit&action=delete&id=');
-		$copy_link = admin_url('admin.php?page=placester_shortcodes_template_edit&action=copy&id=');
-		$builtin_copy_link = admin_url('admin.php?page=placester_shortcodes_template_edit&action=copy');
-		
+		$edit_link = admin_url('admin.php?page=placester_shortcodes_listing_template_edit&action=edit&id=');
+		$delete_link = admin_url('admin.php?page=placester_shortcodes_listing_template_edit&action=delete&id=');
+		$copy_link = admin_url('admin.php?page=placester_shortcodes_listing_template_edit&action=copy&id=');
+
 		foreach ( $columns as $column_name => $column_display_name ) {
 			$class = "class=\"$column_name column-$column_name\"";
 
@@ -226,17 +184,11 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 					}
 					else {
 						$actions['edit'] = __('Non-editable built-in template.');
-						$actions['copy'] = '<a href="' . $builtin_copy_link . '&default='.$template['id'].'&shortcode='.$template['shortcode'].'" title="' . esc_attr( __( 'Copy this item' ) ) . '">' . __( 'Copy' ) . '</a>';
+						$actions['copy'] = '<a href="' . $copy_link . $template['id'].'" title="' . esc_attr( __( 'Copy this item' ) ) . '">' . __( 'Copy' ) . '</a>';
 					}
 					echo $this->row_actions( $actions, true );
 					?>
 					</td>
-					<?php
-					break;
-
-				case 'shortcode':
-					?>
-					<td <?php echo $attributes ?>><strong><?php echo $template['shortcode_name']?></strong><br /><?php echo '['.$template['shortcode'].']'?></td>
 					<?php
 					break;
 

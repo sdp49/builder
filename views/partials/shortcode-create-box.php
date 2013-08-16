@@ -77,13 +77,13 @@ foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ) {
 		<div>
 
 			<!-- Type -->
-			<section class="post_types_list_wrapper row-fluid">
+			<div class="post_types_list_wrapper row-fluid">
 
 				<div class="span2">
 					<label class="section-label" for="pl_sc_shortcode_type">Type:</label>
 				</div>
 
-				<div class="span9">
+				<div class="span8">
 
 					<select id="pl_sc_shortcode_type" name="shortcode" class="">
 
@@ -111,14 +111,14 @@ foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ) {
 
 				</div>
 
-			</section><!-- /.post_types_list_wrapper -->
+			</div><!-- /.post_types_list_wrapper -->
 
 			<!-- Template / Layout -->
-			<section id="choose_template" style="display:none;">
+			<div id="choose_template" class="row-fluid" style="display:none;">
 				<div class="span2">
 					<label class="section-label" for="pl_template">Template:</label>
 				</div>
-				<div>
+				<div class="span8">
 					<?php foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ): ?>
 						<?php if(!empty($sct_args['options']['context'])):?>
 							<div class="pl_template_block <?php echo $pl_shortcode; ?>" id="<?php echo $sct_args['shortcode'];?>_template_block" style="display: none;">
@@ -143,7 +143,7 @@ foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ) {
 						<a id="edit_sc_template_create" href="" class="create-new-template-link">Create</a>
 					</div>
 				</div>
-			</section><!-- /edit-sc-choose-template -->
+			</div><!-- /edit-sc-choose-template -->
 
 		</div><!-- /#post_types_list -->
 

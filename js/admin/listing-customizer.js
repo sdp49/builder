@@ -4,12 +4,40 @@
 
 jQuery(document).ready(function($){
 
+	/**
+	 * Put hint text into a text input
+	 */
+	function wptitlehint(id) {
+		id = id || 'title';
+
+		var title = $('#' + id), titleprompt = $('#' + id + '-prompt-text');
+
+		if ( title.val() == '' )
+			titleprompt.removeClass('screen-reader-text');
+
+		titleprompt.click(function(){
+			$(this).addClass('screen-reader-text');
+			title.focus();
+		});
+
+		title.blur(function(){
+			if ( this.value == '' )
+				titleprompt.removeClass('screen-reader-text');
+		}).focus(function(){
+			titleprompt.addClass('screen-reader-text');
+		}).keydown(function(e){
+			titleprompt.addClass('screen-reader-text');
+			$(this).unbind(e);
+		});
+	}
 
 
 	////////////////////////////////////////
 	// Template editor
 	////////////////////////////////////////
-	
+
+	// setup view based on current shortcode type, etc
+	wptitlehint();
 	// call the custom autosave for every changed input and select in the template edit view
 	$('#pl_sc_tpl_edit').find('input, select, textarea').change(function() {
 		_changesMade = true;
@@ -17,8 +45,12 @@ jQuery(document).ready(function($){
 	$('#pl_sc_tpl_edit input[type="submit"]').click(function() {
 		_changesMade = false;
 	});
+	$('.subcode').click(function(e) {
+		e.preventDefault();
+		$(this).next('.subcode-help').toggle();
+	});
 	// Add CodeMirror support to edit boxes
-	$('#pl_template_block textarea').each(function() {
+	$('.pl_template_block textarea').each(function() {
 		var cm = CodeMirror.fromTextArea(document.getElementById($(this).attr('id')), {
 		    mode: $(this).closest('section').hasClass('mime_css')?"text/css":"text/html",
 		    lineNumbers: true,

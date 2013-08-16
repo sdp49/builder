@@ -32,7 +32,7 @@ class PL_Option_Helper {
 				if ($option_result) {
 					// Set result to reflect a successful update/change...
 					$result = true;
-					$message = "You've successfully changed your Placester API Key -- this page will reload in momentarily";
+					$message = "You've successfully changed your Placester API Key -- this page will reload momentarily";
 
 					// Nuke the cache...
 					PL_Cache::invalidate();

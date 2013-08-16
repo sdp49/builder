@@ -41,28 +41,6 @@ class PL_Shortcodes
 
 	public static $subcodes = array(
 		'search_form' => array(
-			'bedrooms',
-            'min_beds',
-            'max_beds',
-            'bathrooms',
-            'min_baths',
-            'max_baths',
-            'price',
-            'half_baths',
-            'property_type',
-            'listing_types',
-            'zoning_types',
-            'purchase_types',
-            'available_on',
-            'cities',
-            'states',
-            'zips',
-            'neighborhood',
-            'county',
-            'min_price',
-            'max_price',
-            'min_price_rental',
-			'max_price_rental'
 		),
 		'listing' => array(
 			'price',
@@ -138,6 +116,7 @@ class PL_Shortcodes
 		add_filter('property_details_filter', array(__CLASS__, 'prop_details_shortcode_context'), 10, 2);
 		*/
 
+		// TODO: sc cleanup
 		// Ensure all of shortcodes are set to some snippet...
 		foreach (self::$codes as $code) {
 			add_option( ('pls_' . $code), self::$defaults[$code][0] );
@@ -157,22 +136,25 @@ class PL_Shortcodes
 
 
 	/*** Shortcode Handlers ***/
-	public static function wrap( $shortcode, $content = '' ) {
-		ob_start();
-		do_action( $shortcode . '_pre_header' );
-		// do some real shortcode work
-		echo $content;
-		do_action( $shortcode . '_post_footer' );
-		return ob_get_clean();
-	}
-	
+
+
+	/**
+	 * [compliance] handler
+	 */
 	public static function compliance_shortcode_handler( $atts ) {
-		$content = PL_Component_Entity::compliance_entity( $atts );
-		
+		ob_start();
+		PLS_Listing_Helper::get_compliance(array(
+			'context' => 'listings'
+		));
+		$content = ob_get_clean();
+
 		return self::wrap( 'compliance', $content );
 		
 	} 
 	
+	/**
+	 * [search_form] handler
+	 */
 	public static function search_form_shortcode_handler($atts) {
 		$content = PL_Component_Entity::search_form_entity( $atts );
 		
@@ -186,7 +168,9 @@ class PL_Shortcodes
 		return self::wrap( 'neighborhood', $content );
 	}
 
-
+	/**
+	 * [listing_slideshow] handler
+	 */
 	public static function listing_slideshow_shortcode_handler ($atts) {
 		$content = PL_Component_Entity::listing_slideshow( $atts );
 		
@@ -199,7 +183,9 @@ class PL_Shortcodes
 		return self::wrap( 'advanced_slideshow', $content );
 	}
 	
-	// Handle featured listings and filters
+	/**
+	 * [featured_listings] handler
+	 */
 	public static function featured_listings_shortcode_handler ($atts, $content = '') {
 
 		$content = PL_Component_Entity::featured_listings_entity( $atts );
@@ -207,6 +193,9 @@ class PL_Shortcodes
 		return self::wrap( 'featured_listings', $content );	
 	}
 	
+	/**
+	 * [static_listings] handler
+	 */
 	public static function static_listings_shortcode_handler ( $atts, $content = '' ) {
 		add_filter('pl_filter_wrap_filter', array( __CLASS__, 'pl_filter_wrap_default_filters' ));
 		$filters = '';
@@ -223,6 +212,9 @@ class PL_Shortcodes
 		return self::wrap( 'static_listings', $content );
 	}
 
+	/**
+	 * [search_listings] handler
+	 */
 	public static function search_listings_shortcode_handler( $atts, $content ) {		
 		add_filter('pl_filter_wrap_filter', array( __CLASS__, 'pl_filter_wrap_default_filters' ));
 		$filters = '';
@@ -243,6 +235,9 @@ class PL_Shortcodes
 		return self::wrap( 'search_listings', $content );
 	}
 
+	/**
+	 * [search_map] handler
+	 */
 	public static function search_map_shortcode_handler( $atts ) {
 		$content = PL_Component_Entity::search_map_entity( $atts );
 		
@@ -256,10 +251,13 @@ class PL_Shortcodes
 		return self::wrap( 'pl_neighborhood', $content );
 	}
 
-/*** Context Filter Handlers ***/	
+	
+	/*** Context Filter Handlers ***/	
+
 
 	/**
 	 * Get search form body from template
+	 * -
 	 */
 	public static function searchform_shortcode_context($form, $form_html, $form_options, $section_title, $form_data) {
 		$shortcode = 'search_form';
@@ -269,7 +267,10 @@ class PL_Shortcodes
 		return do_shortcode($snippet_body);
 	}
 
-	// It's important to note that this is called for every individual listing...
+	/**
+	 *  It's important to note that this is called for every individual listing...
+	 *  -
+	 */
 	public static function listings_shortcode_context($item_html, $listing) {
 		$shortcode = 'listings';
 		self::$listing = $listing;
@@ -278,6 +279,9 @@ class PL_Shortcodes
 	  	return do_shortcode($snippet_body);
 	}
 
+	/**
+	 * -
+	 */
 	public static function prop_details_shortcode_context($html, $listing_data)	{
 		// Check to see if this functionality is enabled...
 		$enabled = get_option( self::$prop_details_enabled_key, 'false' );
@@ -309,11 +313,15 @@ class PL_Shortcodes
 	
 /*** Sub-Shortcode Handlers ***/
 
-	public static function search_form_sub_shortcode_handler ($atts, $content, $tag) { 
+	
+	/**
+	 * -
+	 */
+	public static function asearch_form_sub_shortcode_handler ($atts, $content, $tag) { 
 		return isset( self::$form_html[$tag] ) ? self::$form_html[$tag] : '';
 	}
 
-	public static function listing_sub_shortcode_handler ($atts, $content, $tag) {
+	public static function alisting_sub_shortcode_handler ($atts, $content, $tag) {
 		$content = PL_Component_Entity::listing_sub_entity( $atts, $content, $tag );
 		
 		return self::wrap( 'listing_sub', $content );
@@ -357,29 +365,48 @@ class PL_Shortcodes
 		if( isset( $group ) ) {
 			$filter = $group . '[' . $filter . ']';
 		}
-		
-		return apply_filters('pl_filter_wrap_filter', '{ "name": "' . $filter . '", "value" : "' . $value . '"} ');
+		if (strpos($value, '||') !==false ) {
+			$values = explode('||', $value);
+			$filter .= '[]';
+			$jsfilter = '';
+			foreach ($values as $value) {
+				$jsfilter .= apply_filters('pl_filter_wrap_filter', "{ 'name': '" . $filter . "', 'value' : '" . $value . "'} ");
+			}
+			return $jsfilter;
+		}
+		else {
+			return apply_filters('pl_filter_wrap_filter', "{ 'name': '" . $filter . "', 'value' : '" . $value . "'} ");
+		}
 	}	
 	
 	public static function pl_filter_wrap_default_filters ($filter) {
 		return "listings.default_filters.push(" . trim( strip_tags( $filter ) ) . "); ";
 	}
 
+	
 	/*** Helper Functions ***/
 
+	
+	/**
+	 * Give themes a chance to wrap output and individual fields rendered by shortcodes  
+	 */
+	public static function wrap( $shortcode, $content = '' ) {
+		ob_start();
+		do_action( $shortcode . '_pre_header' );
+		// do some real shortcode work
+		echo $content;
+		do_action( $shortcode . '_post_footer' );
+		return ob_get_clean();
+	}
+	
 	/**
 	 * Get the body for a shortcode's output from a template
 	 */
 	public static function get_active_snippet_body ($shortcode, $template_name = '') {
 		$html = '';
-		if (!$template_name || !($template = PL_Shortcode_CPT::load_template($template_name, $shortcode)) || empty($template['snippet_body'])) {
-			// Get default template ID associated with this shortcode...
-			$option_key = 'pls_' . $shortcode;
-			$snippet_name = get_option($option_key, self::$defaults[$shortcode][0]);
-			$template = PL_Shortcode_CPT::load_template($snippet_name, $shortcode);
-		}
+		$template = PL_Shortcode_CPT::load_template($template_name, $shortcode);
 		if (!empty($template['snippet_body'])) {
-			$html = html_entity_decode($template['snippet_body'], ENT_QUOTES);
+			$html = $template['snippet_body'];
 		}
 		return $html;
 	}
@@ -397,9 +424,14 @@ class PL_Shortcodes
 		<?php
 		echo ob_get_clean();
 	}
+
 	
 	/*** Admin Functions ***/
+
 	
+	/**
+	 * Buffer shortcode admin pages to give us a chance to redirect if necessary
+	 */
 	public static function admin_buffer_op($page_hook) {
 		add_action('load-'.$page_hook, array(__CLASS__, 'admin_header'));
 		add_action('admin_footer-'.$page_hook, array(__CLASS__, 'admin_footer'));

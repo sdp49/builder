@@ -6,6 +6,20 @@ $template = array(
 .pl-tpl-sl-twentyeleven {
 	font-family: "Helvetica Neue", Arial, Helvetica, "Nimbus Sans L", sans-serif;
 }
+.pl-tpl-sl-twentyeleven .clear {
+	clear: both;
+}
+.pl-tpl-sl-twentyeleven p {
+	display: block !important;
+	float: none !important;
+	border: none !important;
+	margin: 0 0 .1em 0 !important;
+	padding: 0 !important;
+	background: none !important;
+	line-height: 1.2em !important;
+}
+
+/* style each listing... */
 .pl-tpl-sl-twentyeleven .listing-item {
 	display: block !important;
 	float: none !important;
@@ -15,7 +29,6 @@ $template = array(
 	padding: 5px 0 !important;
 	width: 100% !important;
 	font-size: 14px !important;
-	font-weight: 300 !important;
 	overflow: hidden !important;
 }
 /* heading */
@@ -55,16 +68,6 @@ $template = array(
 	height: 120px !important;
 }
 /* details block */
-.pl-tpl-sl-twentyeleven .listing-item-details {
-}
-.pl-tpl-sl-twentyeleven .listing-item-details p {
-	float: none !important;
-	border: none !important;
-	margin: 0 0 .1em 0 !important;
-	padding: 0 !important;
-	background: none !important;
-	line-height: 1.2em !important;
-}
 .pl-tpl-sl-twentyeleven .listing-item-details ul {
 	float: none !important;
 	margin: 0 !important;
@@ -102,9 +105,9 @@ $template = array(
 .pl-tpl-sl-twentyeleven p.mls {
 	font-size: 12px !important;
 }
-/* description ands compliance */
+/* description and compliance */
 .pl-tpl-sl-twentyeleven p.desc,
-.pl-tpl-sl-twentyeleven p.compliance {
+.pl-tpl-sl-twentyeleven .listing-item .compliance-wrapper p {
 	margin-bottom: 5px !important;
 	max-height: 52px !important;
 	max-width: 370px !important;
@@ -112,11 +115,18 @@ $template = array(
 	font-size: 14px !important;
 	overflow: hidden !important;
 }
+.pl-tpl-sl-twentyeleven .listing-item .compliance-wrapper p,
+.pl-tpl-sl-twentyeleven .pl-tpl-footer .compliance-wrapper p {
+	font-size: .8em !important;
+}
+.pl-tpl-sl-twentyeleven .listing-item .clear {
+	clear: none;
+}
 .pl-tpl-sl-twentyeleven .actions {
 	display: block !important;
 	clear: both !important;
 	float: right !important;
-	margin: -10px 0 0 0 !important;
+	margin: 0 !important;
 	padding: 0 !important;
 	font-size: 15px !important;
 	text-decoration: none !important;
@@ -129,9 +139,15 @@ $template = array(
 	padding: 0 !important;
 }
 .pl-tpl-sl-twentyeleven .view-details a {
-	margin-left: 2em;
+	margin-left: 2em !important;
 }
-		
+
+/* compliance -shortcode- in the footer */
+.pl-tpl-sl-twentyeleven .pl-tpl-footer .compliance-wrapper {
+	margin: .5em 0;
+	padding: 0;
+}
+
 /* controls */
 .pl-tpl-sl-twentyeleven .sort_item {
 	float: left;
@@ -149,7 +165,7 @@ $template = array(
 }
 .pl-tpl-sl-twentyeleven .dataTables_length {
 	float: right;
-	margin: 0 0 0 0;
+	margin: -24px 0 0 0;
 	padding: 0;
 }
 .pl-tpl-sl-twentyeleven .dataTables_length label {
@@ -193,7 +209,7 @@ $template = array(
 ',
 
 'snippet_body' => '
-<section class="listing-item">
+<div class="listing-item">
 
 	<div class="listing-head">
 		<h4><a href="[url]">[address] [locality], [region]</a></h4>
@@ -204,9 +220,9 @@ $template = array(
 		<div class="listing-thumbnail">
 			[image]
 		</div>
-		
+
 		<div class="listing-item-details">
-		
+
 			<div class="basic-details">
 				<ul>
 					<li>[beds]<span> Bed(s)</span></li>
@@ -219,12 +235,12 @@ $template = array(
 			</div>
 
 			<p class="desc">[desc]</p>
-			<p class="compliance">[compliance]</p>
-		
+			[compliance]
+
 		</div><!--listing-item-details-->
 		<div class="actions">
 			[favorite_link_toggle]
-			<div class="view-details"> 
+			<div class="view-details">
 				<a href="[url]">View Listing Details</a>
 			</div>
 		</div>
@@ -232,11 +248,11 @@ $template = array(
 
 	</div>
 
-</section><!--listing-item-->
+</div><!--listing-item-->
 ',
 
 'before_widget' => '<div class="pl-tpl-sl-twentyeleven">',
 
-'after_widget' => '</div>',
+'after_widget' => '<div class="pl-tpl-footer">[compliance]</div></div>',
 
 );

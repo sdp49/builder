@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Generate output for the shortcodes
+ * Generate output for the shortcodes and templates
  *
  */
 
@@ -18,8 +18,60 @@ class PL_Component_Entity {
 	public static $neighborhood_term;
 
 	public static $slideshow_caption_index;
+	
+	public static $template_tags = array();
 
-
+	public static $listing_tags = array(
+			'price'			=> array('help' => 'Property price'),
+			'sqft'			=> array('help' => 'Total square feet'),
+			'beds'			=> array('help' => 'Number of bedrooms'),
+			'baths'			=> array('help' => 'Number of bathrooms'),
+			'half_baths'	=> array('help' => 'Number of half bathrooms'),
+			'avail_on'		=> array('help' => 'Date the property will be available'),
+			'url'			=> array('help' => 'Link to page for the listing'),
+			'address'		=> array('help' => 'Street address'),
+			'locality'		=> array('help' => 'Locality'),
+			'region'		=> array('help' => 'Region'),
+			'postal'		=> array('help' => 'Zip/postal code'),
+			'neighborhood'	=> array('help' => 'Neighborhood'),
+			'county'		=> array('help' => 'County'),
+			'country'		=> array('help' => 'Country'),
+			//'coords'		=> array('help' => ''),
+			'unit'			=> array('help' => 'Unit'),
+			'full_address'	=> array('help' => 'Full address'),
+			'email'			=> array('help' => 'Email address for this listing'),
+			'phone'			=> array('help' => 'Contact phone'),
+			'desc'			=> array('help' => 'Property description'),
+			'image'			=> array('help' => 'First property image'),
+			'mls_id'		=> array('help' => 'MLS #'),
+			'map'			=> array('help' => ''),
+			'listing_type'	=> array('help' => 'Type of listing'),
+			'gallery'		=> array('help' => 'Image gallery'),
+			'amenities'		=> array('help' => 'List of amenties'),
+			'price_unit'	=> array('help' => 'Unit price'),
+			'compliance'	=> array('help' => 'MLS compliance statement'),
+			'favorite_link_toggle' => array('help' => 'Link to add/remove from favorites'),
+			'custom'		=> array('help' => 'Use to display a custom listing attribute.<br />
+Format is as follows:<br />
+<code>[custom group=\'group_name\' attribute=\'some_attribute_name\' type=\'text\' value=\'some_value\']</code><br />
+where:<br />
+<code>group</code> - The group identifier if the listing attribute is part of a group. Possible values are <code>location</code>, <code>rets</code>, <code>metadata</code>, <code>uncur_data</code>.<br />
+<code>attribute</code> - (required) The unique identifier of the listing attribute.<br />
+<code>type</code> - (optional, default is \'text\') Can be <code>text</code>, <code>currency</code>, <code>list</code>. Used to indicate how the attribute should be formatted.<br />
+<code>value</code> - (optional) Indicates text to be displayed if the listing attribute is empty.<br />
+'),
+			'if'			=> array('help' => 'Use to conditionally display some content depending on the value of a listing\'s attribute.<br />
+Format is as follows:<br />
+<code>[if group=\'group_name\' attribute=\'some_attribute_name\' value=\'some_value\']some HTML that will be displayed if the condition is true[/if]</code><br />
+where:<br />
+<code>group</code> - The group identifier if the listing attribute is part of a group. Possible values are <code>location</code>, <code>rets</code>, <code>metadata</code>, <code>uncur_data</code>.<br />
+<code>attribute</code> - (required) The unique identifier of the listing attribute.<br />
+<code>value</code> - (optional) By default the condition is true if the attribute has any value other than being empty. If you wish to test if the attribute matches a specific value, then set that value in this parameter.<br />
+For example, to only display bedroom and bathroom details if the property is residential:<br />
+<code>[if attribute=\'compound_type\' value=\'res_sale\']Beds: [beds] Baths: [baths][/if]</code><br />
+To add some text to your listings:<br />
+<code>[if group=\'rets\' attribute=\'aid\' value=\'MY_MLS_AGENT_ID\']&lt;span&gt;Featured Listing&lt;/span&gt;[/if]</code>'),
+	);
 
 	public static function init() {
 		// add_action('init', array( __CLASS__, 'filter_featured_context' ) );
@@ -30,12 +82,15 @@ class PL_Component_Entity {
 		foreach ($featured_templates as $template => $type) {
 			add_filter( 'pls_listing_featured_listings_' . $template, array(__CLASS__,'featured_listings_templates'), 10, 3 );
 		}
+		add_filter( 'pls_listing_featured_listings_shortcode', array(__CLASS__,'featured_listings_templates'), 10, 3 );
 
 		$search_form_templates = PL_Shortcode_CPT::template_list('search_form', true);
 		foreach ($search_form_templates as $id => $attr) {
 			add_filter( 'pls_listings_search_form_inner_' . $id, array(__CLASS__,'search_form_inner_template'), 10, 5 );
 			add_filter( 'pls_listings_search_form_outer_' . $id, array(__CLASS__,'search_form_outer_template'), 10, 7 );
 		}
+		add_filter( 'pls_listings_search_form_inner_shortcode', array(__CLASS__,'search_form_inner_template'), 10, 5 );
+		add_filter( 'pls_listings_search_form_outer_shortcode', array(__CLASS__,'search_form_outer_template'), 10, 7 );
 
 		$listing_slideshow_templates = PL_Shortcode_CPT::template_list('listing_slideshow', true);
 		foreach ($listing_slideshow_templates as $id => $attr) {
@@ -43,16 +98,19 @@ class PL_Component_Entity {
 			// add_filter( 'pls_slideshow_html_' . $template, array(__CLASS__,'listing_slideshow_templates'), 10, 6 );
 			// add_filter( 'pls_slideshow_data_' . $template, array(__CLASS__,'listing_slideshow_templates'), 10, 3 );
 		}
+		add_filter( 'pls_slideshow_single_caption_shortcode', array( __CLASS__, 'listing_slideshow_templates' ), 10, 5 );
 
 		$search_listings_templates = PL_Shortcode_CPT::template_list('search_listings', true);
 		foreach ($search_listings_templates as $id => $attr) {
 			add_filter( 'pls_listings_list_ajax_item_html_search_listings_' . $id, array(__CLASS__,'search_listings_templates'), 10, 3 );
 		}
+		//add_filter( 'pls_listings_list_ajax_item_html_search_listings_shortcode', array(__CLASS__,'search_listings_templates'), 10, 3 );
 
 		$static_listings_templates = PL_Shortcode_CPT::template_list('static_listings', true);
 		foreach ($static_listings_templates as $id => $attr) {
 			add_filter( 'pls_listings_list_ajax_item_html_static_listings_' . $id, array(__CLASS__, 'search_listings_templates'), 10, 3 );
 		}
+		//add_filter( 'pls_listings_list_ajax_item_html_static_listings_shortcode', array(__CLASS__, 'search_listings_templates'), 10, 3 );
 
 		$neighborhood_templates = PL_Shortcode_CPT::template_list('pl_neighborhood', true);
 		foreach ($neighborhood_templates as $id => $attr) {
@@ -75,8 +133,8 @@ class PL_Component_Entity {
 				unset($atts['id']);
 			}
 		}
-		$atts = wp_parse_args($atts, array('context' => 'shortcode'));
-		
+		$atts = wp_parse_args($atts, array('context' => 'shortcode', 'limit' => 0, 'sort_type' => ''));
+
 		// add template formatting
 		$header = $footer = '';
 		$template = PL_Shortcode_CPT::load_template($atts['context'], 'featured_listings');
@@ -97,7 +155,8 @@ class PL_Component_Entity {
 		ob_start();
 		// output listings formatted w/ template
 		echo PLS_Partials::get_listings($atts);
-		return $header.ob_get_clean().$footer;
+		// support shortcodes in the header or footer
+		return do_shortcode($header).ob_get_clean().do_shortcode($footer);
 	}
 
 	/**
@@ -178,7 +237,8 @@ class PL_Component_Entity {
 		self::hide_unnecessary_controls($atts);
 		self::print_filters( $filters . $filters_string, $atts['context'] );
 		echo PLS_Partials::get_listings_list_ajax($atts);
-		return $header.ob_get_clean().$footer;
+		// support shortcodes in the header or footer
+		return do_shortcode($header).ob_get_clean().do_shortcode($footer);
 	}
 
 	public static function add_length_limit_default() {
@@ -265,7 +325,8 @@ class PL_Component_Entity {
 		ob_start();
 		self::print_filters( $filters . $filters_string, $atts['context'] );
 		PLS_Partials_Get_Listings_Ajax::load($atts);
-		return $header.ob_get_clean().$footer;
+		// support shortcodes in the header or footer
+		return do_shortcode($header).ob_get_clean().do_shortcode($footer);
 	}
 
 	/**
@@ -574,9 +635,11 @@ class PL_Component_Entity {
 		return $val;
 	}
 
+	/**
+	 * Helper function for formatting individual listing fields.
+	 * self::$listing should contain the listing values.
+	 */
 	public static function listing_sub_entity( $atts, $content, $tag ) {
-		$val = '';
-
 		$listing_list = array();
 
 		if( !empty( self::$listing ) ) {
@@ -597,12 +660,12 @@ class PL_Component_Entity {
 			$val = $listing_list['rets'][$tag];
 		}
 		else {
+			$val = '';
 		}
 
 		// This is an example of handling a specific tag in a different way
 		// TODO: make this more elegant...
-		switch ($tag)
-		{
+		switch ($tag) {
 			case 'desc':
 				$max_len = !empty($atts['maxlen']) ? (int)$atts['maxlen'] : 500;
 				$val = substr($val, 0, $max_len);
@@ -611,10 +674,10 @@ class PL_Component_Entity {
 				$width = !empty($atts['width']) ? (int)$atts['width'] : 180;
 				$height = !empty($atts['height']) ? (int)$atts['height'] : 120;
 				$val = PLS_Image::load(!empty($listing_list['images'][0]['url']) ? $listing_list['images'][0]['url'] : '',
-						array('resize' => array('w' => $width, 'h' => $height),
-							'fancybox' => true,
-							'as_html' => true,
-							'html' => array('alt' => empty($listing_list['location']['full_address']) ? $listing_list['location']['address'] : $listing_list['location']['full_address'], 'itemprop' => 'image')));
+					array('resize' => array('w' => $width, 'h' => $height),
+						'fancybox' => true,
+						'as_html' => true,
+						'html' => array('alt' => empty($listing_list['location']['full_address']) ? $listing_list['location']['address'] : $listing_list['location']['full_address'], 'itemprop' => 'image')));
 				break;
 			case 'gallery':
 				ob_start();
@@ -625,9 +688,9 @@ class PL_Component_Entity {
 							<?php foreach ($listing_list['images'] as $image): ?>
 							<li><?php echo PLS_Image::load($image['url'],
 									array('resize' => array('w' => 100, 'h' => 75),
-																		'fancybox' => true,
-																		'as_html' => false,
-																		'html' => array('itemprop' => 'image'))); ?>
+										'fancybox' => true,
+										'as_html' => false,
+										'html' => array('itemprop' => 'image'))); ?>
 							</li>
 							<?php endforeach ?>
 						</ul>
@@ -676,13 +739,50 @@ class PL_Component_Entity {
 				break;
 			case 'compliance':
 				ob_start();
-				PLS_Listing_Helper::get_compliance(array('context' => 'listings',
-				'agent_name' => $listing_list['rets']['aname'] ,
-				'office_name' => $listing_list['rets']['oname'],
-				'office_phone' => PLS_Format::phone($listing_list['contact']['phone'])));
+				PLS_Listing_Helper::get_compliance(array('context' => 'inline_search',
+					'agent_name' => $listing_list['rets']['aname'] ,
+					'office_name' => $listing_list['rets']['oname'],
+					'office_phone' => PLS_Format::phone($listing_list['contact']['phone'])));
 				$val = ob_get_clean();
 				break;
+			case 'favorite_link_toggle':
+				$val = PLS_Plugin_API::placester_favorite_link_toggle(array('property_id' => $listing_list['id']));
+				break;
+			case 'custom':
+				// TODO: format based on data type
+				if (!empty($atts['attribute'])) {
+					if (empty($atts['group']) && isset($listing_list[$atts['attribute']])) {
+						$val = $listing_list[$atts['attribute']];
+					}
+					elseif (!empty($atts['group']) && isset($listing_list[$atts['group']]) && isset($listing_list[$atts['group']][$atts['attribute']])) {
+						$val = $listing_list[$atts['group']][$atts['attribute']];
+					}
+					if ($val == '' && !empty($atts['value'])) {
+						$val = $atts['value'];
+					}
+					if (!empty($atts['type'])) {
+						switch($atts['type']) {
+							case 'list':
+								$vals = array_map('trim', explode(',', $val));
+								if (!empty($vals[0])) {
+									$val = '<ul>';
+									foreach($vals as $item) {
+										$val .= '<li>'.$item.'</li>';
+									}
+									$val .= '</ul>';
+								}
+								break;
+							case 'currency':
+								$val = PLS_Format::number($val, array('abbreviate' => false, 'add_currency_sign' => true));
+								break;
+						}
+					}
+				}
+				else {
+					$val = '[custom]';
+				}
 			default:
+				// print as is
 		}
 
 		return $val;
@@ -946,8 +1046,18 @@ class PL_Component_Entity {
 		if( is_array( $filters ) ) {
 			foreach( $filters as $top_key => $top_value ) {
 				if( is_array( $top_value ) ) {
+					if ($top_key == 'custom') {
+						// we store custom data as custom but it uses filter name metadata
+						$top_key = 'metadata';
+					}
 					foreach( $top_value as $key => $value ) {
-						echo 'listings.default_filters.push( { "name": "' . $top_key . '[' .  $key . ']", "value" : "'. $value . '" } );';
+						$skey = is_int($key) ? '' : $key;
+						if ($skey || count($top_value)>1) {
+							$skey = '['.$skey.']';
+						}
+						if (!empty($value)) {
+							echo 'listings.default_filters.push( { "name": "' . $top_key .  $skey . '", "value" : "'. $value . '" } );';
+						}
 					}
 				} else {
 					echo 'listings.default_filters.push( { "name": "'. $top_key . '", "value" : "'. $top_value . '" } );';
@@ -977,7 +1087,7 @@ class PL_Component_Entity {
 		if (empty($snippet_body)) {
 			return $item_html;
 		}
-		return do_shortcode($snippet_body);
+		return PL_Featured_Listings_CPT::do_templatetags($snippet_body, $listing);
 	}
 
 	/**
@@ -996,7 +1106,7 @@ class PL_Component_Entity {
 		if (empty($template['snippet_body'])) {
 			return $form;
 		}
-		return do_shortcode($template['snippet_body']);
+		return PL_Form_CPT::do_templatetags($template['snippet_body'], $form_html);
 	}
 
 	/**
@@ -1057,7 +1167,6 @@ class PL_Component_Entity {
 	 */
 	public static function search_listings_templates( $item_html, $listing, $context_var ) {
 		$shortcode = 'search_listings';
-		self::$listing = $listing;
 
 		// get the template attached as a context arg, 33 is the length of the filter prefix
 		$template = substr(current_filter(), 33);
@@ -1073,7 +1182,7 @@ class PL_Component_Entity {
 		if (empty($snippet_body)) {
 			return $item_html;
 		}
-		return do_shortcode($snippet_body);
+		return PL_Search_Listing_CPT::do_templatetags($snippet_body, $listing);
 	}
 
 	/**
@@ -1216,5 +1325,101 @@ class PL_Component_Entity {
 		$css .= '</style>';
 
 		echo $css;
+	}
+	
+	/**
+	 * Helper function to parse template tags out of a template and replace them with their values
+	 * @param function $callback	: callback that will provide a value for any tags found
+	 * @param array $tags			: list of tags the callback supports
+	 * @param string $content		: actual content to be parsed
+	 * @return string
+	 */
+	static function do_templatetags($callback, $tags, $content) {
+		self::$template_tags = $tags;
+		$subcode = implode('|', $tags);
+		$pattern =
+		'\\['                              // Opening bracket
+		. '(\\[?)'                           // 1: Optional second opening bracket for escaping shortcodes: [[tag]]
+		. "($subcode)"                       // 2: Shortcode name
+		. '\\b'                              // Word boundary
+		. '('                                // 3: Unroll the loop: Inside the opening shortcode tag
+		.     '[^\\]\\/]*'                   // Not a closing bracket or forward slash
+		.     '(?:'
+				.         '\\/(?!\\])'               // A forward slash not followed by a closing bracket
+				.         '[^\\]\\/]*'               // Not a closing bracket or forward slash
+				.     ')*?'
+				. ')'
+				. '(?:'
+				.     '(\\/)'                        // 4: Self closing tag ...
+				.     '\\]'                          // ... and closing bracket
+				. '|'
+				.     '\\]'                          // Closing bracket
+				.     '(?:'
+						.         '('                        // 5: Unroll the loop: Optionally, anything between the opening and closing shortcode tags
+						.             '[^\\[]*+'             // Not an opening bracket
+						.             '(?:'
+								.                 '\\[(?!\\/\\2\\])' // An opening bracket not followed by the closing shortcode tag
+								.                 '[^\\[]*+'         // Not an opening bracket
+								.             ')*+'
+								.         ')'
+								.         '\\[\\/\\2\\]'             // Closing shortcode tag
+								.     ')?'
+								. ')'
+								. '(\\]?)';                          // 6: Optional second closing brocket for escaping shortcodes: [[tag]]
+	
+		return preg_replace_callback( "/$pattern/s", $callback, $content );
+	}
+	
+	/**
+	 * Helper function to substitute values for template tags.
+	 * Used by templates for: individual listing pages.
+	 */
+	public static function listing_templatetag_callback($m) {
+		if ( $m[1] == '[' && $m[6] == ']' ) {
+			return substr($m[0], 1, -1);
+		}
+	
+		$tag = $m[2];
+		$atts = shortcode_parse_atts($m[3]);
+		$content = $m[5];
+	
+		if ($tag == 'if') {
+			$val = isset($atts['value']) ? $atts['value'] : null;
+			if (empty($atts['group']) && !empty($atts['attribute'])) {
+				if (array_key_exists($atts['attribute'], self::$listing['cur_data'])) {
+					$atts['group'] = 'cur_data';
+				}else if (array_key_exists($atts['attribute'], self::$listing['location'])) {
+					$atts['group'] = 'location';
+				}else if (array_key_exists($atts['attribute'], self::$listing['contact'])) {
+					$atts['group'] = 'contact';
+				}else if (array_key_exists($atts['attribute'], self::$listing['rets'])) {
+					$atts['group'] = 'rets';
+				}
+			}
+			if (empty($atts['group'])) {
+				if ((!isset(self::$listing[$atts['attribute']]) && $val==='') ||
+				(isset(self::$listing[$atts['attribute']]) && (PL_Component_Entity::$listing[$atts['attribute']]===$val || (is_null($val) && PL_Component_Entity::$listing[$atts['attribute']])))) {
+					return self::do_templatetags(array(__CLASS__, 'listing_templatetag_callback'), self::$template_tags, $content);
+				}
+			}
+			elseif ((!isset(self::$listing[$atts['group']][$atts['attribute']]) && $val==='') ||
+					(isset(self::$listing[$atts['group']][$atts['attribute']]) && (PL_Component_Entity::$listing[$atts['group']][$atts['attribute']]===$val || (is_null($val) && PL_Component_Entity::$listing[$atts['group']][$atts['attribute']])))) {
+				return self::do_templatetags(array(__CLASS__, 'listing_templatetag_callback'), self::$template_tags, $content);
+			}
+			return '';
+		}
+		$content = self::listing_sub_entity( $atts, $content, $tag );
+		return self::wrap( 'listing_sub', $content );
+	}
+	
+	/**
+	 * Give theme, etc a chance to customize template output on a per item basis
+	 */
+	public static function wrap( $shortcode, $content = '' ) {
+		ob_start();
+		do_action( $shortcode . '_pre_header' );
+		echo $content;
+		do_action( $shortcode . '_post_footer' );
+		return ob_get_clean();
 	}
 }

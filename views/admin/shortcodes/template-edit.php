@@ -104,7 +104,7 @@ $used_by = PL_Shortcode_CPT::template_used_by($ID);
 									'values'=>$template,
 								));?>
 						</div>
-					</div>
+					</div><!-- /post-body-content -->
 
 					<div id="postbox-container-1" class="postbox-container">
 						<div id="submitdiv" class="postbox">
@@ -126,7 +126,7 @@ $used_by = PL_Shortcode_CPT::template_used_by($ID);
 											<div id="pl_sc_tpl_csc_list" style="display:none">
 												<p>Used by the following custom shortcodes:</p>
 												<?php foreach($used_by as $csc):?>
-													- <a href="<?php echo admin_url('admin.php?page=placester_shortcodes_shortcode_edit&amp;ID='.$csc['ID'])?>"><?php echo $csc['post_title']?></a><br/>
+													- <a href="<?php echo admin_url('admin.php?page=placester_shortcodes_shortcode_edit&amp;ID='.$csc['ID'])?>"><?php echo $csc['post_title']?></a><br />
 												<?php endforeach;?>
 											</div>
 										</div>

@@ -48,7 +48,9 @@ class PL_Js_Helper {
 
 		// If no API key is set, load the following JS files for use by the wizard on ANY plugin settings page...
 		if (!PL_Option_Helper::api_key()) {
+			global $i_am_a_placester_theme;
 			self::register_enqueue_if_not('sign-up', trailingslashit(PL_JS_ADMIN_URL) . 'sign-up.js', array('jquery-ui-core', 'jquery-ui-dialog'));
+			wp_localize_script('sign-up', 'pl_signup_data', array('placester_theme' => $i_am_a_placester_theme, 'mls_int' => false));
 		}
 
 		if ($hook == 'placester_page_placester_properties') {
@@ -131,7 +133,7 @@ class PL_Js_Helper {
 		}
 		
 		// Listing customizer
-		if ($hook == 'placester_page_placester_shortcodes_listing_customizer') {
+		if ($hook == 'placester_page_placester_shortcodes_listing_template_edit') {
 			self::register_enqueue_if_not('listing-customizer', trailingslashit(PL_JS_ADMIN_URL) . 'listing-customizer.js', array('jquery'));
 			self::register_enqueue_if_not('codemirror', trailingslashit(PL_JS_LIB_URL) . 'codemirror/codemirror.js');
 			self::register_enqueue_if_not('codemirror-foldcode', trailingslashit(PL_JS_LIB_URL) . 'codemirror/addon/fold/foldcode.js', array('codemirror'));
@@ -194,6 +196,15 @@ class PL_Js_Helper {
 
 	public static function register_enqueue_if_not($name, $path, $dependencies = array(), $version = null, $in_footer = false) {
 		if (!wp_script_is($name, 'registered')) {
+			if (!$version) {
+				$pos = strpos($path, PL_PARENT_URL);
+				if ($pos === 0) {
+					$fpath = PL_PARENT_DIR . substr($path, strlen(PL_PARENT_URL));
+					if (file_exists($fpath)) {
+						$version = filemtime($fpath);
+					}
+				}
+			}
 			wp_register_script($name, $path, $dependencies, $version, $in_footer);
 		}
 
