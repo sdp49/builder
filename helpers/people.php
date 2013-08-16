@@ -6,7 +6,7 @@ class PL_People_Helper {
 	public static $user_saved_keys = 'pls_saved_searches';
 	public static $saved_key_prefix = 'pl_sk_';
 
-	public static  function init() {
+	public static function init() {
 		add_action('wp_ajax_add_person', array(__CLASS__, 'add_person_ajax' ) );
 		add_action('wp_ajax_get_favorites', array(__CLASS__, 'get_favorites_ajax' ) );
 	}
