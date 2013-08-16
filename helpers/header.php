@@ -7,7 +7,7 @@ class PL_Helper_Header {
     private static $page;
     private static $sub_pages = array();
 
-    public function init() {
+    public static function init() {
       add_action('admin_enqueue_scripts', array(__CLASS__, 'set_page' ) );
 	  add_action('admin_head', array(__CLASS__, 'hide_sub_pages'));
     }
@@ -34,13 +34,13 @@ class PL_Helper_Header {
         self::$page = $hook;
     }
 
-    public function pl_settings_subpages() {
+    public static function pl_settings_subpages() {
     	global $settings_subpages;
     	$base_page = 'placester_settings';
     	return self::pl_subpages($base_page, $settings_subpages, 'Settings Pages');
     }
 
-    public function pl_subpages($base_page, $subpages=array(), $title='') {
+    public static function pl_subpages($base_page, $subpages=array(), $title='') {
         global $submenu, $plugin_page;
         
         $base_url = 'admin.php?page='.$base_page;
