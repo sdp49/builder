@@ -237,7 +237,8 @@ function placester_admin_menu () {
         'Create Custom Shortcode' => '_shortcode_edit',
         'Shortcode Templates' => '_templates',
         'Create Shortcode Template' => '_template_edit',
-    	'Listing Details Customizer' => '_listing_customizer',
+    	'Listing Details Templates' => '_listing_templates',
+    	'Create Listing Details Template' => '_listing_template_edit',
     );
     foreach ($shortcode_subpages as $name => $page_url) {
     	// Leave parent slug empty to add pages without adding them to the menu...
