@@ -13,9 +13,11 @@ $template = array(
 }
 
 .property-listing ul {
+  float: none !important;
   margin: 0 !important;
   padding: 0 !important;
   list-style: none !important;
+  overflow: hidden;
 }
 .property-listing h3 {
   margin: 1em 0 .3em 0 !important;
@@ -37,6 +39,11 @@ $template = array(
 .property-listing .gallery {
   overflow: hidden;
   margin-right: -1%;
+  height: auto;
+}
+.property-listing .gallery .grid_8 {
+  width: 100%;
+  height: 80px;
 }
 .property-listing .gallery li {
   display: block;
@@ -44,7 +51,7 @@ $template = array(
   margin: 1% 1% 0 0 !important;
   padding: 0 !important;
   width: 9%;
-  height: 30px;
+  height: 49%;
   overflow: hidden;
 }
 .property-listing .gallery a {
@@ -61,7 +68,7 @@ $template = array(
   border: none !important;
   padding: 0 !important;
   width: 100% !important;
-  height: auto !important;
+  height: 100% !important;
 }
 
 .property-listing .price,
@@ -122,8 +129,10 @@ $template = array(
 
 .page-compliance {
   clear: both;
+  margin: 0;
+}
+.page-compliance .compliance-wrapper {
   margin: .8em 0;
-  font-size: .8em;
 }
 .page-compliance p {
   margin: 0 !important;
@@ -134,7 +143,7 @@ $template = array(
 
 
 'snippet_body' => '<div class="property-listing">
-  <div class="image">[image]</div>
+  <div class="image">[image width=\'640\' height=\'480\']</div>
   <div class="gallery">[gallery]</div>
   <p class="price">[price]</p>
   <p class="mls">MLS#: [mls_id]</p>
@@ -153,10 +162,12 @@ $template = array(
 </div>',
 
 
-'before_widget' => '<!-- Place content here that you want to appear before the listing. May include shortcodes -->',
+'before_widget' => '<!-- Place content here that you want to appear before the listing. May include shortcodes -->
+<div class="tpl-clmbs-property-listing">',
 
 
 'after_widget' => '<!-- Place content here that you want to appear before the listing. May include shortcodes -->
-<div class=\'page-compliance\'>[compliance]</div>',
+  <div class=\'page-compliance\'>[compliance]</div>
+</div>',
 
 );
