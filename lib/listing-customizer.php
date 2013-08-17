@@ -62,7 +62,7 @@ You can use any valid CSS in this field to customize the listing, which will als
 	/**
 	 * Create an instance and hook in the listing templates
 	 */
-	static function init() {
+	public static function init() {
 		add_action( 'template_redirect', array( __CLASS__, 'post_type_templating' ), 1 );
 	}
 
