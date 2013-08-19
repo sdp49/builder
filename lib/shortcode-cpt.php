@@ -758,7 +758,7 @@ class PL_Shortcode_CPT {
 					$params = ( isset($g_attrs['bound']['params']) ? $g_attrs['bound']['params'] : array() ) ;
 					$params = array($params);
 					$g_attrs = call_user_func_array(array($g_attrs['bound']['class'], $g_attrs['bound']['method']), $params);
-					if (!group) $group = $g_key;
+					if (!$group) $group = $g_key;
 					foreach($g_attrs as $f_attrs ) {
 						$attrs[] = array('attribute' => $f_attrs['key'], 'label' => (empty($f_attrs['name']) ? '' : $f_attrs['name'] ), 'type' => (empty($f_attrs['type']) ? '' : $f_attrs['type'] ), 'group' => $group);
 					}
