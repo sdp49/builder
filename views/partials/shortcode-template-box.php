@@ -115,10 +115,10 @@ $listing_attributes = PL_Shortcode_CPT::get_listing_attributes();
 			<?php foreach($listing_attributes as $attr) :?>
 				<tr>
 					<td><strong><?php echo $attr['label']?></strong></td>
-					<td>attribute: <?php echo $attr['attribute']?></td>
+					<td><?php echo $attr['attribute']?></td>
 					<td>
 					<?php if ($attr['group']):?>
-					group: <?php echo $attr['group']?>
+						<?php echo $attr['group']?>
 					<?php endif;?>
 					</td>
 				</tr>

@@ -767,7 +767,7 @@ class PL_Shortcode_CPT {
 			}
 			if ($group) {
 				foreach($g_attrs as $f_key => $f_attrs ) {
-					if (!empty($f_attrs['label'])) {
+					if (!empty($f_attrs['label']) && strpos($f_key, 'min_')!==0 && strpos($f_key, 'max_')!==0) {
 						$attrs[] = array('attribute' => $f_key, 'label' => (empty($f_attrs['label']) ? 'text' : $f_attrs['label'] ), 'type' => (empty($f_attrs['type']) ? '' : $f_attrs['type'] ), 'group' => $group);
 					}
 				}
