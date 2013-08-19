@@ -1386,11 +1386,11 @@ To add some text to your listings:<br />
 		if ($tag == 'if') {
 			$val = isset($atts['value']) ? $atts['value'] : null;
 			if (empty($atts['group']) && !empty($atts['attribute'])) {
-				if (array_key_exists($atts['attribute'], self::$listing['cur_data'])) {
+				if (!empty(self::$listing['cur_data']) && array_key_exists($atts['attribute'], self::$listing['cur_data'])) {
 					$atts['group'] = 'cur_data';
-				}else if (array_key_exists($atts['attribute'], self::$listing['location'])) {
+				}else if (!empty(self::$listing['location']) && array_key_exists($atts['attribute'], self::$listing['location'])) {
 					$atts['group'] = 'location';
-				}else if (array_key_exists($atts['attribute'], self::$listing['contact'])) {
+				}else if (!empty(self::$listing['contact']) && array_key_exists($atts['attribute'], self::$listing['contact'])) {
 					$atts['group'] = 'contact';
 				}else if (!empty(self::$listing['rets']) && array_key_exists($atts['attribute'], self::$listing['rets'])) {
 					$atts['group'] = 'rets';
