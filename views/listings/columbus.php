@@ -6,10 +6,8 @@ $template = array(
 
 
 'css' => '.property-listing {
-  border: 1px solid #000;
-  padding: 10px;
-  background: #efefef;
   overflow: hidden;
+  line-height: 1.3em !important;
 }
 
 .property-listing ul {
@@ -19,10 +17,38 @@ $template = array(
   list-style: none !important;
   overflow: hidden;
 }
+.property-listing li {
+  display: block;
+  float: left !important;
+}
+.property-listing .subsection ul {
+  float: none !important;
+  padding: 5px 10px 0 20px !important;
+}
+.property-listing .subsection li {
+  margin: 0 1.2em .5em 0 !important;
+  width: 250px !important;		
+  font-weight: bold !important;
+  font-size: 13px !important;
+  word-wrap: break-word !important;
+}
+.property-listing h2,
 .property-listing h3 {
-  margin: 1em 0 .3em 0 !important;
-  padding: .3em !important;
-  background: #dfdfdf;
+  clear: both;
+  margin: 1em 0 0 0 !important;
+  padding: 0 !important;
+  text-transform: uppercase;
+}
+.property-listing .subsection h3 {
+  padding: .3em .8em !important;
+  background: #4782bd;
+  background: -webkit-gradient(linear, left top, left bottom, from(#4782bd), to(#5d98d3));
+  background: -moz-linear-gradient(top, #4782bd, #5d98d3);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=\'#4782bd\', endColorstr=\'#5d98d3\');
+  border: 1px solid #3d6995;
+  color: white !important;
+  font-size: 17px;
+  text-shadow: 1px 1px black !important;
 }
 .property-listing p {
   margin: 0 !important;
@@ -46,8 +72,6 @@ $template = array(
   height: 80px;
 }
 .property-listing .gallery li {
-  display: block;
-  float: left !important;
   margin: 1% 1% 0 0 !important;
   padding: 0 !important;
   width: 9%;
@@ -74,8 +98,7 @@ $template = array(
 .property-listing .price,
 .property-listing .mls {
   float: left;
-  margin: .5em 1em 0 0 !important;
-  font-size: 1.2em;
+  margin: .5em 1em 1em 0 !important;
   font-weight: 600;
 }
 .property-listing .address {
@@ -85,22 +108,27 @@ $template = array(
   font-weight: 600;
 }
 .property-listing .features {
-  margin: .5em 0 1em 0 !important;
-  font-weight: 600;
+  margin: 0 0 .2em 0 !important;
+  font-size: 13px;
+}
+.property-listing .features li {
+  margin: 0 1em 0 0 !important;
 }
 .property-listing .features span {
-  padding-right: 1.5em;
+  font-weight: 800;
 }
 .property-listing .amenities {
-  margin: .5em 0 1em 0 !important;
+  padding: .5em 0 1em 0 !important;
+  background: -webkit-gradient(linear, left top, left bottom, from(#e7e7e7), to(#e4e4e4));
+  background: -moz-linear-gradient(top, #e7e7e7, #e4e4e4);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=\'#e7e7e7\', endColorstr=\'#e4e4e4\');
   overflow: hidden;
 }
 .property-listing .amenities span {
-  display: block;
-  float: left;
-  width: 10em;
-  font-style: italic;
   padding: 0 .3em 0 0;
+}
+.property-listing .amenities span:after {
+  content: ":";
 }
 .property-listing .desc {
   margin: .5em 0 0 0 !important;
@@ -143,20 +171,24 @@ $template = array(
 
 
 'snippet_body' => '<div class="property-listing">
+  <h2 class="address">[address] [locality] [region]</h2>
+  <ul class="features">
+    [if attribute=\'sqft\']<li><span>[sqft]</span> sqft</li>[/if][if attribute=\'beds\']<li><span>[beds]</span> Bed(s)</li>[/if][if attribute=\'baths\']<li><span>[baths]</span> Bath(s)</li>[/if][if attribute=\'half_baths\']<li><span>[half_baths]</span> Half-Bath(s)</li>[/if]
+  </ul>
   <div class="image">[image width=\'640\' height=\'480\']</div>
   <div class="gallery">[gallery]</div>
   <p class="price">[price]</p>
   <p class="mls">MLS#: [mls_id]</p>
-  <p class="address">[address]</p>
-  <div class="features">
-    [if attribute=\'beds\']<span>Beds: [beds]</span>[/if][if attribute=\'baths\']<span>Baths: [baths]</span>[/if][if attribute=\'half_baths\']<span>Half-Baths: [half_baths]</span>[/if][if attribute=\'sqft\']<span>[sqft] sqft</span>[/if]
-  </div>
   <h3>Description</h3>
   <div class="desc">[desc]</div>
-  <h3>Amenities</h3>
-  <div class="amenities">[amenities]</div>
-  <h3>Location</h3>
-  <div class="location">[map]</div>
+  <div class="subsection">
+    <h3>Amenities</h3>
+    <div class="amenities">[amenities]</div>
+  </div>
+  <div class="subsection">
+    <h3>Location</h3>
+    <div class="location">[map]</div>
+  </div>
   <div class="actions">[favorite_link_toggle]</div>
   <div class="compliance">[compliance]</div>
 </div>',

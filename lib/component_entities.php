@@ -1392,7 +1392,7 @@ To add some text to your listings:<br />
 					$atts['group'] = 'location';
 				}else if (array_key_exists($atts['attribute'], self::$listing['contact'])) {
 					$atts['group'] = 'contact';
-				}else if (array_key_exists($atts['attribute'], self::$listing['rets'])) {
+				}else if (!empty(self::$listing['rets']) && array_key_exists($atts['attribute'], self::$listing['rets'])) {
 					$atts['group'] = 'rets';
 				}
 			}
