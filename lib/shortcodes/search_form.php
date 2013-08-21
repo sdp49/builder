@@ -37,7 +37,7 @@ class PL_Form_CPT extends PL_SC_Base {
 		'min_baths'			=> array('help' => 'Drop list to select the minimum number of bathrooms.'),
 		'max_baths'			=> array('help' => 'Drop list to select the maximum number of bathrooms.'),
 		'property_type'		=> array('help' => 'Drop list to select the property type.'),
-		'listing_types'		=> array('help' => 'Drop list to select the listing type (housing/land/etc).'),
+		//'listing_types'		=> array('help' => 'Drop list to select the listing type (housing/land/etc).'),
 		'zoning_types'		=> array('help' => 'Drop list to select the zoning (commercial/residential/etc).'),
 		'purchase_types'	=> array('help' => 'Drop list to select the purchase type (rent/buy).'),
 		'available_on'		=> array('help' => 'Drop list to select date of when the property should be available.'),
@@ -88,7 +88,9 @@ In the following example a search field is created for the custom attribute \'ro
 <div class="search-item	">
 	<label>Property Type:</label>[property_type]
 </div>
-			',
+<div class="search-item	">
+	<input type="submit" name="submit" value="Search Now!">
+</div>',
 			'description'	=> 'You can use any valid HTML in this field to format the template tags.'
 		),
 

@@ -138,7 +138,7 @@ $template = array(
 <!-- </div> -->
 <div class="clr"></div>
 
-<input type="submit" name="submit" value="Search Now!" id="search-button">
+<input type="submit" name="submit" value="Search Now!">
 ',
 
 'before_widget' => '<div class="pl-tpl-sf-twentyeleven">',
