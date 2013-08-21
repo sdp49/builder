@@ -235,7 +235,7 @@ To add some text to your listings:<br />
 
 		ob_start();
 		self::hide_unnecessary_controls($atts);
-		self::print_filters( $filters . $filters_string, $atts['context'] );
+		self::print_filters( $filters . $filters_string, 'static_listings', $atts['context'] );
 		echo PLS_Partials::get_listings_list_ajax($atts);
 		// support shortcodes in the header or footer
 		return do_shortcode($header).ob_get_clean().do_shortcode($footer);
@@ -323,7 +323,7 @@ To add some text to your listings:<br />
 		$atts['context'] = 'search_listings' . (empty($atts['context']) ? '' : '_'.$atts['context']);
 
 		ob_start();
-		self::print_filters( $filters . $filters_string, $atts['context'] );
+		self::print_filters( $filters . $filters_string, 'search_listings', $atts['context'] );
 		PLS_Partials_Get_Listings_Ajax::load($atts);
 		// support shortcodes in the header or footer
 		return do_shortcode($header).ob_get_clean().do_shortcode($footer);
@@ -982,7 +982,7 @@ To add some text to your listings:<br />
 		return $pl_featured_listing_meta;
 	}
 
-	private static function print_filters( $static_listing_filters, $context = 'listings_search' ) {
+	private static function print_filters( $filters, $shortcode, $context = 'listings_search') {
 
 		wp_enqueue_script('filters-featured.js', trailingslashit(PLS_JS_URL) . 'scripts/filters.js', array('jquery'));
 		?>
@@ -999,8 +999,12 @@ To add some text to your listings:<br />
 				});
 
 				filter.init({
-					dom_id : "#pls_search_form_listings",
-					'class' : ".pls_search_form_listings",
+					<?php if ($shortcode == 'search_listings'):?>
+						'class' : ".pls_search_form_listings",
+					<?php else: ?>
+						// static listings should ignore the search form
+						'class' : ".no_search_form__",
+					<?php endif; ?>
 					list : list,
 					listings : listings
 				});
@@ -1014,10 +1018,9 @@ To add some text to your listings:<br />
 					context: '<?php echo $context; ?>'
 				});
 
-
 				<?php
-				if( !empty( $static_listing_filters ) ) {
-						echo $static_listing_filters;
+				if( !empty( $filters ) ) {
+					echo $filters;
 				}
 				?>
 				listings.init();
