@@ -49,7 +49,7 @@ class PL_Component_Entity {
 			'gallery'		=> array('help' => 'Image gallery'),
 			'amenities'		=> array('help' => 'List of amenties'),
 			'price_unit'	=> array('help' => 'Unit price'),
-			'compliance'	=> array('help' => 'MLS compliance statement'),
+			'compliance'	=> array('help' => 'MLS compliance statement for an individual listing'),
 			'favorite_link_toggle' => array('help' => 'Link to add/remove from favorites'),
 			'custom'		=> array('help' => 'Use to display a custom listing attribute.<br />
 Format is as follows:<br />
@@ -915,15 +915,18 @@ To add some text to your listings:<br />
 		// Setup form action
 		$form_data = array('action'=>'');
 		// Handle attributes using shortcode_atts...
-		$form_action = esc_url( home_url( '/' ) ) . 'listings';
-		if( isset( $atts['form_action_url'] ) ) {
+		$form_data['action'] = '';
+		// TODO deprecate this attr
+		if( !empty($atts['form_action_url']) ) {
 			$form_data['action'] = $atts['form_action_url'];
 		}
-		// use the form action from the metabox if AJAX is disabled
-		if( isset( $atts['ajax'] ) && $atts['ajax'] == 'true' && isset( $atts['formaction'] ) ) {
+		// use this one
+		if( !empty($atts['formaction']) ) {
 			$form_data['action'] = $atts['formaction'];
 		}
+		$atts['ajax'] = empty($form_data['action']) ? true : false;
 		$atts['form_data'] = (object)$form_data;
+		/*
 		// add context and ajax support if missing
 		if( isset( $atts['ajax'] ) ) {
 			$atts['ajax'] = true;
@@ -933,7 +936,7 @@ To add some text to your listings:<br />
 				if (typeof bootloader !== \'object\') {
 					var bootloader;
 				}
-
+		
 				jQuery(document).ready(function( $ ) {
 					if (typeof bootloader !== \'object\') {
 						bootloader = new SearchLoader();
@@ -947,7 +950,7 @@ To add some text to your listings:<br />
 		} else {
 			$atts['ajax'] = false;
 		}
-
+		*/
 		return PLS_Partials_Listing_Search_Form::init($atts);
 	}
 
