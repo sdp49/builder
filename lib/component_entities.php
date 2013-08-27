@@ -1050,23 +1050,34 @@ To add some text to your listings:<br />
 	private static function convert_filters( $filters ) {
 		ob_start();
 		if( is_array( $filters ) ) {
-			foreach( $filters as $top_key => $top_value ) {
-				if( is_array( $top_value ) ) {
-					if ($top_key == 'custom') {
+			foreach( $filters as $key1 => $value1 ) {
+				if( is_array( $value1 ) ) {
+					if ($key1 == 'custom') {
 						// we store custom data as custom but it uses filter name metadata
-						$top_key = 'metadata';
+						$key1 = 'metadata';
 					}
-					foreach( $top_value as $key => $value ) {
-						$skey = is_int($key) ? '' : $key;
-						if ($skey || count($top_value)>1) {
-							$skey = '['.$skey.']';
-						}
-						if (!empty($value)) {
-							echo 'listings.default_filters.push( { "name": "' . $top_key .  $skey . '", "value" : "'. $value . '" } );';
+					foreach( $value1 as $key2 => $value2 ) {
+						if (!empty($value2)) {
+							$skey = is_int($key2) ? '' : $key2;
+							if ($skey || count($value1) > 1) {
+								$skey = '['.$skey.']';
+							}
+							if( is_array( $value2 ) ) {
+								if (count($value2) > 1) {
+									$skey .= '[]';
+								}
+								foreach($value2 as $key3 => $value3) {
+									echo 'listings.default_filters.push( { "name": "' . $key1 .  $skey . '", "value" : "'. $value3 . '" } );';
+								}
+							}
+							else {
+								echo 'listings.default_filters.push( { "name": "' . $key1 .  $skey . '", "value" : "'. $value2 . '" } );';
+							}
 						}
 					}
-				} else {
-					echo 'listings.default_filters.push( { "name": "'. $top_key . '", "value" : "'. $top_value . '" } );';
+				}
+				else {
+					echo 'listings.default_filters.push( { "name": "' . $key1 . '", "value" : "'. $value1 . '" } );';
 				}
 			}
 		}
