@@ -11,6 +11,7 @@ $PL_API_LISTINGS = array(
 			'listing_ids'  => array(),
 			'compound_type' => array(
 				'attr_type' => 'text',
+				'multi' => '1',
 				'label' => 'Listing Type',
 				'type' => 'select',
 				'group' => 'Basic Details',
@@ -49,6 +50,7 @@ $PL_API_LISTINGS = array(
 			),
 			'property_type'  => array(
 				'attr_type' => 'text',
+				'multi' => '1',
 				'label' => 'Property Type',
 				'type' => 'select',
 				'group' => 'listing types',
@@ -63,6 +65,7 @@ $PL_API_LISTINGS = array(
 			'location' => array(
 				'postal' => array(
 					'attr_type' => 'text',
+					'multi' => '1',
 					'label' => 'Zip',
 					'type' => 'select',
 					'group' => 'location',
@@ -70,10 +73,11 @@ $PL_API_LISTINGS = array(
 						'class' => 'PL_Listing_Helper',
 						'method' => 'locations_for_options',
 						'params' => array('postal', false)
-					)
+					),
 				),
 				'region'  => array(
 					'attr_type' => 'text',
+					'multi' => '1',
 					'label' => 'State',
 					'type' => 'select',
 					'group' => 'location',
@@ -85,6 +89,7 @@ $PL_API_LISTINGS = array(
 				),
 				'locality'  => array(
 					'attr_type' => 'text',
+					'multi' => '1',
 					'label' => 'City',
 					'type' => 'select',
 					'group' => 'location',
@@ -96,6 +101,7 @@ $PL_API_LISTINGS = array(
 				),
 				'neighborhood'  => array(
 					'attr_type' => 'text',
+					'multi' => '1',
 					'label' => 'Neighborhood',
 					'type' => 'select',
 					'group' => 'location',
@@ -107,6 +113,7 @@ $PL_API_LISTINGS = array(
 				),
 				'county'  => array(
 					'attr_type' => 'text',
+					'multi' => '1',
 					'label' => 'County',
 					'type' => 'select',
 					'group' => 'location',

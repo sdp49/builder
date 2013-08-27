@@ -752,9 +752,11 @@ class PL_Shortcode_CPT {
 					continue;
 				// TODO: fields used for fetching data that aren't relevant to a single listing
 				case 'location':
-				case 'metadata':
 				case 'rets':
 					$group = $g_key;
+					break;
+				case 'metadata':
+					$group = 'cur_data';
 					break;
 				case 'custom':
 					$group = 'uncur_data';
@@ -803,7 +805,7 @@ class PL_Shortcode_CPT {
 		}
 		return $attrs;
 	}
-	
+
 	public static function get_listing_filters($sort = false, $with_choices = false) {
 		$filters = array();
 		$attrs = self::get_listing_attributes($sort);
@@ -816,20 +818,24 @@ class PL_Shortcode_CPT {
 			elseif ($attr['type'] == 'textarea') {
 				$attr['type'] = 'text';
 			}
+			$key = $attr['group'];
 			switch ($attr['group']) {
 				case 'cur_data':
-					$attr['group'] = 'metadata';
+					$key = $attr['group'] = 'metadata';
 					break;
+				// note: we store custom filters as 'custom', but in requests they are 'metadata'
 				case 'uncur_data':
 					$attr['group'] = 'custom';
+					$key = 'metadata';
 					break;
 			}
-			$filters[] = $attr;			
+			$key .= empty($key) ? '' : '.';
+			$filters[$key.$attr['attribute']] = $attr;
 			if ($attr['attr_type'] == 'int' || $attr['attr_type'] == 'date') {
 				$label = empty($attr['label_max']) ? 'Min ' . $attr['label'] : $attr['label_min'];
-				$filters[] = array_merge($attr, array('attribute' => 'min_'.$attr['attribute'], 'label' => $label));
+				$filters[$key.$attr['attribute'].'_max'] = array_merge($attr, array('attribute' => 'min_'.$attr['attribute'], 'label' => $label, 'multi'=>false));
 				$label = empty($attr['label_min']) ? 'Max ' . $attr['label'] : $attr['label_max'];
-				$filters[] = array_merge($attr, array('attribute' => 'max_'.$attr['attribute'], 'label' => $label));
+				$filters[$key.$attr['attribute'].'_max'] = array_merge($attr, array('attribute' => 'max_'.$attr['attribute'], 'label' => $label, 'multi'=>false));
 			}
 		}
 		

@@ -1048,36 +1048,40 @@ To add some text to your listings:<br />
 	}
 
 	private static function convert_filters( $filters ) {
+		$av_filters = PL_Shortcode_CPT::get_listing_filters();
 		ob_start();
 		if( is_array( $filters ) ) {
 			foreach( $filters as $key1 => $value1 ) {
 				if( is_array( $value1 ) ) {
-					if ($key1 == 'custom') {
-						// we store custom data as custom but it uses filter name metadata
-						$key1 = 'metadata';
-					}
-					foreach( $value1 as $key2 => $value2 ) {
-						if (!empty($value2)) {
-							$skey = is_int($key2) ? '' : $key2;
-							if ($skey || count($value1) > 1) {
-								$skey = '['.$skey.']';
+					// we store custom data as custom but it uses filter name metadata
+					$key = $key1 == 'custom' ? 'metadata' : $key1;
+					if (array_diff_key($value1,array_keys(array_keys($value1)))) {
+						foreach( $value1 as $key2 => $value2 ) {
+							$skey = count($value2) > 1 ? '[]' :'';
+							foreach( $value2 as $value3 ) {
+								echo 'listings.default_filters.push( { "name": "' . $key .  '['.$key2.']'.$skey . '", "value" : "'. $value3 . '" } );';
 							}
-							if( is_array( $value2 ) ) {
-								if (count($value2) > 1) {
-									$skey .= '[]';
-								}
-								foreach($value2 as $key3 => $value3) {
-									echo 'listings.default_filters.push( { "name": "' . $key1 .  $skey . '", "value" : "'. $value3 . '" } );';
-								}
+							if ($skey) {
+								echo 'listings.default_filters.push( { "name": "' . $key . '['.$key2.'_match]", "value" : "in" } );';
 							}
-							else {
-								echo 'listings.default_filters.push( { "name": "' . $key1 .  $skey . '", "value" : "'. $value2 . '" } );';
+							elseif (!empty($av_filters[$key1.'.'.$key2]['type']) && ($av_filters[$key.'.'.$key2]['type']=='text'|| $av_filters[$key.'.'.$key2]['type']=='textarea')) {
+								echo 'listings.default_filters.push( { "name": "' . $key . '['.$key2.'_match]", "value" : "like" } );';
 							}
 						}
 					}
-				}
-				else {
-					echo 'listings.default_filters.push( { "name": "' . $key1 . '", "value" : "'. $value1 . '" } );';
+					else {
+						// list
+						$skey = count($value1) > 1 ? '[]' :'';
+						foreach( $value1 as $value2 ) {
+							echo 'listings.default_filters.push( { "name": "' . $key .  $skey . '", "value" : "'. $value2 . '" } );';
+						}
+						if ($skey) {
+							echo 'listings.default_filters.push( { "name": "' . $key . '_match", "value" : "in" } );';
+						}
+						elseif (!empty($av_filters[$key]['type']) && ($av_filters[$key]['type']=='text' || $av_filters[$key]['type']=='textarea')) {
+							echo 'listings.default_filters.push( { "name": "' . $key . '_match", "value" : "like" } );';
+						}
+					}
 				}
 			}
 		}

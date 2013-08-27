@@ -235,7 +235,13 @@ jQuery(document).ready(function($){
 			}
 		}
 		var $filters = $('#pl_sc_edit .pl_widget_block .'+shortcode+'.filters .active_filters');
-		var $block = $('<div class="active_filter"></div>').hide();
+		if (!$input.data('multi')) {
+			$filters.find('.'+id).remove();
+		}
+		$filters.find('.'+id).each(function(){
+			if ($(this).find(' input[value="'+value+'"]').length) $(this).remove();
+		});
+		var $block = $('<div class="active_filter '+id+'"></div>').hide();
 		var added = false;
         $filters.children().each(function(){
         	var elabel = $(this).find('label').html();
@@ -283,7 +289,7 @@ jQuery(document).ready(function($){
 		e.preventDefault();
 		var shortcode = $('#pl_sc_shortcode_type').val();
 		var id = $('#pl_sc_edit select[name="'+shortcode+'[filter]"]').val();
-		
+
 		addActiveFilter(shortcode,id);
 		_changesMade = true;
 		sc_update_preview();
@@ -300,7 +306,7 @@ jQuery(document).ready(function($){
 				entry.value.forEach(function(value){
 					addActiveFilter(entry.shortcode, entry.id, value);
 				});
-			} 
+			}
 			else {
 				addActiveFilter(entry.shortcode, entry.id, entry.value);
 			}
