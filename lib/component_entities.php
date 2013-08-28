@@ -1048,25 +1048,40 @@ To add some text to your listings:<br />
 	}
 
 	private static function convert_filters( $filters ) {
+		$av_filters = PL_Shortcode_CPT::get_listing_filters();
 		ob_start();
 		if( is_array( $filters ) ) {
-			foreach( $filters as $top_key => $top_value ) {
-				if( is_array( $top_value ) ) {
-					if ($top_key == 'custom') {
-						// we store custom data as custom but it uses filter name metadata
-						$top_key = 'metadata';
-					}
-					foreach( $top_value as $key => $value ) {
-						$skey = is_int($key) ? '' : $key;
-						if ($skey || count($top_value)>1) {
-							$skey = '['.$skey.']';
+			foreach( $filters as $key1 => $value1 ) {
+				if( is_array( $value1 ) ) {
+					// we store custom data as custom but it uses filter name metadata
+					$key = $key1 == 'custom' ? 'metadata' : $key1;
+					if (array_diff_key($value1,array_keys(array_keys($value1)))) {
+						foreach( $value1 as $key2 => $value2 ) {
+							$skey = count($value2) > 1 ? '[]' :'';
+							foreach( $value2 as $value3 ) {
+								echo 'listings.default_filters.push( { "name": "' . $key .  '['.$key2.']'.$skey . '", "value" : "'. $value3 . '" } );';
+							}
+							if ($skey) {
+								echo 'listings.default_filters.push( { "name": "' . $key . '['.$key2.'_match]", "value" : "in" } );';
+							}
+							elseif (!empty($av_filters[$key1.'.'.$key2]['type']) && ($av_filters[$key.'.'.$key2]['type']=='text'|| $av_filters[$key.'.'.$key2]['type']=='textarea')) {
+								echo 'listings.default_filters.push( { "name": "' . $key . '['.$key2.'_match]", "value" : "like" } );';
+							}
 						}
-						if (!empty($value)) {
-							echo 'listings.default_filters.push( { "name": "' . $top_key .  $skey . '", "value" : "'. $value . '" } );';
+					}
+					else {
+						// list
+						$skey = count($value1) > 1 ? '[]' :'';
+						foreach( $value1 as $value2 ) {
+							echo 'listings.default_filters.push( { "name": "' . $key .  $skey . '", "value" : "'. $value2 . '" } );';
+						}
+						if ($skey) {
+							echo 'listings.default_filters.push( { "name": "' . $key . '_match", "value" : "in" } );';
+						}
+						elseif (!empty($av_filters[$key]['type']) && ($av_filters[$key]['type']=='text' || $av_filters[$key]['type']=='textarea')) {
+							echo 'listings.default_filters.push( { "name": "' . $key . '_match", "value" : "like" } );';
 						}
 					}
-				} else {
-					echo 'listings.default_filters.push( { "name": "'. $top_key . '", "value" : "'. $top_value . '" } );';
 				}
 			}
 		}
