@@ -21,7 +21,57 @@ class PL_Component_Entity {
 	
 	public static $template_tags = array();
 
-
+	public static $listing_tags = array(
+			'price'			=> array('help' => 'Property price'),
+			'sqft'			=> array('help' => 'Total square feet'),
+			'beds'			=> array('help' => 'Number of bedrooms'),
+			'baths'			=> array('help' => 'Number of bathrooms'),
+			'half_baths'	=> array('help' => 'Number of half bathrooms'),
+			'avail_on'		=> array('help' => 'Date the property will be available'),
+			'url'			=> array('help' => 'Link to page for the listing'),
+			'address'		=> array('help' => 'Street address'),
+			'locality'		=> array('help' => 'Locality'),
+			'region'		=> array('help' => 'Region'),
+			'postal'		=> array('help' => 'Zip/postal code'),
+			'neighborhood'	=> array('help' => 'Neighborhood'),
+			'county'		=> array('help' => 'County'),
+			'country'		=> array('help' => 'Country'),
+			//'coords'		=> array('help' => ''),
+			'unit'			=> array('help' => 'Unit'),
+			'full_address'	=> array('help' => 'Full address'),
+			'email'			=> array('help' => 'Email address for this listing'),
+			'phone'			=> array('help' => 'Contact phone'),
+			'desc'			=> array('help' => 'Property description'),
+			'image'			=> array('help' => 'First property image'),
+			'mls_id'		=> array('help' => 'MLS #'),
+			'map'			=> array('help' => ''),
+			'listing_type'	=> array('help' => 'Type of listing'),
+			'gallery'		=> array('help' => 'Image gallery'),
+			'amenities'		=> array('help' => 'List of amenties'),
+			'price_unit'	=> array('help' => 'Unit price'),
+			'compliance'	=> array('help' => 'MLS compliance statement for an individual listing'),
+			'favorite_link_toggle' => array('help' => 'Link to add/remove from favorites'),
+			'custom'		=> array('help' => 'Use to display a custom listing attribute.<br />
+Format is as follows:<br />
+<code>[custom group=\'group_name\' attribute=\'some_attribute_name\' type=\'text\' value=\'some_value\']</code><br />
+where:<br />
+<code>group</code> - The group identifier if the listing attribute is part of a group. Possible values are <code>location</code>, <code>rets</code>, <code>metadata</code>, <code>uncur_data</code>.<br />
+<code>attribute</code> - (required) The unique identifier of the listing attribute.<br />
+<code>type</code> - (optional, default is \'text\') Can be <code>text</code>, <code>currency</code>, <code>list</code>. Used to indicate how the attribute should be formatted.<br />
+<code>value</code> - (optional) Indicates text to be displayed if the listing attribute is empty.<br />
+'),
+			'if'			=> array('help' => 'Use to conditionally display some content depending on the value of a listing\'s attribute.<br />
+Format is as follows:<br />
+<code>[if group=\'group_name\' attribute=\'some_attribute_name\' value=\'some_value\']some HTML that will be displayed if the condition is true[/if]</code><br />
+where:<br />
+<code>group</code> - The group identifier if the listing attribute is part of a group. Possible values are <code>location</code>, <code>rets</code>, <code>metadata</code>, <code>uncur_data</code>.<br />
+<code>attribute</code> - (required) The unique identifier of the listing attribute.<br />
+<code>value</code> - (optional) By default the condition is true if the attribute has any value other than being empty. If you wish to test if the attribute matches a specific value, then set that value in this parameter.<br />
+For example, to only display bedroom and bathroom details if the property is residential:<br />
+<code>[if attribute=\'compound_type\' value=\'res_sale\']Beds: [beds] Baths: [baths][/if]</code><br />
+To add some text to your listings:<br />
+<code>[if group=\'rets\' attribute=\'aid\' value=\'MY_MLS_AGENT_ID\']&lt;span&gt;Featured Listing&lt;/span&gt;[/if]</code>'),
+	);
 
 	public static function init() {
 		// add_action('init', array( __CLASS__, 'filter_featured_context' ) );
@@ -185,7 +235,7 @@ class PL_Component_Entity {
 
 		ob_start();
 		self::hide_unnecessary_controls($atts);
-		self::print_filters( $filters . $filters_string, $atts['context'] );
+		self::print_filters( $filters . $filters_string, 'static_listings', $atts['context'] );
 		echo PLS_Partials::get_listings_list_ajax($atts);
 		// support shortcodes in the header or footer
 		return do_shortcode($header).ob_get_clean().do_shortcode($footer);
@@ -273,7 +323,7 @@ class PL_Component_Entity {
 		$atts['context'] = 'search_listings' . (empty($atts['context']) ? '' : '_'.$atts['context']);
 
 		ob_start();
-		self::print_filters( $filters . $filters_string, $atts['context'] );
+		self::print_filters( $filters . $filters_string, 'search_listings', $atts['context'] );
 		PLS_Partials_Get_Listings_Ajax::load($atts);
 		// support shortcodes in the header or footer
 		return do_shortcode($header).ob_get_clean().do_shortcode($footer);
@@ -865,15 +915,18 @@ class PL_Component_Entity {
 		// Setup form action
 		$form_data = array('action'=>'');
 		// Handle attributes using shortcode_atts...
-		$form_action = esc_url( home_url( '/' ) ) . 'listings';
-		if( isset( $atts['form_action_url'] ) ) {
+		$form_data['action'] = '';
+		// TODO deprecate this attr
+		if( !empty($atts['form_action_url']) ) {
 			$form_data['action'] = $atts['form_action_url'];
 		}
-		// use the form action from the metabox if AJAX is disabled
-		if( isset( $atts['ajax'] ) && $atts['ajax'] == 'true' && isset( $atts['formaction'] ) ) {
+		// use this one
+		if( !empty($atts['formaction']) ) {
 			$form_data['action'] = $atts['formaction'];
 		}
+		$atts['ajax'] = empty($form_data['action']) ? true : false;
 		$atts['form_data'] = (object)$form_data;
+		/*
 		// add context and ajax support if missing
 		if( isset( $atts['ajax'] ) ) {
 			$atts['ajax'] = true;
@@ -883,7 +936,7 @@ class PL_Component_Entity {
 				if (typeof bootloader !== \'object\') {
 					var bootloader;
 				}
-
+		
 				jQuery(document).ready(function( $ ) {
 					if (typeof bootloader !== \'object\') {
 						bootloader = new SearchLoader();
@@ -897,7 +950,7 @@ class PL_Component_Entity {
 		} else {
 			$atts['ajax'] = false;
 		}
-
+		*/
 		return PLS_Partials_Listing_Search_Form::init($atts);
 	}
 
@@ -929,7 +982,7 @@ class PL_Component_Entity {
 		return $pl_featured_listing_meta;
 	}
 
-	private static function print_filters( $static_listing_filters, $context = 'listings_search' ) {
+	private static function print_filters( $filters, $shortcode, $context = 'listings_search') {
 
 		wp_enqueue_script('filters-featured.js', trailingslashit(PLS_JS_URL) . 'scripts/filters.js', array('jquery'));
 		?>
@@ -946,8 +999,12 @@ class PL_Component_Entity {
 				});
 
 				filter.init({
-					dom_id : "#pls_search_form_listings",
-					'class' : ".pls_search_form_listings",
+					<?php if ($shortcode == 'search_listings'):?>
+						'class' : ".pls_search_form_listings",
+					<?php else: ?>
+						// static listings should ignore the search form
+						'class' : ".no_search_form__",
+					<?php endif; ?>
 					list : list,
 					listings : listings
 				});
@@ -961,10 +1018,9 @@ class PL_Component_Entity {
 					context: '<?php echo $context; ?>'
 				});
 
-
 				<?php
-				if( !empty( $static_listing_filters ) ) {
-						echo $static_listing_filters;
+				if( !empty( $filters ) ) {
+					echo $filters;
 				}
 				?>
 				listings.init();
@@ -992,25 +1048,40 @@ class PL_Component_Entity {
 	}
 
 	private static function convert_filters( $filters ) {
+		$av_filters = PL_Shortcode_CPT::get_listing_filters();
 		ob_start();
 		if( is_array( $filters ) ) {
-			foreach( $filters as $top_key => $top_value ) {
-				if( is_array( $top_value ) ) {
-					if ($top_key == 'custom') {
-						// we store custom data as custom but it uses filter name metadata
-						$top_key = 'metadata';
-					}
-					foreach( $top_value as $key => $value ) {
-						$skey = is_int($key) ? '' : $key;
-						if ($skey || count($top_value)>1) {
-							$skey = '['.$skey.']';
+			foreach( $filters as $key1 => $value1 ) {
+				if( is_array( $value1 ) ) {
+					// we store custom data as custom but it uses filter name metadata
+					$key = $key1 == 'custom' ? 'metadata' : $key1;
+					if (array_diff_key($value1,array_keys(array_keys($value1)))) {
+						foreach( $value1 as $key2 => $value2 ) {
+							$skey = count($value2) > 1 ? '[]' :'';
+							foreach( $value2 as $value3 ) {
+								echo 'listings.default_filters.push( { "name": "' . $key .  '['.$key2.']'.$skey . '", "value" : "'. $value3 . '" } );';
+							}
+							if ($skey) {
+								echo 'listings.default_filters.push( { "name": "' . $key . '['.$key2.'_match]", "value" : "in" } );';
+							}
+							elseif (!empty($av_filters[$key1.'.'.$key2]['type']) && ($av_filters[$key.'.'.$key2]['type']=='text'|| $av_filters[$key.'.'.$key2]['type']=='textarea')) {
+								echo 'listings.default_filters.push( { "name": "' . $key . '['.$key2.'_match]", "value" : "like" } );';
+							}
 						}
-						if (!empty($value)) {
-							echo 'listings.default_filters.push( { "name": "' . $top_key .  $skey . '", "value" : "'. $value . '" } );';
+					}
+					else {
+						// list
+						$skey = count($value1) > 1 ? '[]' :'';
+						foreach( $value1 as $value2 ) {
+							echo 'listings.default_filters.push( { "name": "' . $key .  $skey . '", "value" : "'. $value2 . '" } );';
+						}
+						if ($skey) {
+							echo 'listings.default_filters.push( { "name": "' . $key . '_match", "value" : "in" } );';
+						}
+						elseif (!empty($av_filters[$key]['type']) && ($av_filters[$key]['type']=='text' || $av_filters[$key]['type']=='textarea')) {
+							echo 'listings.default_filters.push( { "name": "' . $key . '_match", "value" : "like" } );';
 						}
 					}
-				} else {
-					echo 'listings.default_filters.push( { "name": "'. $top_key . '", "value" : "'. $top_value . '" } );';
 				}
 			}
 		}
@@ -1336,13 +1407,13 @@ class PL_Component_Entity {
 		if ($tag == 'if') {
 			$val = isset($atts['value']) ? $atts['value'] : null;
 			if (empty($atts['group']) && !empty($atts['attribute'])) {
-				if (array_key_exists($atts['attribute'], self::$listing['cur_data'])) {
+				if (!empty(self::$listing['cur_data']) && array_key_exists($atts['attribute'], self::$listing['cur_data'])) {
 					$atts['group'] = 'cur_data';
-				}else if (array_key_exists($atts['attribute'], self::$listing['location'])) {
+				}else if (!empty(self::$listing['location']) && array_key_exists($atts['attribute'], self::$listing['location'])) {
 					$atts['group'] = 'location';
-				}else if (array_key_exists($atts['attribute'], self::$listing['contact'])) {
+				}else if (!empty(self::$listing['contact']) && array_key_exists($atts['attribute'], self::$listing['contact'])) {
 					$atts['group'] = 'contact';
-				}else if (array_key_exists($atts['attribute'], self::$listing['rets'])) {
+				}else if (!empty(self::$listing['rets']) && array_key_exists($atts['attribute'], self::$listing['rets'])) {
 					$atts['group'] = 'rets';
 				}
 			}

@@ -4,12 +4,40 @@
 
 jQuery(document).ready(function($){
 
+	/**
+	 * Put hint text into a text input
+	 */
+	function wptitlehint(id) {
+		id = id || 'title';
+
+		var title = $('#' + id), titleprompt = $('#' + id + '-prompt-text');
+
+		if ( title.val() == '' )
+			titleprompt.removeClass('screen-reader-text');
+
+		titleprompt.click(function(){
+			$(this).addClass('screen-reader-text');
+			title.focus();
+		});
+
+		title.blur(function(){
+			if ( this.value == '' )
+				titleprompt.removeClass('screen-reader-text');
+		}).focus(function(){
+			titleprompt.addClass('screen-reader-text');
+		}).keydown(function(e){
+			titleprompt.addClass('screen-reader-text');
+			$(this).unbind(e);
+		});
+	}
 
 
 	////////////////////////////////////////
 	// Template editor
 	////////////////////////////////////////
-	
+
+	// setup view based on current shortcode type, etc
+	wptitlehint();
 	// call the custom autosave for every changed input and select in the template edit view
 	$('#pl_sc_tpl_edit').find('input, select, textarea').change(function() {
 		_changesMade = true;
@@ -43,7 +71,11 @@ jQuery(document).ready(function($){
 			}, 1000);
 		});
 	});
-
+	// popup with list of listing attributes
+	$('.show_listing_attributes').click(function(e){
+		e.preventDefault();
+		$('#listing_attributes').dialog({modal: true, title: 'Lookup Listing Attribute', width: 'auto', height: 300});
+	});
 
 
 	////////////////////////////////////////
