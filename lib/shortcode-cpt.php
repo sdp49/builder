@@ -237,7 +237,7 @@ class PL_Shortcode_CPT {
 		if (!empty($sc)) {
 			// clean it up to just the options needed to wrap the shortcode body
 			// (width, height, context, etc)
-			$sc_attrs = $self::get_shortcode_attrs($sc['shortcode']);
+			$sc_attrs = self::get_shortcode_attrs($sc['shortcode']);
 			foreach($sc as $key=>$val) {
 				if (!empty($sc_attrs['options'][$key]) && !empty($val)) {
 					$args[$key] = $val;
