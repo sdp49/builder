@@ -280,6 +280,22 @@ $PL_API_LISTINGS = array(
                 'refrig' => array(),
                 'deposit' => array(),
                 'ngb_pubsch' => array(),
+
+                // TODO: Find a way to get rid of these (curently used to construct "My Listings" search form...)
+                'max_price' => array('type' => 'text', 'group' => 'basic', 'label' => 'Max Price'),
+				'min_price' => array('type' => 'text', 'group' => 'basic', 'label' => 'Min Price'),
+                'max_beds' => array('type' => 'text', 'group' => 'advanced', 'label' => 'Max Beds'),
+				'min_beds' => array('type' => 'text', 'group' => 'advanced', 'label' => 'Min Beds'),
+				'max_baths' => array('type' => 'text', 'group' => 'advanced', 'label' => 'Max Baths'),
+				'min_baths' => array('type' => 'text', 'group' => 'advanced', 'label' => 'Min Baths'),
+				'max_half_baths' => array(), // => array('type' => 'text', 'group' => 'advanced'),
+				'min_half_baths' => array(), // => array('type' => 'text', 'group' => 'advanced'),
+				'max_sqft' => array('type' => 'text', 'group' => 'advanced', 'label' => 'Max Sqft'),
+				'min_sqft' => array('type' => 'text', 'group' => 'advanced', 'label' => 'Min Sqft'),
+				'max_avail_on' => array(), // => array('type' => 'date', 'group' => 'basic', 'label' => 'Latest Available Date'),
+				'min_avail_on' => array(), // => array('type' => 'date', 'group' => 'basic', 'label' => 'Earliest Available Date'),
+				'max_lt_sz' => array(), // => array('type' => 'text', 'group' => 'advanced', 'label' => 'Max Lot Size'),
+				'min_lt_sz' => array(), // => array('type' => 'text', 'group' => 'advanced', 'label' => 'Min Lot Size')
 			),
 			'agency_only' => array('type' => 'checkbox', 'group' => 'advanced', 'label' => 'My Offices Listings'),
 			'non_import' => array('type' => 'checkbox',  'group' => 'advanced', 'label' => 'Non MLS Listings'),
