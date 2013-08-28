@@ -88,7 +88,7 @@ class PL_Form {
 			?>
 				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>" >
 					<label for="<?php echo $id ?>" class="<?php echo $type ?>"><?php echo $text ?><?php if (!empty($description)) : ?><span class="description"><?php echo htmlentities($description);?></span><?php endif;?></label>	
-					<select name="<?php echo $name ?>" id="<?php echo $id ?>">
+					<select name="<?php echo $name ?>" id="<?php echo $id ?>" data-multi="<?php echo $multi ?>" >
 						<?php foreach ($options as $key => $text): ?>
 							<option value="<?php echo htmlentities($key, ENT_QUOTES) ?>" <?php echo ($key == $value ? 'selected="selected"' : '' ) ?>><?php echo htmlentities($text, ENT_QUOTES, 'UTF-8', false) ?></option>
 						<?php endforeach ?>
@@ -99,7 +99,7 @@ class PL_Form {
 			?>
 				<section id="<?php echo $section_prefix . $id ?>" class="pls_search_form <?php echo $css ?>" >
 					<label for="<?php echo $id ?>" class="<?php echo $type ?>"><?php echo $text ?><?php if (!empty($description)) : ?><span class="description"><?php echo htmlentities($description);?></span><?php endif;?></label>	
-					<select name="<?php echo $name ?>[]" id="<?php echo $id ?>" <?php echo ($type == 'multiselect' ? 'multiple="multiple"' : '') ?> >
+					<select name="<?php echo $name ?>[]" id="<?php echo $id ?>" multiple="multiple" data-multi="<?php echo $multi ?>" >
 						<?php foreach ($options as $key => $text): ?>
 							<option value="<?php echo htmlentities($key, ENT_QUOTES) ?>" <?php echo ((is_array($value) && in_array($key, $value) ) ? 'selected="selected"' : '' ) ?>><?php echo htmlentities($text, ENT_QUOTES, 'UTF-8', false) ?></option>
 						<?php endforeach ?>
@@ -250,8 +250,10 @@ class PL_Form {
 		
 		// extra check for blank arrays
 		$value = ( is_array( $value ) && count( $value ) === 0 ) ? null : $value;
+		
+		$multi = isset($attributes['multi']) ? $attributes['multi'] : "";
 
-		return array('name' => $name, 'value' => $value, 'text' => $text, 'options' => $options, 'id' => $id, 'type' => $attributes['type'], 'css' => $css, 'description' => $description);
+		return array('name' => $name, 'value' => $value, 'text' => $text, 'options' => $options, 'id' => $id, 'type' => $attributes['type'], 'css' => $css, 'description' => $description, 'multi' => $multi);
 	}
 
 	public static function prepare_custom_item($options, $method, $parent) {

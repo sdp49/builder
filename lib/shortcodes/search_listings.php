@@ -214,8 +214,17 @@ To add some text to your listings:<br />
 		),
 	);
 
-	private static $singleton = null;
+	// stores fetched listing attributes value
+	protected static $sl_listing_attributes = array();
 
+	// stores sort list
+	protected static $sl_sort_list = array();
+
+	// stores fetched filter value
+	protected static $sl_filter_options = array();
+
+	private static $singleton = null;
+	
 
 
 
@@ -225,15 +234,44 @@ To add some text to your listings:<br />
 
 	/**
 	 * Get list of filter options from the api.
-	 * @see PL_SC_Base::_get_filters()
 	 */
-	protected function _get_filters() {
-		if (empty($this->filters) && class_exists('PL_Config')) {
-			$this->filters = PL_Config::PL_API_LISTINGS('get', 'args');
+	public function get_options_list($with_choices = false) {
+		if (empty($this::$sl_listing_attributes)) {
+			$this::$sl_listing_attributes = PL_Shortcode_CPT::get_listing_attributes(true);
+			$this::$sl_sort_list = array();
+			foreach($this::$sl_listing_attributes as $args) {
+				$group = $args['group'];
+				switch($group) {
+					case 'metadata':
+						$group = 'cur_data';
+						break;
+					case 'custom':
+						$group = 'uncur_data';
+						break;
+					case 'rets':
+						continue;
+						break;
+
+				}
+				$key = (empty($group) ? '' : $group.'.').$args['attribute'];
+				$this::$sl_sort_list[$key] = $args['label'];
+			}
 		}
-		return $this->filters;
+		$this->options['sort_by_options']['options'] = $this::$sl_sort_list;		
+		$this->options['sort_by']['options'] = $this::$sl_sort_list;		
+		return $this->options;
 	}
 
+	/**
+	 * Get list of filter options from the api.
+	 */
+	public function get_filters_list($with_choices = false) {
+		if (empty($this::$sl_filter_options)) {
+			$this::$sl_filter_options = PL_Shortcode_CPT::get_listing_filters(false, $with_choices);
+		}
+		return $this::$sl_filter_options;
+	}
+	
 	public static function do_templatetags($content, $listing_data) {
 		PL_Component_Entity::$listing = $listing_data;
 		return self::_do_templatetags(__CLASS__, array_keys(self::$singleton->subcodes), $content);

@@ -334,10 +334,7 @@ class PL_Listing_Helper {
 
 		// Handle special case of 'return_only' being set to true...
 		if ($return_only && isset($response[$return_only])) {
-			foreach ($response[$return_only] as $key => $value) {
-				$options[$value] = $value;
-			}
-
+			$options = array_combine($response[$return_only], $response[$return_only]);
 			ksort($options);
 			$options = array('false' => 'Any') + $options;
 			
