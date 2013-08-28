@@ -281,10 +281,10 @@ $PL_API_LISTINGS = array(
                 'deposit' => array(),
                 'ngb_pubsch' => array(),
 
-                // TODO: Find a way to get rid of these (curently used to construct "My Listings" search form...)
-                'max_price' => array('type' => 'text', 'group' => 'basic', 'label' => 'Max Price'),
+				// TODO: Find a way to get rid of these (curently used to construct "My Listings" search form...)
+				'max_price' => array('type' => 'text', 'group' => 'basic', 'label' => 'Max Price'),
 				'min_price' => array('type' => 'text', 'group' => 'basic', 'label' => 'Min Price'),
-                'max_beds' => array('type' => 'text', 'group' => 'advanced', 'label' => 'Max Beds'),
+				'max_beds' => array('type' => 'text', 'group' => 'advanced', 'label' => 'Max Beds'),
 				'min_beds' => array('type' => 'text', 'group' => 'advanced', 'label' => 'Min Beds'),
 				'max_baths' => array('type' => 'text', 'group' => 'advanced', 'label' => 'Max Baths'),
 				'min_baths' => array('type' => 'text', 'group' => 'advanced', 'label' => 'Min Baths'),
