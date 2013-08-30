@@ -237,7 +237,7 @@ class PL_Shortcode_CPT {
 		if (!empty($sc)) {
 			// clean it up to just the options needed to wrap the shortcode body
 			// (width, height, context, etc)
-			$sc_attrs = $self::get_shortcode_attrs($sc['shortcode']);
+			$sc_attrs = self::get_shortcode_attrs($sc['shortcode']);
 			foreach($sc as $key=>$val) {
 				if (!empty($sc_attrs['options'][$key]) && !empty($val)) {
 					$args[$key] = $val;
@@ -832,9 +832,9 @@ class PL_Shortcode_CPT {
 			$key .= empty($key) ? '' : '.';
 			$filters[$key.$attr['attribute']] = $attr;
 			if ($attr['attr_type'] == 'int' || $attr['attr_type'] == 'date') {
-				$label = empty($attr['label_max']) ? 'Min ' . $attr['label'] : $attr['label_min'];
-				$filters[$key.$attr['attribute'].'_max'] = array_merge($attr, array('attribute' => 'min_'.$attr['attribute'], 'label' => $label, 'multi'=>false));
-				$label = empty($attr['label_min']) ? 'Max ' . $attr['label'] : $attr['label_max'];
+				$label = empty($attr['label_min']) ? 'Min ' . $attr['label'] : $attr['label_min'];
+				$filters[$key.$attr['attribute'].'_min'] = array_merge($attr, array('attribute' => 'min_'.$attr['attribute'], 'label' => $label, 'multi'=>false));
+				$label = empty($attr['label_max']) ? 'Max ' . $attr['label'] : $attr['label_max'];
 				$filters[$key.$attr['attribute'].'_max'] = array_merge($attr, array('attribute' => 'max_'.$attr['attribute'], 'label' => $label, 'multi'=>false));
 			}
 		}

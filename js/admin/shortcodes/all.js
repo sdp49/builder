@@ -155,7 +155,7 @@ jQuery(document).ready(function($){
 				$height.val('1024');
 			}
 
-			var data = $('#pl_sc_edit form .'+shortcode).find('.pl_template_block, .sc_options, .active_filters').find('input,select,textarea').serializeArray();
+			var data = $('#pl_sc_edit form .'+shortcode).find('input,select,textarea').serializeArray();
 			data.push({name:'action', value:'pl_sc_changed'}, {name:'shortcode', value:shortcode}, {name:'id', value:$('#pl_sc_edit form input[name="ID"]').val()});
 			var args = $.param(data);
 			$.ajax({
