@@ -55,7 +55,7 @@ jQuery(document).ready(function($) {
         return register_user(data);
     });
     
-    // initialize validator and add the custom form submission logic
+    // Initialize validator and add the custom form submission logic
     $('form#pl_login_form').bind('submit', function (event) {
         // Prevent default form submission logic
         event.preventDefault();
@@ -69,24 +69,25 @@ jQuery(document).ready(function($) {
         password = $(form).find('#user_pass').val();
         remember = $(form).find('#rememberme').val();
 
-        return login_user(username, password, remember);
+        login_user(username, password, remember);
     });
     
     if (typeof $.fancybox == "function") {
         // Register Form Fancybox
         $('.pl_register_lead_link').fancybox({
-            'hideOnContentClick': false,
-            'scrolling' : true,
-            onClosed : function () {
-              $(".register-form-validator-error").remove();
+            "hideOnContentClick": false,
+            "scrolling": true,
+            onClosed: function () {
+                $('.register-form-validator-error').remove();
             }
         });
+
         // Login Form Fancybox
         $('.pl_login_link').fancybox({
-            'hideOnContentClick': false,
-            'scrolling' : true,
-            onClosed : function () {
-              $(".login-form-validator-error").remove();
+            "hideOnContentClick": false,
+            "scrolling": true,
+            onClosed: function () {
+                $('.login-form-validator-error').remove();
             }
         });
 
@@ -145,7 +146,7 @@ jQuery(document).ready(function($) {
                     $("#pl_lead_register_form_inner_wrapper").slideUp();
 
                     // Show success message
-                    setTimeout(function() { $("#pl_lead_register_form .success").show('fast'); },500);
+                    setTimeout(function() { $("#pl_lead_register_form .success").show('fast'); }, 500);
 
                     // send window to redirect link
                     setTimeout(function () { window.location.href = window.location.href; }, 1500);
@@ -166,8 +167,6 @@ jQuery(document).ready(function($) {
             password: password,
             remember: remember
         };
-
-        var success = false;
 
         // Need to validate here too, just in case someone press enter in the form instead of pressing submit
         validate_login_form();
@@ -190,12 +189,10 @@ jQuery(document).ready(function($) {
                     $("#pl_login_form_inner_wrapper").slideUp();
 
                     // Show success message
-                    setTimeout(function() { $("#pl_login_form .success").show('fast'); }, 500);
+                    // setTimeout(function() { $('#pl_login_form .success').show('fast'); }, 500);
                  
                     // send window to redirect link
-                    setTimeout(function () { window.location.href = window.location.href; }, 1500);
-                 
-                    success = true;
+                    setTimeout(function () { window.location.href = window.location.href; }, 50);
                 } 
                 else {
                     // Error Handling
@@ -217,9 +214,6 @@ jQuery(document).ready(function($) {
                 }
             }
         });
-
-        // Allow page redirect on successful login...
-        return success;
     }
 
     function validate_register_form () {
