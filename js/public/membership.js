@@ -177,7 +177,7 @@ jQuery(document).ready(function($) {
             data: data, 
             async: false,
             type: "POST",
-            success: function(response) {
+            success: function (response) {
                 // console.log(response);
                 // If request successfull empty the form
                 if (response == '"You have successfully logged in."') { 
@@ -260,7 +260,7 @@ jQuery(document).ready(function($) {
     }
 
     /*
-     * Property favorite JS...
+     * Property/Listing "favorites" functionality...
      */
 
     // Don't ajaxify the add to favorites link for guests
@@ -320,68 +320,62 @@ jQuery(document).ready(function($) {
         },'json');
     }); 
 
+/* TODO: Get FB login working...
+    
     //
     // Facebook Login
     //
 
     // Additional JS functions here
-    // window.fbAsyncInit = function() {
-    // 
-    //   fb_init();
-    //   
-    //   // check FB login status
-    //   FB.getLoginStatus(function(response) {
-    // 
-    //       // Is user logged into FB?
-    //       if (response.status === 'connected') {
-    //         
-    //            // var accessToken = response.authResponse.accessToken;
-    //            console.log(response);
-    //            var user_id = response.authResponse.userID;
-    //            
-    //            
-    //            // get user info
-    //            var u_info = '';
-    // 
-    //            FB.api('/me', function(user) {
-    //              console.log(user);
-    //              u_info = user;
-    //             });
-    // 
-    //            // console.log(u_info);
-    //            
-    //            // verified_response = parse_signed_request(signed_request);
-    //            // if (verified_response) {
-    //            //   connect_wp_fb(user_id);
-    //            // } else {
-    //            //   console.log('sorry, something went wrong');
-    //            // }
-    //            
-    //            // log in user if user_id exists in our user list via ajax
-    //            
-    //            // else prompt them to register
-    //            
-    //       
-    //        } else if (response.status === 'not_authorized') {
-    // 
-    //            // not_authorized
-    //            console.log("not authorized");
-    //            // login();
-    // 
-    //        } else {
-    // 
-    //            // not_logged_in
-    //            console.log("not logged in");
-    //            // add login button
-    //            // login_to_fb();
-    // 
-    //        }
-    // 
-    //   });
-    //   
-    // };
+    window.fbAsyncInit = function() {
+        fb_init();
 
-    function fb_init() {
+        // check FB login status
+        FB.getLoginStatus(function(response) {
+    
+        // Is user logged into FB?
+        if (response.status === 'connected') {
+            // var accessToken = response.authResponse.accessToken;
+            console.log(response);
+            var user_id = response.authResponse.userID;
+
+
+            // get user info
+            var u_info = '';
+
+            FB.api('/me', function(user) {
+                console.log(user);
+                u_info = user;
+            });
+    
+            // console.log(u_info);
+
+            // verified_response = parse_signed_request(signed_request);
+            // if (verified_response) {
+            //   connect_wp_fb(user_id);
+            // } else {
+            //   console.log('sorry, something went wrong');
+            // }
+
+            // log in user if user_id exists in our user list via ajax
+
+            // else prompt them to register
+            } 
+            else if (response.status === 'not_authorized') {
+                // not_authorized
+                console.log("not authorized");
+                // login();
+            } 
+            else {
+                // not_logged_in
+                console.log("not logged in");
+                // add login button
+                // login_to_fb();
+            }
+        });
+    };
+
+    function fb_init () {
         FB.init({
             appId: "263914027073402", // App ID
             channelUrl: "<?php echo get_template_directory_uri(); ?>/fb_channel.html", // Channel File
@@ -403,31 +397,32 @@ jQuery(document).ready(function($) {
             data: data, 
             async: false,
             type: "POST",
-            success: function(response) { 
+            success: function (response) { 
                 // console.log(response); 
             }
         });
     }
 
-    function parse_signed_request(signed_request) {
+    function parse_signed_request (signed_request) {
         data = {
-          action: 'parse_signed_request',
-          signed_request: signed_request
+            action: 'parse_signed_request',
+            signed_request: signed_request
         };
 
         success = false;
 
         $.ajax({
-          url: info.ajaxurl,
-          data: data, 
-          async: false,
-          type: "POST",
-          success: function(response) {
-            success = true;
-          }
+            url: info.ajaxurl,
+            data: data, 
+            async: false,
+            type: "POST",
+            success: function (response) {
+                success = true;
+            }
         });
 
         return success;
     }
+*/
 
 });
