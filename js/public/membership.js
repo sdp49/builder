@@ -191,8 +191,8 @@ jQuery(document).ready(function($) {
                     // Show success message
                     // setTimeout(function() { $('#pl_login_form .success').show('fast'); }, 500);
                  
-                    // send window to redirect link
-                    setTimeout(function () { window.location.href = window.location.href; }, 50);
+                    // Send window to redirect link
+                    window.location.href = window.location.href;
                 } 
                 else {
                     // Error Handling

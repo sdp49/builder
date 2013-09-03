@@ -15,9 +15,8 @@ class PL_Saved_Search {
 	public static function init () {
 		add_action( 'wp_ajax_save_search', array(__CLASS__,'ajax_save_search'));
 	}
-
-
-    public static function ajax_save_search() {
+	
+    public static function ajax_save_search () {
 
     	$link_to_search = $_POST['link_to_search'];
     	$saved_search_name = $_POST['name_of_saved_search'];
