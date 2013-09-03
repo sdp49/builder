@@ -1,10 +1,10 @@
 jQuery(document).ready(function($) {
 
     $('.pls_save_search').fancybox({
-        'hideOnContentClick': false,
-        'scrolling': true,
+        "hideOnContentClick": false,
+        "scrolling": true,
         onStart: function () { append_search_terms_to_saved_search_form(); },
-        onClosed: function () { $(".login-form-validator-error").remove(); }
+        onClosed: function () { $('.login-form-validator-error').remove(); }
     });
 
     $('#pl_submit').on('click', function (event) {
@@ -12,13 +12,12 @@ jQuery(document).ready(function($) {
         event.preventDefault()
         
         var data = {};
-
-        data.action = 'save_search';
+        data.action = "save_search";
         data.link_to_search = document.URL;
         data.name_of_saved_search = $('#user_search_name').val();
         data.search_form_key_values = get_search_form_key_values();
 
-        $.post(info.ajaxurl, data, function(response, textStatus, xhr) {
+        $.post(info.ajaxurl, data, function (response, textStatus, xhr) {
             // console.log(response);
             if (response == 'true') {
                 // Close dialog
@@ -51,9 +50,9 @@ jQuery(document).ready(function($) {
         $('.pls_search_form_listings').find('input, select, textarea').each(function() {
             var control = $(this);
             var nameAttr = control.attr('name');
-            var isName = typeof(nameAttr) !== 'undefined' && nameAttr !== false;
+            var isName = typeof(nameAttr) !== "undefined" && nameAttr !== false;
 
-            if ( isName && control.val() !== '' && control.val() != '0' ) {
+            if ( isName && control.val() !== "" && control.val() != "0" ) {
                 search_form_key_values[nameAttr] = control.val();
             } 
         });
@@ -63,12 +62,12 @@ jQuery(document).ready(function($) {
 
 
     function append_search_terms_to_saved_search_form () {
-      var search_form_key_values = get_search_form_key_values();
-      // Remove any form values that don't need to be displayed to the user like "submit"
-      var cleaned_form_key_values = purge_unneeded_form_data( search_form_key_values );
+        var search_form_key_values = get_search_form_key_values();
+        // Remove any form values that don't need to be displayed to the user like "submit"
+        var cleaned_form_key_values = purge_unneeded_form_data( search_form_key_values );
 
-      //remove any li items in the ul left over from an old search
-      $('#saved_search_values ul').empty();
+        //remove any li items in the ul left over from an old search
+        $('#saved_search_values ul').empty();
 
         for (var key in cleaned_form_key_values) {
             //
@@ -90,8 +89,8 @@ jQuery(document).ready(function($) {
     function purge_unneeded_form_data (form_data) {
         var cleaned_form_key_values = {};
 
-        for ( var key in form_data ) {
-            if ( key !== 'action' && key !== 'submit' && key !== 'location[address_match]' ) {
+        for (var key in form_data) {
+            if ( key !== "action" && key !== "submit" && key !== "location[address_match]" ) {
                 cleaned_form_key_values[key] = form_data[key];
             }
         }
