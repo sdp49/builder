@@ -4,16 +4,22 @@ PL_People_Helper::init();
 
 class PL_People_Helper {
 
-	public static function init() {
+	public static function init () {
 		add_action('wp_ajax_add_person', array(__CLASS__, 'add_person_ajax' ) );
 		add_action('wp_ajax_get_favorites', array(__CLASS__, 'get_favorites_ajax' ) );
 	}
 
-	public static function add_person($args = array()) {
+	public static function get_user () {
+		$wp_user = wp_get_current_user();
+
+		return empty($wp_user->ID) ? false : $wp_user;
+	}	
+
+	public static function add_person ($args = array()) {
 		return PL_People::create($args);
 	}	
 
-	public static function add_person_ajax() {
+	public static function add_person_ajax () {
 		$api_response = PL_People::create($_POST);
 		echo json_encode($api_response);
 		die();
@@ -21,11 +27,13 @@ class PL_People_Helper {
 
 	public static function get_favorites_ajax () {
 		$placester_person = self::person_details();
+		$favs = array();
+
 		if (isset($placester_person['fav_listings']) && is_array($placester_person['fav_listings'])) {
-			echo json_encode($placester_person['fav_listings']);
-		} else {
-			echo json_encode(array());
+			$favs = $placester_person['fav_listings'];
 		}
+
+		echo json_encode($favs);	
 		die();
 	}
 
@@ -35,7 +43,7 @@ class PL_People_Helper {
 	}
 
 	public static function person_details () {
-		$wp_user = PL_Membership::get_user();
+		$wp_user = self::get_user();
 		$placester_id = get_user_meta($wp_user->ID, 'placester_api_id');
 		if (is_array($placester_id)) { $placester_id = implode($placester_id, ''); }
 		if (empty($placester_id)) {
@@ -73,7 +81,7 @@ class PL_People_Helper {
 	 * @return User's Placester ID
 	 */
 	public static function get_placester_user_id () {
-		$wp_user = PL_Membership::get_user();
+		$wp_user = self::get_user();
 		$placester_id = get_user_meta($wp_user->ID, 'placester_api_id');
 		if (is_array($placester_id)) { $placester_id = implode($placester_id, ''); }
 		
