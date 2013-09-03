@@ -82,7 +82,7 @@ class PL_Membership {
 		// Make sure it's from a form we created
 		if ( !wp_verify_nonce($_POST['nonce'], 'placester_true_registration') ) {
 			// Malicious...
-			echo 'Sorry, your nonce didn\'t verify. Try using the form on the site.';
+			echo "Sorry, your nonce didn't verify -- try using the form on the site";
 			die();
 		}
 
@@ -92,13 +92,15 @@ class PL_Membership {
 		//check for lead errors
 		if ( !empty($lead_object['errors']) ) {
 			$error_messages = self::process_registration_errors($lead_object['errors']);
-			echo $error_messages;
-			die(); // oops TODO: Fix the -1 random ass issue.
-		} else {
+			$val = $error_messages;
+		} 
+        else {
 			//create the lead!
-			echo json_encode(self::create_lead($lead_object));
-			die();
+			$val = json_encode(self::create_lead($lead_object));
 		}
+
+        echo $val;
+        die();
 	}
 
 	// mother function for all lead creation.
@@ -137,9 +139,9 @@ class PL_Membership {
 			//failure
 			$lead_object['errors'][] = 'wp_user_create_failed';
 		}
+
 		die();
 	}
-
 
 	/**
 	*  Callback function for when the
@@ -301,9 +303,9 @@ class PL_Membership {
 		return $lead_object;
 	}
 
-	//rules for validating passwords
+	// Rules for validating passwords
 	private static function validate_password ($password, $confirm_password, $lead_object) {
-		//make sure we have password and confirm.
+		// Make sure we have password and confirm.
 		if ( !empty($password['unvalidated']) && !empty($confirm_password) ) {
 			// Make sure they are the same
 			if ($password['unvalidated'] == $confirm_password ) {
