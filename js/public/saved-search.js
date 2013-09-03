@@ -76,8 +76,7 @@ jQuery(document).ready(function($) {
 
     function append_search_terms_to_saved_search_form () {
       var search_form_key_values = get_search_form_key_values();
-      //remove any form values that don't need to be displayed to the user
-      //like "submit"
+      // Remove any form values that don't need to be displayed to the user like "submit"
       var cleaned_form_key_values = purge_unneeded_form_data( search_form_key_values );
 
       //remove any li items in the ul left over from an old search
@@ -101,9 +100,8 @@ jQuery(document).ready(function($) {
 
     }
 
-    //removes form data that doesn't need to be 
-    //displayed to the user. 
-    function purge_unneeded_form_data ( form_data ) {
+    // Removes form data that doesn't need to be displayed to the user
+    function purge_unneeded_form_data (form_data) {
       
       var cleaned_form_key_values = {};
 
@@ -116,8 +114,7 @@ jQuery(document).ready(function($) {
       return cleaned_form_key_values;
     }
 
-    //An array that translates search form keys into 
-    //human readable form.
+    // An array that translates search form keys into human readable form
     var form_key_translations = {
       "location[locality]": "City",
       "location[postal]": "Zip",
@@ -135,8 +132,3 @@ jQuery(document).ready(function($) {
     }
 
 });
-
-
-
-
-

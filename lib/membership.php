@@ -105,7 +105,7 @@ class PL_Membership {
 	}
 
 	// mother function for all lead creation.
-	public static function create_lead($lead_object) {
+	public static function create_lead ($lead_object) {
 		$wordpress_user_id = self::create_wordpress_user_lead($lead_object);
 		if ( !is_wp_error($wordpress_user_id) ) {
 
@@ -151,7 +151,7 @@ class PL_Membership {
 	*  JavaScript in "js/theme/placester.membership.js"
 	*
 	*/
-	public static function placester_ajax_login() {
+	public static function placester_ajax_login () {
 		extract( $_POST );
 
 		$errors = array();
@@ -176,8 +176,8 @@ class PL_Membership {
 
 		if ( !empty($errors) ) {
 			echo json_encode( $errors );
-		} else {
-
+		} 
+        else {
 			$rememberme = $remember == "forever" ? true : false;
 
 			// Manually login user
@@ -191,14 +191,13 @@ class PL_Membership {
 
 			$success = "You have successfully logged in.";
 			echo json_encode( $success );
-
 		}
 
 		die;
 	}
 
-	//creates wordpress users given lead_objects
-	private static function create_wordpress_user_lead($lead_object) {
+	// Creates wordpress users given lead_objects
+	private static function create_wordpress_user_lead ($lead_object) {
 		// Wordpress doesn't support phone.
 		$userdata = array(
 				'user_pass' => $lead_object['password'],
@@ -210,15 +209,15 @@ class PL_Membership {
 		$user_id = wp_insert_user( $userdata );
 
 		//user creation failed.
-		if ( !$user_id ) {
-			return false;
-		} else {
-			return $user_id;
-		}
+		if (!$user_id) {
+			$user_id = false;
+		} 
+        
+        return $user_id;
 	}
 
-	// validates all registration data.
-	private static function validate_registration($post_vars) {
+	// Validates all registration data
+	private static function validate_registration ($post_vars) {
 		if ( is_array($post_vars)) {
 
 			$lead_object['username'] = '';
@@ -305,7 +304,7 @@ class PL_Membership {
 	}
 
 	//rules for validating passwords
-	private static function validate_password($password, $confirm_password, $lead_object) {
+	private static function validate_password ($password, $confirm_password, $lead_object) {
 		//make sure we have password and confirm.
 		if (!empty($password['unvalidated']) && !empty($confirm_password) ) {
 
@@ -335,7 +334,7 @@ class PL_Membership {
 
 	}
 
-	//rules for validating email addresses
+	// Rules for validating email addresses
 	private static function validate_email ($email, $lead_object)
 	{
 		if ( empty($email['unvalidated']) ) {
@@ -361,7 +360,7 @@ class PL_Membership {
 		return array('email' => $email, 'lead_object' => $lead_object);
 	}
 
-	// rules for validating the username
+	// Rules for validating the username
 	private static function validate_username ($username, $lead_object)
 	{
 
@@ -389,9 +388,9 @@ class PL_Membership {
 
 	}
 
-	// used for processing errors for the various forms.
+	// Used for processing errors for the various forms.
 	private static function process_registration_errors ($errors) {
-
+        // Default value...
 		$error_messages = '';
 
 		foreach ($errors as $error => $type) {
@@ -520,7 +519,6 @@ class PL_Membership {
 		return $result;
 	}
 
-
 	/**
 	 * Adds a "Add property to favorites" link
 	 * if the user is not logged in, or if
@@ -530,39 +528,18 @@ class PL_Membership {
 	 * TODO If logged in and not lead display something informing them
 	 * of what they need to do to register a lead account
 	 */
-	public static function placester_favorite_link_toggle( $atts ) {
+	public static function placester_favorite_link_toggle ($atts) {
 		$defaults = array(
 			'add_text' => 'Add property to favorites',
 			'remove_text' => 'Remove property from favorites',
 			'spinner' => admin_url( 'images/wpspin_light.gif' ),
 			'property_id' => false
-			);
+		);
 
 		$args = wp_parse_args( $atts, $defaults );
 		extract( $args, EXTR_SKIP );
 
-		$is_lead = current_user_can( 'placester_lead' );
-		// if ( !$is_lead ) {
-		//     return;
-		// }
-
-		// $add_link_attr = array('href' => "#{$property_id}",'id' => 'pl_add_favorite','class' => 'pl_prop_fav_link');
-		// $remove_link_attr = array('href' => "#{$property_id}",'id' => 'pl_remove_favorite','class' => 'pl_prop_fav_link');
-
-		// // Add extra classes if user not loggend in or doesn't have a lead account
-		// if (  ) {
-		//     // $add_link_attr['class'] .= 'guest';
-		//     // $add_link_attr['href'] =
-		//     // $add_link_attr['target'] = "_blank";
-		// } else {
-
-		//     // Return the remove link if favorite
-		//     if ( $is_favorite )
-		//         $add_link_attr['style'] = "display:none;";
-		// }
-		// if ( !isset($add_link_attr['style']) ) {
-		//     $remove_link_attr['style'] = "display:none;";
-		// }
+		$is_lead = current_user_can('placester_lead');
 
 		if ( is_user_logged_in() ) {
 			$is_favorite = self::is_favorite_property($property_id);
@@ -593,7 +570,6 @@ class PL_Membership {
 		return ob_get_clean();
 	}
 
-
 	public static function is_favorite_property ($property_id) {
 		$person = PL_People_Helper::person_details();
 		// pls_dump($property_id, $person['fav_listings']);
@@ -614,7 +590,7 @@ class PL_Membership {
 	 * TODO If logged in and not lead display something informing them
 	 * of what they need to do to register a lead account
 	 */
-	public static function placester_lead_control_panel( $args ) {
+	public static function placester_lead_control_panel ($args) {
 
 	$fb_registered = false;
 	// Capture users that just logged on w/ FB registration
@@ -754,37 +730,16 @@ class PL_Membership {
 		$user_name = $signed_request['registration']['name'];
 		$userdata = get_user_by( 'login', $user_id );
 
-		// ob_start();
-		//   pls_dump($userdata);
-		// error_log(ob_get_clean());
-
-		if ( $userdata ) {
-
-			// user exists - manually log user in.
-			// $creds['user_login'] = $user_id;
-			// $creds['user_password'] = 'n8ph6QAs';
-			// $creds['remember'] = true;
-			// $user = wp_signon( $creds, true );
-
+		if ($userdata) {
 			wp_set_current_user($user_id);
 			wp_set_auth_cookie($user_id, true);
+		} 
+        else {
 
-			// $user = get_user_by('login', $user_id);
-
-			// ob_start();
-			//   pls_dump($user->ID);
-			// error_log(ob_get_clean());
-
-
-			// wp_set_current_user($user->ID);
-			// wp_set_current_user('40');
-
-		} else {
-
-			// create random password
+			// Create random password
 			$random_pass = self::random_password();
 
-			// user doesn't exist, create user.
+			// User doesn't exist, create user
 			$userdata = array(
 				'user_pass' => $random_pass,
 				'user_login' => $user_id,
@@ -794,20 +749,12 @@ class PL_Membership {
 				'role' => 'placester_lead'
 				);
 
-			// add user to WP user table
+			// Add user to WP user table
 			wp_insert_user( $userdata );
 
 			$user = get_user_by('login', $user_id);
 
-			// wp_set_auth_cookie($user->ID, true);
-			// wp_set_current_user($user->ID);
-
-			// $creds['user_login'] = $user_id;
-			// $creds['user_password'] = $random_pass;
-			// $creds['remember'] = true;
-			// $created_user = wp_signon( $creds, false );
-
-			// send user email w/ login and password
+			// Send user email w/ login and password
 			wp_mail($user_email,
 				'Your password for ' . $_SERVER["SERVER_NAME"],
 				"to log into " . $_SERVER["SERVER_NAME"] . " your username is '" . $user_email . "', and your password is '" . $random_pass . "'. However, as long as you are signed into Facebook, you won't need to manually sign in."
@@ -816,9 +763,8 @@ class PL_Membership {
 		}
 	}
 
-
 	// Parse Facebook Signed Request
-	public static function fb_parse_signed_request($signed_request = '', $return = 'ajax') {
+	public static function fb_parse_signed_request ($signed_request = '', $return = 'ajax') {
 
 		if (empty($signed_request)) {
 			extract($_POST);
@@ -838,19 +784,20 @@ class PL_Membership {
 
 	}
 
-	public static function base64_url_decode($input) {
+	public static function base64_url_decode ($input) {
 		return base64_decode(strtr($input, '-_', '+/'));
 	}
 
-
-	public static function random_password() {
+	public static function random_password () {
 		$alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
 		$pass = array(); //remember to declare $pass as an array
 		$alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
-		for ($i = 0; $i < 8; $i++) {
+		
+        for ($i = 0; $i < 8; $i++) {
 			$n = rand(0, $alphaLength);
 			$pass[] = $alphabet[$n];
 		}
+
 		return implode($pass); //turn the array into a string
 	}
 

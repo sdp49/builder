@@ -90,7 +90,7 @@ class PL_Saved_Search {
 		return $response;
 	}
 
-	//returns the saved search form overlay
+	// Returns the saved search form overlay
 	public static function get_saved_search_registration_form () {
 
         ob_start();
@@ -110,13 +110,16 @@ class PL_Saved_Search {
     }
 
     private static function purge_unneeded_form_data ($form_data) {
-
-    	// irrelevant data to the search form filters
+    	// Irrelevant data to the search form filters
     	$internal_params = array( 'action', 'submit');
     	foreach( $internal_params as $internal ) {
-    		if( isset( $form_data[$internal] ) ) unset($form_data[$internal]);
+    		if (isset( $form_data[$internal])) { unset($form_data[$internal]); }
     	}
 
     	return $form_data;
     }
+
+    public static function get_save_search_link () {
+		return '<a href="#" class="pls_save_search">Save Search</a>';
+	}
 }
