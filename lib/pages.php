@@ -10,6 +10,7 @@ class PL_Pages {
 		add_action( 'wp_footer', array(__CLASS__,'force_rewrite_update') );
 		add_action( 'admin_footer', array(__CLASS__,'force_rewrite_update') );
 		add_action( '404_template', array( __CLASS__, 'dump_permalinks') );
+		add_action( 'wp', array(__CLASS__, 'catch_404s') );
 	}
 
 	//return many page urls
@@ -165,6 +166,38 @@ class PL_Pages {
 	public static function dump_permalinks () {
 		global $wp_rewrite;
 		$wp_rewrite->flush_rules();
+	}
+
+	/**
+	 * Check for a request for properties that 404ed. Get the property (thus creating the cpt), and if
+	 * property exists redirect to its permalink.
+	 */
+	public static function catch_404s() {
+		global $wp_query;
+
+		if (!is_404()) {
+			return;
+		}
+
+		if ($wp_query->query_vars['post_type'] === self::$property_post_type 
+			&& $wp_query->query_vars[self::$property_post_type] != '') {
+
+			$req_id = $wp_query->query_vars[self::$property_post_type];
+			$args = array( 'listing_ids' => array($req_id) );
+			$response = PL_Listing::get($args);
+
+			if ( !is_array($response) || !isset($response['listings']) || 
+				!is_array($response['listings']) || !count($response['listings'] > 0) ) {
+				return;
+			}
+
+			$pmlink = get_permalink($response['listings'][0]['id']);
+			if ($pmlink) {
+				wp_redirect($pmlink);
+				exit;
+			}
+
+		}
 	}
 
 }
