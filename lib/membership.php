@@ -9,7 +9,7 @@
 PL_Membership::init();
 class PL_Membership {
 
-	public static function init() {
+	public static function init () {
 		add_action( 'wp_ajax_nopriv_pl_register_lead', array( __CLASS__, 'ajax_create_lead' ));
 		add_action( 'wp_ajax_nopriv_pl_login', array( __CLASS__, 'placester_ajax_login' ));
 		// add_action( 'wp_ajax_nopriv_connect_wp_fb', array(__CLASS__, 'connect_fb_with_wp' ));
@@ -151,50 +151,47 @@ class PL_Membership {
 	*
 	*/
 	public static function placester_ajax_login () {
-		extract( $_POST );
+        extract($_POST);
 
-		$errors = array();
+		$sanitized_username = sanitize_user($username);
+        $errors = array();
 
-		$sanitized_username = sanitize_user( $username );
-
-		if ( empty( $sanitized_username ) ) {
-			$errors['user_login'] = "An email address is required.";
+		if (empty($sanitized_username)) {
+			$errors['user_login'] = "An email address is required";
 		} 
-        elseif ( empty( $password )) {
-			$errors['user_pass'] = "A password is required.";
+        elseif (empty($password)) {
+			$errors['user_pass'] = "A password is required";
 		} 
         else {
-			$userdata = get_user_by( 'login', $sanitized_username );
+			$userdata = get_user_by('login', $sanitized_username);
 
-			if ($userdata) {
-				if ( !wp_check_password( $password, $userdata->user_pass, $userdata->ID ) )  {
-					$errors['user_pass'] = "The password isn't correct.";
-				}
-			} 
-            else {
-				$errors['user_login'] = "The email address is invalid.";
+			if (empty($userdata)) {
+                $errors['user_login'] = "The email address is invalid";
+            }
+            else if ($userdata && !wp_check_password($password, $userdata->user_pass, $userdata->ID)) {
+                $errors['user_pass'] = "The password isn't correct";
 			}
 		}
 
-		if ( !empty($errors) ) {
-			echo json_encode( $errors );
+		if (!empty($errors)) {
+			$result = array("success" => false, "errors" => $errors);
 		} 
         else {
-			$rememberme = $remember == "forever" ? true : false;
+			$rememberme = ($remember == "forever") ? true : false;
 
 			// Manually login user
 			$creds['user_login'] = $sanitized_username;
 			$creds['user_password'] = $password;
 			$creds['remember'] = $rememberme;
 
-			$user = wp_signon( $creds, true );
+			$user = wp_signon($creds, true);
 
 			wp_set_current_user($user->ID);
 
-			$success = "You have successfully logged in.";
-			echo json_encode( $success );
+            $result = array("success" => true);
 		}
 
+        echo json_encode($result);
 		die();
 	}
 
@@ -375,7 +372,7 @@ class PL_Membership {
 
 		}
 
-		// Check if username exists,,,
+		// Check if username exists...
 		if ( username_exists($username['unvalidated']) ) {
 			$lead_object['errors'][] = 'username_exists';
 			$username['errors'] = true;

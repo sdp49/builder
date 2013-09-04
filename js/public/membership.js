@@ -111,53 +111,46 @@ jQuery(document).ready(function($) {
         // Need to validate here too, just in case someone press enter in the form instead of pressing submit
         validate_register_form();
 
-        $.ajax({
-            url: info.ajaxurl,
-            data: data, 
-            async: false,
-            type: "POST",
-            success: function(response) {
-                if (response) {
-                    // Error Handling
-                    var errors = jQuery.parseJSON(response);
+        $.post(info.ajaxurl, data, function (response) {
+            if (response) {
+                // Error Handling
+                var errors = jQuery.parseJSON(response);
 
-                    // jQuery Tools Validator error handling
-                    // $('form#pl_lead_register_form').validator();
+                // jQuery Tools Validator error handling
+                // $('form#pl_lead_register_form').validator();
 
-                    // take possible errors and create new object with correct ones to pass to validator
-                    error_array = new Array("user_email", "user_password", "user_confirm");
-                    new_error_array = new Object();
-                    $(error_array).each(function(i, v) {
-                        if (typeof errors[v] != "undefined") { 
-                            new_error_array[v] = errors[v];
-                        }
-                    });
+                // Take possible errors and create new object with correct ones to pass to validator
+                error_array = new Array("user_email", "user_password", "user_confirm");
+                new_error_array = new Object();
+                $(error_array).each(function(i, v) {
+                    if (typeof errors[v] != "undefined") { 
+                        new_error_array[v] = errors[v];
+                    }
+                });
 
-                    $('form#pl_lead_register_form input').data("validator").invalidate(new_error_array);
-                   
-                } 
-                else {  
-                    event.preventDefault ? event.preventDefault() : event.returnValue = false;
+                $('form#pl_lead_register_form input').data("validator").invalidate(new_error_array);
+            } 
+            else {  
+                event.preventDefault ? event.preventDefault() : event.returnValue = false;
 
-                    // Remove error messages
-                    $('.register-form-validator-error').remove();
+                // Remove error messages
+                $('.register-form-validator-error').remove();
 
-                    // Remove form
-                    $("#pl_lead_register_form_inner_wrapper").slideUp();
+                // Remove form
+                $("#pl_lead_register_form_inner_wrapper").slideUp();
 
-                    // Show success message
-                    setTimeout(function() { $("#pl_lead_register_form .success").show('fast'); }, 500);
+                // Show success message
+                setTimeout(function () { $("#pl_lead_register_form .success").show('fast'); }, 500);
 
-                    // send window to redirect link
-                    setTimeout(function () { window.location.href = window.location.href; }, 1500);
+                // send window to redirect link
+                setTimeout(function () { window.location.href = window.location.href; }, 1500);
 
-                    $('#pl_lead_register_form .success').fadeIn('fast');
-                    setTimeout(function () { window.location.href = window.location.href; }, 700);
+                $('#pl_lead_register_form .success').fadeIn('fast');
+                setTimeout(function () { window.location.href = window.location.href; }, 700);
 
-                    return true;
-                }
+                return true;
             }
-        });
+        }, 'json');
     }
     
     function login_user (username, password, remember) {
@@ -171,49 +164,41 @@ jQuery(document).ready(function($) {
         // Need to validate here too, just in case someone press enter in the form instead of pressing submit
         validate_login_form();
 
-        $.ajax({
-            url: info.ajaxurl, 
-            data: data, 
-            async: false,
-            type: "POST",
-            success: function (response) {
-                // console.log(response);
-                // If request successfull empty the form
-                if (response == '"You have successfully logged in."') { 
-                    event.preventDefault ? event.preventDefault() : event.returnValue = false;
+        $.post(info.ajaxurl, data, function (response) {
+            // If request successfull empty the form...
+            if (response && response.success) {
+                // Remove error messages...
+                $('.login-form-validator-error').remove();
 
-                    // remove error messages
-                    $('.login-form-validator-error').remove();
+                // Hide form...
+                $("#pl_login_form_inner_wrapper").slideUp();
 
-                    // Remove form
-                    $("#pl_login_form_inner_wrapper").slideUp();
+                // Show success message
+                // setTimeout(function() { $('#pl_login_form .success').show('fast'); }, 500);
+             
+                // Send window to redirect link...
+                window.location.href = window.location.href;
+            } 
+            else {
+                // Error Handling
+                var errors = (response && response.errors) ? response.errors : {};
 
-                    // Show success message
-                    // setTimeout(function() { $('#pl_login_form .success').show('fast'); }, 500);
-                 
-                    // Send window to redirect link
-                    window.location.href = window.location.href;
-                } 
-                else {
-                    // Error Handling
-                    var errors = jQuery.parseJSON(response);
+                // jQuery Tools Validator error handling
+                $('form#pl_login_form').validator();
 
-                    // jQuery Tools Validator error handling
-                    $('form#pl_login_form').validator();
+                // Take possible errors and create new object with correct ones to pass to validator
+                error_keys = new Array("user_login", "user_pass");
+                error_obj = new Object();
 
-                    // Take possible errors and create new object with correct ones to pass to validator
-                    error_array = new Array("user_login", "user_pass");
-                    new_error_array = new Object();
-                    $(error_array).each(function(i, v) {
-                        if (typeof errors[v] != "undefined") { 
-                            new_error_array[v] = errors[v];
-                        }
-                    });
-
-                    $('form#pl_login_form input').data("validator").invalidate(new_error_array);
+                for (key in errors) {
+                    if (error_keys.indexOf(key) != -1) {
+                        error_obj[key] = errors[key];
+                    }
                 }
+
+                $('form#pl_login_form input').data("validator").invalidate(error_obj);
             }
-        });
+        }, 'json');
     }
 
     function validate_register_form () {
@@ -272,7 +257,7 @@ jQuery(document).ready(function($) {
         };
 
         var that = this;
-        $.post(info.ajaxurl, data, function(response) {
+        $.post(info.ajaxurl, data, function (response) {
             spinner.hide();
 
             // This property will only be set if WP determines user is of admin status...
@@ -289,7 +274,7 @@ jQuery(document).ready(function($) {
                     $(that).parent().find('#pl_add_favorite').show();
                 };
             }
-        },'json');
+        }, 'json');
     });
 
     $('#pl_remove_favorite').live('click',function (event) {
@@ -304,14 +289,14 @@ jQuery(document).ready(function($) {
             property_id: property_id.substr(1)
         };
 
-        $.post(info.ajaxurl, data, function(response) {
+        $.post(info.ajaxurl, data, function (response) {
             $spinner.hide();
             // If request successfull
             if ( response != 'errors' ) {
                 $('#pl_add_favorite').show();
                 $('#pl_remove_favorite').hide();
             }
-        },'json');
+        }, 'json');
     }); 
 
 /* TODO: Get FB login working...
