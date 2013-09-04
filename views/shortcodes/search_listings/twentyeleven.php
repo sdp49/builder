@@ -178,6 +178,7 @@ $template = array(
 }
 .pl-tpl-sl-twentyeleven .dataTables_paginate a {
 	margin: 0 1em 0 0;
+	padding: 0;
 	font-weight: 500;
 }
 .pl-tpl-sl-twentyeleven .dataTables_paginate a.paginate_active {
