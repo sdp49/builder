@@ -27,13 +27,9 @@ class PL_Membership {
         return get_permalink($page_id);
 	}
 
-	/**
-	 *  Callback function for when the frontend
-	 *  lead register form is submitted
-	 *
-	 *  JavaScript in "js/theme/placester.membership.js"
-	 *
-	 */
+	// Callback function for when the frontend lead register form is submitted
+	//
+    // NOTE: JavaScript in "js/theme/placester.membership.js"
 	public static function ajax_register_site_user () {
 		$errors = array();
 
@@ -62,7 +58,6 @@ class PL_Membership {
         die();
 	}
 
-	// Mother function for all lead creation...
 	public static function create_site_user ($lead_object) {
 		$errors = array();
 
@@ -71,15 +66,10 @@ class PL_Membership {
             'user_pass' => $lead_object['password'],
             'user_login' => $lead_object['username'],
             'user_email' => $lead_object['metadata']['email'],
-            'role' => 'placester_lead',
+            'role' => 'placester_lead'
         );
 
         $wordpress_user_id = wp_insert_user($userdata);
-
-        // User creation failed
-        if (!$wordpress_user_id) {
-            $wordpress_user_id = false;
-        }
 
 		if ( !is_wp_error($wordpress_user_id) ) {
 			// Force blog to be set immediately or MU throws errors
@@ -89,6 +79,7 @@ class PL_Membership {
 
             // Push the new WP user as a lead to the API...
 			$response = PL_People_Helper::add_person($lead_object);
+            
 			if (isset($response['code'])) {
 				$errors[] = $response['message'];
 				foreach ($response['validations'] as $key => $validation) {
