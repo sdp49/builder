@@ -143,16 +143,21 @@ class PL_Pages {
 
 		$q_ids = $wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_type = %s", self::$property_post_type);
 		$prop_ids = $wpdb->get_col($q_ids);
-		$id_str = implode(',', $prop_ids);
 
+		if (!is_array($prop_ids) || count($prop_ids) === 0) {
+			return false;
+		}
+
+		$id_str = implode(',', $prop_ids);
     	$results = $wpdb->query( "DELETE FROM $wpdb->posts WHERE ID IN ($id_str)");
-   
+
     	if (empty($results)) {
     		return false;
     	}
 
 		$wpdb->query("DELETE FROM $wpdb->postmeta WHERE post_id IN ($id_str)");
 		self::delete_all_terms();
+		self::ping_yoast_sitemap();
 
     	return true;
 	}
@@ -178,7 +183,13 @@ class PL_Pages {
 		}
 
 		$post_id = $post_id_arr[0];
-		return (bool) wp_delete_post($post_id, true);
+		$result = (bool) wp_delete_post($post_id, true);
+
+		if ($result) {
+			self::ping_yoast_sitemap();
+		}
+
+		return $result;
 	}
 
 	/**
@@ -280,6 +291,29 @@ class PL_Pages {
 				wp_redirect($pmlink);
 				exit;
 			}
+		}
+	}
+
+	/**
+	 * If Yoast sitemaps are enabled, causes Yoast to request the sitemap (populating caches)
+	 * and to request that search engines re-index the site.
+	 */
+	public static function ping_yoast_sitemap() {
+		global $wpseo_sitemaps;
+
+		if (!$wpseo_sitemaps) {
+			if (!function_exists('wpseo_frontend_init')) {
+				return;
+			}
+			wpseo_frontend_init();
+		}
+
+		if (method_exists($wpseo_sitemaps, 'hit_sitemap_index')) {
+			$wpseo_sitemaps->hit_sitemap_index();
+		}
+
+		if (method_exists($wpseo_sitemaps, 'ping_search_engines')) {
+			$wpseo_sitemaps->ping_search_engines();
 		}
 	}
 
