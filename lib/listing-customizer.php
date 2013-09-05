@@ -362,7 +362,7 @@ You can use any valid CSS in this field to customize the listing, which will als
 	public static function custom_property_details_html_filter($content) {
 		global $post;
 
-		$listing_data = PLS_Plugin_API::get_listing_in_loop();
+		$listing_data = PL_Listing_Helper::get_listing_in_loop();
 		// add in js to init the map
 		// TODO: move this to subcode handler?
 		$js = "

@@ -2,66 +2,22 @@
 
 /**
  * Class Designed to Handle the rigors of Membership, and membership options...
- * or something like that.
- * by matt, though much was taken from alex.
  */
 
 PL_Membership::init();
 class PL_Membership {
 
-	public static function init() {
-		add_action( 'wp_ajax_nopriv_pl_register_lead', array( __CLASS__, 'ajax_create_lead' ));
-		add_action( 'wp_ajax_nopriv_pl_login', array( __CLASS__, 'placester_ajax_login' ));
+	public static function init () {
+		add_action('wp_ajax_nopriv_pl_register_site_user', array(__CLASS__, 'ajax_register_site_user'));
+		add_action('wp_ajax_nopriv_pl_login_site_user', array(__CLASS__, 'ajax_login_site_user'));
 		// add_action( 'wp_ajax_nopriv_connect_wp_fb', array(__CLASS__, 'connect_fb_with_wp' ));
 		// add_action( 'wp_ajax_nopriv_parse_signed_request', array(__CLASS__, 'fb_parse_signed_request' ));
 
-		add_action( 'wp_ajax_add_favorite_property', array(__CLASS__,'ajax_add_favorite_property') );
-		add_action( 'wp_ajax_nopriv_add_favorite_property', array(__CLASS__,'ajax_add_favorite_property') );
-		add_action( 'wp_ajax_remove_favorite_property', array(__CLASS__,'ajax_remove_favorite_property') );
-
-		add_shortcode( 'favorite_link_toggle', array(__CLASS__,'placester_favorite_link_toggle') );
-		add_shortcode( 'lead_user_navigation', array(__CLASS__,'placester_lead_control_panel') );
+		add_shortcode('favorite_link_toggle', array(__CLASS__,'placester_favorite_link_toggle'));
+		add_shortcode('lead_user_navigation', array(__CLASS__,'placester_lead_control_panel'));
 
 		// Create the "Property lead" role
 		$lead_role = add_role( 'placester_lead','Property Lead',array('add_roomates' => true,'read_roomates' => true,'delete_roomates' => true,'add_favorites' => true,'delete_roomates' => true,'level_0' => true,'read' => true) );
-	}
-
-	public static function get_favorite_ids () {
-		$person = PL_People_Helper::person_details();
-		$ids = array();
-		if (isset($person['fav_listings'])) {
-			foreach ( (array) $person['fav_listings'] as $fav_listings) {
-				$ids[] = $fav_listings['id'];
-			}
-		}
-
-		return $ids;
-	}
-
-	public static function ajax_add_favorite_property () {
-		// Check to see if user is an admin (at this point, we know the user is logged in...)
-		if (current_user_can('manage_options')) {
-			$val = json_encode(array('is_admin' => true));
-		}
-		else if ($_POST['property_id']) {
-			$api_response = PL_People_Helper::associate_property($_POST['property_id']);
-			$val = json_encode($api_response);
-		} 
-        else {
-			$val = false;
-		}
-
-        echo $val;
-		die();
-	}
-
-	public static function ajax_remove_favorite_property () {
-		if ($_POST['property_id']) {
-			$api_response = PL_People_Helper::unassociate_property($_POST['property_id']);
-			echo json_encode($api_response);
-		}
-
-        die();
 	}
 
 	public static function get_client_area_url () {
@@ -71,60 +27,69 @@ class PL_Membership {
         return get_permalink($page_id);
 	}
 
-	/**
-	 *  Callback function for when the frontend
-	 *  lead register form is submitted
-	 *
-	 *  JavaScript in "js/theme/placester.membership.js"
-	 *
-	 */
-	public static function ajax_create_lead () {
-		// Make sure it's from a form we created
+	// Callback function for when the frontend lead register form is submitted
+	//
+    // NOTE: JavaScript in "js/theme/placester.membership.js"
+	public static function ajax_register_site_user () {
+		$errors = array();
+
+        // Make sure it's from a form we created
 		if ( !wp_verify_nonce($_POST['nonce'], 'placester_true_registration') ) {
 			// Malicious...
 			echo "Sorry, your nonce didn't verify -- try using the form on the site";
 			die();
 		}
 
-		//all validation rules in a single place.
+		// All validation rules in a single place...
 		$lead_object = self::validate_registration($_POST);
 
-		//check for lead errors
-		if ( !empty($lead_object['errors']) ) {
-			$error_messages = self::process_registration_errors($lead_object['errors']);
-			$val = $error_messages;
+		// Check for lead errors
+		if (!empty($lead_object['errors'])) {
+			$errors = self::process_registration_errors($lead_object['errors']);
 		} 
         else {
-			//create the lead!
-			$val = json_encode(self::create_lead($lead_object));
+			// Try to create the lead...
+			$errors = self::create_site_user($lead_object);
 		}
 
-        echo $val;
+        $result = empty($errors) ? array("success" => true) : array("success" => false, "errors" => $errors);
+
+        echo json_encode($result);
         die();
 	}
 
-	// mother function for all lead creation.
-	public static function create_lead ($lead_object) {
-		$wordpress_user_id = self::create_wordpress_user_lead($lead_object);
-		if ( !is_wp_error($wordpress_user_id) ) {
+	public static function create_site_user ($lead_object) {
+		$errors = array();
 
-			//force blog to be set immediately or MU throws errors.
+        // Create Wordpress user entity for lead...
+        $userdata = array(
+            'user_pass' => $lead_object['password'],
+            'user_login' => $lead_object['username'],
+            'user_email' => $lead_object['metadata']['email'],
+            'role' => 'placester_lead'
+        );
+
+        $wordpress_user_id = wp_insert_user($userdata);
+
+		if ( !is_wp_error($wordpress_user_id) ) {
+			// Force blog to be set immediately or MU throws errors
 			$blogs = get_blogs_of_user($wordpress_user_id);
 			$first_blog = current($blogs);
 			update_user_meta( $wordpress_user_id, 'primary_blog', $first_blog->userblog_id );
 
+            // Push the new WP user as a lead to the API...
 			$response = PL_People_Helper::add_person($lead_object);
+            
 			if (isset($response['code'])) {
-				$lead_object['errors'][] = $response['message'];
+				$errors[] = $response['message'];
 				foreach ($response['validations'] as $key => $validation) {
-					$lead_object['errors'][] = $response['human_names'][$key] . implode($validation, ' and ');
+					$errors[] = $response['human_names'][$key] . implode($validation, ' and ');
 				}
-				$lead_object['errors'][] = 'placester_create_failed';
+				$errors[] = 'placester_create_failed';
 			}
 
-			// If the API call was successful, inform the user of his
-			// password and set the password change nag
-			if ( empty( $lead_object['errors'] ) ) {
+			// If the API call was successful, inform the user that his/her password and set the password change
+			if (empty($errors)) {
 				update_user_meta( $wordpress_user_id, 'placester_api_id', $response['id'] );
 				wp_new_user_notification( $wordpress_user_id);
 			}
@@ -133,89 +98,61 @@ class PL_Membership {
 				wp_mail($lead_object['username'], 'Your new account on ' . site_url(), PL_Membership_Helper::parse_client_message($lead_object) );
 			}
 
-			//login user if successfully sign up.
+			// Login user if successfully signed-up...
 			wp_set_auth_cookie($wordpress_user_id, true, is_ssl());
-		} else {
-			//failure
-			$lead_object['errors'][] = 'wp_user_create_failed';
-		}
-
-		die();
-	}
-
-	/**
-	*  Callback function for when the
-	*  frontend login form is submitted
-	*
-	*  JavaScript in "js/theme/placester.membership.js"
-	*
-	*/
-	public static function placester_ajax_login () {
-		extract( $_POST );
-
-		$errors = array();
-
-		$sanitized_username = sanitize_user( $username );
-
-		if ( empty( $sanitized_username ) ) {
-			$errors['user_login'] = "An email address is required.";
-		} 
-        elseif ( empty( $password )) {
-			$errors['user_pass'] = "A password is required.";
 		} 
         else {
-			$userdata = get_user_by( 'login', $sanitized_username );
+			// Failure...
+			$errors[] = 'wp_user_create_failed';
+		}
 
-			if ($userdata) {
-				if ( !wp_check_password( $password, $userdata->user_pass, $userdata->ID ) )  {
-					$errors['user_pass'] = "The password isn't correct.";
-				}
-			} 
-            else {
-				$errors['user_login'] = "The email address is invalid.";
+        return $errors;
+	}
+
+	//  AJAX endpoint for authenticating a site user from the frontend
+	public static function ajax_login_site_user () {
+        extract($_POST);
+
+		$sanitized_username = sanitize_user($username);
+        $errors = array();
+
+		if (empty($sanitized_username)) {
+			$errors['user_login'] = "An email address is required";
+		} 
+        elseif (empty($password)) {
+			$errors['user_pass'] = "A password is required";
+		} 
+        else {
+			$userdata = get_user_by('login', $sanitized_username);
+
+			if (empty($userdata)) {
+                $errors['user_login'] = "The email address is invalid";
+            }
+            else if ($userdata && !wp_check_password($password, $userdata->user_pass, $userdata->ID)) {
+                $errors['user_pass'] = "The password isn't correct";
 			}
 		}
 
-		if ( !empty($errors) ) {
-			echo json_encode( $errors );
+		if (!empty($errors)) {
+			$result = array("success" => false, "errors" => $errors);
 		} 
         else {
-			$rememberme = $remember == "forever" ? true : false;
+			$rememberme = ($remember == "forever") ? true : false;
 
 			// Manually login user
 			$creds['user_login'] = $sanitized_username;
 			$creds['user_password'] = $password;
 			$creds['remember'] = $rememberme;
 
-			$user = wp_signon( $creds, true );
+			$user = wp_signon($creds, true);
 
 			wp_set_current_user($user->ID);
 
-			$success = "You have successfully logged in.";
-			echo json_encode( $success );
+            $result = array("success" => true);
 		}
 
+        echo json_encode($result);
 		die();
-	}
-
-	// Creates wordpress users given lead_objects
-	private static function create_wordpress_user_lead ($lead_object) {
-		// Wordpress doesn't support phone
-		$userdata = array(
-				'user_pass' => $lead_object['password'],
-				'user_login' => $lead_object['username'],
-				'user_email' => $lead_object['metadata']['email'],
-				'role' => 'placester_lead',
-		);
-
-		$user_id = wp_insert_user( $userdata );
-
-		//user creation failed.
-		if (!$user_id) {
-			$user_id = false;
-		} 
-        
-        return $user_id;
 	}
 
 	// Validates all registration data
@@ -375,7 +312,7 @@ class PL_Membership {
 
 		}
 
-		// Check if username exists,,,
+		// Check if username exists...
 		if ( username_exists($username['unvalidated']) ) {
 			$lead_object['errors'][] = 'username_exists';
 			$username['errors'] = true;
@@ -518,68 +455,6 @@ class PL_Membership {
 		}
 
 		return $result;
-	}
-
-	/**
-	 * Adds a "Add property to favorites" link
-	 * if the user is not logged in, or if
-	 * the property is not in the favorite list,
-	 * and a "Remove property from favorites" otherwise
-	 *
-	 * TODO If logged in and not lead display something informing them
-	 * of what they need to do to register a lead account
-	 */
-	public static function placester_favorite_link_toggle ($atts) {
-		$defaults = array(
-			'add_text' => 'Add property to favorites',
-			'remove_text' => 'Remove property from favorites',
-			'spinner' => admin_url( 'images/wpspin_light.gif' ),
-			'property_id' => false
-		);
-
-		$args = wp_parse_args( $atts, $defaults );
-		extract( $args, EXTR_SKIP );
-
-		$is_lead = current_user_can('placester_lead');
-        $is_favorite = is_user_logged_in() ? self::is_favorite_property($property_id) : "";
-
-		ob_start();
-		?>
-			<div id="pl_add_remove_lead_favorites">
-
-				<?php pls_do_atomic( 'before_add_to_fav' ); ?>
-
-				<?php if (is_user_logged_in()): ?>
-					<?php pls_do_atomic( 'before_add_to_fav_registered' ); ?>
-					<a href="<?php echo "#" . $property_id ?>" id="pl_add_favorite" class="pl_prop_fav_link" <?php echo $is_favorite ? "style='display:none;'" : "" ?>><?php echo $add_text ?></a>
-				<?php else: ?>
-					<?php pls_do_atomic( 'before_add_to_fav_unregistered' ); ?>
-					<a class="pl_register_lead_favorites_link" href="#pl_lead_register_form"><?php echo $add_text ?> </a>
-				<?php endif ?>
-
-				<a href="<?php echo "#" . $property_id ?>" id="pl_remove_favorite" class="pl_prop_fav_link" <?php echo !$is_favorite ? "style='display:none;'" : "" ?>><?php echo $remove_text ?></a>
-				<img class="pl_spinner" src="<?php echo $spinner ?>" alt="ajax-spinner" style="display: none; margin-left: 5px;">
-
-				<?php pls_do_atomic( 'after_add_to_fav' ); ?>
-
-			</div>
-		<?php
-
-		return ob_get_clean();
-	}
-
-	public static function is_favorite_property ($property_id) {
-		$person = PL_People_Helper::person_details();
-		// pls_dump($property_id, $person['fav_listings']);
-		if ( isset($person['fav_listings']) && is_array($person['fav_listings']) ) {
-			foreach ($person['fav_listings'] as $fav_listing) {
-				if ($fav_listing['id'] == $property_id) {
-					return true;
-				}
-			}
-		}
-
-		return false;
 	}
 
 	/**

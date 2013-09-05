@@ -30,22 +30,24 @@ class PL_Pages {
 	//return many page urls
 	public static function get () {
 		global $wpdb;
-		$sql = $wpdb->prepare('SELECT * FROM ' . $wpdb->posts .' WHERE post_type = %s', self::$property_post_type );
+		$sql = $wpdb->prepare('SELECT * FROM ' . $wpdb->posts .' WHERE post_type = %s', self::$property_post_type);
 	    $rows = $wpdb->get_results($sql, ARRAY_A);
+		
 		return $rows;
 	}
 
-	//return a page url
+	// Return a page URL
 	public static function details ($placester_id) {
 		global $wpdb;
 		$sql = $wpdb->prepare("SELECT ID, post_modified FROM " . $wpdb->posts . " WHERE post_type = %s AND post_name = %s LIMIT 0, 1", self::$property_post_type, $placester_id);
 	    $row = $wpdb->get_row($sql, OBJECT, 0);
-
+	    
 	    $post_id = ( isset($row->ID) ? $row->ID : null );
+	    
 	    return $post_id; 	
 	}
 
-	//create listing page
+	// Create listing property CPT
 	public static function manage_listing ($api_listing) {
 		$page_details = array();
 		$page_details['post_id'] = self::details($api_listing['id']);
@@ -64,7 +66,7 @@ class PL_Pages {
 			'half-baths' => (string) $api_listing['cur_data']['half_baths'],
 			'mlsid' => (string) $api_listing['rets']['mls_id']
 		);
-		// pls_dump($page_details['taxonomies']);
+		
 		return self::manage($page_details);
 	}
 
@@ -83,7 +85,7 @@ class PL_Pages {
 
         		self::manage($page_details);
 			} 
-			elseif ( $force_template ) {
+			elseif ($force_template) {
 		        if (isset($page_info['template'])) {
 		        	delete_post_meta( $page->ID, '_wp_page_template' );
 		        	add_post_meta( $page->ID, '_wp_page_template', get_template_directory_uri().'/'.$page_info['template']);
@@ -96,33 +98,38 @@ class PL_Pages {
 	public static function manage ($args = array()) {
 		$defaults = array('post_id' => false, 'type' => 'page', 'title' => '', 'name' => false, 'content' => ' ', 'status' => 'publish', 'post_meta' => array(), 'taxonomies' => array());
 		extract(wp_parse_args($args, $defaults));
+		
 		$post = array(
-                 'post_type'   => $type,
-                 'post_title'  => $title,
-                 'post_name'   => $name,
-                 'post_status' => $status,
-                 'post_author' => 1,
-                 'post_content'=> $content,
-                 'filter'      => 'db',
-                 'guid'        => @$guid
-             );
+			'post_type'   => $type,
+			'post_title'  => $title,
+			'post_name'   => $name,
+			'post_status' => $status,
+			'post_author' => 1,
+			'post_content'=> $content,
+			'filter'      => 'db',
+			'guid'        => @$guid
+		);
              
-            if ($post_id <= 0) {
-              $post_id = wp_insert_post($post);
-              if (!empty($post_meta)) {
-               foreach ($post_meta as $key => $value) {
-                 add_post_meta($post_id, $key, $value, TRUE);
-               }
-              }
-              if (!empty($taxonomies)) {
-                foreach ($taxonomies as $taxonomy => $term) {
-                  wp_set_object_terms($post_id, $term, $taxonomy);
-                }
-              }
-            } else {	
-                $post['ID'] = $post_id;
-                $post_id = wp_update_post($post);
-            }
+		if ($post_id <= 0) {
+			$post_id = wp_insert_post($post);
+
+			if (!empty($post_meta)) {
+				foreach ($post_meta as $key => $value) {
+					add_post_meta($post_id, $key, $value, TRUE);
+				}
+			}
+
+			if (!empty($taxonomies)) {
+				foreach ($taxonomies as $taxonomy => $term) {
+					wp_set_object_terms($post_id, $term, $taxonomy);
+				}
+			}
+		} 
+		else {	
+			$post['ID'] = $post_id;
+			$post_id = wp_update_post($post);
+		}
+
         return $post_id;
 	}
 
@@ -204,24 +211,26 @@ class PL_Pages {
 		$term_tax_str = implode(',', $term_tax_ids);
 		$wpdb->query("DELETE FROM $wpdb->term_taxonomy WHERE term_taxonomy_id IN ($term_tax_str)");
 		$q_term_rel = $wpdb->query("DELETE FROM $wpdb->term_relationships WHERE term_taxonomy_id IN ($term_tax_str)");
-
 	}
 
 	public static function create_taxonomies () {
 		register_post_type(self::$property_post_type, array('labels' => array('name' => __( 'Properties' ),'singular_name' => __( 'property' )),'public' => true,'has_archive' => true, 'rewrite' => true, 'query_var' => true, 'taxonomies' => array('category', 'post_tag')));
 		
 		global $wp_rewrite;
-	    $property_structure = '/property/%state%/%city%/%zip%/%neighborhood%/%street%/%'.self::$property_post_type.'%';
-        $wp_rewrite->add_rewrite_tag("%property%", '([^/]+)', "property=");
-        $wp_rewrite->add_permastruct('property', $property_structure, false);
+		
+		// Allows for <URL>?property=<ID> access...
+		$wp_rewrite->add_rewrite_tag("%property%", "([^/]+)", "property=");
+	   	
+	    $property_structure = "/ property/%state%/%city%/%zip%/%neighborhood%/%street%/%" . self::$property_post_type . "%";
+        $wp_rewrite->add_permastruct("property", $property_structure, false);
         
-        remove_post_type_support( self::$property_post_type, 'comments' );
+        remove_post_type_support(self::$property_post_type, "comments");
 	}
 
 	public static function force_rewrite_update () {
-		if ( PL_PLUGIN_VERSION ) {
-			$old_version = get_option('pl_plugin_version');
-			if ($old_version != PL_PLUGIN_VERSION) {
+		if (defined('PL_PLUGIN_VERSION')) {
+			$current_version = get_option('pl_plugin_version');
+			if ($current_version != PL_PLUGIN_VERSION) {
 				// Run the updater script before updating the version number...
 				include_once(trailingslashit(PL_PARENT_DIR) . 'updater.php');
 
@@ -247,7 +256,7 @@ class PL_Pages {
 	 * Check for a request for properties that 404ed. Get the property (thus creating the cpt), and if
 	 * property exists redirect to its permalink.
 	 */
-	public static function catch_404s() {
+	public static function catch_404s () {
 		global $wp_query;
 
 		if (!is_404()) {
@@ -271,7 +280,6 @@ class PL_Pages {
 				wp_redirect($pmlink);
 				exit;
 			}
-
 		}
 	}
 

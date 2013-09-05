@@ -483,8 +483,7 @@ To add some text to your listings:<br />
 			$taxonomy_maps_name = self::translate_taxonomy_type( $term->taxonomy );
 			$term_name = $term->name;
 
-			$api_response = PLS_Plugin_API::get_listings_list(
-						array( 'location[' . $taxonomy_maps_name . ']' => $term_name, 'limit' => 1 ) );
+			$api_response = PL_Listing_Helper::results(array('location[' . $taxonomy_maps_name . ']' => $term_name, 'limit' => 1));
 
 			$featured_image_src = PLS_IMG_URL . '/null/listing-300x180.jpg';
 
@@ -669,7 +668,7 @@ To add some text to your listings:<br />
 				$val = ob_get_clean();
 				break;
 			case 'favorite_link_toggle':
-				$val = PLS_Plugin_API::placester_favorite_link_toggle(array('property_id' => $listing_list['id']));
+				$val = PL_Membership::placester_favorite_link_toggle(array('property_id' => $listing_list['id']));
 				break;
 			case 'custom':
 				// TODO: format based on data type
@@ -960,11 +959,10 @@ To add some text to your listings:<br />
 	}
 
 	public static function partial_one( $listing, $featured_listing_id ) {
-
 		$property_ids = PL_Component_Entity::get_property_ids( $featured_listing_id );
 		$property_ids = array_flip( $property_ids );
 
-		$api_response = PLS_Plugin_API::get_listings_details_list(array('property_ids' => $property_ids));
+		$api_response = PL_Listing_Helper::details(array('property_ids' => $property_ids));
 		//response is expected to be of fortmat api response
 		//no addiitonal formatting needed.
 		return $api_response;
