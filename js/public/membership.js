@@ -42,7 +42,7 @@ jQuery(document).ready(function($) {
         phone = $(this).find('#user_phone').val();
 
         data = {
-            action: "pl_register_lead",
+            action: "pl_register_site_user",
             username: username,
             email: email,
             nonce: nonce,
@@ -52,7 +52,7 @@ jQuery(document).ready(function($) {
             phone: phone
         };
 
-        return register_user(data);
+        register_user(data);
     });
     
     // Initialize validator and add the custom form submission logic
@@ -69,7 +69,14 @@ jQuery(document).ready(function($) {
         password = $(form).find('#user_pass').val();
         remember = $(form).find('#rememberme').val();
 
-        login_user(username, password, remember);
+        data = {
+            action: "pl_login_site_user",
+            username: username,
+            password: password,
+            remember: remember
+        };
+
+        login_user(data);
     });
     
     if (typeof $.fancybox == "function") {
@@ -112,27 +119,7 @@ jQuery(document).ready(function($) {
         validate_register_form();
 
         $.post(info.ajaxurl, data, function (response) {
-            if (response) {
-                // Error Handling
-                var errors = jQuery.parseJSON(response);
-
-                // jQuery Tools Validator error handling
-                // $('form#pl_lead_register_form').validator();
-
-                // Take possible errors and create new object with correct ones to pass to validator
-                error_array = new Array("user_email", "user_password", "user_confirm");
-                new_error_array = new Object();
-                $(error_array).each(function(i, v) {
-                    if (typeof errors[v] != "undefined") { 
-                        new_error_array[v] = errors[v];
-                    }
-                });
-
-                $('form#pl_lead_register_form input').data("validator").invalidate(new_error_array);
-            } 
-            else {  
-                event.preventDefault ? event.preventDefault() : event.returnValue = false;
-
+            if (response && response.success) {
                 // Remove error messages
                 $('.register-form-validator-error').remove();
 
@@ -147,20 +134,30 @@ jQuery(document).ready(function($) {
 
                 $('#pl_lead_register_form .success').fadeIn('fast');
                 setTimeout(function () { window.location.href = window.location.href; }, 700);
+            }
+            else {
+                // Error Handling
+                var errors = (response && response.errors) ? response.errors : {};
 
-                return true;
+                // jQuery Tools Validator error handling
+                $('form#pl_lead_register_form').validator();
+
+                // Take possible errors and create new object with correct ones to pass to validator
+                error_keys = new Array("user_email", "user_password", "user_confirm");
+                error_obj = new Object();
+
+                for (key in errors) {
+                    if (error_keys.indexOf(key) != -1) {
+                        error_obj[key] = errors[key];
+                    }
+                }
+
+                $('form#pl_lead_register_form input').data("validator").invalidate(error_obj);
             }
         }, 'json');
     }
     
-    function login_user (username, password, remember) {
-        data = {
-            action: "pl_login",
-            username: username,
-            password: password,
-            remember: remember
-        };
-
+    function login_user (data) {
         // Need to validate here too, just in case someone press enter in the form instead of pressing submit
         validate_login_form();
 
