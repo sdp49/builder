@@ -152,14 +152,14 @@ abstract class PL_SC_Base {
 	/**
 	 * Return array of options used to configure this shortcode type with any available choice values.
 	 */
-	protected function get_options_list($with_choices) {
+	protected function get_options_list($with_choices = false) {
 		return $this->options;
 	}
 
 	/**
 	 * Return array of filters used to configure this shortcode type with any available choice values.
 	 */
-	protected function get_filters_list($with_choices) {
+	protected function get_filters_list($with_choices = false) {
 		return $this->filters;
 	}
 

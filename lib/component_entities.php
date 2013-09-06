@@ -84,7 +84,7 @@ To add some text to your listings:<br />
 		foreach ($search_listings_templates as $id => $attr) {
 			add_filter( 'pls_listings_list_ajax_item_html_search_listings_' . $id, array(__CLASS__,'pls_listings_list_ajax_item_html_callback'), 10, 3 );
 		}
-		if (!has_filter('pls_listings_list_ajax_item_html_search_listings_shortcode')) {
+		if (!has_filter('pls_listings_search_listings_shortcode')) {
 			add_filter( 'pls_listings_list_ajax_item_html_search_listings_shortcode', array(__CLASS__,'pls_listings_list_ajax_item_html_callback'), 10, 3 );
 		}
 
@@ -93,7 +93,7 @@ To add some text to your listings:<br />
 		foreach ($static_listings_templates as $id => $attr) {
 			add_filter( 'pls_listings_list_ajax_item_html_static_listings_' . $id, array(__CLASS__, 'pls_listings_list_ajax_item_html_callback'), 10, 3 );
 		}
-		if (!has_filter('pls_listings_list_ajax_item_html_static_listings_shortcode')) {
+		if (!has_filter('pls_listings_static_listings_shortcode')) {
 			add_filter( 'pls_listings_list_ajax_item_html_static_listings_shortcode', array(__CLASS__, 'pls_listings_list_ajax_item_html_callback'), 10, 3 );
 		}
 
@@ -668,7 +668,7 @@ To add some text to your listings:<br />
 				$val = ob_get_clean();
 				break;
 			case 'favorite_link_toggle':
-				$val = PL_Membership::placester_favorite_link_toggle(array('property_id' => $listing_list['id']));
+				$val = PL_People_Helper::placester_favorite_link_toggle(array('property_id' => $listing_list['id']));
 				break;
 			case 'custom':
 				// TODO: format based on data type
