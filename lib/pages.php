@@ -232,7 +232,7 @@ class PL_Pages {
 		// Allows for <URL>?property=<ID> access...
 		$wp_rewrite->add_rewrite_tag("%property%", "([^/]+)", "property=");
 	   	
-	    $property_structure = "/ property/%state%/%city%/%zip%/%neighborhood%/%street%/%" . self::$property_post_type . "%";
+	    $property_structure = "/property/%state%/%city%/%zip%/%neighborhood%/%street%/%" . self::$property_post_type . "%";
         $wp_rewrite->add_permastruct("property", $property_structure, false);
         
         remove_post_type_support(self::$property_post_type, "comments");
