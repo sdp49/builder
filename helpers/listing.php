@@ -106,15 +106,18 @@ class PL_Listing_Helper {
 	 */
 	public static function get_listing_in_loop () {
 		global $post;
-        
+
 		// If the current $post is of type 'property', it's 'post_name' will be set to that listing's unique property ID (as set by the API)...
 		$args = array('listing_ids' => array($post->post_name), 'address_mode' => 'exact');
 		$response = PL_Listing::get($args);
 		
+		// Despite the name we also call this outside of the loop. Make sure global $post is a Property before deleting.
 		$listing_data = null;
 		if ( empty($response['listings']) ) {
-			wp_delete_post($post->ID);
-			PL_Pages::ping_yoast_sitemap();
+			if ($post->post_type === PL_Pages::$property_post_type) {
+				wp_delete_post($post->ID, true);
+				PL_Pages::ping_yoast_sitemap();
+			}
 		} else {
 			$listing_data = $response['listings'][0];
 		}
