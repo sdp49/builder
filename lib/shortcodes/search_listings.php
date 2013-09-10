@@ -236,10 +236,10 @@ To add some text to your listings:<br />
 	 * Get list of filter options from the api.
 	 */
 	public function get_options_list($with_choices = false) {
-		if (empty($this::$sl_listing_attributes)) {
-			$this::$sl_listing_attributes = PL_Shortcode_CPT::get_listing_attributes(true);
-			$this::$sl_sort_list = array();
-			foreach($this::$sl_listing_attributes as $args) {
+		if (empty(self::$sl_listing_attributes)) {
+			self::$sl_listing_attributes = PL_Shortcode_CPT::get_listing_attributes(true);
+			self::$sl_sort_list = array();
+			foreach(self::$sl_listing_attributes as $args) {
 				$group = $args['group'];
 				switch($group) {
 					case 'metadata':
@@ -254,11 +254,11 @@ To add some text to your listings:<br />
 
 				}
 				$key = (empty($group) ? '' : $group.'.').$args['attribute'];
-				$this::$sl_sort_list[$key] = $args['label'];
+				self::$sl_sort_list[$key] = $args['label'];
 			}
 		}
-		$this->options['sort_by_options']['options'] = $this::$sl_sort_list;		
-		$this->options['sort_by']['options'] = $this::$sl_sort_list;		
+		$this->options['sort_by_options']['options'] = self::$sl_sort_list;		
+		$this->options['sort_by']['options'] = self::$sl_sort_list;		
 		return $this->options;
 	}
 
@@ -266,10 +266,10 @@ To add some text to your listings:<br />
 	 * Get list of filter options from the api.
 	 */
 	public function get_filters_list($with_choices = false) {
-		if (empty($this::$sl_filter_options)) {
-			$this::$sl_filter_options = PL_Shortcode_CPT::get_listing_filters(false, $with_choices);
+		if (empty(self::$sl_filter_options)) {
+			self::$sl_filter_options = PL_Shortcode_CPT::get_listing_filters(false, $with_choices);
 		}
-		return $this::$sl_filter_options;
+		return self::$sl_filter_options;
 	}
 	
 	public static function do_templatetags($content, $listing_data) {
