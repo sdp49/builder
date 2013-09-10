@@ -363,6 +363,11 @@ You can use any valid CSS in this field to customize the listing, which will als
 		global $post;
 
 		$listing_data = PL_Listing_Helper::get_listing_in_loop();
+
+		if (is_null($listing_data)) {
+			return $content;
+		}
+
 		// add in js to init the map
 		// TODO: move this to subcode handler?
 		$js = "
