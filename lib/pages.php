@@ -282,7 +282,7 @@ class PL_Pages {
 			$response = PL_Listing::get($args);
 
 			if ( !is_array($response) || !isset($response['listings']) || 
-				!is_array($response['listings']) || !count($response['listings'] > 0) ) {
+				!is_array($response['listings']) || !count($response['listings']) > 0 ) {
 				return;
 			}
 
