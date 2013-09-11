@@ -302,10 +302,13 @@ class PL_Pages {
 		global $wpseo_sitemaps;
 
 		if (!$wpseo_sitemaps) {
-			if (!function_exists('wpseo_frontend_init')) {
+			$path = WP_PLUGIN_DIR . '/wordpress-seo/inc/class-sitemaps.php';
+			if (file_exists($path)) {
+				require_once $path;
+				$wpseo_sitemaps = new WPSEO_Sitemaps();
+			} else {
 				return;
 			}
-			wpseo_frontend_init();
 		}
 
 		if (method_exists($wpseo_sitemaps, 'hit_sitemap_index')) {
