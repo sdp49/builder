@@ -197,6 +197,7 @@ To add some text to your listings:<br />
 		// we support a filter for wrapping the whole shortcode here
 		// TODO: move applyfilter to blueprint 
 		ob_start();
+		self::hide_unnecessary_controls($atts);
 		self::print_filters( $filters . $filters_string, 'static_listings', $atts['context'] );
 		PLS_Partials_Get_Listings_Ajax::load($atts);
 		// support shortcodes in the header or footer
