@@ -11,6 +11,8 @@ class PL_People_Helper {
 		add_action('wp_ajax_add_favorite_property', array(__CLASS__,'ajax_add_favorite_property'));
 		add_action('wp_ajax_nopriv_add_favorite_property', array(__CLASS__,'ajax_add_favorite_property'));
 		add_action('wp_ajax_remove_favorite_property', array(__CLASS__,'ajax_remove_favorite_property'));
+
+		add_shortcode('favorite_link_toggle', array(__CLASS__,'placester_favorite_link_toggle'));
 	}
 
 	public static function get_user () {

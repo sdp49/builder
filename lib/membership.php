@@ -12,8 +12,7 @@ class PL_Membership {
 		add_action('wp_ajax_nopriv_pl_login_site_user', array(__CLASS__, 'ajax_login_site_user'));
 		// add_action( 'wp_ajax_nopriv_connect_wp_fb', array(__CLASS__, 'connect_fb_with_wp' ));
 		// add_action( 'wp_ajax_nopriv_parse_signed_request', array(__CLASS__, 'fb_parse_signed_request' ));
-
-		add_shortcode('favorite_link_toggle', array(__CLASS__,'placester_favorite_link_toggle'));
+		
 		add_shortcode('lead_user_navigation', array(__CLASS__,'placester_lead_control_panel'));
 
 		// Create the "Property lead" role
@@ -75,7 +74,7 @@ class PL_Membership {
 			// Force blog to be set immediately or MU throws errors
 			$blogs = get_blogs_of_user($wordpress_user_id);
 			$first_blog = current($blogs);
-			update_user_meta( $wordpress_user_id, 'primary_blog', $first_blog->userblog_id );
+			update_user_meta($wordpress_user_id, 'primary_blog', $first_blog->userblog_id);
 
             // Push the new WP user as a lead to the API...
 			$response = PL_People_Helper::add_person($lead_object);
@@ -90,8 +89,8 @@ class PL_Membership {
 
 			// If the API call was successful, inform the user that his/her password and set the password change
 			if (empty($errors)) {
-				update_user_meta( $wordpress_user_id, 'placester_api_id', $response['id'] );
-				wp_new_user_notification( $wordpress_user_id);
+				update_user_meta($wordpress_user_id, 'placester_api_id', $response['id']);
+				wp_new_user_notification($wordpress_user_id);
 			}
 
 			if (get_option('pls_send_client_option')) {
@@ -157,7 +156,7 @@ class PL_Membership {
 
 	// Validates all registration data
 	private static function validate_registration ($post_vars) {
-		if ( is_array($post_vars)) {
+		if (is_array($post_vars)) {
 			$lead_object['username'] = '';
 			$lead_object['metadata']['email'] = '';
 			$lead_object['password'] = '';
