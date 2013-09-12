@@ -142,6 +142,78 @@ In general - real-time. But if you use 3rd party property management services, t
 
 == Changelog ==
 
+= 1.1.22 =
+* Cleanup lead capture functionality.
+* Check requests for viewing invalid property listings and redirect.
+* Make sure defunct data is removed when expired listings are purged.
+* Updates to lead/membership handling, improved login time.
+* Clean up of some JS files.
+* Admin page for search, static listings shortcodes displays dynamic list of filters which expands as filters are added, also allows multiple values to be set for certain filters (eg City, Zip). 
+* Built in templates for search, static, featured listings shortcodes hide beds, baths fields if they are empty.
+* Allow theme to control how shortcodes are displayed when no template is specified by the shortcode.
+* Make property listing template return template instead of echoing which may have caused issues with the Yoast plugin.
+* Tweaks to built in templates for static, search, featured listings shortcodes.
+* Fix: Compatibility issue with PHP 5.2.
+* Fix: Search form - Number of beds set to zero returns properties that have zero bedrooms (eg studios). 
+
+= 1.1.21 =
+* Tweaks to built in template for individual property listings.
+* Added better descriptions to admin pages for shortcodes.
+* Added 'Search' button to built in templates for search form shortcode.
+* Added a lookup dialog to display all available property listing fields when creating templates for individual property listing pages.
+* Fix: Prevent static listings shortcode from interacting with a search form on the same page.
+* Fix: Search form shortcode was not going to supplied URL, plus various fixes to search form shortcode.
+
+= 1.1.20 =
+* Updates to twitter oauth.
+* Cleaning-up taxonomy functionality.
+* New admin page to list templates available for theming the individual property listing pages, with one built in template that can be copied and used to create custom templates. 
+* Added a lookup dialog to display all available property listing fields when creating templates for search/static/featured listings shortcodes.
+* Fix: Incompatibilities with PHP 5.4
+* Fix: Facebook SDK needed to check for session being set to avoid a notice.
+
+= 1.1.19 = 
+* Individual property page template editor allows conditional display of fields and display of any field available for the listing.
+* Individual property page template editor allows mls compliance statement as a footer.
+* Ensure that browser does not cache old versions of JS files.
+* Clarifying that block addresses aren't always block, but sometimes just a near-by address.
+* Fix: Error when adding listing under WordPress 3.6.
+
+= 1.1.18 =
+* Tweaks to shortcode templates 
+* Support mls compliance statement in shortcode template.
+* Added mls compliance statement to shortcode templates.
+* Support Favorite Link toggle in search, static and featured listings shortcodes.
+* Support conditional display of listing items in templates for search, static and featured listings shortcodes.
+* Fix: Signup wizard sometimesdoes not work on first install.
+* Fix: A PHP 5.2 compatibility issue.
+
+= 1.1.17 =
+* Signup Wizard improvements.
+* Create listings search page automatically at end of signup process using search form and listings shortcodes.
+* Tweaks to shortcode templates.
+* New shortcode template called Responsive.
+* Allow min max filters to be set on custom fields for search listings, static listings shortcodes.
+* Fixed: Allow featured listings generated from shortcode to show more than 5 listings.
+* Fixed: Some issues with IE8 on shortcode configuration page.
+
+= 1.1.16 =
+* Allow list of items in listings Sort By drop list to be chosen when creating a search or static listings custom shortcode.
+* Allow the default Sort By item to be selected when creating a search or static listings custom shortcode.
+* Allow filtering for properties near an address when creating a static listing custom shortcode. 
+* Re-built dummy data prompt/activation that appears when switching themes.
+
+= 1.1.15 =
+* Allow template to be created for formatting the page that displays individual property listings.
+* Allow new shortcode templates to be created from built in templates.
+* Allow shortcode templates to use built in form/listings renderer to generate content and CSS from the template.
+* Updated built in shortcode template format and made them somewhat liquid and render consistently in different themes.
+* JavaScript cleanup.
+* CRM updates.
+* Fix: resolved UI issues with the customizer.
+* Fix: caption was not appearing in first slide of slideshow shortcode.
+* Fix: URL encoding issues.
+
 = 1.1.9 =
 * Map enhancements
 * Componentization for widgets and post types 
