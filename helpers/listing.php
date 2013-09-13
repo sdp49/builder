@@ -335,8 +335,10 @@ class PL_Listing_Helper {
 		// If global filters related to location are set, incorporate those and use aggregates API...
 		if ( $allow_globals && !empty($global_filters) && !empty($global_filters['location']) ) {
 			// TODO: Move these to a global var or constant...
-			$global_filters['keys'] = array('location.locality', 'location.region', 'location.postal', 'location.neighborhood', 'location.county');
-			$response = PL_Listing::aggregates($global_filters);
+			$args = array();
+			$args['location'] = $global_filters['location'];
+			$args['keys'] = array('location.locality', 'location.region', 'location.postal', 'location.neighborhood', 'location.county');
+			$response = PL_Listing::aggregates($args);
 		
 			// Remove "location." from key names to conform to data standard expected by caller(s)...
 			$alt = array();
