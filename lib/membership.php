@@ -12,7 +12,7 @@ class PL_Membership {
 		add_action('wp_ajax_nopriv_pl_login_site_user', array(__CLASS__, 'ajax_login_site_user'));
 		// add_action( 'wp_ajax_nopriv_connect_wp_fb', array(__CLASS__, 'connect_fb_with_wp' ));
 		// add_action( 'wp_ajax_nopriv_parse_signed_request', array(__CLASS__, 'fb_parse_signed_request' ));
-		
+
 		add_shortcode('lead_user_navigation', array(__CLASS__,'placester_lead_control_panel'));
 
 		// Create the "Property lead" role
@@ -92,8 +92,8 @@ class PL_Membership {
 				update_user_meta($wordpress_user_id, 'placester_api_id', $response['id']);
 				wp_new_user_notification($wordpress_user_id);
 			}
-
-			if (get_option('pls_send_client_option')) {
+			
+			if (PL_Options::get('pls_send_client_option')) {
 				wp_mail($lead_object['username'], 'Your new account on ' . site_url(), PL_Membership_Helper::parse_client_message($lead_object) );
 			}
 
