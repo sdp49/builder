@@ -20,7 +20,7 @@ if ($action == 'select_active_template' && !empty($_REQUEST['save']) && isset($_
 	$message = 'Settings saved.';
 }
 
-$template_list_types = array('default' => 'Default', 'custom' => 'Custom');
+$template_list_types = array('default' => 'Built-In', 'custom' => 'Custom');
 $template_list = PL_Listing_Customizer::get_template_list();
 $current_template_id = PL_Listing_Customizer::get_active_template_id();
 
@@ -41,7 +41,9 @@ $current_template_id = PL_Listing_Customizer::get_active_template_id();
 			
 			<label for="template_id">Select the template you would like to use to display your listings</label>
 			<select name="template_id">
-				<option value="" <?php echo $current_template_id == '' ? 'selected="selected"' : '' ?>>None</option>
+				<option value="" <?php echo $current_template_id == '' ? 'selected="selected"' : '' ?>>
+					default
+				</option>
 				
 				<?php $curr_type = ''; ?>
 				<?php foreach ($template_list as $id => $template): ?>
@@ -51,7 +53,7 @@ $current_template_id = PL_Listing_Customizer::get_active_template_id();
 
 					<?php if($curr_type != $template['type']):?>
 						<?php $curr_type = $template['type'] ?>
-						<optgroup label="<?php echo $curr_type ?>">
+						<optgroup label="<?php echo $template_list_types[$curr_type] ?>">
 					<?php endif;?>
 
 					<option value="<?php echo $id ?>" class="<?php echo $curr_type ?>"

@@ -55,7 +55,11 @@ abstract class PL_SC_Base {
 	protected $allowable_tags = "<a><p><script><div><span><section><label><br><h1><h2><h3><h4><h5><h6><scr'+'ipt><style><article><ul><ol><li><strong><em><button><aside><blockquote><footer><header><form><nav><input><textarea><select>";
 	// built in templates
 	// TODO: build dynamically
-	protected $default_tpls = array('twentyten', 'twentyeleven', 'responsive');
+	protected $default_tpls = array();
+	// id of built in template to be used when none specified
+	protected $default_tpl_id = 'twentyten';
+	// id of built in template to be used as a starting point for editing
+	protected $editor_tpl_id = 'responsive';
 	// default layout for template
 	protected $template = array(								// defines template fields
 		//		'snippet_body'	=> array(
@@ -93,7 +97,7 @@ abstract class PL_SC_Base {
 	 */
 	public function get_args($with_choices = false) {
 		if (empty($this->default_tpls)) {
-			$this->default_tpls = $this->_get_builtin_templates();
+			$this->default_tpls = $this->get_builtin_templates();
 		}
 		return array(
 				'shortcode'		=> $this->shortcode,
@@ -106,6 +110,7 @@ abstract class PL_SC_Base {
 				'default_tpls'	=> $this->default_tpls,
 				'template'		=> $this->template,
 		);
+		
 	}
 
 
@@ -134,19 +139,39 @@ abstract class PL_SC_Base {
 	/**
 	 * Return array of templates for this shortcode supplied with the plugin.
 	 */
-	public function get_builtin_templates() {
-		if (empty($this->default_tpls)) {
+	public function get_builtin_templates($get_title = false) {
+		if (empty($this->default_tpls) || $get_title) {
 			if (file_exists($dir = PL_VIEWS_SHORT_DIR . $this->shortcode)) {
 				foreach (new DirectoryIterator($dir) as $fileInfo) {
 					if($fileInfo->isDot()) continue;
 					$matches = array();
 					if (preg_match('/^(.+)\.php/', $fileInfo->getFilename(), $matches)) {
-						$this->default_tpl[] = $matches[1];
+						$template = array();
+						if ($get_title) {
+							// get name from 'title' parameter in template if set, otherwise use filename
+							include $fileInfo->getPathname();
+						}
+						$template += array('title'=>$matches[1]);
+						$this->default_tpls[$matches[1]] = $template['title'];
 					}
 				}
 			}
 		}
 		return $this->default_tpls;
+	}
+	
+	/**
+	 * Return ID of built in template to use when none has been specified
+	 */
+	public function get_default_template_id() {
+		return $this->default_tpl_id;		
+	}
+
+	/**
+	 * Return ID of built in template to use as a base for the template editor
+	 */
+	public function get_default_editor_id() {
+		return $this->editor_tpl_id;		
 	}
 
 	/**

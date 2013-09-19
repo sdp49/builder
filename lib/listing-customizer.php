@@ -195,15 +195,15 @@ You can use any valid CSS in this field to customize the listing, which will als
 
 		// add default templates
 		$default_tpls = self::get_builtin_templates(true);
-		foreach ($default_tpls as $id => $name) {
-			$tpl_type_map[$id] = array('type'=>'default', 'title'=>$name, 'id'=>$id);
+		foreach ($default_tpls as $id => $title) {
+			$tpl_type_map[$id] = array('type'=>'default', 'title'=>$title, 'id'=>$id);
 		}
 
 		// get custom templates
 		$tpl_list = get_option(self::LIST_KEY, array());
-		foreach ($tpl_list as $id => $name) {
+		foreach ($tpl_list as $id => $title) {
 			if ($id == self::TPL_KEY . '_preview' && !$all) continue;
-			$tpl_type_map[$id] = array('type'=>'custom', 'title'=>$name, 'id'=>$id);
+			$tpl_type_map[$id] = array('type'=>'custom', 'title'=>$title, 'id'=>$id);
 		}
 
 		return $tpl_type_map;
@@ -213,7 +213,7 @@ You can use any valid CSS in this field to customize the listing, which will als
 	/**
 	 * Return a list of built-in templates as id/name pairs. By default does not fetch the actual name.
 	 */
-	public static function get_builtin_templates($getname = false) {
+	public static function get_builtin_templates($get_title = false) {
 		if (empty(self::$default_tpls)) {
 			if (file_exists($dir = PL_VIEWS_DIR . 'listings')) {
 				foreach (new DirectoryIterator($dir) as $fileInfo) {
@@ -221,7 +221,8 @@ You can use any valid CSS in this field to customize the listing, which will als
 					$matches = array();
 					if (preg_match('/^(.+)\.php$/', $fileInfo->getFilename(), $matches)) {
 						$template = array();
-						if ($getname) {
+						if ($get_title) {
+							// get name from 'title' parameter in template if set, otherwise use filename
 							include $fileInfo->getPathname();
 						}
 						$template += array('title'=>$matches[1]);

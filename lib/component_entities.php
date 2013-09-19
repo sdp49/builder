@@ -142,7 +142,6 @@ To add some text to your listings:<br />
 	 * Generate static_listings shortcode output
 	 */
 	public static function static_listings_entity( $atts, $filters = '' ) {
-
 		if (empty($atts['id'])) {
 			// default filter options
 			$filters_string = '';
@@ -186,19 +185,10 @@ To add some text to your listings:<br />
 				}
 			}
 		}
-		$atts = wp_parse_args($atts, array('group'=>'', 'query_limit'=>5, 'sort_by'=>'cur_data.price'));
+		$atts = wp_parse_args($atts, array('group'=>'', 'query_limit'=>10, 'sort_by'=>'cur_data.price'));
 		$atts['context'] = 'static_listings_' . (empty($atts['context']) ? 'shortcode' : $atts['context']);
 		$atts['dom_id'] = 'pl_listings_'.(++self::$obj_cnt['listings']);
 		$atts['table_id'] = 'placester_listings_list_'.(self::$obj_cnt['listings']);
-		
-		// set limit per page if any
-		if( ! empty( $atts['query_limit'] ) ) {
-			global $pl_listings_query_limit;
-			$pl_listings_query_limit = $atts['query_limit'];
-			// TODO init the js directly instead
-			add_action( 'listings_limit_default', array( __CLASS__, 'add_length_limit_default'  ));
-			unset ( $pl_listings_query_limit );
-		}
 
 		if (!has_filter('pls_listings_' . $atts['context'])) {
 			// formatting filter for individual listings already registered above
@@ -216,18 +206,10 @@ To add some text to your listings:<br />
 		return apply_filters('pls_listings_' . $atts['context'], $return, array(), '', $atts, null);
 	}
 
-	public static function add_length_limit_default() {
-		global $pl_listings_query_limit;
-
-		echo "limit_default: " . $pl_listings_query_limit . ",";
-	}
-
-
 	/**
 	 * Generate search_listings shortcode output
 	 */
 	public static function search_listings_entity( $atts, $filters = '' ) {
-
 		if (empty($atts['id'])) {
 			// default filter options
 			$filters_string = '';
@@ -276,15 +258,6 @@ To add some text to your listings:<br />
 		$atts['dom_id'] = 'pl_listings_'.(++self::$obj_cnt['listings']);
 		$atts['table_id'] = 'placester_listings_list_'.(self::$obj_cnt['listings']);
 		
-		// set limit per page if any
-		if( ! empty( $atts['query_limit'] ) ) {
-			global $pl_listings_query_limit;
-			$pl_listings_query_limit = $atts['query_limit'];
-			// TODO init the js directly instead
-			add_action( 'listings_limit_default', array( __CLASS__, 'add_length_limit_default'  ));
-			unset ( $pl_listings_query_limit );
-		}
-
 		if (!has_filter('pls_listings_' . $atts['context'])) {
 			// formatting filter for individual listings already registered above
 			add_filter('pls_listings_' . $atts['context'], array(__CLASS__,'pls_listings_callback'), 10, 5);
@@ -474,9 +447,9 @@ To add some text to your listings:<br />
 
 				var neighborhood = new Neighborhood({
 					map: map,
-					type: '<?php echo $taxonomy_maps_name; ?>',
-					name: '<?php echo $term->name; ?>',
-					slug: '<?php echo $term->slug; ?>'
+					type: '<?php echo $taxonomy_maps_name ?>',
+					name: '<?php echo $term->name ?>',
+					slug: '<?php echo $term->slug ?>'
 				});
 
 				map.init({
@@ -567,7 +540,7 @@ To add some text to your listings:<br />
 									array('resize' => array('w' => 100, 'h' => 75),
 										'fancybox' => true,
 										'as_html' => false,
-										'html' => array('itemprop' => 'image'))); ?>
+										'html' => array('itemprop' => 'image'))) ?>
 							</li>
 							<?php endforeach ?>
 						</ul>
@@ -604,9 +577,9 @@ To add some text to your listings:<br />
 				<div class="amenities-section grid_8 alpha">
 					<ul>
 						<?php if (is_array($amenities[$amen_type])): ?>
-						<?php $amenities[$amen_type] = PLS_Format::translate_amenities($amenities[$amen_type]); ?>
+						<?php $amenities[$amen_type] = PLS_Format::translate_amenities($amenities[$amen_type]) ?>
 						<?php foreach ($amenities[$amen_type] as $amenity => $value): ?>
-						<li><span><?php echo $amenity; ?> </span> <?php echo $value ?></li>
+						<li><span><?php echo $amenity ?> </span> <?php echo $value ?></li>
 						<?php endforeach ?>
 						<?php endif ?>
 					</ul>
@@ -714,7 +687,7 @@ To add some text to your listings:<br />
 			}
 
 			jQuery(document).ready(function( $ ) {
-				var taxonomy = jQuery.parseJSON(' <?php echo json_encode( $taxonomy ); ?> ');
+				var taxonomy = jQuery.parseJSON(' <?php echo json_encode( $taxonomy ) ?> ');
 				var map = new Map();
 				var listings = new Listings({
 					map: map
@@ -723,9 +696,9 @@ To add some text to your listings:<br />
 
 				var neighborhood = new Neighborhood({
 					map: map,
-					type: '<?php echo $taxonomy_maps_type; ?>',
-					name: '<?php echo $term_name; ?>',
-					slug: '<?php echo $term_slug; ?>'
+					type: '<?php echo $taxonomy_maps_type ?>',
+					name: '<?php echo $term_name ?>',
+					slug: '<?php echo $term_slug ?>'
 				});
 
 				map.init({
@@ -875,7 +848,7 @@ To add some text to your listings:<br />
 		switch($shortcode) {
 			case 'search_listings':
 			case 'static_listings':
-				if (0 && !empty($current_group['listings'])) {
+				if (!empty($current_group['listings'])) {
 					self::$current_shortcode_group = count(self::$shortcode_groups);
 					self::$shortcode_groups[self::$current_shortcode_group] = array();
 					$current_group = &self::$shortcode_groups[self::$current_shortcode_group];
@@ -1382,10 +1355,6 @@ To add some text to your listings:<br />
 	
 	public static function add_js() {
 		$js_files = array();
-		
-//		echo '<pre>';
-//		print_r(self::$shortcode_groups);
-//		echo '</pre>';
 
 		foreach(self::$shortcode_groups as $key=>$group) {
 		?>
@@ -1393,7 +1362,7 @@ To add some text to your listings:<br />
 
 			jQuery(document).ready(function( $ ) {
 				<?php if (!empty($group['map'])):?>
-					<?php $js_files['map'] = true; ?>
+					<?php $js_files['map'] = true ?>
 					var map = new Map ();
 					<?php 
 					if (empty($group['map']['atts']['type'])) {
@@ -1406,7 +1375,7 @@ To add some text to your listings:<br />
 					var list = new List ();
 				<?php endif ?>
 				var filter = new Filters ();
-				<?php $js_files['filters'] = true; ?>
+				<?php $js_files['filters'] = true ?>
 				var listings = new Listings ({
 						filter: filter,
 						<?php if (!empty($group['listings'])):?>
@@ -1416,7 +1385,7 @@ To add some text to your listings:<br />
 						<?php if (!empty($group['map'])):?>
 						map: map,
 						<?php endif ?>
-						<?php echo do_action('featured_filters_featured_ids'); ?>
+						<?php echo do_action('featured_filters_featured_ids') ?>
 					});
 
 				<?php if (!empty($group['map'])):?>
@@ -1433,13 +1402,13 @@ To add some text to your listings:<br />
 							map: map
 						});
 						init_args.lifestyle = lifestyle;
-						<?php $js_files['lifestyle'] = true; ?>
+						<?php $js_files['lifestyle'] = true ?>
 					<?php elseif ($group['map']['atts']['type'] == 'lifestyle_polygon'): ?>
 						var lifestyle_polygon = new Lifestyle_Polygon( {
 							map: map
 						});
 						init_args.lifestyle_polygon = lifestyle_polygon;
-						<?php $js_files['lifestyle_polygon'] = true; ?>
+						<?php $js_files['lifestyle_polygon'] = true ?>
 					<?php endif ?>
 					
 					map.init( init_args );
@@ -1449,7 +1418,7 @@ To add some text to your listings:<br />
 					filter.init({
 						list: list,
 						listings: listings,
-						dom_id: '#<?php echo $group['listings']['atts']['dom_id']; ?>',
+						dom_id: '#<?php echo $group['listings']['atts']['dom_id'] ?>',
 						<?php if ($group['listings']['shortcode'] == 'search_listings'):?>
 							'class': '.pls_search_form_listings',
 						<?php else: ?>
@@ -1462,13 +1431,13 @@ To add some text to your listings:<br />
 						filter : filter,
 						listings: listings,
 						'class': '.placester_listings_list',
-						context: '<?php echo $group['listings']['atts']['context']; ?>',
-						dom_id: '#<?php echo $group['listings']['atts']['table_id']; ?>',
-						<?php echo do_action('listings_limit_default'); ?>
+						context: '<?php echo $group['listings']['atts']['context'] ?>',
+						dom_id: '#<?php echo $group['listings']['atts']['table_id'] ?>',
+						limit_default: '<?php echo $group['listings']['atts']['query_limit'] ?>'
 					});
 
 					<?php if(!empty($group['listings']['filters'])): ?>
-						<?php echo $group['listings']['filters']; ?>
+						<?php echo $group['listings']['filters'] ?>
 					<?php endif ?>
 					listings.init();
 				<?php endif ?>

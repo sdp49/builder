@@ -57,12 +57,14 @@ $listing_attributes = PL_Shortcode_CPT::get_listing_attributes();
 			<div class="span8">
 
 				<?php
-				foreach( $pl_shortcodes_attr as $pl_shortcode => $sc_attrs ) {?>
+				foreach( $pl_shortcodes_attr as $pl_shortcode => $sc_attrs ) {
+					$def_template = PL_Shortcode_CPT::load_default_editor_template($pl_shortcode);
+					?>
 					<div class="pl_template_block <?php echo $pl_shortcode;?>" style="display:none;">
 					<?php
 					foreach($sc_attrs['template'] as $field => $f_args) {
 						if ($action!='edit' || $values['shortcode']!=$pl_shortcode) {
-							$_POST[$pl_shortcode][$field] = !empty($f_args['default']) ? $f_args['default'] : '';
+							$_POST[$pl_shortcode][$field] = !empty($def_template[$field]) ? $def_template[$field] : '';
 						}
 						else {
 							$_POST[$pl_shortcode][$field] = !empty( $values[$field] ) ? htmlentities($values[$field]) : '';

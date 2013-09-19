@@ -550,8 +550,8 @@ class PL_Shortcode_CPT {
 			// get builtin/default templates
 			$tpls = self::get_builtin_templates($shortcode);
 			if (!in_array($id, $tpls)) {
-				// use twenty ten if there's no template or it's not found
-				$id = 'twentyten';
+				// use default if there's no template or it's not found
+				$id = self::$shortcodes[$shortcode]->get_default_template_id();
 			}	
 			if (in_array($id, $tpls)) {
 				$template = array();
@@ -581,6 +581,12 @@ class PL_Shortcode_CPT {
 		return $data;
 	}
 
+	public static function load_default_editor_template($shortcode) {
+		if (!empty(self::$shortcodes[$shortcode])) {
+			return self::load_template(self::$shortcodes[$shortcode]->get_default_editor_id(), $shortcode); 
+		}
+		return array();		
+	}
 
 	/**
 	 * Save a shortcode template
@@ -663,7 +669,7 @@ class PL_Shortcode_CPT {
 	 * @param bool $all			: true to include hidden templates like the preview one
 	 * @return array
 	 */
-	public static function template_list($shortcode, $all = false) {
+	public static function template_list($shortcode, $all = false, $get_title = false) {
 		// sanity check
 		if (empty(self::$shortcodes[$shortcode])) {
 			return array();
@@ -672,34 +678,33 @@ class PL_Shortcode_CPT {
 		$tpl_type_map = array();
 
 		// add default templates
-		$default_tpls = self::get_builtin_templates($shortcode);
-		foreach ($default_tpls as $name) {
-			$tpl_type_map[$name] = array('type'=>'default', 'title'=>$name, 'id'=>$name);
+		$default_tpls = self::get_builtin_templates($shortcode, $get_title);
+		foreach ($default_tpls as $id => $title) {
+			$tpl_type_map[$id] = array('type'=>'default', 'title'=>$title, 'id'=>$id);
 		}
 
 		// get custom templates
 		$snippet_list_DB_key = ('pls_' . $shortcode . '_list');
 		$tpl_list = get_option($snippet_list_DB_key, array());
-		foreach ($tpl_list as $id => $name) {
+		foreach ($tpl_list as $id => $title) {
 			if ($id == 'pls_' . $shortcode . '___preview' && !$all) continue;
-			$tpl_type_map[$id] = array('type'=>'custom', 'title'=>$name, 'id'=>$id);
+			$tpl_type_map[$id] = array('type'=>'custom', 'title'=>$title, 'id'=>$id);
 		}
 		return $tpl_type_map;
 	}
 
 	/**
 	 * Return the list of built-in templates for the given shortcode.
-	 * List includes default templates and user created ones
 	 * @param string $shortcode
 	 * @return array
 	 */
-	public static function get_builtin_templates($shortcode) {
+	public static function get_builtin_templates($shortcode, $get_title = false) {
 		// sanity check
 		if (empty(self::$shortcodes[$shortcode])) {
 			return array();
 		}
 
-		return self::$shortcodes[$shortcode]->get_builtin_templates();
+		return self::$shortcodes[$shortcode]->get_builtin_templates($get_title);
 	}
 
 	/**
