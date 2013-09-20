@@ -144,7 +144,7 @@ For example, you might want to include the [compliance] shortcode.'
 	}
 
 	/**
-	 * Get list of filter options from the api.
+	 * Get list of options with sort by values from the api.
 	 */
 	public function get_options_list($with_choices = false) {
 		if (empty(self::$sl_listing_attributes)) {

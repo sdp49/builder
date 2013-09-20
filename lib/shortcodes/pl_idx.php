@@ -16,9 +16,6 @@ class PL_IDX_CPT extends PL_SC_Base {
 		'context'				=> array('type' => 'select', 'label' => 'Template', 'default' => '' ),
 		'width'					=> array('type' => 'int', 'label' => 'Width(px)', 'default' => 600 ),
 		'height'				=> array('type' => 'int', 'label' => 'Height(px)', 'default' => 600 ),
-		'search_form_tpl'		=> array('type' => 'select', 'label' => 'Search Form Template', 'default' => '', 'description' => '' ),
-		'search_map_tpl'		=> array('type' => 'select', 'label' => 'Map Template', 'default' => '', 'description' => '' ),
-		'search_listings_tpl'	=> array('type' => 'select', 'label' => 'Listings Template', 'default' => '', 'description' => '' ),
 	);
 
 	protected $subcodes = array(
@@ -63,6 +60,8 @@ For example, you might want to include the [compliance] shortcode.'
 	private static $singleton = null;
 
 	private static $template_data = array();
+
+
 
 
 	public static function init() {
@@ -119,24 +118,6 @@ For example, you might want to include the [compliance] shortcode.'
 		return $header.$body.$footer;
 	}
 
-	public function get_options_list($with_choices = false) {
-		if ($with_choices) {
-			$this->options['search_form_tpl']['options'][] = 'default';
-			foreach(PL_Shortcode_CPT::template_list('search_form') as $key=>$tpl) {
-				$this->options['search_form_tpl']['options'][$key] = $tpl['title'];
-			}
-			$this->options['search_map_tpl']['options'][] = 'default';
-			foreach(PL_Shortcode_CPT::template_list('search_map') as $key=>$tpl) {
-				$this->options['search_map_tpl']['options'][$key] = $tpl['title'];
-			}
-			$this->options['search_listings_tpl']['options'][] = 'default';
-			foreach(PL_Shortcode_CPT::template_list('search_listings') as $key=>$tpl) {
-				$this->options['search_listings_tpl']['options'][$key] = $tpl['title'];
-			}
-		}
-		return $this->options;
-	}
-	
 	public static function do_templatetags($content, &$data) {
 		return self::_do_templatetags(__CLASS__, array_keys(self::$singleton->subcodes), $content);
 	}
