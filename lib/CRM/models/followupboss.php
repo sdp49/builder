@@ -210,7 +210,8 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 	}
 
 	public function createContact ($args) {
-		//
+		error_log("FUB 'createContact' called...");
+		error_log(var_export($args, true));
 	}
 
 	public function pushEvent ($event) {

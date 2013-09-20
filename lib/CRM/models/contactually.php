@@ -259,7 +259,8 @@ class PL_CRM_Contactually extends PL_CRM_Base {
 	}
 
 	public function createContact ($args) {
-		//
+		error_log("Contactually 'createContact' called...");
+		error_log(var_export($args, true));
 	}
 
 	public function pushEvent ($event) {
