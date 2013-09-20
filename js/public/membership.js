@@ -235,6 +235,23 @@ jQuery(document).ready(function($) {
         inputs.data("validator").checkValidity();
     }
 
+    function push_lead_to_CRM (lead_info) {
+        // Format data object to be passed...
+        data = {
+            action: "crm_ajax_controller",
+            crm_method: "callCRMLib",
+            crm_args: {method: "createContact", args: lead_info},
+            response_format: "JSON"
+        };
+
+        $.post(info.ajaxurl, data, function (response) {
+            if (response && response.success) {
+                console.log(response);
+                console.log("Contact successfully pushed to CRM...");
+            } 
+        }, 'json');
+    }
+
     /*
      * Property/Listing "favorites" functionality...
      */

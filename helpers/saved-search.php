@@ -37,12 +37,12 @@ class PL_Saved_Search {
     	die();
     }
 
-	public static function add_new_saved_search ($clean_search_form_data, $saved_search_name, $link_to_search ) {
+	public static function add_new_saved_search ($clean_search_form_data, $saved_search_name, $link_to_search) {
 
 		$user_id = get_current_user_id();
 		$saved_searches = self::get_user_saved_searches();
 
-		if( ! empty( $clean_search_form_data ) && ! empty( $user_id ) ) {			
+		if ( !empty($clean_search_form_data) && !empty($user_id) ) {			
 
 			$search_value = json_encode( $clean_search_form_data );
 
@@ -54,7 +54,8 @@ class PL_Saved_Search {
 			$update_success = self::save_a_search($user_id, $saved_searches);
 
 			return $update_success;
-		} else {
+		} 
+		else {
 			return false;
 		}
 	}
@@ -69,10 +70,10 @@ class PL_Saved_Search {
 	}
 
 
-	public static function get_user_saved_searches( $user_id = 0 ) {
+	public static function get_user_saved_searches ($user_id = 0) {
 		// fallback to current user if user_id is not set
-		if( empty( $user_id ) ) {
-			if( ! is_user_logged_in() ) {
+		if (empty($user_id)) {
+			if (!is_user_logged_in()) {
 				return array();
 			}
 			$user_id = get_current_user_id();
@@ -80,25 +81,27 @@ class PL_Saved_Search {
 		
 		// fetch saved searches
 		$saved_searches = get_user_meta($user_id, self::$user_saved_keys );
-		if( empty( $saved_searches ) && ! is_array( $saved_searches ) ) {
+		if (empty( $saved_searches ) && ! is_array($saved_searches)) {
 			$response = array();
-		} else {
+		} 
+		else {
 			$response = $saved_searches[0];
 		}
-		// pls_dump($saved_searches);
+		// error_log(var_export($saved_searches, true));
 		return $response;
 	}
 
 	// Returns the saved search form overlay
 	public static function get_saved_search_registration_form () {
-
         ob_start();
-        if ( ! is_user_logged_in() ) {
+        if (!is_user_logged_in()) {
             include( trailingslashit(PL_FRONTEND_DIR) . 'saved-search-unauthenticated.php');
-        } else {
+        } 
+        else {
             include( trailingslashit(PL_FRONTEND_DIR) . 'saved-search-unauthenticated.php');
             // include( trailingslashit(PL_FRONTEND_DIR) . 'saved-search-authenticated.php');
         }
+
         return ob_get_clean();
     }
 
