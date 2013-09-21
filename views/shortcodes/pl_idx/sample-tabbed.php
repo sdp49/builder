@@ -120,6 +120,28 @@ $template = array(
 </div>
 ',
 
+'search_form' => '
+<h3>Search Listings</h3>
+
+<div class="form-grp">
+	<h6>Location</h6>
+	<div class="select-grp">
+		<label>City</label>
+		[cities]
+	</div>
+	<div class="select-grp">
+		<label>State</label>
+		[states]
+	</div>
+	<div class="select-grp">
+		<label>Zipcode</label>
+		[zips]
+	</div>
+</div>
+',
+
+'search_listings' => '',
+
 'before_widget' => '
 <script>
 jQuery(function($) {

@@ -420,7 +420,7 @@ class PL_Shortcodes
 		$html = '';
 		$template = PL_Shortcode_CPT::load_template($template_name, $shortcode);
 		if (!empty($template['snippet_body'])) {
-			$html = $template['snippet_body'];
+			$html = trim($template['snippet_body']);
 		}
 		return $html;
 	}
