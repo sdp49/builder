@@ -764,8 +764,6 @@ To add some text to your listings:<br />
 
 		// Setup form action
 		$form_data = array('action'=>'');
-		// Handle attributes using shortcode_atts...
-		$form_data['action'] = '';
 		// TODO deprecate this attr
 		if( !empty($atts['form_action_url']) ) {
 			$form_data['action'] = $atts['form_action_url'];
@@ -776,31 +774,7 @@ To add some text to your listings:<br />
 		}
 		$atts['ajax'] = empty($form_data['action']) ? true : false;
 		$atts['form_data'] = (object)$form_data;
-		/*
-		// add context and ajax support if missing
-		if( isset( $atts['ajax'] ) ) {
-			$atts['ajax'] = true;
-			$atts['context_var']['header'] = '
-			<script type="text/javascript" src="'.trailingslashit(PLS_JS_URL).'scripts/filters.js"></script>
-			<script type="text/javascript">
-				if (typeof bootloader !== \'object\') {
-					var bootloader;
-				}
-		
-				jQuery(document).ready(function( $ ) {
-					if (typeof bootloader !== \'object\') {
-						bootloader = new SearchLoader();
-						bootloader.add_param({filter: {context: "'.$atts['context'].'"}});
-					} else {
-						bootloader.add_param({filter: {context: "'.$atts['context'].'"}});
-					}
-				});
-			</script>
-			';
-		} else {
-			$atts['ajax'] = false;
-		}
-		*/
+
 		if (!has_filter('pls_listings_search_form_outer_' . $atts['context'])) {
 			add_filter( 'pls_listings_search_form_outer_' . $atts['context'], array(__CLASS__,'pls_listings_search_form_outer_callback'), 10, 7 );
 			add_filter( 'pls_listings_search_form_inner_' . $atts['context'], array(__CLASS__,'pls_listings_search_form_inner_callback'), 10, 5 );
@@ -991,14 +965,10 @@ To add some text to your listings:<br />
 	 * Called from PLS_Partials_Listing_Search_Form
 	 */
 	public static function pls_listings_search_form_inner_callback($form, $form_html, $form_options, $section_title, $context_var) {
-		$shortcode = 'search_form';
-		self::$form_html = $form_html;
-		PL_Shortcodes::$form_html = $form_html;
-
 		// get the template id from the filter name
 		$template_id = substr(current_filter(), strlen('pls_listings_search_form_inner_'));
-		$template = PL_Shortcode_CPT::load_template($template_id, $shortcode);
-		if (empty($template['snippet_body'])) {
+		$template = PL_Shortcode_CPT::load_template($template_id, 'search_form');
+		if (empty($template['snippet_body']) || trim($template['snippet_body'])=='') {
 			return $form;
 		}
 		return PL_Form_CPT::do_templatetags($template['snippet_body'], $form_html);
