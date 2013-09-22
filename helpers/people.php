@@ -33,20 +33,19 @@ class PL_People_Helper {
 	}
 
 	public static function add_person_to_CRM ($args = array()) {
-		error_log(var_export($args, true));
-
 		// Check to see if site is actively linked to a CRM...
 		$activeCRMKey = 'pl_active_CRM';
 		$crm_id = PL_Options::get($activeCRMKey);
 		
 		if (!empty($crm_id)) {
-			error_log('CRM is active...');
-			
 			// Load CRM libs...
-			include_once('lib/CRM/controller.php');
+			$path_to_CRM = trailingslashit(PL_LIB_DIR) . 'CRM/controller.php';
+			include_once($path_to_CRM);
 
-			// Call necessary
-			PL_CRM_Controller::callCRMLib('createContact', $args);
+			// Call necessary lib to add the contact to the active/registered CRM...
+			if (class_exists('PL_CRM_Controller')) {
+				PL_CRM_Controller::callCRMLib('createContact', $args);
+			}
 		}
 	}
 
