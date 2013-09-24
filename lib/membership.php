@@ -31,17 +31,17 @@ class PL_Membership {
     // NOTE: JavaScript in "js/theme/placester.membership.js"
 	public static function ajax_register_site_user () {
 		$errors = array();
-
+		
         // Make sure it's from a form we created
 		if ( !wp_verify_nonce($_POST['nonce'], 'placester_true_registration') ) {
 			// Malicious...
 			echo "Sorry, your nonce didn't verify -- try using the form on the site";
 			die();
 		}
-
+		
 		// All validation rules in a single place...
 		$lead_object = self::validate_registration($_POST);
-
+		
 		// Check for lead errors
 		if (!empty($lead_object['errors'])) {
 			$errors = self::process_registration_errors($lead_object['errors']);
@@ -50,9 +50,9 @@ class PL_Membership {
 			// Try to create the lead...
 			$errors = self::create_site_user($lead_object);
 		}
-
+		
         $result = empty($errors) ? array("success" => true) : array("success" => false, "errors" => $errors);
-
+        
         echo json_encode($result);
         die();
 	}
@@ -334,7 +334,7 @@ class PL_Membership {
 			switch ($type) {
 				case 'username_exists':
 					// $error_messages['username'][] .= 'That username already exists';
-					$error_messages['user_email'] = 'That email already exists';
+					$error_messages['user_email'] = 'That email is already taken';
 					break;
 
 				case 'username_empty':
@@ -351,7 +351,7 @@ class PL_Membership {
 					break;
 
 				case 'email_taken':
-					$error_messages['user_email'] = 'That email is already taken.';
+					$error_messages['user_email'] = 'That email is already taken';
 					break;
 
 				case 'password_empty':
@@ -367,15 +367,15 @@ class PL_Membership {
 					break;
 
 				default:
-					$error_messages['user_email'] = 'There was an error, try again soon.';
+					$error_messages['user_email'] = 'There was an error, try again soon';
 					break;
 			}
 		}
 
-		if ( !empty($error_messages) ) {
-			echo json_encode($error_messages);
-		}
-		// return $error_messages;
+		// if ( !empty($error_messages) ) {
+		// 	echo json_encode($error_messages);
+		// }
+		return $error_messages;
 	}
 
 	/**

@@ -77,11 +77,11 @@ jQuery(document).ready(function($) {
             //form_key_translations is a simple lookup table 
             //to translate them into human readable form.
             if (form_key_translations.hasOwnProperty(key)) {
-              key = form_key_translations[key];
-            };
+                key = form_key_translations[key];
+            }
 
-            var html = "<li><span>" + key + "</span>: " + form_attribute_value + "</li>"
-            $('#saved_search_values ul').append(html)
+            var html = "<li><span>" + key + "</span>: " + form_attribute_value + "</li>";
+            $('#saved_search_values ul').append(html);
         }
     }
 
