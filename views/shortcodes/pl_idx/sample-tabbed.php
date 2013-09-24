@@ -415,6 +415,10 @@ jQuery(function($) {
 
 	function mapRefresh() {
 		var pl_map = $("#pl_idx .custom_google_map").data("pl_map");
+		// TODO: remove after updates to blueprint 
+		if (!pl_map && map) {
+			pl_map = map;
+		}
 		if (pl_map) {
 			google.maps.event.trigger(pl_map.map,"resize");
 			pl_map.center_on_markers();
