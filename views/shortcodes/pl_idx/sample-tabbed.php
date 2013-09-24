@@ -5,16 +5,25 @@ $template = array(
 'title' => 'Sample Tabbed Layout',
 
 'css' => '
-.pl-tpl-idx-sample-tabbed .loading_overlay,
-.pl-tpl-idx-sample-tabbed .empty_overlay,
-.pl-tpl-idx-sample-tabbed .custom_google_map {
-	width: 100% !important;
+
+.pl-tpl-idx-sample-tabbed .form-grp {
+	float: left;
+	margin: 0 2em 1em 0;
 }
 
-
-.pl_idx_tab_listings {
+.pl-tpl-idx-sample-tabbed .form-grp h6 {
+	margin: 0;
 }
-.pl_idx_tab_listings .clear {
+
+.pl-tpl-idx-sample-tabbed .form-grp label {
+	display: block;
+	float: left;
+	width: 6em;
+}
+
+/* Basic Styling for Listings */
+
+.pl-tpl-idx-sample-tabbed .clear {
 	clear: both;
 }
 .pl-tpl-idx-sample-tabbed form {
@@ -107,7 +116,7 @@ $template = array(
 }
 /* description and compliance */
 .pl-tpl-idx-sample-tabbed p.listing-description,
-.pl-tpl-idx-sample-tabbed .listing-item .compliance-wrapper p {	
+.pl-tpl-idx-sample-tabbed .listing-item .compliance-wrapper p {
 	float: left !important;
 	margin: 0 0 .2em 0 !important;
 	max-height: 52px !important;
@@ -149,7 +158,7 @@ $template = array(
 	margin: .5em 0;
 	padding: 0;
 }
-		
+
 /* controls */
 .pl-tpl-idx-sample-tabbed .sort_item {
 	float: left;
@@ -211,26 +220,73 @@ $template = array(
 }
 
 
-/* Listings */
+
+/* Map */
+#idx_map_item {
+	display: block !important;
+}
+.pl_idx_tab_listings #idx_map_item,
+.pl_idx_tab_gallery #idx_map_item {
+	position: absolute;
+	left: -1000px;
+}
+.pl-tpl-idx-sample-tabbed .loading_overlay,
+.pl-tpl-idx-sample-tabbed .empty_overlay,
+.pl-tpl-idx-sample-tabbed .custom_google_map {
+	width: 100% !important;
+}
+
+
+
+/* Listings View */
+
 .pl_idx_tab_listings .listing-item-details {
 	width: 60% !important;
 }
 
 
-/* Map */
-#idx_map_item {
-	display: block !important;
-	zzwidth: 100%;
-	zzheight: 400px;
-}
-.pl_idx_tab_listings #idx_map_item,
-.pl_idx_tab_gallery #idx_map_item {
-    position: absolute;
-	left: -1000px;
-}
-		
 
-/* Gallery */
+/* Map View */
+
+.pl_idx_tab_map .placester_properties tr {
+}
+.pl_idx_tab_map .placester_properties td {
+}
+.pl_idx_tab_map .listing-item {
+	padding: 5px !important;
+	position: relative;
+}
+.pl_idx_tab_map .listing-thumbnail {
+	float: left;
+	width: 5em !important;
+	height: 3.5em !important;
+}
+.pl_idx_tab_map .listing-thumbnail img {
+	width: 100% !important;
+	height: 100% !important;
+}
+.pl_idx_tab_map .listing-item-details {
+	float: left;
+}
+.pl_idx_tab_map .listing-item-address {
+}
+.pl_idx_tab_map .basic-details ul {
+	max-width: none !important;
+}
+.pl_idx_tab_map .basic-details li {
+	float: left;
+}
+.pl_idx_tab_map .basic-details li.basic-details-price {
+}
+.pl_idx_tab_map .actions,
+.pl_idx_tab_map .listing-description,
+.pl_idx_tab_map .compliance-wrapper {
+	display: none !important;
+}
+
+
+
+/* Gallery View */
 .pl_idx_tab_gallery .placester_properties tr {
 	display: block !important;
 	float: left !important;
@@ -274,43 +330,6 @@ $template = array(
 .pl_idx_tab_gallery .compliance-wrapper {
 	display: none !important;
 }
-/* Map */
-.pl_idx_tab_map .placester_properties tr {
-}
-.pl_idx_tab_map .placester_properties td {
-}
-.pl_idx_tab_map .listing-item {
-	padding: 5px !important;
-	position: relative;
-}
-.pl_idx_tab_map .listing-thumbnail {
-	float: left;
-	width: 5em !important;
-	height: 3.5em !important;
-}
-.pl_idx_tab_map .listing-thumbnail img {
-	width: 100% !important;
-	height: 100% !important;
-}
-.pl_idx_tab_map .listing-item-details {
-	float: left;
-}
-.pl_idx_tab_map .listing-item-address {
-}
-.pl_idx_tab_map .basic-details ul {
-	max-width: none !important;
-}
-.pl_idx_tab_map .basic-details li {
-	float: left;
-}
-.pl_idx_tab_map .basic-details li.basic-details-price {
-}
-.pl_idx_tab_map .actions,
-.pl_idx_tab_map .listing-description,
-.pl_idx_tab_map .compliance-wrapper {
-	display: none !important;
-}
-		
 ',
 
 'snippet_body' => '
@@ -321,10 +340,10 @@ $template = array(
 		<li><a class="pl_idx_tab_map" href="#idx_map">Map</a></li>
 		<li><a class="pl_idx_tab_gallery" href="#idx_gallery">Gallery</a></li>
 	</ul>
-	<div id="idx_listings"></div>	
+	<div id="idx_listings"></div>
 	<div id="idx_map"></div>
-	<div id="idx_gallery"></div>	
-	<div id="idx_items" class="pl_idx_tab_listings">	
+	<div id="idx_gallery"></div>
+	<div id="idx_items" class="pl_idx_tab_listings">
 		<div id="idx_map_item">[search_map]</div>
 		<div id="idx_listings_item">[search_listings]</div>
 	</div>
@@ -349,6 +368,32 @@ $template = array(
 		[zips]
 	</div>
 </div>
+
+<div class="form-grp">
+	<h6>Price Range</h6>
+	<div id="min_price_container" class="select-grp">
+		<label>Price From</label>
+		[min_price]
+	</div>
+	<div id="max_price_container" class="select-grp">
+		<label>Price To</label>
+		[max_price]
+	</div>
+</div>
+
+<div class="form-grp">
+	<h6>Details</h6>
+	<div class="select-grp">
+		<label>Bed(s)</label>
+		[bedrooms]
+	</div>
+	<div class="select-grp">
+		<label>Bath(s)</label>
+		[bathrooms]
+	</div>
+</div>
+
+<div class="clear"></div>
 ',
 
 'search_listings' => '',
@@ -356,26 +401,26 @@ $template = array(
 'before_widget' => '
 <script>
 jQuery(function($) {
-	$(\'#pl_idx\').tabs({
+	$("#pl_idx").tabs({
 		select: function(event, ui) {
-			$(\'#idx_items\').attr(\'class\', ui.tab.className);
-		}              
+			$("#idx_items").attr("class", ui.tab.className);
+		}
 	});
 
-	$(\'#pl_idx\').bind(\'tabsshow\', function(event, ui) {
-	    if (ui.panel.id == "idx_map") {
+	$("#pl_idx").bind("tabsshow", function(event, ui) {
+		if (ui.panel.id == "idx_map") {
 			mapRefresh();
-	    }
+		}
 	});
 
 	function mapRefresh() {
-	    var pl_map = $(\'#pl_idx .custom_google_map\').data(\'pl_map\');
+		var pl_map = $("#pl_idx .custom_google_map").data("pl_map");
 		if (pl_map) {
-			google.maps.event.trigger(pl_map.map,\'resize\');
+			google.maps.event.trigger(pl_map.map,"resize");
 			pl_map.center_on_markers();
 		}
 	}
-});		
+});
 </script>
 <div class="pl-tpl-idx-sample-tabbed">',
 
