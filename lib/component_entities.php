@@ -296,6 +296,9 @@ To add some text to your listings:<br />
 		}
 		$atts = wp_parse_args($atts, array('group'=>'', 'sync_map_to_list'=>false));
 		$atts['context'] = empty($atts['context']) ? 'shortcode' : $atts['context'];
+		if (!empty($atts['dom_id'])) {
+			$atts['canvas_id'] = $atts['dom_id'];
+		}
 		
 		if (!has_filter('pls_search_map_' . $atts['context'])) {
 			add_filter('pls_search_map_' . $atts['context'], array(__CLASS__,'pls_search_map_callback'), 10, 3);
@@ -306,7 +309,7 @@ To add some text to your listings:<br />
 		// TODO: move applyfilter to blueprint 
 		$listings = null;
 		self::add_to_group('search_map', $atts);
-		echo PLS_Map::listings( null, array('width' => $atts['width'], 'height' => $atts['height']) );
+		echo PLS_Map::listings(null, $atts);
 		$return = ob_get_clean();
 		return apply_filters('pls_search_map_' . $atts['context'], $return, $listings, $atts);
 	}
@@ -1360,9 +1363,12 @@ To add some text to your listings:<br />
 
 				<?php if (!empty($group['map'])):?>
 					var init_args = new Object();
+					<?php if (!empty($group['map']['atts']['dom_id'])): ?>
+						init_args.dom_id = '<?php echo $group['map']['atts']['dom_id'] ?>',
+					<?php endif ?>
 					init_args.listings = listings;
-					<?php if( $group['map']['atts']['sync_map_to_list'] ): ?>
-						sync_map_to_list: true, 
+					<?php if ($group['map']['atts']['sync_map_to_list']): ?>
+						init_args.sync_map_to_list = true;
 					<?php endif ?>
 					init_args.type = '<?php echo $group['map']['atts']['type'] ?>',
 					init_args.filter_by_bounds = false;

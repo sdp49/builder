@@ -91,6 +91,9 @@ For example, you might want to include the [compliance] shortcode.'
 		foreach ($templates as $id => $attr) {
 			add_filter( 'pls_listings_list_ajax_item_html_search_listings_pl_idx_' . $id, array(__CLASS__,'pls_listings_list_ajax_item_html_search_listings_callback'), 10, 3 );
 		}
+		if (!has_filter('pls_idx_html_shortcode')) {
+			add_filter( 'pls_listings_list_ajax_item_html_search_listings_pl_idx_shortcode', array(__CLASS__,'pls_listings_list_ajax_item_html_search_listings_callback'), 10, 3 );
+		}
 	}
 
 	/**
@@ -125,8 +128,8 @@ For example, you might want to include the [compliance] shortcode.'
 			$filters = PL_Component_Entity::convert_filters($listing_filters) . $filters;
 		}
 
-		$comp_context = empty($atts['context']) ? '' : 'pl_idx_'.$atts['context'];
 		$atts['context'] = empty($atts['context']) ? 'shortcode' : $atts['context'];
+		$comp_context = 'pl_idx_'.$atts['context'];
 		
 		self::$template_data['search_form'] = array( 
 				'method' => array('PL_Component_Entity', 'search_form_entity'), 
@@ -135,7 +138,7 @@ For example, you might want to include the [compliance] shortcode.'
 		);
 		self::$template_data['search_map'] = array( 
 				'method' => array('PL_Component_Entity', 'search_map_entity'), 
-				'param1' => array('context'=>$comp_context, 'sync_map_to_list'=>true),
+				'param1' => array('dom_id'=>'idx_map_canvas', 'context'=>$comp_context, 'sync_map_to_list'=>true),
 				'param2' => '',
 		);
 		self::$template_data['search_listings'] = array( 

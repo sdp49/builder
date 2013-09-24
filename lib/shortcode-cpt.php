@@ -536,7 +536,7 @@ class PL_Shortcode_CPT {
 	public static function load_template($id, $shortcode) {
 		$default = array();
 
-		if ($id && $shortcode && !empty(self::$shortcodes[$shortcode])) {
+		if ($id && $shortcode && !empty(self::$shortcodes[$shortcode]) && ($id!='pl_idx_shortcode' || $shortcode=='pl_idx')) {
 			// Get template from shortcode's template list in case we are using
 			// default or builtin template
 
