@@ -371,10 +371,7 @@ class PL_Membership {
 					break;
 			}
 		}
-
-		// if ( !empty($error_messages) ) {
-		// 	echo json_encode($error_messages);
-		// }
+		
 		return $error_messages;
 	}
 
