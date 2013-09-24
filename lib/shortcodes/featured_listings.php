@@ -32,7 +32,7 @@ class PL_Featured_Listings_CPT extends PL_Search_Listing_CPT {
 			'type' => 'textarea',
 			'label' => 'HTML to format each individual listing',
 			'css' => 'mime_html',
-			'description' => 'You can use the template tags with any valid HTML in this field to lay out each listing.'
+			'description' => 'You can use the template tags with any valid HTML in this field to lay out each listing. Leave this field empty to use the built in template.'
 		),
 
 		'css' => array(

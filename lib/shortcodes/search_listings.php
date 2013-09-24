@@ -99,7 +99,7 @@ To add some text to your listings:<br />
 			'type' => 'textarea',
 			'label' => 'HTML to format each individual listing',
 			'css' => 'mime_html',
-			'description' => 'You can use the template tags with any valid HTML in this field to lay out each listing.'
+			'description' => 'You can use the template tags with any valid HTML in this field to lay out each listing. Leave this field empty to use the built in template.'
 		),
 
 		'css' => array(

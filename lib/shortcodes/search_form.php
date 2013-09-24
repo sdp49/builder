@@ -69,7 +69,7 @@ In the following example a search field is created for the custom attribute \'ro
 			'type' => 'textarea',
 			'label' => 'HTML',
 			'css' => 'mime_html',
-			'description' => 'You can use the template tags with any valid HTML in this field to lay out the form.'
+			'description' => 'You can use the template tags with any valid HTML in this field to lay out the form. Leave this field empty to use the built in template.'
 		),
 
 		'css' => array(

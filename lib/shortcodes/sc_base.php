@@ -292,34 +292,34 @@ abstract class PL_SC_Base {
 	protected static function _do_templatetags($class, $tags, $content) {
 		$subcode = implode('|', $tags);
 		$pattern =
-			  '\\['                              // Opening bracket
-			. '(\\[?)'                           // 1: Optional second opening bracket for escaping shortcodes: [[tag]]
-			. "($subcode)"                       // 2: Shortcode name
-			. '\\b'                              // Word boundary
-			. '('                                // 3: Unroll the loop: Inside the opening shortcode tag
-			.     '[^\\]\\/]*'                   // Not a closing bracket or forward slash
-			.     '(?:'
-			.         '\\/(?!\\])'               // A forward slash not followed by a closing bracket
-			.         '[^\\]\\/]*'               // Not a closing bracket or forward slash
-			.     ')*?'
+			  '\\['								// Opening bracket
+			. '(\\[?)'							// 1: Optional second opening bracket for escaping shortcodes: [[tag]]
+			. "($subcode)"						// 2: Shortcode name
+			. '\\b'								// Word boundary
+			. '('								// 3: Unroll the loop: Inside the opening shortcode tag
+			.	'[^\\]\\/]*'					// Not a closing bracket or forward slash
+			.	'(?:'
+			.		 '\\/(?!\\])'				// A forward slash not followed by a closing bracket
+			.		 '[^\\]\\/]*'				// Not a closing bracket or forward slash
+			.	 ')*?'
 			. ')'
 			. '(?:'
-			.     '(\\/)'                        // 4: Self closing tag ...
-			.     '\\]'                          // ... and closing bracket
+			.	 '(\\/)'						// 4: Self closing tag ...
+			.	 '\\]'							// ... and closing bracket
 			. '|'
-			.     '\\]'                          // Closing bracket
-			.     '(?:'
-			.         '('                        // 5: Unroll the loop: Optionally, anything between the opening and closing shortcode tags
-			.             '[^\\[]*+'             // Not an opening bracket
-			.             '(?:'
-			.                 '\\[(?!\\/\\2\\])' // An opening bracket not followed by the closing shortcode tag
-			.                 '[^\\[]*+'         // Not an opening bracket
-			.             ')*+'
-			.         ')'
-			.         '\\[\\/\\2\\]'             // Closing shortcode tag
-			.     ')?'
+			.	 '\\]'							// Closing bracket
+			.	 '(?:'
+			.		 '('						// 5: Unroll the loop: Optionally, anything between the opening and closing shortcode tags
+			.			 '[^\\[]*+'				// Not an opening bracket
+			.			 '(?:'
+			.				 '\\[(?!\\/\\2\\])' // An opening bracket not followed by the closing shortcode tag
+			.				 '[^\\[]*+'			// Not an opening bracket
+			.			 ')*+'
+			.		 ')'
+			.		 '\\[\\/\\2\\]'				// Closing shortcode tag
+			.	 ')?'
 			. ')'
-			. '(\\]?)';                          // 6: Optional second closing brocket for escaping shortcodes: [[tag]]
+			. '(\\]?)';							// 6: Optional second closing brocket for escaping shortcodes: [[tag]]
 
 		return preg_replace_callback( "/$pattern/s", array($class, 'templatetag_callback'), $content );
 	}
