@@ -604,8 +604,11 @@ To add some text to your listings:<br />
 				break;
 			case 'image_url':
 				$index = empty($atts['index']) ? 0 : (int)$atts['index'];
-				$placeholder = empty($atts['placeholder']) ? PLS_IMG_URL . "/null/listing-1200x720.jpg" : $atts['placeholder'];
-				$val = empty($listing_list['images'][$index]['url']) ? $placeholder : $listing_list['images'][$index]['url'];
+				$placeholder = empty($atts['placeholder']) ? '' : $atts['placeholder'];
+				$val = PLS_Image::load(empty($listing_list['images'][$index]['url']) ? $placeholder : $listing_list['images'][$index]['url'],
+					array('allowresize' => false,
+						'fancybox' => false,
+						'as_html' => false));
 				break;
 			case 'gallery':
 				ob_start();
