@@ -52,6 +52,12 @@ class PL_Neighborhood_CPT extends PL_SC_Base {
 	public static function init() {
 		parent::_init(__CLASS__);
 	}
+
+	public static function shortcode_handler($atts, $content) {
+		$content = PL_Component_Entity::pl_neighborhood_entity( $atts );
+
+		return self::wrap( 'pl_neighborhood', $content );
+	}
 }
 
 PL_Neighborhood_CPT::init();

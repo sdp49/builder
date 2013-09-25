@@ -7,8 +7,6 @@ include_once(PL_LIB_DIR . 'shortcodes/search_listings.php');
 
 class PL_Featured_Listings_CPT extends PL_Search_Listing_CPT {
 
-	protected $pl_post_type = 'featured_listings';
-
 	protected $shortcode = 'featured_listings';
 
 	protected $title = 'Featured Listings';
@@ -39,7 +37,7 @@ class PL_Featured_Listings_CPT extends PL_Search_Listing_CPT {
 			'type' => 'textarea',
 			'label' => 'CSS',
 			'css' => 'mime_css',
-			'description' => 'You can use any valid CSS in this field to style the listings, which will also inherit the CSS from the theme.' 
+			'description' => 'You can use any valid CSS in this field to style the listings, which will also inherit the CSS from the theme.'
 		),
 
 		'before_widget'	=> array(
@@ -77,6 +75,12 @@ For example, you might want to include the [compliance] shortcode.'
 	 */
 	public function get_filters_list($with_choices = false) {
 		return array();
+	}
+
+	public static function shortcode_handler($atts, $content) {
+		$content = PL_Component_Entity::featured_listings_entity($atts);
+
+		return self::wrap('featured_listings', $content);
 	}
 }
 

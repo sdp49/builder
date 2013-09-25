@@ -18,7 +18,7 @@ class PL_Component_Entity {
 	public static $neighborhood_term;
 
 	public static $slideshow_caption_index;
-	
+
 	public static $template_tags = array();
 
 	public static $listing_tags = array(
@@ -74,9 +74,9 @@ To add some text to your listings:<br />
 	);
 
 	private static $obj_cnt = array('listings'=>0, 'map'=>0, 'form'=>0);
-	private static $shortcode_groups = array(); 
+	private static $shortcode_groups = array();
 	private static $current_shortcode_group = '';
-	
+
 
 
 
@@ -108,7 +108,7 @@ To add some text to your listings:<br />
 		foreach ($neighborhood_templates as $id => $attr) {
 			add_filter( 'pls_neighborhood_html_' . $id, array(__CLASS__, 'neighborhood_templates'), 10, 4 );
 		}
-		
+
 		add_action('wp_footer', array(__CLASS__, 'add_js'));
 	}
 
@@ -129,7 +129,7 @@ To add some text to your listings:<br />
 		}
 		$atts = wp_parse_args($atts, array('limit' => 0, 'sort_type' => ''));
 		$atts['context'] = 'featured_listings_'.(empty($atts['context']) ? 'shortcode' : $atts['context']);
-		
+
 		if (!has_filter('pls_listings_' . $atts['context'])) {
 			add_filter('pls_listings_' . $atts['context'], array(__CLASS__,'pls_listings_callback'), 10, 5);
 			add_filter('pls_listing_' . $atts['context'], array(__CLASS__,'pls_listing_callback'), 10, 4);
@@ -196,7 +196,7 @@ To add some text to your listings:<br />
 		}
 
 		// we support a filter for wrapping the whole shortcode here
-		// TODO: move applyfilter to blueprint 
+		// TODO: move applyfilter to blueprint
 		ob_start();
 		self::hide_unnecessary_controls($atts);
 		self::add_to_group('static_listings', $atts, $filters.$filters_string);
@@ -257,14 +257,14 @@ To add some text to your listings:<br />
 		$atts['context'] = 'search_listings_'.(empty($atts['context']) ? 'shortcode' : $atts['context']);
 		$atts['dom_id'] = 'pl_listings_'.(++self::$obj_cnt['listings']);
 		$atts['table_id'] = 'placester_listings_list_'.(self::$obj_cnt['listings']);
-		
+
 		if (!has_filter('pls_listings_' . $atts['context'])) {
 			// formatting filter for individual listings already registered above
 			add_filter('pls_listings_' . $atts['context'], array(__CLASS__,'pls_listings_callback'), 10, 5);
 		}
 
 		// we support a filter for wrapping the whole shortcode here
-		// TODO: move applyfilter to blueprint 
+		// TODO: move applyfilter to blueprint
 		ob_start();
 		self::add_to_group('search_listings', $atts, $filters.$filters_string);
 		PLS_Partials_Get_Listings_Ajax::load($atts);
@@ -299,14 +299,14 @@ To add some text to your listings:<br />
 		if (!empty($atts['dom_id'])) {
 			$atts['canvas_id'] = $atts['dom_id'];
 		}
-		
+
 		if (!has_filter('pls_search_map_' . $atts['context'])) {
 			add_filter('pls_search_map_' . $atts['context'], array(__CLASS__,'pls_search_map_callback'), 10, 3);
 		}
-		
+
 		ob_start();
 		// we support a filter for wrapping the whole shortcode here
-		// TODO: move applyfilter to blueprint 
+		// TODO: move applyfilter to blueprint
 		$listings = null;
 		self::add_to_group('search_map', $atts);
 		echo PLS_Map::listings(null, $atts);
@@ -362,7 +362,7 @@ To add some text to your listings:<br />
 			add_filter( 'pls_slideshow_html_' . $atts['context'], array(__CLASS__,'pls_slideshow_html_shortcode_callback'), 10, 5 );
 			add_filter( 'pls_slideshow_single_caption_' . $atts['context'], array(__CLASS__,'pls_slideshow_single_caption_callback'), 10, 5 );
 		}
-		
+
 		return PLS_Slideshow::slideshow($atts);
 	}
 
@@ -391,7 +391,7 @@ To add some text to your listings:<br />
 			return $listing['cur_data']['baths'];
 		}
 
-		return '';
+		return self::listing_sub_entity($atts, $content, $tag);
 	}
 
 	public static function neighborhood_sub_entity( $atts, $content, $tag ) {
@@ -782,7 +782,7 @@ To add some text to your listings:<br />
 			add_filter( 'pls_listings_search_form_outer_' . $atts['context'], array(__CLASS__,'pls_listings_search_form_outer_callback'), 10, 7 );
 			add_filter( 'pls_listings_search_form_inner_' . $atts['context'], array(__CLASS__,'pls_listings_search_form_inner_callback'), 10, 5 );
 		}
-		
+
 		return PLS_Partials_Listing_Search_Form::init($atts);
 	}
 
@@ -1035,7 +1035,7 @@ To add some text to your listings:<br />
 		if (!empty($template['after_widget']) && empty($_GET['embedded'])) {
 			$footer .= $template['after_widget'];
 		}
-		
+
 		return $header.$html.$footer;
 	}
 
@@ -1051,7 +1051,7 @@ To add some text to your listings:<br />
 		if (empty($snippet_body)) {
 			return $caption_html;
 		}
-		return do_shortcode($snippet_body);
+		return PL_Listing_Slideshow_CPT::do_templatetags($snippet_body, $listing);
 	}
 
 	// that would work fine for output styling, not caption-specific
@@ -1075,7 +1075,7 @@ To add some text to your listings:<br />
 		$context = explode('_', substr(current_filter(), strlen('pls_listings_list_ajax_item_html_')), 3);
 		$shortcode = $context[0].'_'.$context[1];
 		$template_id = $context[2];
-		
+
 		$snippet_body = PL_Shortcodes::get_active_snippet_body( $shortcode, $template_id );
 		if (empty($snippet_body)) {
 			return $item_html;
@@ -1225,7 +1225,7 @@ To add some text to your listings:<br />
 		}
 		echo $css;
 	}
-	
+
 	/**
 	 * Helper function to parse template tags out of a template and replace them with their values
 	 * @param function $callback	: callback that will provide a value for any tags found
@@ -1265,10 +1265,10 @@ To add some text to your listings:<br />
 								.     ')?'
 								. ')'
 								. '(\\]?)';                          // 6: Optional second closing brocket for escaping shortcodes: [[tag]]
-	
+
 		return preg_replace_callback( "/$pattern/s", $callback, $content );
 	}
-	
+
 	/**
 	 * Helper function to substitute values for template tags.
 	 * Used by templates for: individual listing pages.
@@ -1277,11 +1277,11 @@ To add some text to your listings:<br />
 		if ( $m[1] == '[' && $m[6] == ']' ) {
 			return substr($m[0], 1, -1);
 		}
-	
+
 		$tag = $m[2];
 		$atts = shortcode_parse_atts($m[3]);
 		$content = $m[5];
-	
+
 		if ($tag == 'if') {
 			$val = isset($atts['value']) ? $atts['value'] : null;
 			if (empty($atts['group']) && !empty($atts['attribute'])) {
@@ -1310,7 +1310,7 @@ To add some text to your listings:<br />
 		$content = self::listing_sub_entity( $atts, $content, $tag );
 		return self::wrap( 'listing_sub', $content );
 	}
-	
+
 	/**
 	 * Give theme, etc a chance to customize template output on a per item basis
 	 */
@@ -1321,11 +1321,11 @@ To add some text to your listings:<br />
 		do_action( $shortcode . '_post_footer' );
 		return ob_get_clean();
 	}
-	
+
 	public static function in_sidebar() {
 		return !is_main_query();
 	}
-	
+
 	public static function add_js() {
 		$js_files = array();
 
@@ -1337,9 +1337,9 @@ To add some text to your listings:<br />
 				<?php if (!empty($group['map'])):?>
 					<?php $js_files['map'] = true ?>
 					var map = new Map ();
-					<?php 
+					<?php
 					if (empty($group['map']['atts']['type'])) {
-						$group['map']['atts']['type'] = empty($group['listings']) ? 'lifestyle' : 'listings';	
+						$group['map']['atts']['type'] = empty($group['listings']) ? 'lifestyle' : 'listings';
 					}
 					?>
 				<?php endif ?>
@@ -1386,7 +1386,7 @@ To add some text to your listings:<br />
 						init_args.lifestyle_polygon = lifestyle_polygon;
 						<?php $js_files['lifestyle_polygon'] = true ?>
 					<?php endif ?>
-					
+
 					map.init( init_args );
 				<?php endif ?>
 
@@ -1422,7 +1422,7 @@ To add some text to your listings:<br />
 		</script>
 		<?php
 		}
-		
+
 		if (!empty($js_files['filters'])) {
 			wp_enqueue_script('pl-filters.js', trailingslashit(PLS_JS_URL) . 'scripts/filters.js', array('jquery'));
 		}

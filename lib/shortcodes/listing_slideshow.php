@@ -4,9 +4,7 @@
  *
  */
 
-class PL_Listing_Slideshow_CPT extends PL_SC_Base {
-
-	protected $pl_post_type = 'pl_slideshow';
+class PL_Listing_Slideshow_CPT extends PL_Search_Listing_CPT {
 
 	protected $shortcode = 'listing_slideshow';
 
@@ -37,7 +35,7 @@ class PL_Listing_Slideshow_CPT extends PL_SC_Base {
 		'pl_featured_listing_meta' => array( 'type' => 'featured_listing_meta', 'default' => '' ),
 	);
 
-	protected $subcodes = array(
+	protected $slideshow_subcodes = array(
 		'ls_index'		=> array('help' => 'Index of the listing in the slideshow, starting with 1.'),
 		'ls_url'		=> array('help' => 'The url to view the listing.'),
 		'ls_address'	=> array('help' => 'The street address of the listing.'),
@@ -59,7 +57,7 @@ class PL_Listing_Slideshow_CPT extends PL_SC_Base {
 			'css' => 'mime_css',
 			'description' => 'You can use any valid CSS in this field to style the slideshow, which will also inherit the CSS from the theme.'
 		),
-				
+
 		'before_widget'	=> array(
 			'type' => 'textarea',
 			'label' => 'Add content before the slideshow',
@@ -76,11 +74,13 @@ For example, you can wrap the whole slideshow with a <div> element to apply bord
 		),
 	);
 
+	private static $singleton = null;
 
 
 
 	public static function init() {
-		parent::_init(__CLASS__);
+		self::$singleton = parent::_init(__CLASS__);
+		self::$singleton->subcodes += self::$singleton->slideshow_subcodes;
 	}
 
 	/**
@@ -114,6 +114,45 @@ For example, you can wrap the whole slideshow with a <div> element to apply bord
 			return $options;
 		}
 		return false;
+	}
+
+	public static function shortcode_handler($atts, $content) {
+		$content = PL_Component_Entity::listing_slideshow($atts);
+
+		return self::wrap('listing_slideshow', $content);
+	}
+
+
+	public static function do_templatetags($content, $listing_data) {
+		PL_Component_Entity::$listing = $listing_data;
+		return self::_do_templatetags(__CLASS__, array_keys(self::$singleton->subcodes), $content);
+	}
+
+	public static function templatetag_callback($m) {
+		if ($m[1]=='[' && $m[6]==']') {
+			return substr($m[0], 1, -1);
+		}
+
+		$tag = $m[2];
+		$atts = shortcode_parse_atts($m[3]);
+		$content = $m[5];
+
+		if ($tag == 'if') {
+			$val = isset($atts['value']) ? $atts['value'] : null;
+			if (empty($atts['group'])) {
+				if ((!isset(PL_Component_Entity::$listing[$atts['attribute']]) && $val==='') ||
+					(isset(PL_Component_Entity::$listing[$atts['attribute']]) && (PL_Component_Entity::$listing[$atts['attribute']]===$val || (is_null($val) && PL_Component_Entity::$listing[$atts['attribute']])))) {
+					return self::_do_templatetags(__CLASS__, array_keys(self::$singleton->subcodes), $content);
+				}
+			}
+			elseif ((!isset(PL_Component_Entity::$listing[$atts['group']][$atts['attribute']]) && $val==='') ||
+				(isset(PL_Component_Entity::$listing[$atts['group']][$atts['attribute']]) && (PL_Component_Entity::$listing[$atts['group']][$atts['attribute']]===$val || (is_null($val) && PL_Component_Entity::$listing[$atts['group']][$atts['attribute']])))) {
+				return self::_do_templatetags(__CLASS__, array_keys(self::$singleton->subcodes), $content);
+			}
+			return '';
+		}
+		$content = PL_Component_Entity::listing_slideshow_sub_entity($atts, $content, $tag);
+		return self::wrap('listing_sub', $content);
 	}
 
 	/**

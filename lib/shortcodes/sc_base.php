@@ -6,8 +6,6 @@
 
 abstract class PL_SC_Base {
 
-	// subclass should use this to set its post type
-	protected $pl_post_type = '';
 	// subclass should use this to set its shortcode
 	protected $shortcode = '';
 	// subclass should use this for form/widget titles, etc
@@ -82,13 +80,14 @@ abstract class PL_SC_Base {
 		if (class_exists('PL_Shortcode_CPT')) {
 			$inst = new $class();
  			PL_Shortcode_CPT::register_shortcode($inst->shortcode, $inst);
+			add_shortcode($inst->shortcode, array($class, 'shortcode_handler'));
  			return $inst;
  		}
  		return null;
 	}
 
 	public function __construct() {
- 		add_action( 'template_redirect', array( $this, 'post_type_templating' ) );
+ 		add_action('template_redirect', array($this, 'post_type_templating'));
 	}
 
 	/**
@@ -110,7 +109,7 @@ abstract class PL_SC_Base {
 				'default_tpls'	=> $this->default_tpls,
 				'template'		=> $this->template,
 		);
-		
+
 	}
 
 
@@ -119,16 +118,24 @@ abstract class PL_SC_Base {
 	 *******************************************/
 
 
+
+	/**
+	 * Called when a shortcode is found in a post.
+	 * @param array $atts
+	 * @param string $content
+	 */
+	public static function shortcode_handler($atts, $content) {}
+
 	/**
 	 * Called when the post is being formatted for display by an embedded js tag for example
 	 * Make the shortcode and render it. The template will already have been rendered by the embedded js.
 	 * @param object $single	: post object
 	 * @param bool $skipdb
 	 */
-	public function post_type_templating( $single, $skipdb = false ) {
+	public function post_type_templating($single, $skipdb = false) {
 		global $post;
 
-		if( !empty($post) && $post->post_type == 'pl_general_widget') {
+		if(!empty($post) && $post->post_type == 'pl_general_widget') {
 			$sc_str = $post->post_content;
 			$sc_options = PL_Shortcode_CPT::load_shortcode($post->ID);
 			include(PL_VIEWS_DIR . 'shortcode-embedded.php');
@@ -159,19 +166,19 @@ abstract class PL_SC_Base {
 		}
 		return $this->default_tpls;
 	}
-	
+
 	/**
 	 * Return ID of built in template to use when none has been specified
 	 */
 	public function get_default_template_id() {
-		return $this->default_tpl_id;		
+		return $this->default_tpl_id;
 	}
 
 	/**
 	 * Return ID of built in template to use as a base for the template editor
 	 */
 	public function get_default_editor_id() {
-		return $this->editor_tpl_id;		
+		return $this->editor_tpl_id;
 	}
 
 	/**
@@ -321,7 +328,7 @@ abstract class PL_SC_Base {
 			. ')'
 			. '(\\]?)';							// 6: Optional second closing brocket for escaping shortcodes: [[tag]]
 
-		return preg_replace_callback( "/$pattern/s", array($class, 'templatetag_callback'), $content );
+		return preg_replace_callback("/$pattern/s", array($class, 'templatetag_callback'), $content);
 	}
 
 	protected static function form_item($item, $attr, $value = '', $parent = false, $echo = false) {
@@ -355,8 +362,8 @@ abstract class PL_SC_Base {
 				<?php
 				break;
 			case 'textarea':
-				$rows = ! empty ( $attributes ['rows'] ) ? $attributes ['rows'] : 2;
-				$cols = ! empty ( $attributes ['cols'] ) ? $attributes ['cols'] : 20;
+				$rows = !empty($attributes['rows']) ? $attributes['rows'] : 2;
+				$cols = !empty($attributes['cols']) ? $attributes['cols'] : 20;
 				?>
 				<textarea id="<?php echo $id ?>" <?php echo $class ?> name="<?php echo $name ?>"
 					rows="<?php echo $rows ?>" cols="<?php echo $cols ?>"><?php echo $value ?></textarea>
@@ -405,14 +412,14 @@ abstract class PL_SC_Base {
 		return ob_get_clean();
 	}
 
-	public static function wrap( $shortcode, $content = '' ) {
+	public static function wrap($shortcode, $content = '') {
 		ob_start();
-		do_action( $shortcode . '_pre_header' );
+		do_action($shortcode . '_pre_header');
 		echo $content;
-		do_action( $shortcode . '_post_footer' );
+		do_action($shortcode . '_post_footer');
 		return ob_get_clean();
 	}
-	
+
 	private static function _option_explode($option) {
 		// TODO: regex?
 		$options = array_map('trim', explode(',', $option));
@@ -424,4 +431,9 @@ abstract class PL_SC_Base {
 		}
 		return $vals;
 	}
+
+	protected static function js_filter_str($filter) {
+		return "listings.default_filters.push(" . trim( strip_tags( $filter ) ) . "); ";
+	}
+
 }

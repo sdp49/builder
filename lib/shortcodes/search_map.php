@@ -6,8 +6,6 @@
 
 class PL_Map_CPT extends PL_SC_Base {
 
-	protected $pl_post_type = 'pl_map';
-
 	protected $shortcode = 'search_map';
 
 	protected $title = 'Map';
@@ -51,6 +49,12 @@ For example, you can wrap the whole map with a <div> element to apply borders, e
 
 	public static function init() {
 		parent::_init(__CLASS__);
+	}
+
+	public static function shortcode_handler($atts, $content) {
+		$content = PL_Component_Entity::search_map_entity( $atts );
+
+		return self::wrap( 'search_map', $content );
 	}
 }
 

@@ -46,9 +46,9 @@ $template = array(
 
 'snippet_body' => '
 <div id="caption-[ls_index]" class="orbit-caption">
-	<p class="caption-title"><a href="[ls_url]">[ls_address]</a></p>
-	<p class="caption-subtitle"><span class="price">[ls_beds] beds</span>, <span class="baths">[ls_baths] baths</span></p>
-	<a class="button details" href="[ls_url]"><span></span></a>
+	<p class="caption-title"><a href="[url]">[address]</a></p>
+	<p class="caption-subtitle">[if group=\'cur_data\' attribute=\'beds\']<span class="price">[beds] beds</span> [/if][if group=\'cur_data\' attribute=\'baths\']<span class="baths">[baths] baths</span>[/if]</p>
+	<a class="button details" href="[url]"><span></span></a>
 </div>',
 
 'before_widget'	=> '<div class="pl-tpl-ls-responsive">

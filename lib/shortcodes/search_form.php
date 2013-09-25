@@ -6,8 +6,6 @@
 
 class PL_Form_CPT extends PL_SC_Base {
 
-	protected $pl_post_type = 'pl_form';
-
 	protected $shortcode = 'search_form';
 
 	protected $title = 'Search Form';
@@ -58,7 +56,7 @@ where:<br />
 <code>options</code> - (required if type is set to <code>select</code> or <code>multiselect</code>) Contains a comma separated list of options that should be displayed in the select list.
 If the text displayed in the list is to be different from the value for that item, then the list entry for that item would be of the form <code>5|Five</code>, for example <code>options=\'|Any,5,10,20\'</code> would create a list containing \'Any,5,10\' with corresponding values of \'null,5,10\'.<br />
 <code>value</code> - (required for type <code>radio</code>, optional for others) Contains the default value for the field.<br />
-<code>strict_match</code> - (optional, default true) Set to <code>false</code> to match similar values. 
+<code>strict_match</code> - (optional, default true) Set to <code>false</code> to match similar values.
 In the following example a search field is created for the custom attribute \'roofing\'. If the user entered a value of \'shingle\' the results would contain listings that had the word \'shingle\' in the roof attribute, for example \'cedar shingle\', \'Composite Shingles\', etc:<br />
 <code>[custom attribute=\'roofing\' strict_match=\'false\']</code><br />
 <code>css</code> - (optional) Use this if you wish to set one or more css class names to the element.'),
@@ -86,8 +84,8 @@ In the following example a search field is created for the custom attribute \'ro
 			'description' => 'You can use any valid HTML in this field and it will appear before the form. For example, you can wrap the whole form with a <div> element to apply borders, etc, by placing the opening <div> tag in this field and the closing </div> tag in the following field.'
 		),
 
-		'after_widget'	=> array( 
-			'type' => 'textarea', 
+		'after_widget'	=> array(
+			'type' => 'textarea',
 			'label' => 'Add content after the form',
 			'css' => 'mime_html',
 			'description' => 'You can use any valid HTML in this field and it will appear after the form.'
@@ -104,20 +102,26 @@ In the following example a search field is created for the custom attribute \'ro
 		self::$singleton = parent::_init(__CLASS__);
 	}
 
+	public static function shortcode_handler($atts, $content) {
+		$content = PL_Component_Entity::search_form_entity($atts);
+
+		return self::wrap('search_form', $content);
+	}
+
 	public static function do_templatetags($content, &$data) {
 		self::$form_data = &$data;
 		return self::_do_templatetags(__CLASS__, array_keys(self::$singleton->subcodes), $content);
 	}
 
 	public static function templatetag_callback($m) {
-		if ( $m[1] == '[' && $m[6] == ']' ) {
+		if ($m[1]=='[' && $m[6]==']') {
 			return substr($m[0], 1, -1);
 		}
 
 		$tag = $m[2];
-		$attr = shortcode_parse_atts( $m[3] );
+		$attr = shortcode_parse_atts($m[3]);
 
-		if ( isset( self::$form_data[$tag] ) ) {
+		if (isset(self::$form_data[$tag])) {
 			// use form data from partial to construct
 			return $m[1] . self::$form_data[$tag] . $m[6];
 		}
@@ -127,7 +131,7 @@ In the following example a search field is created for the custom attribute \'ro
 			if (!empty($attr['strict_match']) && $attr['strict_match']=='false')  {
 				$field .= self::form_item($attr['attribute'].'_match', array('type'=>'hidden'), 'like', $attr['group']);
 			}
-			return self::wrap( 'search_form_sub', $field );
+			return self::wrap('search_form_sub', $field);
 		}
 		else {
 			return $m[0];

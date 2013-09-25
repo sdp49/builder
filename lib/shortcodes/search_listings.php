@@ -5,8 +5,6 @@
  */
 class PL_Search_Listing_CPT extends PL_SC_Base {
 
-	protected $pl_post_type = 'pl_search_listings';
-
 	protected $shortcode = 'search_listings';
 
 	protected $title = 'Search Listings';
@@ -24,20 +22,20 @@ class PL_Search_Listing_CPT extends PL_SC_Base {
 		'width'				=> array( 'type' => 'int', 'label' => 'Width', 'default' => 250, 'description' => '(px)' ),
 		'height'			=> array( 'type' => 'int', 'label' => 'Height', 'default' => 250, 'description' => '(px)' ),
 		'widget_class'	=> array( 'type' => 'text', 'label' => 'CSS Class', 'default' => '', 'description' => '(optional)' ),
-		'sort_by_options'	=> array( 'type' => 'multiselect', 'label' => 'Items in "Sort By" list', 
+		'sort_by_options'	=> array( 'type' => 'multiselect', 'label' => 'Items in "Sort By" list',
 			'options'	=> array(	// options we always want to show even if they are not part of the filter set
-				'location.address'	=> 'Address', 
+				'location.address'	=> 'Address',
 				'cur_data.price'	=> 'Price',
 				'cur_data.sqft'		=> 'Square Feet',
 				'cur_data.lt_sz'	=> 'Lot Size',
 				'compound_type'		=> 'Listing Type',
 				'cur_data.avail_on'	=> 'Available On',
 			),
-			'default'	=> array('cur_data.price','cur_data.beds','cur_data.baths','cur_data.sqft','location.locality','location.postal'), 
+			'default'	=> array('cur_data.price','cur_data.beds','cur_data.baths','cur_data.sqft','location.locality','location.postal'),
 		),
 		'sort_by'			=> array( 'type' => 'select', 'label' => 'Default sort by', 'options' => array(), 'default' => 'cur_data.price' ),
 		'sort_type'			=> array( 'type' => 'select', 'label' => 'Default sort direction', 'options' => array('asc'=>'Ascending', 'desc'=>'Descending'), 'default' => 'desc' ),
-		// TODO: sync up with js list			
+		// TODO: sync up with js list
 		'query_limit'		=> array( 'type' => 'select', 'label' => 'Default number of results', 'options' => array('10'=>'10', '25'=>'25', '25'=>'25', '50'=>'50', '100'=>'100', '200'=>'200', '-1'=>'All'), 'default' => '10' ),
 	);
 
@@ -106,7 +104,7 @@ To add some text to your listings:<br />
 			'type' => 'textarea',
 			'label' => 'CSS',
 			'css' => 'mime_css',
-			'description' => 'You can use any valid CSS in this field to style the listings, which will also inherit the CSS from the theme.' 
+			'description' => 'You can use any valid CSS in this field to style the listings, which will also inherit the CSS from the theme.'
 		),
 
 		'before_widget'	=> array(
@@ -135,7 +133,7 @@ For example, you might want to include the [compliance] shortcode.'
 	protected static $sl_filter_options = array();
 
 	private static $singleton = null;
-	
+
 
 
 
@@ -168,8 +166,8 @@ For example, you might want to include the [compliance] shortcode.'
 				self::$sl_sort_list[$key] = $args['label'];
 			}
 		}
-		$this->options['sort_by_options']['options'] = self::$sl_sort_list;		
-		$this->options['sort_by']['options'] = self::$sl_sort_list;		
+		$this->options['sort_by_options']['options'] = self::$sl_sort_list;
+		$this->options['sort_by']['options'] = self::$sl_sort_list;
 		return $this->options;
 	}
 
@@ -182,24 +180,49 @@ For example, you might want to include the [compliance] shortcode.'
 		}
 		return self::$sl_filter_options;
 	}
-	
+
+	/**
+	 * Called when a shortcode is found in a post.
+	 * @param array $atts
+	 * @param string $content
+	 */
+	public static function shortcode_handler($atts, $content) {
+		add_filter('pl_filter_wrap_filter', array(__CLASS__, 'js_filter_str'));
+		$filters = '';
+
+		// call do_shortcode for all pl_filter shortcodes
+		// Note: don't leave whitespace or other non-valuable symbols
+		if(!empty($content)) {
+			$filters = do_shortcode(strip_tags($content));
+		}
+
+		$filters = str_replace('&nbsp;', '', $filters);
+
+		// Handle attributes using shortcode_atts...
+		// These attributes will hand the look and feel of the listing form container, as
+		// the context func applies to each individual listing.
+		$content = PL_Component_Entity::search_listings_entity($atts, $filters);
+
+		return self::wrap('search_listings', $content);
+	}
+
 	public static function do_templatetags($content, $listing_data) {
 		PL_Component_Entity::$listing = $listing_data;
 		return self::_do_templatetags(__CLASS__, array_keys(self::$singleton->subcodes), $content);
 	}
 
 	public static function templatetag_callback($m) {
-		if ( $m[1] == '[' && $m[6] == ']' ) {
+		if ($m[1]=='[' && $m[6]==']') {
 			return substr($m[0], 1, -1);
 		}
-		
+
 		$tag = $m[2];
 		$atts = shortcode_parse_atts($m[3]);
 		$content = $m[5];
-		
+
 		if ($tag == 'if') {
 			$val = isset($atts['value']) ? $atts['value'] : null;
-			if (empty($atts['group'])) { 
+			if (empty($atts['group'])) {
 				if ((!isset(PL_Component_Entity::$listing[$atts['attribute']]) && $val==='') ||
 					(isset(PL_Component_Entity::$listing[$atts['attribute']]) && (PL_Component_Entity::$listing[$atts['attribute']]===$val || (is_null($val) && PL_Component_Entity::$listing[$atts['attribute']])))) {
 					return self::_do_templatetags(__CLASS__, array_keys(self::$singleton->subcodes), $content);
@@ -211,8 +234,8 @@ For example, you might want to include the [compliance] shortcode.'
 			}
 			return '';
 		}
-		$content = PL_Component_Entity::listing_sub_entity( $atts, $content, $tag );
-		return self::wrap( 'listing_sub', $content );
+		$content = PL_Component_Entity::listing_sub_entity($atts, $content, $tag);
+		return self::wrap('listing_sub', $content);
 	}
 }
 

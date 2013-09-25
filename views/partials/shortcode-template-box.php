@@ -95,6 +95,7 @@ $listing_attributes = PL_Shortcode_CPT::get_listing_attributes();
 											case 'search_listings':
 											case 'static_listings':
 											case 'featured_listings':
+											case 'listing_slideshow':
 												$atts['help'] = $atts['help'] . '<br />Click <a href="#" class="show_listing_attributes">here</a> to see a list of available listing attributes.';
 										}
 									}
