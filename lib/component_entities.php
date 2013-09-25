@@ -602,6 +602,11 @@ To add some text to your listings:<br />
 						'as_html' => true,
 						'html' => array('alt' => empty($listing_list['location']['full_address']) ? $listing_list['location']['address'] : $listing_list['location']['full_address'], 'itemprop' => 'image')));
 				break;
+			case 'image_url':
+				$index = empty($atts['index']) ? 0 : (int)$atts['index'];
+				$placeholder = empty($atts['placeholder']) ? PLS_IMG_URL . "/null/listing-1200x720.jpg" : $atts['placeholder'];
+				$val = empty($listing_list['images'][$index]['url']) ? $placeholder : $listing_list['images'][$index]['url'];
+				break;
 			case 'gallery':
 				ob_start();
 				?>
