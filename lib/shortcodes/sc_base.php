@@ -135,7 +135,7 @@ abstract class PL_SC_Base {
 	public function post_type_templating($single, $skipdb = false) {
 		global $post;
 
-		if(!empty($post) && $post->post_type == 'pl_general_widget') {
+		if (!empty($post) && $post->post_type == 'pl_general_widget') {
 			$sc_str = $post->post_content;
 			$sc_options = PL_Shortcode_CPT::load_shortcode($post->ID);
 			include(PL_VIEWS_DIR . 'shortcode-embedded.php');
@@ -150,7 +150,7 @@ abstract class PL_SC_Base {
 		if (empty($this->default_tpls) || $get_title) {
 			if (file_exists($dir = PL_VIEWS_SHORT_DIR . $this->shortcode)) {
 				foreach (new DirectoryIterator($dir) as $fileInfo) {
-					if($fileInfo->isDot()) continue;
+					if ($fileInfo->isDot()) continue;
 					$matches = array();
 					if (preg_match('/^(.+)\.php/', $fileInfo->getFilename(), $matches)) {
 						$template = array();
@@ -433,7 +433,7 @@ abstract class PL_SC_Base {
 	}
 
 	protected static function js_filter_str($filter) {
-		return "listings.default_filters.push(" . trim( strip_tags( $filter ) ) . "); ";
+		return "listings.default_filters.push(" . trim(strip_tags($filter)) . "); ";
 	}
 
 }

@@ -192,7 +192,7 @@ For example, you might want to include the [compliance] shortcode.'
 
 		// call do_shortcode for all pl_filter shortcodes
 		// Note: don't leave whitespace or other non-valuable symbols
-		if(!empty($content)) {
+		if (!empty($content)) {
 			$filters = do_shortcode(strip_tags($content));
 		}
 

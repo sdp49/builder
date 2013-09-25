@@ -56,14 +56,14 @@ class PL_Static_Listing_CPT extends PL_Search_Listing_CPT {
 
 		// call do_shortcode for all pl_filter shortcodes
 		// Note: don't leave whitespace or other non-valuable symbols
-		if( ! empty( $content ) ) {
-			$filters = do_shortcode( strip_tags( $content ) );
+		if (!empty($content)) {
+			$filters = do_shortcode(strip_tags($content));
 		}
 		$filters = str_replace('&nbsp;', '', $filters);
 
-		$content = PL_Component_Entity::static_listings_entity( $atts, $filters );
+		$content = PL_Component_Entity::static_listings_entity($atts, $filters);
 
-		return self::wrap( 'static_listings', $content );
+		return self::wrap('static_listings', $content);
 	}
 }
 

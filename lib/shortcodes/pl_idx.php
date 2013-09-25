@@ -115,7 +115,7 @@ For example, you might want to include the [compliance] shortcode.'
 
 		add_filter('pl_filter_wrap_filter', array(__CLASS__, 'js_filter_str'));
 		$filters = '';
-		if(!empty($content)) {
+		if (!empty($content)) {
 			$filters = do_shortcode(strip_tags($content));
 			$filters = str_replace('&nbsp;', '', $filters);
 		}
@@ -159,7 +159,7 @@ For example, you might want to include the [compliance] shortcode.'
 	}
 
 	public static function pl_idx_html_callback($html, $form_data, $request) {
-		wp_enqueue_style('jquery-ui', trailingslashit( PLS_JS_URL ) . 'libs/jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');
+		wp_enqueue_style('jquery-ui', trailingslashit(PLS_JS_URL) . 'libs/jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');
 		wp_enqueue_script('jquery');
 		wp_enqueue_script('jquery-ui-core');
 		wp_enqueue_script('jquery-ui-tabs');
@@ -179,7 +179,7 @@ For example, you might want to include the [compliance] shortcode.'
 	}
 
 	public static function templatetag_callback($m) {
-		if ( $m[1] == '[' && $m[6] == ']' ) {
+		if ($m[1]=='[' && $m[6]==']') {
 			return substr($m[0], 1, -1);
 		}
 

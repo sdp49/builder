@@ -9,15 +9,13 @@ PL_Component_Entity::init();
 
 class PL_Component_Entity {
 
-	public static $defaults = array( 'twentyten', 'twentyeleven' );
-
 	public static $listing;
 
 	public static $form_html;
 
 	public static $neighborhood_term;
 
-	public static $slideshow_caption_index;
+	public static $listing_index;
 
 	public static $template_tags = array();
 
@@ -89,30 +87,30 @@ To add some text to your listings:<br />
 		// add formatting for individual listings here because they are fetched using ajax
 		$search_listings_templates = PL_Shortcode_CPT::template_list('search_listings', true);
 		foreach ($search_listings_templates as $id => $attr) {
-			add_filter( 'pls_listings_list_ajax_item_html_search_listings_' . $id, array(__CLASS__,'pls_listings_list_ajax_item_html_callback'), 10, 3 );
+			add_filter('pls_listings_list_ajax_item_html_search_listings_' . $id, array(__CLASS__,'pls_listings_list_ajax_item_html_callback'), 10, 3);
 		}
 		if (!has_filter('pls_listings_search_listings_shortcode')) {
-			add_filter( 'pls_listings_list_ajax_item_html_search_listings_shortcode', array(__CLASS__,'pls_listings_list_ajax_item_html_callback'), 10, 3 );
+			add_filter('pls_listings_list_ajax_item_html_search_listings_shortcode', array(__CLASS__,'pls_listings_list_ajax_item_html_callback'), 10, 3);
 		}
 
 		// add formatting for individual listings here because they are fetched using ajax
 		$static_listings_templates = PL_Shortcode_CPT::template_list('static_listings', true);
 		foreach ($static_listings_templates as $id => $attr) {
-			add_filter( 'pls_listings_list_ajax_item_html_static_listings_' . $id, array(__CLASS__, 'pls_listings_list_ajax_item_html_callback'), 10, 3 );
+			add_filter('pls_listings_list_ajax_item_html_static_listings_' . $id, array(__CLASS__, 'pls_listings_list_ajax_item_html_callback'), 10, 3);
 		}
 		if (!has_filter('pls_listings_static_listings_shortcode')) {
-			add_filter( 'pls_listings_list_ajax_item_html_static_listings_shortcode', array(__CLASS__, 'pls_listings_list_ajax_item_html_callback'), 10, 3 );
+			add_filter('pls_listings_list_ajax_item_html_static_listings_shortcode', array(__CLASS__, 'pls_listings_list_ajax_item_html_callback'), 10, 3);
 		}
 
 		$neighborhood_templates = PL_Shortcode_CPT::template_list('pl_neighborhood', true);
 		foreach ($neighborhood_templates as $id => $attr) {
-			add_filter( 'pls_neighborhood_html_' . $id, array(__CLASS__, 'neighborhood_templates'), 10, 4 );
+			add_filter('pls_neighborhood_html_' . $id, array(__CLASS__, 'neighborhood_templates'), 10, 4);
 		}
 
 		add_action('wp_footer', array(__CLASS__, 'add_js'));
 	}
 
-	public static function featured_listings_entity( $atts, $filters = '' ) {
+	public static function featured_listings_entity( $atts, $filters = '') {
 		if (!empty($atts['id'])) {
 			// if we are a custom shortcode fetch the record so we can display the correct options
 			$options = PL_Shortcode_CPT::get_shortcode_options('featured_listings', $atts['id']);
@@ -141,7 +139,7 @@ To add some text to your listings:<br />
 	/**
 	 * Generate static_listings shortcode output
 	 */
-	public static function static_listings_entity( $atts, $filters = '' ) {
+	public static function static_listings_entity($atts, $filters = '') {
 		if (empty($atts['id'])) {
 			// default filter options
 			$filters_string = '';
@@ -150,7 +148,7 @@ To add some text to your listings:<br />
 			// if we are a custom shortcode fetch the record so we can display the correct filters
 			// for the js
 			$listing_filters = PL_Shortcode_CPT::get_shortcode_filters('static_listings', $atts['id']);
-			$filters_string = self::convert_filters( $listing_filters );
+			$filters_string = self::convert_filters($listing_filters);
 			// and template and other attributes
 			$options = PL_Shortcode_CPT::get_shortcode_options('static_listings', $atts['id']);
 			if ($options!==false) {
@@ -209,7 +207,7 @@ To add some text to your listings:<br />
 	/**
 	 * Generate search_listings shortcode output
 	 */
-	public static function search_listings_entity( $atts, $filters = '' ) {
+	public static function search_listings_entity($atts, $filters = '') {
 		if (empty($atts['id'])) {
 			// default filter options
 			$filters_string = '';
@@ -218,7 +216,7 @@ To add some text to your listings:<br />
 			// if we are a custom shortcode fetch the record so we can display the correct filters
 			// for the js
 			$listing_filters = PL_Shortcode_CPT::get_shortcode_filters('search_listings', $atts['id']);
-			$filters_string = self::convert_filters( $listing_filters );
+			$filters_string = self::convert_filters($listing_filters);
 			// and template and other attributes
 			$options = PL_Shortcode_CPT::get_shortcode_options('search_listings', $atts['id']);
 			if ($options!==false) {
@@ -275,7 +273,7 @@ To add some text to your listings:<br />
 	/**
 	 * Generate search_map shortcode output
 	 */
-	public static function search_map_entity( $atts ) {
+	public static function search_map_entity($atts) {
 
 		if (!empty($atts['id'])) {
 			// get template and other attributes
@@ -317,7 +315,7 @@ To add some text to your listings:<br />
 	/**
 	 * Generate listing_slideshow shortcode output
 	 */
-	public static function listing_slideshow( $atts ) {
+	public static function listing_slideshow($atts) {
 
 		// fix attribute name case so js slideshow gets correct value names
 		$sc_attrs = PL_Shortcode_CPT::get_shortcode_attrs('listing_slideshow');
@@ -359,8 +357,8 @@ To add some text to your listings:<br />
 		$atts['context'] = empty($atts['context']) ? 'shortcode' : $atts['context'];
 
 		if (!has_filter('pls_slideshow_html_' . $atts['context'])) {
-			add_filter( 'pls_slideshow_html_' . $atts['context'], array(__CLASS__,'pls_slideshow_html_shortcode_callback'), 10, 5 );
-			add_filter( 'pls_slideshow_single_caption_' . $atts['context'], array(__CLASS__,'pls_slideshow_single_caption_callback'), 10, 5 );
+			add_filter('pls_slideshow_html_' . $atts['context'], array(__CLASS__,'pls_slideshow_html_shortcode_callback'), 10, 5);
+			add_filter('pls_slideshow_single_caption_' . $atts['context'], array(__CLASS__,'pls_slideshow_single_caption_callback'), 10, 5);
 		}
 
 		return PLS_Slideshow::slideshow($atts);
@@ -369,71 +367,71 @@ To add some text to your listings:<br />
 	/**
 	 * Fetch fields for formatting individual items in the listing_slideshow shortcode output
 	 */
-	public static function listing_slideshow_sub_entity( $atts, $content, $tag ) {
-		if( empty( self::$listing ) ) {
+	public static function listing_slideshow_sub_entity($atts, $content, $tag) {
+		if (empty(self::$listing)) {
 			return '';
 		}
 
 		$listing = self::$listing;
 
-		if( $tag === 'ls_index' ) {
-			return self::$slideshow_caption_index;
-		} else if( $tag === 'ls_url' ) {
+		if ($tag === 'ls_index') {
+			return self::$listing_index;
+		} else if ($tag === 'ls_url') {
 			return $listing['cur_data']['url'];
 
-		} else if( $tag === 'ls_address' ) {
+		} else if ($tag === 'ls_address') {
 			return $listing['location']['address'];
 
-		} else if( $tag === 'ls_beds' ) {
+		} else if ($tag === 'ls_beds') {
 			return $listing['cur_data']['beds'];
 
-		} else if( $tag === 'ls_baths' ) {
+		} else if ($tag === 'ls_baths') {
 			return $listing['cur_data']['baths'];
 		}
 
 		return self::listing_sub_entity($atts, $content, $tag);
 	}
 
-	public static function neighborhood_sub_entity( $atts, $content, $tag ) {
+	public static function neighborhood_sub_entity($atts, $content, $tag) {
 		$val = '';
 
 		// blank term - shouldn't happen
-		if( empty( self::$neighborhood_term ) ) {
+		if (empty(self::$neighborhood_term)) {
 			return '';
 		}
 
 		$term = self::$neighborhood_term;
 		$taxonomy_name = $term->taxonomy;
 
-		if( $tag === 'nb_title' ) {
-			$val = apply_filters( 'pls_neighborhood_title', $term->name );
-		} else if( $tag === 'nb_description' ) {
-			$val = apply_filters( 'pls_neighborhood_description', $term->description );
-		} else if( $tag === 'nb_featured_image' ) {
+		if ($tag === 'nb_title') {
+			$val = apply_filters('pls_neighborhood_title', $term->name);
+		} else if ($tag === 'nb_description') {
+			$val = apply_filters('pls_neighborhood_description', $term->description);
+		} else if ($tag === 'nb_featured_image') {
 			// take the first off the listing, otherwise - default
-			$taxonomy_maps_name = self::translate_taxonomy_type( $term->taxonomy );
+			$taxonomy_maps_name = self::translate_taxonomy_type($term->taxonomy);
 			$term_name = $term->name;
 
 			$api_response = PL_Listing_Helper::results(array('location[' . $taxonomy_maps_name . ']' => $term_name, 'limit' => 1));
 
 			$featured_image_src = PLS_IMG_URL . '/null/listing-300x180.jpg';
 
-			if( ! empty( $api_response['listings'] ) &&
-				! empty( $api_response['listings'][0] ) &&
-				! empty( $api_response['listings'][0]['images'] )
+			if (! empty($api_response['listings']) &&
+				! empty($api_response['listings'][0]) &&
+				! empty($api_response['listings'][0]['images'])
 			) {
 				$featured_image_src = $api_response['listings'][0]['images'][0]['url'];
 			}
 
 			$val = "<img src='$featured_image_src'></img>";
-		} else if( $tag === 'nb_link' ) {
-			$term_link = get_term_link( $term );
-			if( ! is_wp_error( $term_link ) ) {
+		} else if ($tag === 'nb_link') {
+			$term_link = get_term_link($term);
+			if (! is_wp_error($term_link)) {
 				$val = $term_link;
 			}
-		} else if( $tag === 'nb_map' ) {
+		} else if ($tag === 'nb_map') {
 			ob_start();
-			$taxonomy_maps_name = self::translate_taxonomy_type( $taxonomy_name );
+			$taxonomy_maps_name = self::translate_taxonomy_type($taxonomy_name);
 
 			?>
 			<script type="text/javascript">
@@ -441,7 +439,7 @@ To add some text to your listings:<br />
 				var bootloader;
 			}
 
-			jQuery(document).ready(function( $ ) {
+			jQuery(document).ready(function($) {
 				var map = new Map();
 				var listings = new Listings({
 					map: map
@@ -473,7 +471,7 @@ To add some text to your listings:<br />
 			});
 			</script>
 			<?php
-			echo PLS_Map::polygon( null, array(
+			echo PLS_Map::polygon(null, array(
 					'width' => 629,
 					'height' => 303,
 					'zoom' => 16,
@@ -492,12 +490,12 @@ To add some text to your listings:<br />
 	 * Helper function for formatting individual listing fields.
 	 * self::$listing should contain the listing values.
 	 */
-	public static function listing_sub_entity( $atts, $content, $tag ) {
+	public static function listing_sub_entity($atts, $content, $tag) {
 		$listing_list = array();
 
-		if( !empty( self::$listing ) ) {
+		if (!empty(self::$listing)) {
 			$listing_list = self::$listing;
-		} else if ( !empty( PL_Shortcodes::$listing ) ) {
+		} else if (!empty(PL_Shortcodes::$listing)) {
 			$listing_list = PL_Shortcodes::$listing;
 		} else {
 			return;
@@ -641,7 +639,7 @@ To add some text to your listings:<br />
 		return $val;
 	}
 
-	public static function pl_neighborhood_entity( $atts ) {
+	public static function pl_neighborhood_entity($atts) {
 		ob_start();
 		$taxonomy_type = 'state';
 		$taxonomy = null;
@@ -651,21 +649,21 @@ To add some text to your listings:<br />
 
 		// Type of neighborhood is set as radio_type from the radio box in the admin
 		// get key and value to test for neighborhood object
-		if( ! isset( $atts['radio_type'] ) ) {
+		if (! isset($atts['radio_type'])) {
 			return;
 		}
 		$key = $atts['radio_type'];
-		if( ! isset( $atts['nb_select_' . $key] ) ) {
+		if (! isset($atts['nb_select_' . $key])) {
 			return;
 		}
 		$value = $atts['nb_select_' . $key];
 
 		// API searches for neighborhood by slug
-		if( in_array( $key, array( 'state', 'city', 'neighborhood', 'zip', 'street' ) ) ) {
+		if (in_array($key, array('state', 'city', 'neighborhood', 'zip', 'street'))) {
 			$term = get_term_by('id', $value, $key);
-			if( ! empty( $term ) ) {
+			if (! empty($term)) {
 				$taxonomy_type = $key;
-				$taxonomy = get_taxonomy( $key );
+				$taxonomy = get_taxonomy($key);
 				$atts[$key] = $term->slug;
 				$term_slug = $term->slug;
 				$term_name = $term->name;
@@ -673,15 +671,15 @@ To add some text to your listings:<br />
 			}
 		}
 
-		if( empty( $taxonomy ) ) {
+		if (empty($taxonomy)) {
 			return;
 		}
 
-		$taxonomy_maps_type = self::translate_taxonomy_type( $taxonomy_type );
+		$taxonomy_maps_type = self::translate_taxonomy_type($taxonomy_type);
 
 		$args = wp_parse_args($atts, array('state' => false, 'city' => false,
 			'neighborhood' => false, 'zip' => false, 'street' => false, 'image_limit' => 20,
-			'width' => 400, 'height' => 400, 'zoom' => 14, 'context' => false, 'context_var' => '' ));
+			'width' => 400, 'height' => 400, 'zoom' => 14, 'context' => false, 'context_var' => ''));
 
 		?>
 		<script type="text/javascript">
@@ -689,8 +687,8 @@ To add some text to your listings:<br />
 				var bootloader;
 			}
 
-			jQuery(document).ready(function( $ ) {
-				var taxonomy = jQuery.parseJSON(' <?php echo json_encode( $taxonomy ) ?> ');
+			jQuery(document).ready(function($) {
+				var taxonomy = jQuery.parseJSON(' <?php echo json_encode($taxonomy) ?> ');
 				var map = new Map();
 				var listings = new Listings({
 					map: map
@@ -723,7 +721,7 @@ To add some text to your listings:<br />
 		</script>
 		<?php
 
-		echo PLS_Map::polygon( null, array(
+		echo PLS_Map::polygon(null, array(
 					'width' => 629,
 					'height' => 303,
 					'zoom' => 16,
@@ -734,9 +732,9 @@ To add some text to your listings:<br />
 				);
 		$neighborhood_html = ob_get_clean();
 
-		$neighborhood_html = apply_filters( pls_get_merged_strings(
-						array( 'pls_neighborhood_html', $args['context'] ), '_', 'pre', false ),
-						$neighborhood_html, $neighborhood_term, $args['context'], $args['context_var'] );
+		$neighborhood_html = apply_filters(pls_get_merged_strings(
+						array('pls_neighborhood_html', $args['context']), '_', 'pre', false),
+						$neighborhood_html, $neighborhood_term, $args['context'], $args['context_var']);
 
 		return $neighborhood_html;
 	}
@@ -744,7 +742,7 @@ To add some text to your listings:<br />
 	/**
 	 * Generate output for search_form shortcode
 	 */
-	public static function search_form_entity( $atts ) {
+	public static function search_form_entity($atts) {
 
 		if (!empty($atts['id'])) {
 			// get template and other attributes
@@ -768,19 +766,19 @@ To add some text to your listings:<br />
 		// Setup form action
 		$form_data = array('action'=>'');
 		// TODO deprecate this attr
-		if( !empty($atts['form_action_url']) ) {
+		if (!empty($atts['form_action_url'])) {
 			$form_data['action'] = $atts['form_action_url'];
 		}
 		// use this one
-		if( !empty($atts['formaction']) ) {
+		if (!empty($atts['formaction'])) {
 			$form_data['action'] = $atts['formaction'];
 		}
 		$atts['ajax'] = empty($form_data['action']) ? true : false;
 		$atts['form_data'] = (object)$form_data;
 
 		if (!has_filter('pls_listings_search_form_outer_' . $atts['context'])) {
-			add_filter( 'pls_listings_search_form_outer_' . $atts['context'], array(__CLASS__,'pls_listings_search_form_outer_callback'), 10, 7 );
-			add_filter( 'pls_listings_search_form_inner_' . $atts['context'], array(__CLASS__,'pls_listings_search_form_inner_callback'), 10, 5 );
+			add_filter('pls_listings_search_form_outer_' . $atts['context'], array(__CLASS__,'pls_listings_search_form_outer_callback'), 10, 7);
+			add_filter('pls_listings_search_form_inner_' . $atts['context'], array(__CLASS__,'pls_listings_search_form_inner_callback'), 10, 5);
 		}
 
 		return PLS_Partials_Listing_Search_Form::init($atts);
@@ -790,31 +788,31 @@ To add some text to your listings:<br />
 	 * Helpers
 	 */
 
-	private static function get_property_ids( $featured_listing_id ) {
-		// if( ! is_int( $featured_listing_id ) ) { }
-		$values = get_post_custom( $featured_listing_id );
+	private static function get_property_ids($featured_listing_id) {
+		// if ( ! is_int( $featured_listing_id ) ) { }
+		$values = get_post_custom($featured_listing_id);
 
-		$property_ids = isset( $values['keatingbrokerage_meta'] ) ? @unserialize($values['keatingbrokerage_meta'][0]) : '';
-		$pl_featured_listing_meta = isset( $values['pl_featured_listing_meta'] ) ? @json_decode($values['pl_featured_listing_meta'][0], true) : '';
+		$property_ids = isset($values['keatingbrokerage_meta']) ? @unserialize($values['keatingbrokerage_meta'][0]) : '';
+		$pl_featured_listing_meta = isset($values['pl_featured_listing_meta']) ? @json_decode($values['pl_featured_listing_meta'][0], true) : '';
 		// $pl_featured_meta_value = empty( $pl_featured_listing_meta ) ? array('listings' => array()) : $pl_featured_listing_meta['featured-listings-type'];
 		// $pl_featured_meta_value = empty( $pl_featured_listing_meta ) ? array('listings' => array()) : @json_decode($pl_featured_listing_meta[0], true);
 
-		if( empty( $pl_featured_listing_meta ) ) {
-			$pl_featured_listing_meta = isset( $values['pl_featured_listing_meta'] ) ? @unserialize($values['pl_featured_listing_meta'][0]) : '';
-			if( empty( $pl_featured_listing_meta ) ) {
-				return array( );
+		if (empty($pl_featured_listing_meta)) {
+			$pl_featured_listing_meta = isset($values['pl_featured_listing_meta']) ? @unserialize($values['pl_featured_listing_meta'][0]) : '';
+			if (empty($pl_featured_listing_meta)) {
+				return array();
 			}
 		}
 
 		// remove the top array key if any
-		if( isset( $pl_featured_listing_meta['featured-listings-type'] ) ) {
+		if (isset($pl_featured_listing_meta['featured-listings-type'])) {
 			$pl_featured_listing_meta = $pl_featured_listing_meta['featured-listings-type'];
 		}
 
 		return $pl_featured_listing_meta;
 	}
 
-	private static function add_to_group( $shortcode, $atts, $filters = '') {
+	private static function add_to_group($shortcode, $atts, $filters = '') {
 
 		if (self::$current_shortcode_group === '') {
 			self::$current_shortcode_group = count(self::$shortcode_groups);
@@ -840,9 +838,9 @@ To add some text to your listings:<br />
 		}
 	}
 
-	public static function partial_one( $listing, $featured_listing_id ) {
-		$property_ids = PL_Component_Entity::get_property_ids( $featured_listing_id );
-		$property_ids = array_flip( $property_ids );
+	public static function partial_one($listing, $featured_listing_id) {
+		$property_ids = PL_Component_Entity::get_property_ids($featured_listing_id);
+		$property_ids = array_flip($property_ids);
 
 		$api_response = PL_Listing_Helper::details(array('property_ids' => $property_ids));
 		//response is expected to be of fortmat api response
@@ -855,39 +853,39 @@ To add some text to your listings:<br />
 		echo "property_ids: ['" . implode("','", $property_ids) . "'],";
 	}
 
-	private static function convert_filters( $filters ) {
+	private static function convert_filters($filters) {
 		$av_filters = PL_Shortcode_CPT::get_listing_filters();
 		ob_start();
-		if( is_array( $filters ) ) {
-			foreach( $filters as $key1 => $value1 ) {
-				if( is_array( $value1 ) ) {
+		if (is_array($filters)) {
+			foreach($filters as $key1 => $value1) {
+				if (is_array($value1)) {
 					// we store custom data as custom but it uses filter name metadata
 					$key = $key1 == 'custom' ? 'metadata' : $key1;
 					if (array_diff_key($value1,array_keys(array_keys($value1)))) {
-						foreach( $value1 as $key2 => $value2 ) {
+						foreach($value1 as $key2 => $value2) {
 							$skey = count($value2) > 1 ? '[]' :'';
-							foreach( $value2 as $value3 ) {
-								echo 'listings.default_filters.push( { "name": "' . $key .  '['.$key2.']'.$skey . '", "value" : "'. $value3 . '" } );';
+							foreach($value2 as $value3) {
+								echo 'listings.default_filters.push({ "name": "' . $key .  '['.$key2.']'.$skey . '", "value" : "'. $value3 . '" });';
 							}
 							if ($skey) {
-								echo 'listings.default_filters.push( { "name": "' . $key . '['.$key2.'_match]", "value" : "in" } );';
+								echo 'listings.default_filters.push({ "name": "' . $key . '['.$key2.'_match]", "value" : "in" });';
 							}
 							elseif (!empty($av_filters[$key1.'.'.$key2]['type']) && ($av_filters[$key.'.'.$key2]['type']=='text'|| $av_filters[$key.'.'.$key2]['type']=='textarea')) {
-								echo 'listings.default_filters.push( { "name": "' . $key . '['.$key2.'_match]", "value" : "like" } );';
+								echo 'listings.default_filters.push({ "name": "' . $key . '['.$key2.'_match]", "value" : "like" });';
 							}
 						}
 					}
 					else {
 						// list
 						$skey = count($value1) > 1 ? '[]' :'';
-						foreach( $value1 as $value2 ) {
-							echo 'listings.default_filters.push( { "name": "' . $key .  $skey . '", "value" : "'. $value2 . '" } );';
+						foreach($value1 as $value2) {
+							echo 'listings.default_filters.push({ "name": "' . $key .  $skey . '", "value" : "'. $value2 . '" });';
 						}
 						if ($skey) {
-							echo 'listings.default_filters.push( { "name": "' . $key . '_match", "value" : "in" } );';
+							echo 'listings.default_filters.push({ "name": "' . $key . '_match", "value" : "in" });';
 						}
 						elseif (!empty($av_filters[$key]['type']) && ($av_filters[$key]['type']=='text' || $av_filters[$key]['type']=='textarea')) {
-							echo 'listings.default_filters.push( { "name": "' . $key . '_match", "value" : "like" } );';
+							echo 'listings.default_filters.push({ "name": "' . $key . '_match", "value" : "like" });';
 						}
 					}
 				}
@@ -905,7 +903,7 @@ To add some text to your listings:<br />
 	/**
 	 * Callback to wrap formatting around search_map
 	 */
-	public static function pls_search_map_callback( $return, $listings, $request_params ) {
+	public static function pls_search_map_callback($return, $listings, $request_params) {
 		// add template formatting
 		$header = $footer = '';
 		$template_id = substr(current_filter(), strlen('pls_search_map_'));
@@ -926,7 +924,7 @@ To add some text to your listings:<br />
 	/**
 	 * Wrap formatting around list of listings (featured_listings, search_listings, static_listings)
 	 */
-	public static function pls_listings_callback( $return, $listings_raw, $listings_html, $request_params, $context_var ) {
+	public static function pls_listings_callback($return, $listings_raw, $listings_html, $request_params, $context_var) {
 		// add template formatting
 		$header = $footer = '';
 		$context = explode('_', substr(current_filter(), strlen('pls_listings_')), 3);
@@ -949,14 +947,14 @@ To add some text to your listings:<br />
 	/**
 	 * Format single featured listing
 	 */
-	public static function pls_listing_callback( $item_html, $listing, $request_params, $context_var ) {
+	public static function pls_listing_callback($item_html, $listing, $request_params, $context_var) {
 		// get the template and shortcode from the filter prefix
 		// TODO: use params instead
 		$context = explode('_', substr(current_filter(), strlen('pls_listing_')), 3);
 		$shortcode = $context[0].'_'.$context[1];
 		$template_id = $context[2];
 
-		$snippet_body = PL_Shortcodes::get_active_snippet_body( $shortcode, $template_id );
+		$snippet_body = PL_Shortcodes::get_active_snippet_body($shortcode, $template_id);
 		if (empty($snippet_body)) {
 			return $item_html;
 		}
@@ -1042,12 +1040,12 @@ To add some text to your listings:<br />
 	/**
 	 * Format single slideshow caption
 	 */
-	public static function pls_slideshow_single_caption_callback( $caption_html, $listing, $context, $context_var, $index ) {
+	public static function pls_slideshow_single_caption_callback($caption_html, $listing, $context, $context_var, $index) {
 		$shortcode = 'listing_slideshow';
 		self::$listing = $listing;
-		self::$slideshow_caption_index = $index;
+		self::$listing_index = $index;
 
-		$snippet_body = PL_Shortcodes::get_active_snippet_body( $shortcode, $context );
+		$snippet_body = PL_Shortcodes::get_active_snippet_body($shortcode, $context);
 		if (empty($snippet_body)) {
 			return $caption_html;
 		}
@@ -1055,28 +1053,28 @@ To add some text to your listings:<br />
 	}
 
 	// that would work fine for output styling, not caption-specific
-	public static function listing_slideshow_templates3( $html, $data, $context, $context_var, $args ) {
+	public static function listing_slideshow_templates3($html, $data, $context, $context_var, $args) {
 		$shortcode = 'listing_slideshow';
-		if( ! isset( $data['listing'] ) ) {
+		if (! isset($data['listing'])) {
 			return '';
 		}
 		self::$listing = $data['listing'];
 
-		$snippet_body = PL_Shortcodes::get_active_snippet_body( $shortcode, $context );
+		$snippet_body = PL_Shortcodes::get_active_snippet_body($shortcode, $context);
 		return do_shortcode($snippet_body . $html);
 	}
 
 	/**
 	 * Generate individual items for ajax - fetched listings (search_listings, static_listings)
 	 */
-	public static function pls_listings_list_ajax_item_html_callback( $item_html, $listing, $context_var ) {
+	public static function pls_listings_list_ajax_item_html_callback($item_html, $listing, $context_var) {
 		// get the template and shortcode from the filter prefix
 		// TODO: use params instead
 		$context = explode('_', substr(current_filter(), strlen('pls_listings_list_ajax_item_html_')), 3);
 		$shortcode = $context[0].'_'.$context[1];
 		$template_id = $context[2];
 
-		$snippet_body = PL_Shortcodes::get_active_snippet_body( $shortcode, $template_id );
+		$snippet_body = PL_Shortcodes::get_active_snippet_body($shortcode, $template_id);
 		if (empty($snippet_body)) {
 			return $item_html;
 		}
@@ -1086,7 +1084,7 @@ To add some text to your listings:<br />
 	/**
 	 * Neighborhoods and their templates
 	 */
-	public static function neighborhood_templates( $neighborhood_html, $term, $context, $context_var ) {
+	public static function neighborhood_templates($neighborhood_html, $term, $context, $context_var) {
 		$shortcode = 'pl_neighborhood';
 		self::$neighborhood_term = $term;
 
@@ -1097,9 +1095,9 @@ To add some text to your listings:<br />
 		return do_shortcode($snippet_body);
 	}
 
-	public static function compliance_entity( $atts ) {
+	public static function compliance_entity($atts) {
 		$content = '';
-		if( !empty( self::$listing ) ) {
+		if (!empty(self::$listing)) {
 			$listing = self::$listing;
 			ob_start();
 			PLS_Listing_Helper::get_compliance(array(
@@ -1107,13 +1105,13 @@ To add some text to your listings:<br />
 					'agent_name' => $listing['rets']['aname'],
 					'office_name' => $listing['rets']['oname'],
 					'office_phone' => PLS_Format::phone($listing['contact']['phone']),
-					'agent_license' => ( isset( $listing['rets']['alicense'] ) ? $listing['rets']['alicense'] : false ),
-					'co_agent_name' => ( isset( $listing['rets']['aconame'] ) ? $listing['rets']['aconame'] : false ),
-					'co_office_name' => ( isset( $listing['rets']['oconame'] ) ? $listing['rets']['oconame'] : false )
+					'agent_license' => (isset($listing['rets']['alicense']) ? $listing['rets']['alicense'] : false),
+					'co_agent_name' => (isset($listing['rets']['aconame']) ? $listing['rets']['aconame'] : false),
+					'co_office_name' => (isset($listing['rets']['oconame']) ? $listing['rets']['oconame'] : false)
 				));
 
 			// No compliance found
-			if( ! isset( $_POST['compliance_message'] ) ) {
+			if (! isset($_POST['compliance_message'])) {
 				return $content;
 			}
 			ob_clean();
@@ -1190,8 +1188,8 @@ To add some text to your listings:<br />
 	 * Convert the Neighborhood taxonomy type to a Maps-accepted one
 	 * @param string $taxonomy_type
 	 */
-	public static function translate_taxonomy_type( $taxonomy_type ) {
-		switch( $taxonomy_type ) {
+	public static function translate_taxonomy_type($taxonomy_type) {
+		switch($taxonomy_type) {
 			case 'city': return 'locality';
 			case 'zip': return 'postal';
 			case 'state': return 'region';
@@ -1203,19 +1201,19 @@ To add some text to your listings:<br />
 	/**
 	 * Helper, add CSS to template to hide dropdowns
 	 */
-	public static function hide_unnecessary_controls( $atts ) {
+	public static function hide_unnecessary_controls($atts) {
 
 		$css = '';
 
-		if( ! empty( $atts ) ) {
+		if (! empty($atts)) {
 
-			if( ! empty( $atts['hide_sort_by'] ) && $atts['hide_sort_by'] == 'true' ) {
+			if (! empty($atts['hide_sort_by']) && $atts['hide_sort_by'] == 'true') {
 				$css .= '.sort_wrapper .sort_item:first-child { display: none; } ';
 			}
-			if( ! empty( $atts['hide_sort_direction'] ) && $atts['hide_sort_direction'] == 'true' ) {
+			if (! empty($atts['hide_sort_direction']) && $atts['hide_sort_direction'] == 'true') {
 				$css .= '.sort_wrapper .sort_item:last-child { display: none; } ';
 			}
-			if( ! empty( $atts['hide_num_results'] ) && $atts['hide_num_results'] == 'true' ) {
+			if (! empty($atts['hide_num_results']) && $atts['hide_num_results'] == 'true') {
 				$css .= (empty($atts['table_id']) ? '#placester_listings_list_length' : '#'.$atts['table_id'].'_length') . ' { display: none; } ';
 			}
 		}
@@ -1266,7 +1264,7 @@ To add some text to your listings:<br />
 								. ')'
 								. '(\\]?)';                          // 6: Optional second closing brocket for escaping shortcodes: [[tag]]
 
-		return preg_replace_callback( "/$pattern/s", $callback, $content );
+		return preg_replace_callback("/$pattern/s", $callback, $content);
 	}
 
 	/**
@@ -1274,7 +1272,7 @@ To add some text to your listings:<br />
 	 * Used by templates for: individual listing pages.
 	 */
 	public static function listing_templatetag_callback($m) {
-		if ( $m[1] == '[' && $m[6] == ']' ) {
+		if ($m[1] == '[' && $m[6] == ']') {
 			return substr($m[0], 1, -1);
 		}
 
@@ -1307,18 +1305,18 @@ To add some text to your listings:<br />
 			}
 			return '';
 		}
-		$content = self::listing_sub_entity( $atts, $content, $tag );
-		return self::wrap( 'listing_sub', $content );
+		$content = self::listing_sub_entity($atts, $content, $tag);
+		return self::wrap('listing_sub', $content);
 	}
 
 	/**
 	 * Give theme, etc a chance to customize template output on a per item basis
 	 */
-	public static function wrap( $shortcode, $content = '' ) {
+	public static function wrap($shortcode, $content = '') {
 		ob_start();
-		do_action( $shortcode . '_pre_header' );
+		do_action($shortcode . '_pre_header');
 		echo $content;
-		do_action( $shortcode . '_post_footer' );
+		do_action($shortcode . '_post_footer');
 		return ob_get_clean();
 	}
 
@@ -1333,7 +1331,7 @@ To add some text to your listings:<br />
 		?>
 		<script type="text/javascript">
 
-			jQuery(document).ready(function( $ ) {
+			jQuery(document).ready(function($) {
 				<?php if (!empty($group['map'])):?>
 					<?php $js_files['map'] = true ?>
 					var map = new Map ();
@@ -1374,20 +1372,20 @@ To add some text to your listings:<br />
 					init_args.filter_by_bounds = false;
 
 					<?php if ($group['map']['atts']['type'] == 'lifestyle'): ?>
-						var lifestyle = new Lifestyle( {
+						var lifestyle = new Lifestyle({
 							map: map
 						});
 						init_args.lifestyle = lifestyle;
 						<?php $js_files['lifestyle'] = true ?>
 					<?php elseif ($group['map']['atts']['type'] == 'lifestyle_polygon'): ?>
-						var lifestyle_polygon = new Lifestyle_Polygon( {
+						var lifestyle_polygon = new Lifestyle_Polygon({
 							map: map
 						});
 						init_args.lifestyle_polygon = lifestyle_polygon;
 						<?php $js_files['lifestyle_polygon'] = true ?>
 					<?php endif ?>
 
-					map.init( init_args );
+					map.init(init_args);
 				<?php endif ?>
 
 				<?php if (!empty($group['listings'])):?>
@@ -1412,7 +1410,7 @@ To add some text to your listings:<br />
 						limit_default: '<?php echo $group['listings']['atts']['query_limit'] ?>'
 					});
 
-					<?php if(!empty($group['listings']['filters'])): ?>
+					<?php if (!empty($group['listings']['filters'])): ?>
 						<?php echo $group['listings']['filters'] ?>
 					<?php endif ?>
 					listings.init();

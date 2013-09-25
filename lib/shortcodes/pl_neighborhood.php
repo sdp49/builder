@@ -54,9 +54,9 @@ class PL_Neighborhood_CPT extends PL_SC_Base {
 	}
 
 	public static function shortcode_handler($atts, $content) {
-		$content = PL_Component_Entity::pl_neighborhood_entity( $atts );
+		$content = PL_Component_Entity::pl_neighborhood_entity($atts);
 
-		return self::wrap( 'pl_neighborhood', $content );
+		return self::wrap('pl_neighborhood', $content);
 	}
 }
 

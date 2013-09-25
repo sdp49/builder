@@ -37,6 +37,7 @@ class PL_Listing_Slideshow_CPT extends PL_Search_Listing_CPT {
 
 	protected $slideshow_subcodes = array(
 		'ls_index'		=> array('help' => 'Index of the listing in the slideshow, starting with 1.'),
+		// TODO: these should be removed
 		'ls_url'		=> array('help' => 'The url to view the listing.'),
 		'ls_address'	=> array('help' => 'The street address of the listing.'),
 		'ls_beds'		=> array('help' => 'The number of bedrooms.'),
