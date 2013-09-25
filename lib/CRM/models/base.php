@@ -134,7 +134,7 @@ abstract class PL_CRM_Base {
 	 * Events
 	 */
 
-	abstract public function pushEvent ($event);
+	abstract public function pushEvent ($event_args);
 
 	/*
 	 * Tasks

@@ -248,7 +248,7 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 		return $type;
 	}
 
-	public function pushEvent ($event_args = array()) {
+	public function pushEvent ($event_args) {
 		// Create event array that will be the POSTFIELDS payload (encoded as JSON)...
 		// $event = array(
 		    // "property" => array(
@@ -307,7 +307,7 @@ class PL_CRM_Followupboss extends PL_CRM_Base {
 			$event["person"]["lastName"] = @$name_arr[1];
 		}
 		else {
-			// If no name presented, enter generic one with random int...
+			// If no name is present, enter generic one using a random integer...
 			$event["person"]["firstName"] = "Site User";
 			$event["person"]["lastName"] = (string)rand();
 		}
