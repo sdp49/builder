@@ -115,4 +115,39 @@ jQuery(document).ready(function($) {
         "metadata[max_price]" : "Max Price"
     }
 
+    /* Bindings for UI that generates the list of saved searches in the user's client profile... */
+
+    $('.pls_remove_search').live('click', function (event) {
+        event.preventDefault();
+        
+        // So we can keep the HTML object context for use in the success call back
+        var that = this;
+        var data = {};
+        data.action = 'delete_user_saved_search'
+        data.saved_search_option_key = $(this).attr('ref');
+
+        // console.log(data);
+
+        $.post(info.ajaxurl, data, function(response, textStatus, xhr) {
+            // Optional stuff to do after success
+            // console.log(response);
+            if (response == 1) {
+                $('.saved_search_block#' + data.saved_search_option_key).remove();
+            } 
+            else {
+                // show error message
+            }
+        });
+        
+    });
+
+    $('#pls_view_search').on('click', function (event) {
+        event.preventDefault();
+        
+        // Act on the event
+        $.post(info.ajaxurl, {param1: 'value1'}, function (data, textStatus, xhr) {
+            //optional stuff to do after success
+        });
+    });
+
 });
