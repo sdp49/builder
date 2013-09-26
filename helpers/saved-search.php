@@ -10,7 +10,7 @@ PL_Saved_Search::init();
 class PL_Saved_Search {
 
 	public static $save_extension = 'pl_ss_';
-	public static $user_saved_keys = 'pl_saved_searches';
+	public static $user_saved_key = 'pl_saved_searches';
 
 	public static function init () {
 		// Basic AJAX endpoints
@@ -89,12 +89,11 @@ class PL_Saved_Search {
     public static function ajax_add_saved_search_to_user () {
     	$link_to_search = $_POST['link_to_search'];
     	$saved_search_name = $_POST['name_of_saved_search'];
-
-    	$clean_search_form_data = self::purge_unneeded_form_data($_POST['search_form_key_values']);
+    	$search_filters = $_POST['search_filters'];
 		
     	// add meta to user for searches
-    	if ( !empty($clean_search_form_data) ) {
-    		$response = self::add_saved_search_to_user($clean_search_form_data, $saved_search_name, $link_to_search);
+    	if ( !empty($search_filters) ) {
+    		$response = self::add_saved_search_to_user($search_filters, $saved_search_name, $link_to_search);
     		echo json_encode($response);
     	}
     	else {
@@ -104,14 +103,14 @@ class PL_Saved_Search {
     	die();
     }
 
-	public static function add_saved_search_to_user ($clean_search_form_data, $saved_search_name, $link_to_search) {
+	public static function add_saved_search_to_user ($search_filters, $saved_search_name, $link_to_search) {
 		// Only works if request is coming from an authenticated user...
 		$user_id = get_current_user_id();
 		$saved_searches = self::get_user_saved_searches();
 
-		if ( !empty($clean_search_form_data) && !empty($user_id) ) {			
+		if ( !empty($search_filters) && !empty($user_id) ) {			
 			// 
-			$search_value = json_encode($clean_search_form_data);
+			$search_value = json_encode($search_filters);
 
 			$search_hash = self::generate_key($search_value);
 				
@@ -138,12 +137,12 @@ class PL_Saved_Search {
 		}
 		
 		// Fetch saved searches
-		$saved_searches = get_user_meta($user_id, self::$user_saved_keys );
-		if (empty( $saved_searches ) && ! is_array($saved_searches)) {
+		$saved_searches = get_user_meta($user_id, self::$user_saved_key );
+		if (empty($saved_searches) && !is_array($saved_searches)) {
 			$response = array();
 		} 
 		else {
-			$response = $saved_searches[0];
+			$response = $saved_searches;
 		}
 		// error_log(var_export($saved_searches, true));
 		return $response;
@@ -175,22 +174,12 @@ class PL_Saved_Search {
 	private static function assoc_saved_searches_to_user ($user_id, $saved_searches) {
 		// 
 		if (!empty($saved_searches) && is_array($saved_searches)) {
-			return update_user_meta($user_id, self::$user_saved_keys, $saved_searches);
+			return update_user_meta($user_id, self::$user_saved_key, $saved_searches);
 		} 
 		else {
 			return array('message' => "You didn't pass any saved searches");
 		}
 	}
-
-	private static function purge_unneeded_form_data ($form_data) {
-    	// Irrelevant data to the search form filters
-    	$internal_params = array('action', 'submit');
-    	foreach ($internal_params as $internal) {
-    		if (isset( $form_data[$internal])) { unset($form_data[$internal]); }
-    	}
-
-    	return $form_data;
-    }
 
 	/*
 	 * UI + Views
@@ -214,8 +203,4 @@ class PL_Saved_Search {
             include(trailingslashit(PL_FRONTEND_DIR) . 'saved-search-button.php');
         return ob_get_clean();	
     }
-
-    public static function get_save_search_link () {
-		return '<a href="#" class="pls_save_search">Save Search</a>';
-	}
 }

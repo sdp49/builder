@@ -1,21 +1,21 @@
 jQuery(document).ready(function($) {
 
     $('.pls_save_search').fancybox({
-        "hideOnContentClick": false,
-        "scrolling": true,
+        hideOnContentClick: false,
+        scrolling: true,
         onStart: function () { append_search_filters(); },
         onClosed: function () { $('.login-form-validator-error').remove(); }
     });
 
     $('#pl_submit').on('click', function (event) {
-        //prevent the submit 
         event.preventDefault()
         
-        var data = {};
-        data.action = 'add_saved_search_to_user';
-        data.link_to_search = document.URL;
-        data.name_of_saved_search = $('#user_search_name').val();
-        data.search_form_key_values = get_search_filters();
+        var data = {
+            action: "add_saved_search_to_user",
+            link_to_search: document.URL,
+            name_of_saved_search: $('#user_search_name').val(),
+            search_filters: get_search_filters()
+        };
 
         $.post(info.ajaxurl, data, function (response, textStatus, xhr) {
             // console.log(response);
@@ -60,7 +60,7 @@ jQuery(document).ready(function($) {
 
         // Find the value of all the search elements so that we can save them.
         raw_filters.each(function (key, value) {
-            if (value !== "" && != "0" && unneeded_keys.indexOf(key) == -1) {
+            if (value !== "" && value != "0" && unneeded_keys.indexOf(key) == -1) {
                 search_filters[key] = value;
             } 
         });
