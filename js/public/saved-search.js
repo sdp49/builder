@@ -12,7 +12,7 @@ jQuery(document).ready(function($) {
         event.preventDefault()
         
         var data = {};
-        data.action = "save_search";
+        data.action = 'add_saved_search_to_user';
         data.link_to_search = document.URL;
         data.name_of_saved_search = $('#user_search_name').val();
         data.search_form_key_values = get_search_form_key_values();
@@ -115,7 +115,9 @@ jQuery(document).ready(function($) {
         "metadata[max_price]" : "Max Price"
     }
 
-    /* Bindings for UI that generates the list of saved searches in the user's client profile... */
+    /* 
+     * Bindings for UI that generates the list of saved searches in the user's client profile... 
+     */
 
     $('.pls_remove_search').live('click', function (event) {
         event.preventDefault();

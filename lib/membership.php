@@ -15,8 +15,18 @@ class PL_Membership {
 
 		add_shortcode('lead_user_navigation', array(__CLASS__,'placester_lead_control_panel'));
 
+		$capabilities = array(
+			'add_roomates' => true,
+			'read_roomates' => true,
+			'delete_roomates' => true,
+			'add_favorites' => true,
+			'delete_roomates' => true,
+			'level_0' => true,
+			'read' => true
+		);
+
 		// Create the "Property lead" role
-		$lead_role = add_role( 'placester_lead','Property Lead',array('add_roomates' => true,'read_roomates' => true,'delete_roomates' => true,'add_favorites' => true,'delete_roomates' => true,'level_0' => true,'read' => true) );
+		add_role('placester_lead', 'Property Lead', $capabilities);
 	}
 
 	public static function get_client_area_url () {
@@ -597,6 +607,12 @@ class PL_Membership {
         return $link;
 	}
 
+	/*
+	 * Facebook user integration functionality
+	 *
+	 * NOTE: Unfinished/untested/not in use...
+	 */
+/*
 	public static function connect_fb_with_wp ($signed_request) {
 		// json_decode signed_request into array
 		$signed_request = json_decode($signed_request, true);
@@ -611,7 +627,6 @@ class PL_Membership {
 			wp_set_auth_cookie($user_id, true);
 		} 
         else {
-
 			// Create random password
 			$random_pass = self::random_password();
 
@@ -623,7 +638,7 @@ class PL_Membership {
 				'user_email' => $user_email,
 				'user_nicename' => $user_name,
 				'role' => 'placester_lead'
-				);
+			);
 
 			// Add user to WP user table
 			wp_insert_user( $userdata );
@@ -634,14 +649,13 @@ class PL_Membership {
 			wp_mail($user_email,
 				'Your password for ' . $_SERVER["SERVER_NAME"],
 				"to log into " . $_SERVER["SERVER_NAME"] . " your username is '" . $user_email . "', and your password is '" . $random_pass . "'. However, as long as you are signed into Facebook, you won't need to manually sign in."
-				);
+			);
 
 		}
 	}
 
 	// Parse Facebook Signed Request
 	public static function fb_parse_signed_request ($signed_request = '', $return = 'ajax') {
-
 		if (empty($signed_request)) {
 			extract($_POST);
 		}
@@ -649,8 +663,8 @@ class PL_Membership {
 		list($encoded_sig, $payload) = explode('.', $signed_request, 2);
 
 		// decode the data
-		$sig = self::base64_url_decode($encoded_sig);
-		$data = self::base64_url_decode($payload);
+		$sig = base64_decode(strtr($encoded_sig, '-_', '+/'));
+		$data = base64_decode(strtr($payload, '-_', '+/'));
 
 		if ($return == 'ajax') {
 			echo $data;
@@ -661,11 +675,7 @@ class PL_Membership {
 
 	}
 
-	public static function base64_url_decode ($input) {
-		return base64_decode(strtr($input, '-_', '+/'));
-	}
-
-	public static function random_password () {
+	private static function random_password () {
 		$alphabet = "abcdefghijklmnopqrstuwxyzABCDEFGHIJKLMNOPQRSTUWXYZ0123456789";
 		$pass = array(); //remember to declare $pass as an array
 		$alphaLength = strlen($alphabet) - 1; //put the length -1 in cache
@@ -677,5 +687,5 @@ class PL_Membership {
 
 		return implode($pass); //turn the array into a string
 	}
-
+*/
 }

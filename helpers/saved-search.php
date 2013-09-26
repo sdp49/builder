@@ -18,7 +18,7 @@ class PL_Saved_Search {
 		add_action('wp_ajax_nopriv_get_saved_search_filters', array(__CLASS__, 'ajax_get_filters'));
 
 		// AJAX endpoints for attaching saved searches to users
-		add_action( 'wp_ajax_add_saved_search_to_user', array(__CLASS__,'ajax_add_saved_search_to_user'));
+		add_action('wp_ajax_add_saved_search_to_user', array(__CLASS__,'ajax_add_saved_search_to_user'));
 		add_action('wp_ajax_delete_user_saved_search', array(__CLASS__, 'delete_user_saved_search'));
 	}
 
@@ -127,19 +127,8 @@ class PL_Saved_Search {
 		}
 	}
 
-	public static function assoc_saved_searches_to_user ($user_id, $saved_searches) {
-		// 
-		if (!empty($saved_searches) && is_array($saved_searches)) {
-			return update_user_meta($user_id, self::$user_saved_keys, $saved_searches);
-		} 
-		else {
-			return array('message' => "You didn't pass any saved searches");
-		}
-	}
-
-
 	public static function get_user_saved_searches ($user_id = null) {
-		// Fallback to current user if user_id is not set
+		// Fallback to current user if user_id is not set...
 		if (empty($user_id)) {
 			if (!is_user_logged_in()) {
 				return array();
@@ -183,6 +172,16 @@ class PL_Saved_Search {
 		die();
 	}
 
+	private static function assoc_saved_searches_to_user ($user_id, $saved_searches) {
+		// 
+		if (!empty($saved_searches) && is_array($saved_searches)) {
+			return update_user_meta($user_id, self::$user_saved_keys, $saved_searches);
+		} 
+		else {
+			return array('message' => "You didn't pass any saved searches");
+		}
+	}
+
 	private static function purge_unneeded_form_data ($form_data) {
     	// Irrelevant data to the search form filters
     	$internal_params = array('action', 'submit');
@@ -204,7 +203,7 @@ class PL_Saved_Search {
             include(trailingslashit(PL_FRONTEND_DIR) . 'saved-search-authenticated.php');
         } 
         else {
-            include( trailingslashit(PL_FRONTEND_DIR) . 'saved-search-unauthenticated.php');
+            include(trailingslashit(PL_FRONTEND_DIR) . 'saved-search-unauthenticated.php');
         }
 
         return ob_get_clean();
