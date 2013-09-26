@@ -15,7 +15,7 @@ class PL_Saved_Search {
 	public static function init () {
 		// Basic AJAX endpoints
 		add_action('wp_ajax_get_saved_search_filters', array(__CLASS__, 'ajax_get_saved_search_filters'));
-		add_action('wp_ajax_nopriv_get_saved_search_filters', array(__CLASS__, 'ajax_get_filters'));
+		add_action('wp_ajax_nopriv_get_saved_search_filters', array(__CLASS__, 'ajax_get_saved_search_filters'));
 
 		// AJAX endpoints for attaching saved searches to users
 		add_action('wp_ajax_add_saved_search_to_user', array(__CLASS__,'ajax_add_saved_search_to_user'));
@@ -29,11 +29,11 @@ class PL_Saved_Search {
 		return $key;
 	}
 
-	public static function save ($search_id, $value) {
+	public static function save_search ($search_id, $search_filters) {
 		$key = self::generate_key($search_id);
 
 		// Setting 'no' ensures these option-entries are NOT autoloaded on every request...
-		return PL_Options::set($key, $value, false);
+		return PL_Options::set($key, $search_filters, false);
 	}
 
 	// 
@@ -44,7 +44,7 @@ class PL_Saved_Search {
 		// If the saved search doesn't exist, create it...
 		if (!$result) {
 			// The $_POST array for this request will contain the pertinent search filters set + their values
-			self::save($search_id, $_POST);
+			self::save_search($search_id, $_POST);
 			$result = false;
 		}
 
@@ -201,9 +201,9 @@ class PL_Saved_Search {
         ob_start();
         if (is_user_logged_in()) {
             include(trailingslashit(PL_FRONTEND_DIR) . 'saved-search-authenticated.php');
-        } 
+        }
         else {
-            include(trailingslashit(PL_FRONTEND_DIR) . 'saved-search-unauthenticated.php');
+			// include(trailingslashit(PL_FRONTEND_DIR) . 'saved-search-unauthenticated.php');
         }
 
         return ob_get_clean();
