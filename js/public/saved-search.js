@@ -8,7 +8,7 @@ jQuery(document).ready(function($) {
     });
 
     $('#pl_submit').on('click', function (event) {
-        event.preventDefault()
+        event.preventDefault();
         
         var data = {
             action: "add_saved_search_to_user",
@@ -42,11 +42,10 @@ jQuery(document).ready(function($) {
     //
     // NOTE: These key value pairs are used to "save" the search in the DB so that it can be re-applied later
     function get_search_filters () {
-        //
         var raw_filters = {};
         var search_filters = {};
 
-        //
+        // Exclude filters with the following names/keys...
         var unneeded_keys = ["location[address_match]", "sort_by", "sort_type"];
 
         // Try to access the search form's filters via the search "bootloader" object...
@@ -59,12 +58,12 @@ jQuery(document).ready(function($) {
         }
 
         // Find the value of all the search elements so that we can save them.
-        raw_filters.each(function (key, value) {
-            if (value !== "" && value != "0" && unneeded_keys.indexOf(key) == -1) {
-                search_filters[key] = value;
+        $.each(raw_filters, function (index, filter) {
+            if (filter.value !== "" && filter.value != "0" && unneeded_keys.indexOf(filter.name) == -1) {
+                search_filters[filter.name] = filter.value;
             } 
         });
-
+        
         return search_filters;
     }
 
@@ -97,14 +96,14 @@ jQuery(document).ready(function($) {
         "location[address]": "Street",
         "location[neighborhood]": "Neighborhood",
         "location[region]": "State",
-        "property_type" : "Property Type",
-        "purchase_types[]" : "Available for",
-        "metadata[min_price]" : "Min Price",
-        "metadata[min_sqft]" : "Min Sqft",
-        "metadata[min_beds]" : "Min Beds",
-        "metadata[min_baths]" : "Min Baths",
-        "metadata[min_price]" : "Min Price",
-        "metadata[max_price]" : "Max Price"
+        "property_type": "Property Type",
+        "purchase_types[]": "Available for",
+        "metadata[min_price]": "Min Price",
+        "metadata[min_sqft]": "Min Sqft",
+        "metadata[min_beds]": "Min Beds",
+        "metadata[min_baths]": "Min Baths",
+        "metadata[min_price]": "Min Price",
+        "metadata[max_price]": "Max Price"
     }
 
     /* 

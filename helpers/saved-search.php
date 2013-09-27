@@ -17,9 +17,9 @@ class PL_Saved_Search {
 		add_action('wp_ajax_get_saved_search_filters', array(__CLASS__, 'ajax_get_saved_search_filters'));
 		add_action('wp_ajax_nopriv_get_saved_search_filters', array(__CLASS__, 'ajax_get_saved_search_filters'));
 
-		// AJAX endpoints for attaching saved searches to users
+		// AJAX endpoints for attaching saved searches to users (currently, ONLY exposed for authenticated users...)
 		add_action('wp_ajax_add_saved_search_to_user', array(__CLASS__,'ajax_add_saved_search_to_user'));
-		add_action('wp_ajax_delete_user_saved_search', array(__CLASS__, 'delete_user_saved_search'));
+		add_action('wp_ajax_delete_user_saved_search', array(__CLASS__, 'ajax_delete_user_saved_search'));
 	}
 
 	public static function generate_key ($search_id) {
@@ -86,13 +86,35 @@ class PL_Saved_Search {
 	 * Functionality to handle associating saved searches with site users...
 	 */
 	
+	public static function get_user_saved_searches ($user_id = null) {
+		// Fallback to current user if user_id is not set...
+		if (empty($user_id)) {
+			if (!is_user_logged_in()) {
+				return array();
+			}
+
+			$user_id = get_current_user_id();
+		}
+		
+		// Fetch saved searches
+		$saved_searches = get_user_meta($user_id, self::$user_saved_key );
+		if (empty($saved_searches) && !is_array($saved_searches)) {
+			$response = array();
+		} 
+		else {
+			$response = $saved_searches;
+		}
+		// error_log(var_export($saved_searches, true));
+		return $response;
+	}
+
     public static function ajax_add_saved_search_to_user () {
     	$link_to_search = $_POST['link_to_search'];
     	$saved_search_name = $_POST['name_of_saved_search'];
     	$search_filters = $_POST['search_filters'];
 		
     	// add meta to user for searches
-    	if ( !empty($search_filters) ) {
+    	if (!empty($search_filters)) {
     		$response = self::add_saved_search_to_user($search_filters, $saved_search_name, $link_to_search);
     		echo json_encode($response);
     	}
@@ -126,45 +148,23 @@ class PL_Saved_Search {
 		}
 	}
 
-	public static function get_user_saved_searches ($user_id = null) {
-		// Fallback to current user if user_id is not set...
-		if (empty($user_id)) {
-			if (!is_user_logged_in()) {
-				return array();
-			}
-
-			$user_id = get_current_user_id();
-		}
-		
-		// Fetch saved searches
-		$saved_searches = get_user_meta($user_id, self::$user_saved_key );
-		if (empty($saved_searches) && !is_array($saved_searches)) {
-			$response = array();
-		} 
-		else {
-			$response = $saved_searches;
-		}
-		// error_log(var_export($saved_searches, true));
-		return $response;
-	}
-
-	public static function delete_user_saved_search () {
+	public static function ajax_delete_user_saved_search () {
 		// Get authenticated user's Wordpress ID...
 		$user_id = get_current_user_id();
 
 		if (!empty($user_id)) {
-			$saved_search_hash_to_be_deleted = $_POST['saved_search_option_key'];
+			$saved_search_hash_to_be_deleted = $_POST["saved_search_option_key"];
 
 			$saved_searches = self::get_user_saved_searches();
 
-			if ( isset($saved_searches[$saved_search_hash_to_be_deleted]) ) {
-				unset( $saved_searches[$saved_search_hash_to_be_deleted] );
+			if (isset($saved_searches[$saved_search_hash_to_be_deleted])) {
+				unset($saved_searches[$saved_search_hash_to_be_deleted]);
 			}
 
 			$response = self::assoc_saved_searches_to_user($user_id, $saved_searches);
 		} 
 		else {
-			$response = json_encode(array('message' => 'User is not logged in'));
+			$response = json_encode(array("message" => "User is not logged in"));
 		}
 
 		echo $response;
@@ -177,7 +177,7 @@ class PL_Saved_Search {
 			return update_user_meta($user_id, self::$user_saved_key, $saved_searches);
 		} 
 		else {
-			return array('message' => "You didn't pass any saved searches");
+			return array("message" => "You didn't pass any saved searches");
 		}
 	}
 
