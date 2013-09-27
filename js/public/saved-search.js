@@ -23,7 +23,9 @@ jQuery(document).ready(function($) {
                 // Close dialog
                 $.fancybox.close();
 
-                show_saved_search_success_message();
+                // Show success message...
+                $('#pls_successful_saved_search').show();
+                setTimeout(function () { $('#pls_successful_saved_search').fadeOut(); }, 2000);
             } 
             else {
                 // Failed, show the error messages...
@@ -31,12 +33,6 @@ jQuery(document).ready(function($) {
         });
       
     });
-
-    // Show
-    function show_saved_search_success_message () {
-        $('#pls_successful_saved_search').show();
-        setTimeout(function () { $('#pls_successful_saved_search').fadeOut(); }, 3000);
-    }
 
     // Method to retrieve all the keys and values of the search form on the page
     //
@@ -63,7 +59,7 @@ jQuery(document).ready(function($) {
                 search_filters[filter.name] = filter.value;
             } 
         });
-        
+
         return search_filters;
     }
 
