@@ -32,21 +32,17 @@ class PL_Saved_Search {
 	public static function save_search ($search_id, $search_filters) {
 		$key = self::generate_key($search_id);
 
-		// Setting 'no' ensures these option-entries are NOT autoloaded on every request...
+		// error_log("Search ID: $search_id");
+		// error_log("Option key: $key");
+		// error_log(var_export($search_filters, true));
+
+		// Ensure these option-entries are NOT autoloaded on every request...
 		return PL_Options::set($key, $search_filters, false);
 	}
 
-	// 
 	public static function get_saved_search_filters ($search_id) {
 		$key = self::generate_key($search_id);
 		$result = PL_Options::get($key, false);
-
-		// If the saved search doesn't exist, create it...
-		if (!$result) {
-			// The $_POST array for this request will contain the pertinent search filters set + their values
-			self::save_search($search_id, $_POST);
-			$result = false;
-		}
 
 		return $result;
 	}
@@ -55,10 +51,13 @@ class PL_Saved_Search {
 		$result = array();
 		$search_id = $_POST['search_id'];
 
-		if ($saved_search = self::get_saved_search_filters($search_id)) {
-			foreach ($saved_search as $key => $value) {
+		// Retrieve search filters associated with the given saved search ID...
+		$filters = self::get_saved_search_filters($search_id);
+
+		if (is_array($filters)) {
+			foreach ($filters as $key => $value) {
 				if (is_array($value)) {
-					// this is how multidimensional arrays are stored in the name attribute in JS
+					// This is how multidimensional arrays are stored in the name attribute in JS
 					foreach ($value as $k => $v) {
 						$result["{$key}[{$k}]"] = $v;
 					}
