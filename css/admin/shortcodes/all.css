@@ -292,13 +292,6 @@ h4.subcode {
 
 
 /* Custom Attribute Lookup */
-.ui-widget-overlay.ui-front {
-	position: fixed;
-	z-index: 501;	/* jquery ui removed zindex support in WP3.6.1. Needed to prevent CodeMirror bleed through */
-}
-.ui-dialog {
-	z-index: 502;	/* jquery ui removed zindex support in WP3.6.1. Needed to prevent CodeMirror bleed through */
-}
 .ui-dialog-content th {
 	text-align: left;
 }
