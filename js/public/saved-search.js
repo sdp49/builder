@@ -42,7 +42,7 @@ jQuery(document).ready(function($) {
         var search_filters = {};
 
         // Exclude filters with the following names/keys...
-        var unneeded_keys = ["location[address_match]", "sort_by", "sort_type"];
+        var unneeded_keys = ["location[address_match]"];
 
         // Try to access the search form's filters via the search "bootloader" object...
         if (typeof(search_bootloader !== "undefined")) {
