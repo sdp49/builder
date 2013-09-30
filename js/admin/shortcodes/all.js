@@ -357,17 +357,17 @@ jQuery(document).ready(function($){
 		$('#pl_sc_tpl_shortcode_selected').html('['+shortcode+']');
 
 		// update the shortcode hints
-		$('#subshortcodes .shortcode_block').hide();
-		$('#subshortcodes .shortcode_block.'+shortcode).show();
+		$('.pl__tpl__help').hide();
 
 		// display template blocks
 		$('#pl_sc_tpl_edit .pl_template_block').each(function() {
 			if ($(this).hasClass(shortcode)) {
 				$(this).show();
 				// activate the codemirror object
-				$('.CodeMirror').each(function(i, el){
+				$(this).find('.CodeMirror').each(function(i, el){
 				    el.CodeMirror.refresh();
 				});
+				$(this).find('.CodeMirror:first-of-type').get(0).CodeMirror.focus();
 			}
 			else {
 				$(this).hide();
@@ -422,8 +422,10 @@ jQuery(document).ready(function($){
 	});
 	// Add CodeMirror support to edit boxes
 	$('#pl_sc_tpl_edit .pl_template_block textarea').each(function() {
+		var modes = $(this).closest('section').attr('class').match(/\bmime_([a-z_]+)/);
+		var mode = 'text/' + (modes.length==2 ? modes[1] : 'html'); 
 		var cm = CodeMirror.fromTextArea(document.getElementById($(this).attr('id')), {
-		    mode: $(this).closest('section').hasClass('mime_css')?"text/css":"text/html",
+		    mode: mode,
 		    lineNumbers: true,
 		    lineWrapping: true,
 		    extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }},
@@ -431,6 +433,7 @@ jQuery(document).ready(function($){
 		    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
 
 		});
+		var help = $('#pl__tpl__help--'+$(this).attr('id'));
 		// copy cm changes back to hidden field so the preview will work
 		cm.on('change', function(){
 			if (_previewWait) {
@@ -441,6 +444,14 @@ jQuery(document).ready(function($){
 				tpl_update_preview();
 				_changesMade = true;
 			}, 1000);
+		});
+		// activate the associated help text
+		cm.on('focus', function(cm){
+			$('.pl__tpl__help').hide();
+			var cmpos = $(cm.getWrapperElement()).closest('section').offset();
+			var hlpcpos = $('#pl__tpl__help').offset();
+			$('#pl__tpl__help').css('padding-top', Math.round(cmpos.top-hlpcpos.top)+'px');
+			$(help).show();
 		});
 	});
 	// Make before/after appear only if there is something in them

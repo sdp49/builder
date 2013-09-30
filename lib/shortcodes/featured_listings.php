@@ -27,32 +27,36 @@ class PL_Featured_Listings_CPT extends PL_Search_Listing_CPT {
 
 	protected $template = array(
 		'snippet_body' => array(
-			'type' => 'textarea',
-			'label' => 'HTML to format each individual listing',
-			'css' => 'mime_html',
-			'description' => 'You can use the template tags with any valid HTML in this field to lay out each listing. Leave this field empty to use the built in template.'
+			'type'			=> 'textarea',
+			'label'			=> 'HTML to format each individual listing',
+			'description'	=> 'You can use the template tags with any valid HTML in this field to lay out each listing. Leave this field empty to use the built in template.',
+			'help'			=> '',
+			'css'			=> 'mime_html',
 		),
 
 		'css' => array(
-			'type' => 'textarea',
-			'label' => 'CSS',
-			'css' => 'mime_css',
-			'description' => 'You can use any valid CSS in this field to style the listings, which will also inherit the CSS from the theme.'
+			'type'			=> 'textarea',
+			'label'			=> 'CSS',
+			'description'	=> 'You can use any valid CSS in this field to style the listings, which will also inherit the CSS from the theme.',
+			'help'			=> '',
+			'css'			=> 'mime_css',
 		),
 
 		'before_widget'	=> array(
-			'type' => 'textarea',
-			'label' => 'Add content before the listings',
-			'css' => 'mime_html',
-			'description' => 'You can use any valid HTML in this field and it will appear before the listings. For example, you can wrap the whole list with a <div> element to apply borders, etc, by placing the opening <div> tag in this field and the closing </div> tag in the following field.'
+			'type'			=> 'textarea',
+			'label'			=> 'Add content before the listings',
+			'description'	=> 'You can use any valid HTML in this field and it will appear before the listings. For example, you can wrap the whole list with a <div> element to apply borders, etc, by placing the opening <div> tag in this field and the closing </div> tag in the following field.',
+			'help'			=> '',
+			'css'			=> 'mime_html',
 		),
 
 		'after_widget' => array(
-			'type' => 'textarea',
-			'label' => 'Add content after the listings',
-			'css' => 'mime_html',
-			'description' => 'You can use any valid HTML in this field and it will appear after the listings.
-For example, you might want to include the [compliance] shortcode.'
+			'type'			=> 'textarea',
+			'label'			=> 'Add content after the listings',
+			'description'	=> 'You can use any valid HTML in this field and it will appear after the listings.
+For example, you might want to include the [compliance] shortcode.',
+			'help'			=> '',
+			'css'			=> 'mime_html',
 		),
 	);
 

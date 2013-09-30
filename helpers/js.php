@@ -126,6 +126,7 @@ class PL_Js_Helper {
 			self::register_enqueue_if_not('codemirror-xml-fold', trailingslashit(PL_JS_LIB_URL) . 'codemirror/addon/fold/xml-fold.js', array('codemirror'));
 			self::register_enqueue_if_not('codemirror-xml', trailingslashit(PL_JS_LIB_URL) . 'codemirror/mode/xml/xml.js', array('codemirror'));
 			self::register_enqueue_if_not('codemirror-css', trailingslashit(PL_JS_LIB_URL) . 'codemirror/mode/css/css.js', array('codemirror'));
+			self::register_enqueue_if_not('codemirror-javascript', trailingslashit(PL_JS_LIB_URL) . 'codemirror/mode/javascript/javascript.js', array('codemirror'));
 				
 			wp_localize_script('shortcodes-admin', 'autosaveL10n', array(
 				'saveAlert' => __('The changes you made will be lost if you navigate away from this page.')

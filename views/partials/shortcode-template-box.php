@@ -7,8 +7,7 @@ $action = empty($action)?'':$action;
 $title = empty($title)?'':$title; // template name
 $shortcode = empty($shortcode)?'':$shortcode; // shortcode type we are making a template for
 $values = empty($values)?array():$values; // current template values
-$pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs();
-$listing_attributes = PL_Shortcode_CPT::get_listing_attributes();
+$pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs(null, false, true);
 
 ?>
 
@@ -79,54 +78,18 @@ $listing_attributes = PL_Shortcode_CPT::get_listing_attributes();
 
 			</div>
 
-			<!-- Search Sub-Shortcodes -->
-			<div id="subshortcodes" class="span2">
-				<?php foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ) :?>
-					<?php if(!empty($sct_args['subcodes'])):?>
-						<div class="shortcode_block <?php echo $pl_shortcode?>" style="display: none;">
-							<h3>Template Tags</h3>
-							<?php $subcodes = '';?>
-							<?php foreach($sct_args['subcodes'] as $subcode=>$atts): ?>
-								<?php $subcodes .= '<h4 class="subcode"><a href="#">[' . $subcode . ']</a></h4>';?>
-								<?php if (!empty($atts['help'])):?>
-									<?php 
-									if ($subcode=='custom' || $subcode=='if') {
-										switch($pl_shortcode) {
-											case 'search_listings':
-											case 'static_listings':
-											case 'featured_listings':
-											case 'listing_slideshow':
-												$atts['help'] = $atts['help'] . '<br />Click <a href="#" class="show_listing_attributes">here</a> to see a list of available listing attributes.';
-										}
-									}
-									?>
-									<?php $subcodes .= '<div class="description subcode-help">'. $atts['help'] .'</div>';?>
-								<?php endif;?>
-							<?php endforeach;?>
-							<p>Use the following tags to customize your shortcode template:<br /><?php echo $subcodes?></p>
-						</div>
-					<?php endif;?>
-				<?php endforeach;?>
-			</div>
-			<div id="listing_attributes" style="display:none;">
-				<table>
-					<tr>
-						<th>Listing Field</th>
-						<th>Attribute</th>
-						<th>Group</th>
-					</tr>
-					<?php foreach($listing_attributes as $attr) :?>
-						<tr>
-							<td><strong><?php echo $attr['label']?></strong></td>
-							<td><?php echo $attr['attribute']?></td>
-							<td>
-							<?php if ($attr['group']):?>
-								<?php echo $attr['group']?>
-							<?php endif;?>
-							</td>
-						</tr>
-					<?php endforeach;?>
-				</table>
+			<!-- Help -->
+			<div id="pl__tpl__help" class="span2">
+			<?php foreach( $pl_shortcodes_attr as $pl_shortcode=>$sct_args ) :?>
+				<?php foreach($sct_args['template'] as $field => $f_args): ?>
+					<div id="pl__tpl__help--<?php echo $pl_shortcode.'-'.$field?>" class="pl__tpl__help" style="display:none;">
+					<?php if (!empty($f_args['help'])): ?>
+						<h3>Help</h3>
+						<?php echo $f_args['help'] ?>
+					<?php endif ?>
+					</div>
+				<?php endforeach ?>
+			<?php endforeach;?>
 			</div>
 
 		</section><!-- /Template Contents -->

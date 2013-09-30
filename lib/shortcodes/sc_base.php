@@ -61,10 +61,12 @@ abstract class PL_SC_Base {
 	// default layout for template
 	protected $template = array(								// defines template fields
 		//		'snippet_body'	=> array(
-		//		'type'		=> 'textarea',
-		//		'label'		=> '<Pretty Form Name>',
-		//		'css'		=> '<css_class mime_type>', 		// used for CodeMirror
-		//		'default'	=> '',
+		//		'type'			=> 'textarea',
+		//		'label'			=> '<Pretty Field Name>',
+		//		'description'	=> '<Additional prompt information>',
+		//		'default'		=> '',
+		//		'help'			=> '',
+		//		'css'			=> '<css_class mime_type>', 		// used for CodeMirror
 		//	),
 	);
 
@@ -94,22 +96,20 @@ abstract class PL_SC_Base {
 	 * Return the parameters that describe this shortcode type
 	 * @return multitype:
 	 */
-	public function get_args($with_choices = false) {
+	public function get_args($with_choices = false, $with_help = false) {
 		if (empty($this->default_tpls)) {
 			$this->default_tpls = $this->get_builtin_templates();
 		}
 		return array(
-				'shortcode'		=> $this->shortcode,
-				'pl_post_type'	=> $this->pl_post_type,
-				'title'			=> $this->title,
-				'help'			=> $this->help,
-				'options'		=> $with_choices ? $this->get_options_list($with_choices) : $this->options,
-				'filters'		=> $with_choices ? $this->get_filters_list($with_choices) : $this->filters,
-				'subcodes'		=> $this->subcodes,
-				'default_tpls'	=> $this->default_tpls,
-				'template'		=> $this->template,
+			'shortcode'		=> $this->shortcode,
+			'title'			=> $this->title,
+			'help'			=> $this->help,
+			'options'		=> $with_choices ? $this->get_options_list($with_choices) : $this->options,
+			'filters'		=> $with_choices ? $this->get_filters_list($with_choices) : $this->filters,
+			'subcodes'		=> $this->subcodes,
+			'default_tpls'	=> $this->default_tpls,
+			'template'		=> $this->template,
 		);
-
 	}
 
 
@@ -432,7 +432,7 @@ abstract class PL_SC_Base {
 		return $vals;
 	}
 
-	protected static function js_filter_str($filter) {
+	public static function js_filter_str($filter) {
 		return "listings.default_filters.push(" . trim(strip_tags($filter)) . "); ";
 	}
 

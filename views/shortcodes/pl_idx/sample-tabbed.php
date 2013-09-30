@@ -398,8 +398,7 @@ $template = array(
 
 'search_listings' => '',
 
-'before_widget' => '
-<script>
+'javascript' => '
 jQuery(function($) {
 	$("#pl_idx").tabs({
 		select: function(event, ui) {
@@ -415,7 +414,7 @@ jQuery(function($) {
 
 	function mapRefresh() {
 		var pl_map = $("#pl_idx .custom_google_map").data("pl_map");
-		// TODO: remove after updates to blueprint 
+		// TODO: remove after updates to blueprint
 		if (!pl_map && map) {
 			pl_map = map;
 		}
@@ -424,8 +423,9 @@ jQuery(function($) {
 			pl_map.center_on_markers();
 		}
 	}
-});
-</script>
+});',
+
+'before_widget' => '
 <div class="pl-tpl-idx-sample-tabbed">',
 
 'after_widget' => '</div>',

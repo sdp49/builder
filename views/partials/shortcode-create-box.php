@@ -99,7 +99,9 @@ $options_class = $filters_class = '';
 				foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ) {?>
 					<div class="pl_widget_block sc_options <?php echo $pl_shortcode;?>">
 					<?php
-					foreach($sct_args['options'] as $field => &$f_args) {
+					error_log(__FILE__.' shortcode:'.$pl_shortcode);
+					if ($pl_shortcode=='listing_slideshow') error_log(print_r($sct_args,true));
+					foreach($sct_args['options'] as $field => $f_args) {
 						if ($field == 'context') {
 							// template field already handled
 							continue;
@@ -115,7 +117,7 @@ $options_class = $filters_class = '';
 								, $pl_shortcode);
 							continue;
 						}
-						$value = isset( $values[$pl_shortcode][$field] ) ? $values[$pl_shortcode][$field] : $f_args['default'];
+						$value = isset( $values[$pl_shortcode][$field] ) ? $values[$pl_shortcode][$field] : (empty($f_args['default']) ? '' : $f_args['default']);
 						$_POST[$pl_shortcode][$field] = $value;
 						$f_args['css'] = (!empty($f_args['css']) ? $f_args['css'].' ' : '') . $pl_shortcode;
 						PL_Form::item($field, $f_args, 'POST', $pl_shortcode, 'sc_edit_', true);

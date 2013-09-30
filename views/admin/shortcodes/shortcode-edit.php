@@ -11,7 +11,7 @@ $notice = '';
 $message = '';
 $form_link = '';
 $iframe = $embed_sc_str = $embed_sc_long_str = $embed_sc_js = '';
-$pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs('', true);
+$pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs(null, true);
 
 if (empty($action)) {
 	// show a transiton spinner page because while the page is loading

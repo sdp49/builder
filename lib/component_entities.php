@@ -56,8 +56,7 @@ where:<br />
 <code>group</code> - The group identifier if the listing attribute is part of a group. Possible values are <code>location</code>, <code>rets</code>, <code>metadata</code>, <code>uncur_data</code>.<br />
 <code>attribute</code> - (required) The unique identifier of the listing attribute.<br />
 <code>type</code> - (optional, default is \'text\') Can be <code>text</code>, <code>currency</code>, <code>list</code>. Used to indicate how the attribute should be formatted.<br />
-<code>value</code> - (optional) Indicates text to be displayed if the listing attribute is empty.<br />
-'),
+<code>value</code> - (optional) Indicates text to be displayed if the listing attribute is empty.'),
 			'if'			=> array('help' => 'Use to conditionally display some content depending on the value of a listing\'s attribute.<br />
 Format is as follows:<br />
 <code>[if group=\'group_name\' attribute=\'some_attribute_name\' value=\'some_value\']some HTML that will be displayed if the condition is true[/if]</code><br />

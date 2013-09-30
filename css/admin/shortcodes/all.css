@@ -51,7 +51,7 @@
 }
 
 .inside section {
-	line-height: 2em;
+	line-height: 1.5em;
 }
 
 .sc-meta-section input,
@@ -84,17 +84,17 @@
 
 /* Filter list for sc editor */
 .pl_filters {
-	float: left;	
+	float: left;
 }
 .pl_filters section {
-	display: none;	
+	display: none;
 }
 .pl-sc-wrap .pl-sc-meta-box .pl_filters label {
-	display: none;	
+	display: none;
 }
 .pl_widget_block .add_filter {
 	display: block;
-	float: left;	
+	float: left;
 }
 .pl_widget_block .active_filters {
 	clear: both;

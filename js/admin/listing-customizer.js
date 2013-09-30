@@ -51,8 +51,10 @@ jQuery(document).ready(function($){
 	});
 	// Add CodeMirror support to edit boxes
 	$('.pl_template_block textarea').each(function() {
+		var modes = $(this).closest('section').attr('class').match(/\bmime_([a-z_]+)/);
+		var mode = 'text/' + (modes.length==2 ? modes[1] : 'html'); 
 		var cm = CodeMirror.fromTextArea(document.getElementById($(this).attr('id')), {
-		    mode: $(this).closest('section').hasClass('mime_css')?"text/css":"text/html",
+		    mode: mode,
 		    lineNumbers: true,
 		    lineWrapping: true,
 		    extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }},
@@ -60,6 +62,7 @@ jQuery(document).ready(function($){
 		    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
 
 		});
+		var help = $('#pl__tpl__help--'+$(this).attr('id'));
 		// copy cm changes back to hidden field so the preview will work
 		cm.on('change', function(){
 			_changesMade = true;
@@ -69,6 +72,14 @@ jQuery(document).ready(function($){
 			_previewWait = setTimeout(function(){
 				cm.save();
 			}, 1000);
+		});
+		// activate the associated help text
+		cm.on('focus', function(cm){
+			var cmpos = $(cm.getWrapperElement()).closest('section').offset();
+			var hlpcpos = $('#pl__tpl__help').offset();
+			$('.pl__tpl__help').hide();
+			$('#pl__tpl__help').css('padding-top', Math.round(cmpos.top-hlpcpos.top)+'px');
+			$(help).show();
 		});
 	});
 	// popup with list of listing attributes

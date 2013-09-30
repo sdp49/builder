@@ -12,39 +12,42 @@ class PL_Listing_Customizer {
 
 	// layout for template editor
 	protected static $template = array(
-		'before_widget'	=> array(
-			'type' => 'textarea',
-			'label' => 'Add content before the listing',
-			'css' => 'mime_html',
-			'default' => '',
-			'description' => 'You can use any valid HTML in this field and it will appear before the listing.'
+		'before_widget' => array(
+			'type'			=> 'textarea',
+			'label'			=> 'Add content before the listing',
+			'description'	=> 'You can use any valid HTML in this field and it will appear before the listing.',
+			'help'			=> '',
+			'css'			=> 'mime_html',
+			'default'		=> ''
 		),
 
-		'snippet_body'		=> array(
+		'snippet_body' => array(
 			'type'			=> 'textarea',
 			'label'			=> 'Page Body',
-			'description'	=> '
-You can use any valid HTML in this field to format the template tags.
+			'description'	=> 'Use template tags with any valid HTML in this field to format your listing.
 If you leave this section empty the page will be rendered using the default template, which you can style using CSS in the block below.',
-			'css'			=> 'mime_html', 					// used for CodeMirror
+			'help'			=> '',
+			'css'			=> 'mime_html',
 			'default'		=> '',
 		),
 
-		'after_widget'	=> array(
-				'type' => 'textarea',
-				'label' => 'Add content after the listing',
-				'css' => 'mime_html',
-				'default' => '[compliance]',
-				'description' => 'You can use any valid HTML in this field and it will appear after the listing.
-It is recommended that you include the [compliance] shortcode to display the compliance statement from your MLS.'
+		'after_widget' => array(
+			'type'			=> 'textarea',
+			'label'			=> 'Add content after the listing',
+			'description'	=> 'You can use any valid HTML in this field and it will appear after the listing.
+It is recommended that you include the [compliance] shortcode to display the compliance statement from your MLS.',
+			'help'			=> '',
+			'css'			=> 'mime_html',
+			'default'		=> '[compliance]',
 		),
 
-		'css'	=> array(
+		'css' => array(
 			'type'			=> 'textarea',
 			'label'			=> 'CSS',
 			'description'	=> '
 You can use any valid CSS in this field to customize the listing, which will also inherit the CSS from the theme.',
-			'css'			=> 'mime_css', 						// used for CodeMirror
+			'help'			=> '',
+			'css'			=> 'mime_css',
 			'default'		=> '',
 		),
 
@@ -68,10 +71,24 @@ You can use any valid CSS in this field to customize the listing, which will als
 
 
 	/**
-	 * Return the parameters that describe the listing template object
+	 * Return the parameters that describe the listing template
 	 */
-	public static function get_args() {
-		return array('template' => self::$template, 'template_tags' => PL_Component_Entity::$listing_tags);
+	public static function get_template_args() {
+		$template_tags = '<h4>Template Tags</h4>';
+		$template_tags .= '<p>Use the following tags to customize the Page Body of your template. When the template is rendered in a web page, the tag will be replaced with the corresponding attribute of the property listing:<br /><?php echo $template_tags?></p>';
+		foreach(PL_Component_Entity::$listing_tags as $template_tag=>$atts) {
+			$template_tags .= '<h4 class="subcode"><a href="#">[' . $template_tag . ']</a></h4>';
+			if (!empty($atts['help'])) {
+				$template_tags .= '<div class="description subcode-help">'. $atts['help'];
+				if ($template_tag=='custom' || $template_tag=='if') {
+					$template_tags = $template_tags . '<br />Click <a href="#" class="show_listing_attributes">here</a> to see a list of available listing attributes.';
+				}
+				$template_tags .= '</div>';
+			}
+		}
+		$ret = array('template' => self::$template);
+		$ret['template']['snippet_body']['help'] .=  $template_tags;
+		return $ret;
 	}
 
 

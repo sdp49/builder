@@ -53,7 +53,7 @@ $form_link = '';
 $delete_link = $page_now.'?page='.$plugin_page.'&action=delete&id='.$id;
 $form_action = 'edit';
 $used_by = PL_Listing_Customizer::template_used_by($id);
-$tpl_args = PL_Listing_Customizer::get_args();
+$tpl_args = PL_Listing_Customizer::get_template_args();
 
 
 ?>
@@ -91,74 +91,69 @@ $tpl_args = PL_Listing_Customizer::get_args();
 							</div>
 						</div><!-- /titlediv -->
 
-						<div id="pl-sc-tpl-meta-box" class="pl-sc-meta-box">
-							<div class="postbox ">
-								<h3>Listing Page Template</h3>
+						<div id="pl-sc-tpl-meta-box" class="postbox pl-sc-meta-box">
+							<h3>Listing Page Template</h3>
 
-								<div class="inside">
+							<div class="inside">
 
-									<!-- Template Contents -->
-									<section class="row-fluid lc-meta-section">
+								<!-- Template Contents -->
+								<section class="row-fluid lc-meta-section">
 
-										<!-- Template HTML/CSS -->
-										<div class="span8">
-											<div class="pl_template_block">
-												<?php
-												foreach($tpl_args['template'] as $field => $f_args) {
-													$_POST[$field] = !empty( $template[$field] ) ? $template[$field] : '';
-													$f_args['css'] = (!empty($f_args['css'])?$f_args['css'].' ':'').$field;
-													PL_Form::item($field, $f_args, 'POST', '', 'pl-lc-tpl-edit', true);
-												}?>
-											</div>
+									<!-- Template HTML/CSS -->
+									<div class="span8">
+										<div class="pl_template_block">
+										<?php
+										foreach($tpl_args['template'] as $field => $f_args) {
+											$_POST[$field] = !empty( $template[$field] ) ? $template[$field] : '';
+											$f_args['css'] = (!empty($f_args['css'])?$f_args['css'].' ':'').$field;
+											PL_Form::item($field, $f_args, 'POST', '', 'pl-lc-tpl-edit', true);
+										}
+										?>
 										</div>
+									</div>
 
-										<!-- Search Sub-Shortcodes -->
-										<div id="subshortcodes" class="span2">
-											<h3>Template Tags</h3>
-											<?php $template_tags = '';?>
-											<?php foreach($tpl_args['template_tags'] as $template_tag=>$atts): ?>
-												<?php $template_tags .= '<h4 class="subcode"><a href="#">[' . $template_tag . ']</a></h4>';?>
-												<?php if (!empty($atts['help'])):?>
-													<?php $template_tags .= '<div class="description subcode-help">'. $atts['help'];?>
-													<?php if ($template_tag=='custom' || $template_tag=='if'): ?>
-														<?php $template_tags = $template_tags . '<br />Click <a href="#" class="show_listing_attributes">here</a> to see a list of available listing attributes.';?>
-													<?php endif;?>
-													<?php $template_tags .= '</div>';?>
-												<?php endif;?>
-											<?php endforeach;?>
-											<p>Use the following tags to customize the Page Body of your template. When the template is rendered in a web page, the tag will be replaced with the corresponding attribute of the property listing:<br /><?php echo $template_tags?></p>
+									<!-- Help -->
+									<div id="pl__tpl__help" class="span2">
+									<?php foreach($tpl_args['template'] as $field => $f_args): ?>
+										<div id="pl__tpl__help--<?php echo $field?>" class="pl__tpl__help" style="display:none;">
+										<?php if (!empty($f_args['help'])): ?>
+											<h3>Help</h3>
+											<?php echo $f_args['help'] ?>
+										<?php endif ?>
 										</div>
-										<div id="listing_attributes" style="display:none;">
-											<table>
+									<?php endforeach ?>
+									</div>
+									<!-- Listing Attributes Lookup -->
+									<div id="listing_attributes" style="display:none;">
+										<table>
+											<tr>
+												<th>Listing Field</th>
+												<th>Attribute</th>
+												<th>Group</th>
+											</tr>
+											<?php foreach($listing_attributes as $attr) :?>
 												<tr>
-													<th>Listing Field</th>
-													<th>Attribute</th>
-													<th>Group</th>
+													<td><strong><?php echo $attr['label']?></strong></td>
+													<td><?php echo $attr['attribute']?></td>
+													<td>
+													<?php if ($attr['group']):?>
+														<?php echo $attr['group']?>
+													<?php endif;?>
+													</td>
 												</tr>
-												<?php foreach($listing_attributes as $attr) :?>
-													<tr>
-														<td><strong><?php echo $attr['label']?></strong></td>
-														<td><?php echo $attr['attribute']?></td>
-														<td>
-														<?php if ($attr['group']):?>
-															<?php echo $attr['group']?>
-														<?php endif;?>
-														</td>
-													</tr>
-												<?php endforeach;?>
-											</table>
-										</div>
-										
-									</section><!-- /Template Contents -->
+											<?php endforeach;?>
+										</table>
+									</div>
+									
+								</section><!-- /Template Contents -->
 
-									<?php wp_nonce_field( 'pl_sc_meta_box_nonce', 'meta_box_nonce' );?>
+								<?php wp_nonce_field( 'pl_sc_meta_box_nonce', 'meta_box_nonce' );?>
 
-									<div class="clear"></div>
+								<div class="clear"></div>
 
-								</div><!-- /.inside -->
+							</div><!-- /.inside -->
 
-							</div><!-- /.postbox -->
-						</div><!-- /pl-lc-tpl-meta-box -->
+						</div><!-- /.postbox .pl-lc-tpl-meta-box -->
 
 					</div><!-- /post-body-content -->
 

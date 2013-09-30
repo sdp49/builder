@@ -63,32 +63,36 @@ In the following example a search field is created for the custom attribute \'ro
 	);
 
 	protected $template = array(
-		'snippet_body'	=> array(
-			'type' => 'textarea',
-			'label' => 'HTML',
-			'css' => 'mime_html',
-			'description' => 'You can use the template tags with any valid HTML in this field to lay out the form. Leave this field empty to use the built in template.'
+		'snippet_body' => array(
+			'type'			=> 'textarea',
+			'label'			=> 'HTML',
+			'description'	=> 'You can use the template tags with any valid HTML in this field to lay out the form. Leave this field empty to use the built in template.',
+			'help'			=> '',
+			'css'			=> 'mime_html',
 		),
 
 		'css' => array(
-			'type' => 'textarea',
-			'label' => 'CSS',
-			'css' => 'mime_css',
-			'description' => 'You can use any valid CSS in this field to style the form, which will also inherit the CSS from the theme.'
+			'type'			=> 'textarea',
+			'label'			=> 'CSS',
+			'description'	=> 'You can use any valid CSS in this field to style the form, which will also inherit the CSS from the theme.',
+			'help'			=> '',
+			'css'			=> 'mime_css',
 		),
 
-		'before_widget'	=> array(
-			'type' => 'textarea',
-			'label' => 'Add content before the form',
-			'css' => 'mime_html',
-			'description' => 'You can use any valid HTML in this field and it will appear before the form. For example, you can wrap the whole form with a <div> element to apply borders, etc, by placing the opening <div> tag in this field and the closing </div> tag in the following field.'
+		'before_widget' => array(
+			'type'			=> 'textarea',
+			'label'			=> 'Add content before the form',
+			'description'	=> 'You can use any valid HTML in this field and it will appear before the form. For example, you can wrap the whole form with a <div> element to apply borders, etc, by placing the opening <div> tag in this field and the closing </div> tag in the following field.',
+			'help'			=> '',
+			'css'			=> 'mime_html',
 		),
 
-		'after_widget'	=> array(
-			'type' => 'textarea',
-			'label' => 'Add content after the form',
-			'css' => 'mime_html',
-			'description' => 'You can use any valid HTML in this field and it will appear after the form.'
+		'after_widget' => array(
+			'type'			=> 'textarea',
+			'label'			=> 'Add content after the form',
+			'description'	=> 'You can use any valid HTML in this field and it will appear after the form.',
+			'help'			=> '',
+			'css'			=> 'mime_html',
 		),
 	);
 
@@ -100,6 +104,28 @@ In the following example a search field is created for the custom attribute \'ro
 
 	public static function init() {
 		self::$singleton = parent::_init(__CLASS__);
+	}
+
+	public function get_args($with_choices = false, $with_help = false) {
+		$ret = parent::get_args($with_choices, $with_help);
+
+		if ($with_help && !empty($this->subcodes) && !empty($this->template['snippet_body']) ) {
+			$template_tags = '<h4>Search Form Template Tags</h4>';
+			$template_tags .= '<p>Use the following template tags to customize the way the search form is displayed.
+				When the template is rendered in a web page, the tag will be replaced with a form drop list control containing appropriate options:<br /></p>';
+			foreach($this->subcodes as $template_tag=>$atts) {
+				$template_tags .= '<h4 class="subcode"><a href="#">['.$template_tag.']</a></h4>';
+				if (!empty($atts['help'])) {
+					$template_tags .= '<div class="description subcode-help">'. $atts['help'];
+					if ($template_tag=='custom' || $template_tag=='if') {
+						$template_tags = $template_tags . '<br />Click <a href="#" class="show_listing_attributes">here</a> to see a list of available listing attributes.';
+					}
+					$template_tags .= '</div>';
+				}
+			}
+			$ret['template']['snippet_body']['help'] .=  $template_tags;
+		}
+		return $ret;
 	}
 
 	public static function shortcode_handler($atts, $content) {

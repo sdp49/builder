@@ -46,32 +46,36 @@ class PL_Listing_Slideshow_CPT extends PL_Search_Listing_CPT {
 
 	protected $template = array(
 		'snippet_body' => array(
-			'type' => 'textarea',
-			'label' => 'Caption text for each slideshow image',
-			'css' => 'mime_html',
-			'description' => 'You can use the template tags with any valid HTML in this field to lay each listing.'
+			'type'			=> 'textarea',
+			'label'			=> 'Caption text for each slideshow image',
+			'description'	=> 'You can use the template tags with any valid HTML in this field to lay each listing.',
+			'help'			=> '',
+			'css'			=> 'mime_html',
 		),
 
 		'css' => array(
-			'type' => 'textarea',
-			'label' => 'CSS',
-			'css' => 'mime_css',
-			'description' => 'You can use any valid CSS in this field to style the slideshow, which will also inherit the CSS from the theme.'
+			'type'			=> 'textarea',
+			'label'			=> 'CSS',
+			'description'	=> 'You can use any valid CSS in this field to style the slideshow, which will also inherit the CSS from the theme.',
+			'help'			=> '',
+			'css'			=> 'mime_css',
 		),
 
 		'before_widget'	=> array(
-			'type' => 'textarea',
-			'label' => 'Add content before the slideshow',
-			'css' => 'mime_html',
+			'type'			=> 'textarea',
+			'label'			=> 'Add content before the slideshow',
 			'description'	=> 'You can use any valid HTML in this field and it will appear before the slideshow images.
-For example, you can wrap the whole slideshow with a <div> element to apply borders, etc, by placing the opening <div> tag in this field and the closing </div> tag in the following field.'
+For example, you can wrap the whole slideshow with a <div> element to apply borders, etc, by placing the opening <div> tag in this field and the closing </div> tag in the following field.',
+			'help'			=> '',
+			'css'			=> 'mime_html',
 		),
 
-		'after_widget'	=> array(
+		'after_widget' => array(
 			'type' => 'textarea',
 			'label' => 'Add content after the slideshow',
+			'description' => 'You can use any valid HTML in this field and it will appear after the slideshow images.',
+			'help' => '',
 			'css' => 'mime_html',
-			'description' => 'You can use any valid HTML in this field and it will appear after the slideshow images.'
 		),
 	);
 
@@ -82,6 +86,28 @@ For example, you can wrap the whole slideshow with a <div> element to apply bord
 	public static function init() {
 		self::$singleton = parent::_init(__CLASS__);
 		self::$singleton->subcodes += self::$singleton->slideshow_subcodes;
+	}
+
+	public function get_args($with_choices = false, $with_help = false) {
+		$ret = parent::get_args($with_choices, $with_help);
+
+		if ($with_help && !empty($this->subcodes) && !empty($this->template['snippet_body']) ) {
+			$template_tags = '<h4>Slideshow Template Tags</h4>';
+			$template_tags .= '<p>Use the following template tags to customize the captions for each slideshow image.
+				When the template is rendered in a web page, the tag will be replaced with the corresponding attribute of the property listing:<br /></p>';
+			foreach($this->subcodes as $template_tag=>$atts) {
+				$template_tags .= '<h4 class="subcode"><a href="#">['.$template_tag.']</a></h4>';
+				if (!empty($atts['help'])) {
+					$template_tags .= '<div class="description subcode-help">'. $atts['help'];
+					if ($template_tag=='custom' || $template_tag=='if') {
+						$template_tags = $template_tags . '<br />Click <a href="#" class="show_listing_attributes">here</a> to see a list of available listing attributes.';
+					}
+					$template_tags .= '</div>';
+				}
+			}
+			$ret['template']['snippet_body']['help'] .=  $template_tags;
+		}
+		return $ret;
 	}
 
 	/**

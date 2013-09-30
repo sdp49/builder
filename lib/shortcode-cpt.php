@@ -100,20 +100,22 @@ class PL_Shortcode_CPT {
 	 * construct admin pages for creating a custom instance of a shortcode
 	 * @return array	: array of shortcode type arrays
 	 */
-	public static function get_shortcode_attrs($shortcode='', $with_choices = false) {
+	public static function get_shortcode_attrs($shortcode=null, $with_choices=false, $with_help=false) {
 		if ($shortcode) {
 			if (empty(self::$shortcodes[$shortcode])) {
 				return array();
 			}
-			if (empty(self::$shortcode_config[$shortcode]) || $with_choices) {
+			error_log(__FUNCTION__."shortcode:$shortcode");
+			if (empty(self::$shortcode_config[$shortcode]) || $with_help || $with_choices) {
 				$instance = self::$shortcodes[$shortcode];
-				self::$shortcode_config[$shortcode] = $instance->get_args($with_choices);
+				self::$shortcode_config[$shortcode] = $instance->get_args($with_choices, $with_help);
 			}
 			return self::$shortcode_config[$shortcode];
 		}
-		if (empty(self::$shortcode_config) || $with_choices) {
+		if (empty(self::$shortcode_config) || $with_help || $with_choices) {
 			foreach(self::$shortcodes as $sc => $instance){
-				self::$shortcode_config[$sc] = $instance->get_args($with_choices);
+				error_log("\n".__FUNCTION__.": shortcode:$sc");
+				self::$shortcode_config[$sc] = $instance->get_args($with_choices, $with_help);
 			}
 		}
 		return self::$shortcode_config;

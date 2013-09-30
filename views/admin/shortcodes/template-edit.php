@@ -6,6 +6,7 @@ $ID = (empty($_REQUEST['id'])?'':$_REQUEST['id']);
 $notice = $message = '';
 $nonce_action = 'edit-sc-template_' . $ID;
 $template = PL_Shortcode_CPT::load_custom_template($ID);
+$listing_attributes = PL_Shortcode_CPT::get_listing_attributes();
 
 if ($action == 'delete' && $ID) {
 	if (!PL_Shortcode_CPT::template_in_use($ID)) {
@@ -154,6 +155,27 @@ $used_by = PL_Shortcode_CPT::template_used_by($ID);
 				</div><!-- /post-body -->
 			</div>
 		</form>
+
+		<div id="listing_attributes" style="display:none;">
+			<table>
+				<tr>
+					<th>Listing Field</th>
+					<th>Attribute</th>
+					<th>Group</th>
+				</tr>
+				<?php foreach($listing_attributes as $attr) :?>
+					<tr>
+						<td><strong><?php echo $attr['label']?></strong></td>
+						<td><?php echo $attr['attribute']?></td>
+						<td>
+						<?php if ($attr['group']):?>
+							<?php echo $attr['group']?>
+						<?php endif;?>
+						</td>
+					</tr>
+				<?php endforeach;?>
+			</table>
+		</div>
 
 		<div id="ajax-response"></div>
 	</div>

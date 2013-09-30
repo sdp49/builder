@@ -19,55 +19,69 @@ class PL_IDX_CPT extends PL_SC_Base {
 	);
 
 	protected $subcodes = array(
-		'search_form'		=> array('help' => 'Search form'),
-		'search_map'		=> array('help' => 'Search map'),
-		'search_listings'	=> array('help' => 'Search results'),
+		'search_form'		=> array('help' => 'Inserts a property search form.'),
+		'search_map'		=> array('help' => 'Inserts a map to display the locations of property listings.'),
+		'search_listings'	=> array('help' => 'Inserts a list of listings filtered by the search form.'),
 	);
 
 	protected $default_tpl_id = 'sample-tabbed';
 
 	protected $template = array(
-		'snippet_body'	=> array(
-			'type' => 'textarea',
-			'label' => 'HTML',
-			'css' => 'mime_html',
-			'description' => 'You can use the template tags with any valid HTML in this field to lay out the template.'
+		'snippet_body' => array(
+			'type'			=> 'textarea',
+			'label'			=> 'HTML',
+			'description'	=> 'You can use the template tags with any valid HTML in this field to lay out the template.',
+			'help'			=> '',
+			'css'			=> 'mime_html',
 		),
 
-		'search_form'	=> array(
-			'type' => 'textarea',
-			'label' => 'HTML to format search form',
-			'css' => 'mime_html',
-			'description' => 'You can use the template tags with any valid HTML in this field to lay out the form. Leave this field empty to use the built in template.'
+		'search_form' => array(
+			'type'			=> 'textarea',
+			'label'			=> 'HTML to format search form',
+			'description'	=> 'You can use the search form template tags with any valid HTML in this field to lay out the form. Leave this field empty to use the built in template.',
+			'help'			=> '',
+			'css'			=> 'mime_html',
 		),
 
-		'search_listings'	=> array(
-			'type' => 'textarea',
-			'label' => 'HTML to format each individual listing',
-			'css' => 'mime_html',
-			'description' => 'You can use the template tags with any valid HTML in this field to lay out each listing. Leave this field empty to use the built in template.'
+		'search_listings' => array(
+			'type'			=> 'textarea',
+			'label'			=> 'HTML to format each individual listing',
+			'description'	=> 'You can use the listing template tags with any valid HTML in this field to lay out each listing. Leave this field empty to use the built in template.',
+			'help'			=> '',
+			'css'			=> 'mime_html',
 		),
 
 		'css' => array(
-			'type' => 'textarea',
-			'label' => 'CSS',
-			'css' => 'mime_css',
-			'description' => 'You can use any valid CSS in this field to style the template, which will also inherit the CSS from the theme.'
+			'type'			=> 'textarea',
+			'label'			=> 'CSS',
+			'description'	=> 'You can use any valid CSS in this field to style the template, which will also inherit the CSS from the theme.',
+			'help'			=> '',
+			'css'			=> 'mime_css',
+		),
+
+		'javascript' => array(
+			'type'			=> 'textarea',
+			'label'			=> 'JavaScript',
+			'description'	=> 'You can use any valid JavaScript in this field to manipulate the template. You do not need to use <script> tags when adding JavaScript to this field.',
+			'help'			=> '',
+			'css'			=> 'mime_javascript',
 		),
 
 		'before_widget'	=> array(
-			'type' => 'textarea',
-			'label' => 'Add content before the template body',
-			'css' => 'mime_html',
-			'description' => 'You can use any valid HTML in this field and it will appear at the beginning of the template. For example, you can wrap the whole list with a <div> element to apply borders, etc, by placing the opening <div> tag in this field and the closing </div> tag in the following field.'
+			'type'			=> 'textarea',
+			'label'			=> 'Add content before the template body',
+			'description'	=> 'You can use any valid HTML in this field and it will appear at the beginning of the template. For example, you can wrap the whole list with a <div> element to apply borders, etc, by placing the opening <div> tag in this field and the closing </div> tag in the following field.',
+			'help'			=> '',
+			'css'			=> 'mime_html',
 		),
 
-		'after_widget'	=> array(
-			'type' => 'textarea',
-			'label' => 'Add content after the template body',
-			'css' => 'mime_html',
-			'description' => 'You can use any valid HTML in this field and it will appear at the end of the template.
-For example, you might want to include the [compliance] shortcode.'
+		'after_widget' => array(
+			'type'			=> 'textarea',
+			'label'			=> 'Add content after the template body',
+			'description'	=> 'You can use any valid HTML in this field and it will appear at the end of the template.
+For example, you might want to include the [compliance] shortcode.',
+			'help'			=> '',
+			'css'			=> 'mime_html',
 		),
 	);
 
@@ -93,6 +107,40 @@ For example, you might want to include the [compliance] shortcode.'
 		if (!has_filter('pls_idx_html_shortcode')) {
 			add_filter('pls_listings_list_ajax_item_html_search_listings_pl_idx_shortcode', array(__CLASS__,'pls_listings_list_ajax_item_html_search_listings_callback'), 10, 3);
 		}
+	}
+
+	public function get_args($with_choices = false, $with_help = false) {
+		$ret = parent::get_args($with_choices, $with_help);
+
+		if ($with_help) {
+			foreach ($ret['template'] as $field=>$fattrs) {
+				if ($field == 'snippet_body') {
+					$template_tags = '<h4>IDX Template Tags</h4>';
+					$template_tags .= '<p>Use the following template tags to lay out your idx template.
+						You can only use each one once, but you can use JavaScript to manipulate how each one appears
+						by applying different CSS classes to them if, for example, you want to have a tabbed layout
+						with listings presented in different layouts in each tab:<br /></p>';
+					foreach($this->subcodes as $template_tag=>$atts) {
+						$template_tags .= '<h4 class="subcode"><a href="#">['.$template_tag.']</a></h4>';
+						if (!empty($atts['help'])) {
+							$template_tags .= '<div class="description subcode-help">'. $atts['help'];
+							if ($template_tag=='custom' || $template_tag=='if') {
+								$template_tags = $template_tags . '<br />Click <a href="#" class="show_listing_attributes">here</a> to see a list of available listing attributes.';
+							}
+							$template_tags .= '</div>';
+						}
+					}
+					$ret['template']['snippet_body']['help'] .=  $template_tags;
+				}
+				else {
+					$attrs = PL_Shortcode_CPT::get_shortcode_attrs($field, false, true);
+					if (!empty($attrs['template']['snippet_body']['help'])) {
+						$ret['template'][$field]['help'] .=  $attrs['template']['snippet_body']['help'];
+					}
+				}
+			}
+		}
+		return $ret;
 	}
 
 	/**
@@ -169,6 +217,7 @@ For example, you might want to include the [compliance] shortcode.'
 
 		$header .= empty($template['css']) ? '' : '<style type="text/css">'.$template['css'].'</style>';
 		$header .= empty($template['before_widget']) ? '' : do_shortcode($template['before_widget']);
+		$footer .= empty($template['javascript']) ? '' : '<script type="text/javascript">'.$template['javascript'].'</script>';
 		$footer .= empty($template['after_widget']) ? '' : do_shortcode($template['after_widget']);
 		$body = self::do_templatetags($template['snippet_body'], $form_data);
 		return $header.$body.$footer;
