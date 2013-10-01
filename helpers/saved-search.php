@@ -105,34 +105,34 @@ class PL_Saved_Search {
 		}
 		
 		// Fetch saved searches
-		$saved_searches = get_user_meta($user_id, self::user_saved_search_key());
+		$saved_searches = get_user_meta($user_id, self::user_saved_search_key(), true);
 		if (!empty($saved_searches) && is_array($saved_searches)) {
 			$response = $saved_searches;
 		}
-		// error_log(var_export($saved_searches, true));
+
 		return $response;
 	}
 
     public static function ajax_add_saved_search_to_user () {
     	// error_log(var_export($_POST, true));
 
-    	$link_to_search = $_POST['link_to_search'];
+    	$search_url_path = $_POST['search_url_path'];
     	$saved_search_name = $_POST['search_name'];
     	$search_filters = $_POST['search_filters'];
 		
     	// Add meta to user for saved searches...
     	if (!empty($search_filters) && is_array($search_filters)) {
-    		$response = self::add_saved_search_to_user($search_filters, $saved_search_name, $link_to_search);
+    		$response = self::add_saved_search_to_user($search_filters, $saved_search_name, $search_url_path);
     	}
     	else {
     		$response = array("success" => false, "message" => "No search filters to save -- select some and try again");
     	}
-
+    	
     	echo json_encode($response);
     	die();
     }
 
-	public static function add_saved_search_to_user ($search_filters, $saved_search_name, $link_to_search) {
+	public static function add_saved_search_to_user ($search_filters, $saved_search_name, $search_url_path) {
 		// Default result...
 		$success = false;
 		$message = "";
@@ -151,16 +151,24 @@ class PL_Saved_Search {
 				$message =  "A search with the same filters has already been saved";
 			}
 			else {
+				// Construct full search URL based on current site's URL...
+				$search_url_path = ($search_url_path[0] == '/') ? substr($search_url_path, 1) : $search_url_path;
+				$search_url = trailingslashit(site_url()) . $search_url_path;
+
 				$saved_searches[$unique_filters_hash] = array(
 					'filters' => $search_filters, 
 					'name' => $saved_search_name, 
-					'url' => $link_to_search
+					'url' => $search_url
 				);
 
 				$update_success = update_user_meta($user_id, self::user_saved_search_key(), $saved_searches);
 				
 				$success = empty($update_success) ? false : true;
 				$message = ($success === false) ? "Could not save search -- please try again" : "";
+
+				// error_log("Unique search hash: $unique_filters_hash");
+				// error_log(var_export($saved_searches, true));
+				// error_log("user_saved_search_key: " . self::user_saved_search_key());
 			}
 		}
 
@@ -183,7 +191,7 @@ class PL_Saved_Search {
 			$update_success = update_user_meta($user_id, self::user_saved_search_key(), $saved_searches);
 			
 			$response['success'] = empty($update_success) ? false : true;
-			$response['message'] = ($success === false) ? "Could not save search -- please try again" : "";
+			$response['message'] = ($response['success'] === false) ? "Could not save search -- please try again" : "";
 		} 
 		else {
 			$response = array("success" => false, "message" => "User is not logged in");
@@ -215,4 +223,23 @@ class PL_Saved_Search {
             include(trailingslashit(PL_FRONTEND_DIR) . 'saved-search-button.php');
         return ob_get_clean();	
     }
+
+    public static function translate_key ($key) {
+		static $translations = array(
+			'location[locality]' => 'City',
+			'location[postal]' => 'Zip Code',
+			'location[neighborhood]' => 'Neighborhood',
+			'metadata[min_sqft]' => 'Min Sqft',
+			'purchase_types[]' => 'Purchase Type',
+			'price_off' => 'Min Price',
+			'metadata[min_beds]' => 'Min Beds',
+			'metadata[min_baths]' => 'Min Baths',
+			'metadata[min_price]' => 'Min Price',
+			'sort_by' => 'Sort By',
+        	'sort_type' => 'Sort Order'
+		);
+
+		$val = ( isset($translations[$key]) ? $translations[$key] : $key );
+		return $val;
+	}
 }

@@ -9,10 +9,14 @@ jQuery(document).ready(function($) {
 
     $('#pl_submit').on('click', function (event) {
         event.preventDefault();
+
+        // Capture the URL after the protocol and hostname...
+        var search_hash = (typeof(window.location.hash) == "undefined") ? "" : window.location.hash;
+        var url_path = window.location.pathname + search_hash;
         
         var data = {
             action: "add_saved_search_to_user",
-            search_url: document.URL,
+            search_url_path: url_path,
             search_name: $('#user_search_name').val(),
             search_filters: get_search_filters()
         };
