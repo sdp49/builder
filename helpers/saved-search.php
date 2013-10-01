@@ -105,7 +105,7 @@ class PL_Saved_Search {
 		}
 		
 		// Fetch saved searches
-		$saved_searches = get_user_meta($user_id, self::user_saved_search_key() );
+		$saved_searches = get_user_meta($user_id, self::user_saved_search_key());
 		if (!empty($saved_searches) && is_array($saved_searches)) {
 			$response = $saved_searches;
 		}
@@ -114,7 +114,7 @@ class PL_Saved_Search {
 	}
 
     public static function ajax_add_saved_search_to_user () {
-    	error_log(var_export($_POST, true));
+    	// error_log(var_export($_POST, true));
 
     	$link_to_search = $_POST['link_to_search'];
     	$saved_search_name = $_POST['search_name'];
@@ -122,10 +122,10 @@ class PL_Saved_Search {
 		
     	// Add meta to user for saved searches...
     	if (!empty($search_filters) && is_array($search_filters)) {
-    		$add_success = self::add_saved_search_to_user($search_filters, $saved_search_name, $link_to_search);
+    		$response = self::add_saved_search_to_user($search_filters, $saved_search_name, $link_to_search);
     	}
     	else {
-    		$response = array("success" => false, "message" => "No search filters to save!");
+    		$response = array("success" => false, "message" => "No search filters to save -- select some and try again");
     	}
 
     	echo json_encode($response);
@@ -157,10 +157,10 @@ class PL_Saved_Search {
 					'url' => $link_to_search
 				);
 
-				$update_success = update_user_meta($user_id, self::$user_saved_key, $saved_searches);
+				$update_success = update_user_meta($user_id, self::user_saved_search_key(), $saved_searches);
 				
 				$success = empty($update_success) ? false : true;
-				$message = empty($update_success) ? "Could not save search -- please try again" : "";
+				$message = ($success === false) ? "Could not save search -- please try again" : "";
 			}
 		}
 
@@ -172,7 +172,7 @@ class PL_Saved_Search {
 		$user_id = get_current_user_id();
 
 		if (!empty($user_id)) {
-			$saved_search_hash_to_be_deleted = $_POST["saved_search_option_key"];
+			$saved_search_hash_to_be_deleted = $_POST["unique_search_hash"];
 
 			$saved_searches = self::get_user_saved_searches();
 
@@ -180,13 +180,16 @@ class PL_Saved_Search {
 				unset($saved_searches[$saved_search_hash_to_be_deleted]);
 			}
 
-			$response = update_user_meta($user_id, self::$user_saved_key, $saved_searches);
+			$update_success = update_user_meta($user_id, self::user_saved_search_key(), $saved_searches);
+			
+			$response['success'] = empty($update_success) ? false : true;
+			$response['message'] = ($success === false) ? "Could not save search -- please try again" : "";
 		} 
 		else {
-			$response = json_encode(array("message" => "User is not logged in"));
+			$response = array("success" => false, "message" => "User is not logged in");
 		}
 
-		echo $response;
+		echo json_encode($response);
 		die();
 	}
 
