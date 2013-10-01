@@ -12,23 +12,24 @@ jQuery(document).ready(function($) {
         
         var data = {
             action: "add_saved_search_to_user",
-            link_to_search: document.URL,
-            name_of_saved_search: $('#user_search_name').val(),
+            search_url: document.URL,
+            search_name: $('#user_search_name').val(),
             search_filters: get_search_filters()
         };
 
         $.post(info.ajaxurl, data, function (response, textStatus, xhr) {
             // console.log(response);
-            if (response == 'true') {
+            if (response && response.success === true) {
                 // Close dialog
                 $.fancybox.close();
 
                 // Show success message...
                 $('#pls_successful_saved_search').show();
                 setTimeout(function () { $('#pls_successful_saved_search').fadeOut(); }, 2000);
-            } 
+            }
             else {
-                // Failed, show the error messages...
+                // Failed, show the error message if one exists...
+                
             }
         });
       
@@ -41,9 +42,6 @@ jQuery(document).ready(function($) {
         var raw_filters = {};
         var search_filters = {};
 
-        // Exclude filters with the following names/keys...
-        var unneeded_keys = ["location[address_match]"];
-
         // Try to access the search form's filters via the search "bootloader" object...
         if (typeof(search_bootloader !== "undefined")) {
             raw_filters = search_bootloader.filter.get_values();
@@ -55,7 +53,7 @@ jQuery(document).ready(function($) {
 
         // Find the value of all the search elements so that we can save them.
         $.each(raw_filters, function (index, filter) {
-            if (filter.value !== "" && filter.value != "0" && unneeded_keys.indexOf(filter.name) == -1) {
+            if (filter.value !== "" && filter.value != "0") {
                 search_filters[filter.name] = filter.value;
             } 
         });

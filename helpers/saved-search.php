@@ -10,7 +10,6 @@ PL_Saved_Search::init();
 class PL_Saved_Search {
 
 	public static $save_extension = 'pl_ss_';
-	public static $user_saved_key = 'pl_saved_searches';
 
 	public static function init () {
 		// Basic AJAX endpoints
@@ -84,23 +83,30 @@ class PL_Saved_Search {
 	/*
 	 * Functionality to handle associating saved searches with site users...
 	 */
+
+	public static function user_saved_search_key () {
+		global $blog_id;
+
+		return self::$save_extension . '_list_' . $blog_id;
+	}
 	
 	public static function get_user_saved_searches ($user_id = null) {
+		// Default return value is an empty array (i.e., no saved searches)
+		$response = array();
+
 		// Fallback to current user if user_id is not set...
 		if (empty($user_id)) {
+			// If the current user isn't authenticated, no point in continuing...
 			if (!is_user_logged_in()) {
-				return array();
+				return $response;
 			}
 
 			$user_id = get_current_user_id();
 		}
 		
 		// Fetch saved searches
-		$saved_searches = get_user_meta($user_id, self::$user_saved_key );
-		if (empty($saved_searches) && !is_array($saved_searches)) {
-			$response = array();
-		} 
-		else {
+		$saved_searches = get_user_meta($user_id, self::user_saved_search_key() );
+		if (!empty($saved_searches) && is_array($saved_searches)) {
 			$response = $saved_searches;
 		}
 		// error_log(var_export($saved_searches, true));
@@ -108,43 +114,57 @@ class PL_Saved_Search {
 	}
 
     public static function ajax_add_saved_search_to_user () {
+    	error_log(var_export($_POST, true));
+
     	$link_to_search = $_POST['link_to_search'];
-    	$saved_search_name = $_POST['name_of_saved_search'];
+    	$saved_search_name = $_POST['search_name'];
     	$search_filters = $_POST['search_filters'];
 		
-    	// add meta to user for searches
-    	if (!empty($search_filters)) {
-    		$response = self::add_saved_search_to_user($search_filters, $saved_search_name, $link_to_search);
-    		echo json_encode($response);
+    	// Add meta to user for saved searches...
+    	if (!empty($search_filters) && is_array($search_filters)) {
+    		$add_success = self::add_saved_search_to_user($search_filters, $saved_search_name, $link_to_search);
     	}
     	else {
-    		echo array('message' => 'No Form data to save!');
+    		$response = array("success" => false, "message" => "No search filters to save!");
     	}
 
+    	echo json_encode($response);
     	die();
     }
 
 	public static function add_saved_search_to_user ($search_filters, $saved_search_name, $link_to_search) {
+		// Default result...
+		$success = false;
+		$message = "";
+
 		// Only works if request is coming from an authenticated user...
 		$user_id = get_current_user_id();
 		$saved_searches = self::get_user_saved_searches();
 
-		if ( !empty($search_filters) && !empty($user_id) ) {			
-			// 
-			$search_value = json_encode($search_filters);
-
-			$search_hash = self::generate_key($search_value);
+		if (!empty($search_filters) && is_array($search_filters) && !empty($user_id)) {			
+			// Sort filter array by key so unique hash produced is consistent regardless of element order...
+			ksort($search_filters);
+			$unique_filters_hash = sha1(serialize($search_filters));
 				
-			$saved_searches[$search_hash] = $search_value;
-			$saved_searches[$search_hash] = array('search_value' => $search_value, 'search_name' => $saved_search_name, 'link_to_search' => $link_to_search);
+			// Make sure an entry with the same unique search has does not already exist -- if it does, don't add...
+			if (isset($saved_searches[$unique_filters_hash])) {
+				$message =  "A search with the same filters has already been saved";
+			}
+			else {
+				$saved_searches[$unique_filters_hash] = array(
+					'filters' => $search_filters, 
+					'name' => $saved_search_name, 
+					'url' => $link_to_search
+				);
 
-			$update_success = self::assoc_saved_searches_to_user($user_id, $saved_searches);
-
-			return $update_success;
-		} 
-		else {
-			return false;
+				$update_success = update_user_meta($user_id, self::$user_saved_key, $saved_searches);
+				
+				$success = empty($update_success) ? false : true;
+				$message = empty($update_success) ? "Could not save search -- please try again" : "";
+			}
 		}
+
+		return array("success" => $success, "message" => $message);
 	}
 
 	public static function ajax_delete_user_saved_search () {
@@ -160,7 +180,7 @@ class PL_Saved_Search {
 				unset($saved_searches[$saved_search_hash_to_be_deleted]);
 			}
 
-			$response = self::assoc_saved_searches_to_user($user_id, $saved_searches);
+			$response = update_user_meta($user_id, self::$user_saved_key, $saved_searches);
 		} 
 		else {
 			$response = json_encode(array("message" => "User is not logged in"));
@@ -168,16 +188,6 @@ class PL_Saved_Search {
 
 		echo $response;
 		die();
-	}
-
-	private static function assoc_saved_searches_to_user ($user_id, $saved_searches) {
-		// 
-		if (!empty($saved_searches) && is_array($saved_searches)) {
-			return update_user_meta($user_id, self::$user_saved_key, $saved_searches);
-		} 
-		else {
-			return array("message" => "You didn't pass any saved searches");
-		}
 	}
 
 	/*
