@@ -24,18 +24,21 @@ jQuery(document).ready(function($) {
         $.post(info.ajaxurl, data, function (response, textStatus, xhr) {
             // console.log(response);
             if (response && response.success === true) {
-                // Close dialog
-                $.fancybox.close();
-
                 // Show success message...
-                $('#pls_successful_saved_search').show();
-                setTimeout(function () { $('#pls_successful_saved_search').fadeOut(); }, 2000);
+                $('#saved_search_message').show();
+                
+                setTimeout(function () { 
+                    $('#saved_search_message').fadeOut();
+                    
+                    // Close dialog
+                    $.fancybox.close();
+                }, 2000);
             }
             else {
                 // Failed, show the error message if one exists...
 
             }
-        });
+        }, 'json');
       
     });
 
@@ -132,7 +135,7 @@ jQuery(document).ready(function($) {
             else {
                 // show error message
             }
-        });
+        }, 'json');
         
     });
 

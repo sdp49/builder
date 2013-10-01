@@ -1,7 +1,7 @@
 <div style="display:none">
 	<form  method="post" id="pl_saved_search_register_form" action="#<?php // echo $role; ?>" name="pl_saved_search_register_form" class="saved-search-wrapper" autocomplete="off">
 
-        <div style="display:none" class="success">You have been successfully signed up! This page will refresh momentarily.</div>
+        <div style="display:none" class="success" id="saved_search_message">Search has been saved!</div>
 
         <h2 style="margin-bottom: 10px">Saved Search</h2>
 
