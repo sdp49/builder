@@ -42,6 +42,9 @@ jQuery(document).ready(function($) {
         var raw_filters = {};
         var search_filters = {};
 
+        // Exclude filters with the following names/keys...
+        var unneeded_keys = ["location[address_match]"];
+
         // Try to access the search form's filters via the search "bootloader" object...
         if (typeof(search_bootloader !== "undefined")) {
             raw_filters = search_bootloader.filter.get_values();
@@ -53,7 +56,7 @@ jQuery(document).ready(function($) {
 
         // Find the value of all the search elements so that we can save them.
         $.each(raw_filters, function (index, filter) {
-            if (filter.value !== "" && filter.value != "0") {
+            if (filter.value !== "" && filter.value != "0" && unneeded_keys.indexOf(filter.name) == -1) {
                 search_filters[filter.name] = filter.value;
             } 
         });
@@ -97,7 +100,9 @@ jQuery(document).ready(function($) {
         "metadata[min_beds]": "Min Beds",
         "metadata[min_baths]": "Min Baths",
         "metadata[min_price]": "Min Price",
-        "metadata[max_price]": "Max Price"
+        "metadata[max_price]": "Max Price",
+        "sort_by": "Sort By",
+        "sort_type": "Sort Order"
     }
 
     /* 
