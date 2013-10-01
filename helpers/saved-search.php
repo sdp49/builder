@@ -172,7 +172,7 @@ class PL_Saved_Search {
 		$user_id = get_current_user_id();
 
 		if (!empty($user_id)) {
-			$saved_search_hash_to_be_deleted = $_POST["unique_search_hash"];
+			$saved_search_hash_to_be_deleted = $_POST['unique_search_hash'];
 
 			$saved_searches = self::get_user_saved_searches();
 

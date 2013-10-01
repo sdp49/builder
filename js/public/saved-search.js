@@ -29,7 +29,7 @@ jQuery(document).ready(function($) {
             }
             else {
                 // Failed, show the error message if one exists...
-                
+
             }
         });
       
@@ -109,17 +109,16 @@ jQuery(document).ready(function($) {
         
         // So we can keep the HTML object context for use in the success call back
         var that = this;
-        var data = {};
-        data.action = 'delete_user_saved_search'
-        data.saved_search_option_key = $(this).attr('ref');
-
-        // console.log(data);
+        var data = {
+            action: 'delete_user_saved_search',
+            unique_search_hash: $(this).attr('href')
+        };
 
         $.post(info.ajaxurl, data, function(response, textStatus, xhr) {
             // Optional stuff to do after success
             // console.log(response);
-            if (response == 1) {
-                $('.saved_search_block#' + data.saved_search_option_key).remove();
+            if (response && response.success) {
+                $('.saved_search_block#' + data.unique_search_hash).remove();
             } 
             else {
                 // show error message
