@@ -129,10 +129,11 @@ class PL_Taxonomy_Helper {
 		foreach ($preset_styes as $style_name => $presets) {
 			$options .= '<option ';
 			foreach ($presets as $style => $value) {
-				$options .= 'data-' . $style . '="'.$value.'"';
+				$options .= ' data-' . $style . '="'.$value.'"';
 			}
 			$options .= ' >' . $style_name . '</option>';
 		}
+		$options .= '<option value="custom">Custom</option>';
 		return $options;
 	}
 
