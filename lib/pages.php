@@ -156,7 +156,9 @@ class PL_Pages {
     	}
 
 		$wpdb->query("DELETE FROM $wpdb->postmeta WHERE post_id IN ($id_str)");
-		self::delete_all_terms();
+
+		// TODO: Hold off on this for now because it breaks custom neighborhood homepage
+		// self::delete_all_terms();
 		self::ping_yoast_sitemap();
 
     	return true;
