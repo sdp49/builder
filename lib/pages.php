@@ -156,7 +156,12 @@ class PL_Pages {
     	}
 
 		$wpdb->query("DELETE FROM $wpdb->postmeta WHERE post_id IN ($id_str)");
-		self::delete_all_terms();
+		
+		// NOTE: This call produces highly negative side-effects, as neighborhood meta-info created by clients
+		// relies on the related term and taxonomy to exist, even after clearing properties...re-evaluate ASAP!
+		//
+		// self::delete_all_terms();
+		
 		self::ping_yoast_sitemap();
 
     	return true;
