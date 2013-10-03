@@ -12,18 +12,6 @@ class PL_Neighborhood_CPT extends PL_SC_Base {
 
 	protected $title = 'Neighborhood';
 
-	protected $help =
-		'<p>
-		You can add a neighborhood area via the [pl_neighborhood] shortcode.
-		The neighborhood could list an area with polygons for a given region, such as:
-		</p>
-		<ul>
-			<li>Neighborhood</li>
-			<li>City</li>
-			<li>Zip code</li>
-			<li>State</li>
-		</ul>';
-
 	protected $options = array(
 		'context'			=> array( 'type' => 'select', 'label' => 'Template', 'default' => ''),
 		'width'				=> array( 'type' => 'text', 'label' => 'Width', 'default' => 250, 'description' => '(px)' ),

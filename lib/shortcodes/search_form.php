@@ -10,18 +10,11 @@ class PL_Form_CPT extends PL_SC_Base {
 
 	protected $title = 'Search Form';
 
-	protected $help =
-		'<p>
-		You can insert your "activated" Search Form snippet by using the [search_form] shortcode in a page or a post.
-		This control is intended to be used alongside the [search_listings] shortcode to display the search
-		form\'s results.
-		</p>';
-
 	protected $options = array(
 		'context'			=> array( 'type' => 'select', 'label' => 'Template', 'default' => '' ),
 		'width'				=> array( 'type' => 'int', 'label' => 'Width', 'default' => 250, 'description' => '(px)' ),
 		'height'			=> array( 'type' => 'int', 'label' => 'Height', 'default' => 250, 'description' => '(px)' ),
-		'widget_class'	=> array( 'type' => 'text', 'label' => 'CSS Class', 'default' => '', 'description' => '(optional)' ),
+		'widget_class'		=> array( 'type' => 'text', 'label' => 'CSS Class', 'default' => '', 'description' => '(optional)' ),
 		'formaction'		=> array( 'type' => 'text', 'label' => 'Enter URL of listings page', 'description'=>'Only required if different from the page where this shortcode will be used.', 'default' => '' ),
 		'modernizr'			=> array( 'type' => 'checkbox', 'label' => 'Drop Modernizr', 'default' => false ),
 	);
@@ -96,14 +89,13 @@ In the following example a search field is created for the custom attribute \'ro
 		),
 	);
 
-	private static $singleton = null;
-	private static $form_data = array();
+	private $form_data = array();
 
 
 
 
 	public static function init() {
-		self::$singleton = parent::_init(__CLASS__);
+		parent::_init(__CLASS__);
 	}
 
 	public function get_args($with_choices = false, $with_help = false) {
@@ -128,18 +120,18 @@ In the following example a search field is created for the custom attribute \'ro
 		return $ret;
 	}
 
-	public static function shortcode_handler($atts, $content) {
+	public function shortcode_handler($atts, $content) {
 		$content = PL_Component_Entity::search_form_entity($atts);
 
 		return self::wrap('search_form', $content);
 	}
 
-	public static function do_templatetags($content, &$data) {
-		self::$form_data = &$data;
-		return self::_do_templatetags(__CLASS__, array_keys(self::$singleton->subcodes), $content);
+	public function do_templatetags($content, &$data) {
+		$this->form_data = $data;
+		return $this->_do_templatetags(array($this, 'templatetag_callback'), array_keys($this->subcodes), $content);
 	}
 
-	public static function templatetag_callback($m) {
+	public function templatetag_callback($m) {
 		if ($m[1]=='[' && $m[6]==']') {
 			return substr($m[0], 1, -1);
 		}
@@ -147,9 +139,9 @@ In the following example a search field is created for the custom attribute \'ro
 		$tag = $m[2];
 		$attr = shortcode_parse_atts($m[3]);
 
-		if (isset(self::$form_data[$tag])) {
+		if (isset($this->form_data[$tag])) {
 			// use form data from partial to construct
-			return $m[1] . self::$form_data[$tag] . $m[6];
+			return $m[1] . $this->form_data[$tag] . $m[6];
 		}
 		elseif ($tag == 'custom' && !empty($attr['attribute'])) {
 			$attr = wp_parse_args($attr, array('group'=>'metadata', 'type'=>'text', 'strict_match' => '', 'value' => '', 'css_class' => ''));

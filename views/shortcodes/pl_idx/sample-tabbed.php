@@ -9,6 +9,7 @@ $template = array(
 .pl-tpl-idx-sample-tabbed .form-grp {
 	float: left;
 	margin: 0 2em 1em 0;
+	min-height: 7em;
 }
 
 .pl-tpl-idx-sample-tabbed .form-grp h6 {
@@ -26,7 +27,7 @@ $template = array(
 .pl-tpl-idx-sample-tabbed .clear {
 	clear: both;
 }
-.pl-tpl-idx-sample-tabbed form {
+.pl-tpl-idx-sample-tabbed .pls_search_form_listings form {
 	clear: both;
 	padding: 1em 0 0 0;
 }
@@ -112,7 +113,6 @@ $template = array(
 	line-height: 1.2em !important;
 	font-size: 14px !important;
 	font-weight: bold !important;
-	font-family: Georgia,"Bitstream Charter",serif !important;
 }
 /* description and compliance */
 .pl-tpl-idx-sample-tabbed p.listing-description,
@@ -123,7 +123,6 @@ $template = array(
 	max-width: 370px !important;
 	line-height: 17px !important;
 	font-size: 14px !important;
-	font-family: Georgia,"Bitstream Charter",serif !important;
 	overflow: hidden !important;
 }
 .pl-tpl-idx-sample-tabbed .listing-item .compliance-wrapper p,
@@ -265,16 +264,20 @@ $template = array(
 	width: 100% !important;
 	height: 100% !important;
 }
+.pl-tpl-idx-sample-tabbed .pl_idx_tab_map p.h4 {
+	font-size: 16px !important;
+}
 .pl_idx_tab_map .listing-item-details {
-	float: left;
 }
 .pl_idx_tab_map .listing-item-address {
 }
 .pl_idx_tab_map .basic-details ul {
+	margin: 0 !important;
 	max-width: none !important;
 }
 .pl_idx_tab_map .basic-details li {
 	float: left;
+	font-weight: normal !important;
 }
 .pl_idx_tab_map .basic-details li.basic-details-price {
 }

@@ -9,19 +9,11 @@ class PL_Search_Listing_CPT extends PL_SC_Base {
 
 	protected $title = 'Search Listings';
 
-	protected $help =
-		'<p>
-        You can insert your "activated" Listings snippet by using the [search_form] shortcode in a page or a post.
-        The listings view is intended to be used alongside the [search_form] shortcode defined above as a container
-        for the results of the search, with the snippet representing how an <i>individual</i> listing that matches
-        the search criteria will be displayed.
-		</p>';
-
 	protected $options = array(
 		'context'			=> array( 'type' => 'select', 'label' => 'Template', 'default' => '' ),
 		'width'				=> array( 'type' => 'int', 'label' => 'Width', 'default' => 250, 'description' => '(px)' ),
 		'height'			=> array( 'type' => 'int', 'label' => 'Height', 'default' => 250, 'description' => '(px)' ),
-		'widget_class'	=> array( 'type' => 'text', 'label' => 'CSS Class', 'default' => '', 'description' => '(optional)' ),
+		'widget_class'		=> array( 'type' => 'text', 'label' => 'CSS Class', 'default' => '', 'description' => '(optional)' ),
 		'sort_by_options'	=> array( 'type' => 'multiselect', 'label' => 'Items in "Sort By" list',
 			'options'	=> array(	// options we always want to show even if they are not part of the filter set
 				'location.address'	=> 'Address',
@@ -136,13 +128,11 @@ For example, you might want to include the [compliance] shortcode.',
 	// stores fetched filter value
 	protected static $sl_filter_options = array();
 
-	private static $singleton = null;
-
 
 
 
 	public static function init() {
-		self::$singleton = parent::_init(__CLASS__);
+		parent::_init(__CLASS__);
 	}
 
 	public function get_args($with_choices = false, $with_help = false) {
@@ -213,7 +203,7 @@ For example, you might want to include the [compliance] shortcode.',
 	 * @param array $atts
 	 * @param string $content
 	 */
-	public static function shortcode_handler($atts, $content) {
+	public function shortcode_handler($atts, $content) {
 		add_filter('pl_filter_wrap_filter', array(__CLASS__, 'js_filter_str'));
 		$filters = '';
 
@@ -233,12 +223,12 @@ For example, you might want to include the [compliance] shortcode.',
 		return self::wrap('search_listings', $content);
 	}
 
-	public static function do_templatetags($content, $listing_data) {
+	public function do_templatetags($content, $listing_data) {
 		PL_Component_Entity::$listing = $listing_data;
-		return self::_do_templatetags(__CLASS__, array_keys(self::$singleton->subcodes), $content);
+		return $this->_do_templatetags(array($this, 'templatetag_callback'), array_keys($this->subcodes), $content);
 	}
 
-	public static function templatetag_callback($m) {
+	public function templatetag_callback($m) {
 		if ($m[1]=='[' && $m[6]==']') {
 			return substr($m[0], 1, -1);
 		}
@@ -252,12 +242,12 @@ For example, you might want to include the [compliance] shortcode.',
 			if (empty($atts['group'])) {
 				if ((!isset(PL_Component_Entity::$listing[$atts['attribute']]) && $val==='') ||
 					(isset(PL_Component_Entity::$listing[$atts['attribute']]) && (PL_Component_Entity::$listing[$atts['attribute']]===$val || (is_null($val) && PL_Component_Entity::$listing[$atts['attribute']])))) {
-					return self::_do_templatetags(__CLASS__, array_keys(self::$singleton->subcodes), $content);
+					return self::_do_templatetags(array($this, 'templatetag_callback'), array_keys($this->subcodes), $content);
 				}
 			}
 			elseif ((!isset(PL_Component_Entity::$listing[$atts['group']][$atts['attribute']]) && $val==='') ||
 				(isset(PL_Component_Entity::$listing[$atts['group']][$atts['attribute']]) && (PL_Component_Entity::$listing[$atts['group']][$atts['attribute']]===$val || (is_null($val) && PL_Component_Entity::$listing[$atts['group']][$atts['attribute']])))) {
-				return self::_do_templatetags(__CLASS__, array_keys(self::$singleton->subcodes), $content);
+				return self::_do_templatetags(array($this, 'templatetag_callback'), array_keys($this->subcodes), $content);
 			}
 			return '';
 		}

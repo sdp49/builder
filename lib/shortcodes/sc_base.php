@@ -73,7 +73,7 @@ abstract class PL_SC_Base {
 
 
 
-	static function init() {}
+	public static function init() {}
 
 	/**
 	 * Create an instance and register it with the custom shortcode manager
@@ -82,14 +82,13 @@ abstract class PL_SC_Base {
 		if (class_exists('PL_Shortcode_CPT')) {
 			$inst = new $class();
  			PL_Shortcode_CPT::register_shortcode($inst->shortcode, $inst);
-			add_shortcode($inst->shortcode, array($class, 'shortcode_handler'));
+			add_shortcode($inst->shortcode, array($inst, 'shortcode_handler'));
  			return $inst;
  		}
  		return null;
 	}
 
 	public function __construct() {
- 		add_action('template_redirect', array($this, 'post_type_templating'));
 	}
 
 	/**
@@ -124,24 +123,7 @@ abstract class PL_SC_Base {
 	 * @param array $atts
 	 * @param string $content
 	 */
-	public static function shortcode_handler($atts, $content) {}
-
-	/**
-	 * Called when the post is being formatted for display by an embedded js tag for example
-	 * Make the shortcode and render it. The template will already have been rendered by the embedded js.
-	 * @param object $single	: post object
-	 * @param bool $skipdb
-	 */
-	public function post_type_templating($single, $skipdb = false) {
-		global $post;
-
-		if (!empty($post) && $post->post_type == 'pl_general_widget') {
-			$sc_str = $post->post_content;
-			$sc_options = PL_Shortcode_CPT::load_shortcode($post->ID);
-			include(PL_VIEWS_DIR . 'shortcode-embedded.php');
-			die;
-		}
-	}
+	public function shortcode_handler($atts, $content) {}
 
 	/**
 	 * Return array of templates for this shortcode supplied with the plugin.
@@ -184,14 +166,14 @@ abstract class PL_SC_Base {
 	/**
 	 * Return array of options used to configure this shortcode type with any available choice values.
 	 */
-	protected function get_options_list($with_choices = false) {
+	public function get_options_list($with_choices = false) {
 		return $this->options;
 	}
 
 	/**
 	 * Return array of filters used to configure this shortcode type with any available choice values.
 	 */
-	protected function get_filters_list($with_choices = false) {
+	public function get_filters_list($with_choices = false) {
 		return $this->filters;
 	}
 
@@ -296,7 +278,7 @@ abstract class PL_SC_Base {
 		return $shortcode;
 	}
 
-	protected static function _do_templatetags($class, $tags, $content) {
+	protected function _do_templatetags($callback, $tags, $content) {
 		$subcode = implode('|', $tags);
 		$pattern =
 			  '\\['								// Opening bracket
@@ -328,7 +310,7 @@ abstract class PL_SC_Base {
 			. ')'
 			. '(\\]?)';							// 6: Optional second closing brocket for escaping shortcodes: [[tag]]
 
-		return preg_replace_callback("/$pattern/s", array($class, 'templatetag_callback'), $content);
+		return preg_replace_callback("/$pattern/s", $callback, $content);
 	}
 
 	protected static function form_item($item, $attr, $value = '', $parent = false, $echo = false) {

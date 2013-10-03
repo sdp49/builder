@@ -88,16 +88,13 @@ For example, you might want to include the [compliance] shortcode.',
 	// stores fetched filter value
 	protected static $idx_filter_options = array();
 
-	private static $singleton = null;
-
 	private static $template_data = array();
 
 
 
 
 	public static function init() {
-		self::$singleton = parent::_init(__CLASS__);
-		$inst = self::$singleton;
+		parent::_init(__CLASS__);
 
 		// add formatting for individual listings here because they are fetched using ajax
 		$templates = PL_Shortcode_CPT::template_list('pl_idx', true);
@@ -158,8 +155,8 @@ For example, you might want to include the [compliance] shortcode.',
 	 * @param array $atts
 	 * @param string $content
 	 */
-	public static function shortcode_handler($atts, $content) {
-		self::$template_data = array();
+	public function shortcode_handler($atts, $content) {
+		$this->template_data = array();
 
 		add_filter('pl_filter_wrap_filter', array(__CLASS__, 'js_filter_str'));
 		$filters = '';
@@ -171,7 +168,7 @@ For example, you might want to include the [compliance] shortcode.',
 		if (!empty($atts['id'])) {
 			// if we are a custom shortcode fetch the record so we can display the correct filters
 			// for the js
-			$listing_filters = PL_Shortcode_CPT::get_shortcode_filters(self::$singleton->shortcode, $atts['id']);
+			$listing_filters = PL_Shortcode_CPT::get_shortcode_filters($this->shortcode, $atts['id']);
 			$filters = PL_Component_Entity::convert_filters($listing_filters) . $filters;
 		}
 
@@ -195,7 +192,7 @@ For example, you might want to include the [compliance] shortcode.',
 		);
 
 		if (!has_filter('pls_idx_html_' . $atts['context'])) {
-			add_filter('pls_idx_html_' . $atts['context'], array(__CLASS__,'pl_idx_html_callback'), 10, 3);
+			add_filter('pls_idx_html_' . $atts['context'], array($this,'pl_idx_html_callback'), 10, 3);
 			if ($comp_context) {
 				// if we have a template then use it for the shortcode components
 				add_filter('pls_listings_search_form_outer_'.$comp_context, array(__CLASS__,'pls_listings_search_form_outer_callback'), 10, 7);
@@ -206,7 +203,7 @@ For example, you might want to include the [compliance] shortcode.',
 		return self::wrap('idx', apply_filters('pls_idx_html_' . $atts['context'], '', self::$template_data, $atts));
 	}
 
-	public static function pl_idx_html_callback($html, $form_data, $request) {
+	public function pl_idx_html_callback($html, $form_data, $request) {
 		wp_enqueue_style('jquery-ui', trailingslashit(PLS_JS_URL) . 'libs/jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');
 		wp_enqueue_script('jquery');
 		wp_enqueue_script('jquery-ui-core');
@@ -219,15 +216,15 @@ For example, you might want to include the [compliance] shortcode.',
 		$header .= empty($template['before_widget']) ? '' : do_shortcode($template['before_widget']);
 		$footer .= empty($template['javascript']) ? '' : '<script type="text/javascript">'.$template['javascript'].'</script>';
 		$footer .= empty($template['after_widget']) ? '' : do_shortcode($template['after_widget']);
-		$body = self::do_templatetags($template['snippet_body'], $form_data);
+		$body = $this->do_templatetags($template['snippet_body'], $form_data);
 		return $header.$body.$footer;
 	}
 
-	public static function do_templatetags($content, &$data) {
-		return self::_do_templatetags(__CLASS__, array_keys(self::$singleton->subcodes), $content);
+	public function do_templatetags($content, &$data) {
+		return self::_do_templatetags(array($this, 'templatetag_callback'), array_keys($this->subcodes), $content);
 	}
 
-	public static function templatetag_callback($m) {
+	public function templatetag_callback($m) {
 		if ($m[1]=='[' && $m[6]==']') {
 			return substr($m[0], 1, -1);
 		}
@@ -249,18 +246,18 @@ For example, you might want to include the [compliance] shortcode.',
 	 * Format the search form body using any template we might have.
 	 * Called from PLS_Partials_Listing_Search_Form
 	 */
-	public static function pls_listings_search_form_inner_callback($form, $form_html, $form_options, $section_title, $context_var) {
+	public function pls_listings_search_form_inner_callback($form, $form_html, $form_options, $section_title, $context_var) {
 		if (empty(self::$template_data['template']['search_form'])) {
 			return $form;
 		}
-		return PL_Form_CPT::do_templatetags(self::$template_data['template']['search_form'], $form_html);
+		return PL_Shortcode_CPT::do_templatetags('search_form', self::$template_data['template']['search_form'], $form_html);
 	}
 
 	/**
 	 * Format the whole search form.
 	 * Called from PLS_Partials_Listing_Search_Form
 	 */
-	public static function pls_listings_search_form_outer_callback($form, $form_html, $form_options, $section_title, $form_data, $form_id, $context_var) {
+	public function pls_listings_search_form_outer_callback($form, $form_html, $form_options, $section_title, $form_data, $form_id, $context_var) {
 		return $form;
 	}
 
@@ -281,7 +278,7 @@ For example, you might want to include the [compliance] shortcode.',
 	/**
 	 * Callback to wrap formatting around search_map
 	 */
-	public static function pls_search_map_callback($return, $listings, $request_params) {
+	public function pls_search_map_callback($return, $listings, $request_params) {
 		return $return;
 	}
 }

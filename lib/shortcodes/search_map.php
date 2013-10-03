@@ -54,7 +54,7 @@ For example, you can wrap the whole map with a <div> element to apply borders, e
 		parent::_init(__CLASS__);
 	}
 
-	public static function shortcode_handler($atts, $content) {
+	public function shortcode_handler($atts, $content) {
 		$content = PL_Component_Entity::search_map_entity($atts);
 
 		return self::wrap('search_map', $content);

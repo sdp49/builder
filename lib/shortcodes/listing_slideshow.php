@@ -10,12 +10,6 @@ class PL_Listing_Slideshow_CPT extends PL_Search_Listing_CPT {
 
 	protected $title = 'Slideshow';
 
-	protected $help =
-		'<p>
-		You can create a slideshow for your Featured Listings by using the
-		[listing_slideshow post_id="<em>slideshowid</em>"] shortcode.
-		</p>';
-
 	protected $options = array(
 		'context'		=> array( 'type' => 'select', 'label' => 'Template', 'default' => '' ),
 		'width'			=> array( 'type' => 'int', 'label' => 'Width', 'default' => 610, 'description' => '(px)' ),
@@ -28,10 +22,10 @@ class PL_Listing_Slideshow_CPT extends PL_Search_Listing_CPT {
 				'horizontal-push' => 'horizontal-push',
 			),
 			'default' => 'fade' ),
-		'animationSpeed'	=> array( 'type' => 'int', 'label' => 'Transition Speed', 'default' => 800, 'description' => 'How long the transition takes, ms' ),	// how fast animtions are
-		'advanceSpeed'		=> array( 'type' => 'int', 'label' => 'Advance Speed', 'default' => 5000, 'description' => 'How long to wait before transitioning to next image, ms' ),	// if timer is enabled, time between transitions
-		'timer'				=> array( 'type' => 'checkbox', 'label' => 'Timer', 'default' => true ),				// true or false to have the timer
-		'pauseOnHover'		=> array( 'type' => 'checkbox', 'label' => 'Pause on hover', 'default' => true ),		// if you hover pauses the slider
+		'animationSpeed'=> array( 'type' => 'int', 'label' => 'Transition Speed', 'default' => 800, 'description' => 'How long the transition takes, ms' ),	// how fast animtions are
+		'advanceSpeed'	=> array( 'type' => 'int', 'label' => 'Advance Speed', 'default' => 5000, 'description' => 'How long to wait before transitioning to next image, ms' ),	// if timer is enabled, time between transitions
+		'timer'			=> array( 'type' => 'checkbox', 'label' => 'Timer', 'default' => true ),				// true or false to have the timer
+		'pauseOnHover'	=> array( 'type' => 'checkbox', 'label' => 'Pause on hover', 'default' => true ),		// if you hover pauses the slider
 		'pl_featured_listing_meta' => array( 'type' => 'featured_listing_meta', 'default' => '' ),
 	);
 
@@ -79,13 +73,12 @@ For example, you can wrap the whole slideshow with a <div> element to apply bord
 		),
 	);
 
-	private static $singleton = null;
 
 
 
 	public static function init() {
-		self::$singleton = parent::_init(__CLASS__);
-		self::$singleton->subcodes += self::$singleton->slideshow_subcodes;
+		$instance = parent::_init(__CLASS__);
+		$instance->subcodes += $instance->slideshow_subcodes;
 	}
 
 	public function get_args($with_choices = false, $with_help = false) {
@@ -110,6 +103,13 @@ For example, you can wrap the whole slideshow with a <div> element to apply bord
 		return $ret;
 	}
 
+	/**
+	 * Override search_listings
+	 */
+	public function get_options_list($with_choices = false) {
+		return $this->options;
+	}
+	
 	/**
 	 * Return array of options used to configure this custom shortcode
 	 * @param $id int		: id of custom shortcode record
@@ -143,19 +143,19 @@ For example, you can wrap the whole slideshow with a <div> element to apply bord
 		return false;
 	}
 
-	public static function shortcode_handler($atts, $content) {
+	public function shortcode_handler($atts, $content) {
 		$content = PL_Component_Entity::listing_slideshow($atts);
 
 		return self::wrap('listing_slideshow', $content);
 	}
 
 
-	public static function do_templatetags($content, $listing_data) {
+	public function do_templatetags($content, $listing_data) {
 		PL_Component_Entity::$listing = $listing_data;
-		return self::_do_templatetags(__CLASS__, array_keys(self::$singleton->subcodes), $content);
+		return $this->_do_templatetags(array($this, 'templatetag_callback'), array_keys($this->subcodes), $content);
 	}
 
-	public static function templatetag_callback($m) {
+	public function templatetag_callback($m) {
 		if ($m[1]=='[' && $m[6]==']') {
 			return substr($m[0], 1, -1);
 		}
@@ -169,12 +169,12 @@ For example, you can wrap the whole slideshow with a <div> element to apply bord
 			if (empty($atts['group'])) {
 				if ((!isset(PL_Component_Entity::$listing[$atts['attribute']]) && $val==='') ||
 					(isset(PL_Component_Entity::$listing[$atts['attribute']]) && (PL_Component_Entity::$listing[$atts['attribute']]===$val || (is_null($val) && PL_Component_Entity::$listing[$atts['attribute']])))) {
-					return self::_do_templatetags(__CLASS__, array_keys(self::$singleton->subcodes), $content);
+					return $this->_do_templatetags(array($this, 'templatetag_callback'), array_keys($this->subcodes), $content);
 				}
 			}
 			elseif ((!isset(PL_Component_Entity::$listing[$atts['group']][$atts['attribute']]) && $val==='') ||
 				(isset(PL_Component_Entity::$listing[$atts['group']][$atts['attribute']]) && (PL_Component_Entity::$listing[$atts['group']][$atts['attribute']]===$val || (is_null($val) && PL_Component_Entity::$listing[$atts['group']][$atts['attribute']])))) {
-				return self::_do_templatetags(__CLASS__, array_keys(self::$singleton->subcodes), $content);
+				return self::_do_templatetags(array($this, 'templatetag_callback'), array_keys($this->subcodes), $content);
 			}
 			return '';
 		}

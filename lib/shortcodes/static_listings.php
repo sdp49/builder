@@ -11,13 +11,6 @@ class PL_Static_Listing_CPT extends PL_Search_Listing_CPT {
 
 	protected $title = 'List of Listings';
 
-	protected $help =
-		'<p>
-		You can insert your Static Listings snippet by using the [static_listings id="<em>listingid</em>"] shortcode in a page or a post.
-		The shortcode requires an ID parameter of the static listing ID number published in your
-		Featured Listings post type control on the left side of the admin panel.
-		</p>';
-
 	protected $options = array(
 		'context'				=> array( 'type' => 'select', 'label' => 'Template', 'default' => '' ),
 		'width'					=> array( 'type' => 'int', 'label' => 'Width', 'default' => 250, 'description' => '(px)' ),
@@ -50,7 +43,7 @@ class PL_Static_Listing_CPT extends PL_Search_Listing_CPT {
 		parent::_init(__CLASS__);
 	}
 
-	public static function shortcode_handler($atts, $content) {
+	public function shortcode_handler($atts, $content) {
 		add_filter('pl_filter_wrap_filter', array(__CLASS__, 'js_filter_str'));
 		$filters = '';
 

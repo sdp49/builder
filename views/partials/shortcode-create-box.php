@@ -99,8 +99,6 @@ $options_class = $filters_class = '';
 				foreach( $pl_shortcodes_attr as $pl_shortcode => $sct_args ) {?>
 					<div class="pl_widget_block sc_options <?php echo $pl_shortcode;?>">
 					<?php
-					error_log(__FILE__.' shortcode:'.$pl_shortcode);
-					if ($pl_shortcode=='listing_slideshow') error_log(print_r($sct_args,true));
 					foreach($sct_args['options'] as $field => $f_args) {
 						if ($field == 'context') {
 							// template field already handled

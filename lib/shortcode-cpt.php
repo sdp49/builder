@@ -12,6 +12,8 @@ class PL_Shortcode_CPT {
 	private static $shortcodes = array();
 	// holds the configuration parameters for the shortcode classes we have installed
 	private static $shortcode_config = array();
+	// holds templates once they have been loaded
+	private static $active_templates = array();
 
 
 
@@ -51,6 +53,7 @@ class PL_Shortcode_CPT {
 		// embedded sc support (fetch-widget.js)
 		add_action( 'wp_ajax_handle_widget_script', array( $this, 'handle_iframe_cross_domain' ) );
 		add_action( 'wp_ajax_nopriv_handle_widget_script', array( $this, 'handle_iframe_cross_domain' ) );
+ 		add_action( 'template_redirect', array($this, 'post_type_templating') );
 	}
 
 	/**
@@ -105,22 +108,48 @@ class PL_Shortcode_CPT {
 			if (empty(self::$shortcodes[$shortcode])) {
 				return array();
 			}
-			error_log(__FUNCTION__."shortcode:$shortcode");
-			if (empty(self::$shortcode_config[$shortcode]) || $with_help || $with_choices) {
+			if (empty(self::$shortcode_config[$shortcode]) || $with_choices || $with_help) {
 				$instance = self::$shortcodes[$shortcode];
 				self::$shortcode_config[$shortcode] = $instance->get_args($with_choices, $with_help);
 			}
 			return self::$shortcode_config[$shortcode];
 		}
-		if (empty(self::$shortcode_config) || $with_help || $with_choices) {
+		if (empty(self::$shortcode_config) || $with_choices || $with_help) {
 			foreach(self::$shortcodes as $sc => $instance){
-				error_log("\n".__FUNCTION__.": shortcode:$sc");
 				self::$shortcode_config[$sc] = $instance->get_args($with_choices, $with_help);
 			}
 		}
 		return self::$shortcode_config;
 	}
 
+
+	/**
+	 * Get the body for a shortcode's output from a template.
+	 * Cache it once loaded so we don't keep reloading for listing calls.
+	 */
+	public static function get_snippet_body($shortcode, $template_name = '') {
+		$html = '';
+		$tid = $template_name==''?'_':$template_name;
+		if (empty(self::$active_templates[$shortcode][$tid])) {
+			$template = PL_Shortcode_CPT::load_template($template_name, $shortcode);
+			if (!empty($template['snippet_body'])) {
+				$html = trim($template['snippet_body']);
+			}
+			self::$active_templates[$shortcode][$tid] = $html;
+		}
+		return self::$active_templates[$shortcode][$tid];
+	}
+
+	/**
+	 * Pass template and data to the shortcode's template handler
+	 */
+	public static function do_templatetags($shortcode, $template, $data) {
+		if (empty(self::$shortcodes[$shortcode])) {
+			return '';
+		}
+		$instance = self::$shortcodes[$shortcode];
+		return $instance->do_templatetags($template, $data);
+	}
 
 	/***************************************************
 	 * Admin pages
@@ -139,6 +168,23 @@ class PL_Shortcode_CPT {
 	/***************************************************
 	 * Custom Shortcode helper functions
 	 ***************************************************/
+
+	/**
+	 * Called when the post is being formatted for display by an embedded js tag for example
+	 * Make the shortcode and render it. The template will already have been rendered by the embedded js.
+	 * @param object $single	: post object
+	 * @param bool $skipdb
+	 */
+	public function post_type_templating($single, $skipdb = false) {
+		global $post;
+
+		if (!empty($post) && $post->post_type == 'pl_general_widget') {
+			$sc_str = $post->post_content;
+			$sc_options = $this->load_shortcode($post->ID);
+			include(PL_VIEWS_DIR . 'shortcode-embedded.php');
+			die;
+		}
+	}
 
 	/**
 	 * Called by js when editing - pass back enough info to generate the preview pane
@@ -222,7 +268,7 @@ class PL_Shortcode_CPT {
 	 * Handle cross-domain sc insertion using script embed.
 	 * This is called by fetch-widget when embedded - pass back the template, and dimensions
 	 * the embedded script will create an iframe wrapped with the template, then fetch the shortcode
-	 * inside the iframe by fetching the post id of this shortcode in sc_base.php  
+	 * inside the iframe by fetching the post id of this shortcode in sc_base.php
 	 * This allows the body of the form, map, etc to be the size specified by the shortcode.
 	 */
 	public function handle_iframe_cross_domain() {
@@ -230,7 +276,7 @@ class PL_Shortcode_CPT {
 		if( ! isset( $_GET['id'] ) ) {
 			die();
 		}
-			
+
 		// defaults
 		$args = array('width'=>'250', 'height'=>'250');
 
@@ -245,20 +291,27 @@ class PL_Shortcode_CPT {
 					$args[$key] = $val;
 				}
 			}
-			// return the template if one is set, to use css, before, after 
+			// return the template if one is set, to use css, before, after
 			if (!empty($sc['context'])) {
-				$args = array_merge($args, $this->load_template($sc['context'], $sc['shortcode']));
+				$template = $this->load_template($sc['context'], $sc['shortcode']);
+				if (!empty($template['before_widget'])) {
+					$template['before_widget'] = do_shortcode($template['before_widget']);
+				}
+				if (!empty($template['after_widget'])) {
+					$template['after_widget'] = do_shortcode($template['after_widget']);
+				}
+				$args = array_merge($args, $template);
 			}
 		}
-	
+
 		$args['width'] = ! empty( $_GET['width'] ) ? $_GET['width'] : $args['width'];
 		$args['height'] = ! empty( $_GET['height'] ) ? $_GET['height'] : $args['height'];
-	
+
 		unset( $args['action'] );
 		unset( $args['callback'] );
-	
+
 		$args['post_id'] = $_GET['id'];
-	
+
 		// setup url for js to request the shortcode in embedded form
 		$query = '&embedded=1';
 		if (!empty($args['widget_class'])) {
@@ -270,12 +323,12 @@ class PL_Shortcode_CPT {
 		} else {
 			$args['widget_url'] =  home_url() . '/?p=' . $_GET['id'] . $query;
 		}
-	
+
 		header("content-type: application/javascript");
 		echo $_GET['callback'] . '(' . json_encode( $args ) . ');';
 	}
-	
-	
+
+
 	/***************************************************
 	 * Custom Shortcode storage functions
 	 ***************************************************/
@@ -405,7 +458,7 @@ class PL_Shortcode_CPT {
 					if ($filter['group']) {
 						if (!empty($args[$filter['group']][$filter['attribute']])) {
 							$filters[$filter['group']][$filter['attribute']] = $args[$filter['group']][$filter['attribute']];
-						}						
+						}
 					}
 					elseif(!empty($args[$filter['attribute']])) {
 						$filters[$filter['attribute']] = $args[$filter['attribute']];
@@ -427,14 +480,13 @@ class PL_Shortcode_CPT {
 
 
 	/**
-	 * Have to save settings as a template in order for preview to work. 
+	 * Have to save settings as a template in order for preview to work.
 	 * Use the special id 'pls_<shortcode>__preview' for the preview template name.
 	 */
 	public function template_changed() {
 		$response = array();
 		$shortcode = (!empty($_POST['shortcode']) ? stripslashes($_POST['shortcode']) : '');
-		$shortcode_args = $this->get_shortcode_attrs();
-		if (!$shortcode || empty($shortcode_args[$shortcode]) || empty($_POST[$shortcode])) {
+		if (!$shortcode || empty(self::$shortcodes[$shortcode]) || empty($_POST[$shortcode])) {
 			die;
 		}
 		// set the defaults
@@ -454,8 +506,7 @@ class PL_Shortcode_CPT {
 	 */
 	public function template_preview() {
 		$shortcode = (!empty($_GET['shortcode']) ? stripslashes($_GET['shortcode']) : '');
-		$shortcode_args = $this->get_shortcode_attrs();
-		if (!$shortcode || empty($shortcode_args[$shortcode])) {
+		if (!$shortcode || empty(self::$shortcodes[$shortcode])) {
 			die;
 		}
 		// set the defaults
@@ -510,19 +561,19 @@ class PL_Shortcode_CPT {
 		global $wpdb;
 
 		return $wpdb->get_col("
-			SELECT DISTINCT($wpdb->postmeta.meta_value) 
+			SELECT DISTINCT($wpdb->postmeta.meta_value)
 				FROM $wpdb->postmeta JOIN (
 					SELECT $wpdb->posts.ID AS id
-					FROM $wpdb->postmeta 
-					JOIN $wpdb->posts ON $wpdb->posts.ID = $wpdb->postmeta.post_id 
-					AND $wpdb->posts.post_type = 'pl_general_widget' 
-					AND $wpdb->postmeta.meta_key = 'shortcode' 
-					AND $wpdb->postmeta.meta_value = '$shortcode') posts 
-				ON $wpdb->postmeta.post_id = posts.id 
+					FROM $wpdb->postmeta
+					JOIN $wpdb->posts ON $wpdb->posts.ID = $wpdb->postmeta.post_id
+					AND $wpdb->posts.post_type = 'pl_general_widget'
+					AND $wpdb->postmeta.meta_key = 'shortcode'
+					AND $wpdb->postmeta.meta_value = '$shortcode') posts
+				ON $wpdb->postmeta.post_id = posts.id
 				WHERE $wpdb->postmeta.meta_key='pl_cpt_template'");
 	}
-	
-	
+
+
 	/***************************************************
 	 * Shortcode Template storage functions
 	 * TODO: maybe move to model
@@ -554,7 +605,7 @@ class PL_Shortcode_CPT {
 			if (!in_array($id, $tpls)) {
 				// use default if there's no template or it's not found
 				$id = self::$shortcodes[$shortcode]->get_default_template_id();
-			}	
+			}
 			if (in_array($id, $tpls)) {
 				$template = array();
 				$filename = (trailingslashit(PL_VIEWS_SHORT_DIR) . trailingslashit($shortcode) . $id . '.php');
@@ -585,9 +636,9 @@ class PL_Shortcode_CPT {
 
 	public static function load_default_editor_template($shortcode) {
 		if (!empty(self::$shortcodes[$shortcode])) {
-			return self::load_template(self::$shortcodes[$shortcode]->get_default_editor_id(), $shortcode); 
+			return self::load_template(self::$shortcodes[$shortcode]->get_default_editor_id(), $shortcode);
 		}
-		return array();		
+		return array();
 	}
 
 	/**
@@ -615,8 +666,8 @@ class PL_Shortcode_CPT {
 			$id = 'pls_' . $shortcode . '__' . $count;
 			update_option('pl_shortcode_tpl_counter', $count);
 		}
-		$sc_args = self::get_shortcode_attrs();
-		$data = $sc_args[$shortcode]['template'] + array('shortcode'=>'', 'title'=>'');
+		$sc_args = self::get_shortcode_attrs($shortcode);
+		$data = $sc_args['template'] + array('shortcode'=>'', 'title'=>'');
 		foreach($data as $key => &$val) {
 			if (isset($atts[$key])) {
 				$val = stripslashes($atts[$key]);
@@ -742,8 +793,8 @@ class PL_Shortcode_CPT {
 		update_option($tpl_list_DB_key, $tpl_list);
 		return $tpl_list;
 	}
-	
-	
+
+
 	public static function get_listing_attributes($sort = false) {
 		global $PL_API_CUST_ATTR;
 
@@ -845,14 +896,14 @@ class PL_Shortcode_CPT {
 				$filters[$key.$attr['attribute'].'_max'] = array_merge($attr, array('attribute' => 'max_'.$attr['attribute'], 'label' => $label, 'multi'=>false));
 			}
 		}
-		
+
 		return $filters;
 	}
-	
+
 	private static function _attr_sort($a, $b) {
 		return strcmp($a['label'], $b['label']);
 	}
-	
+
 	private static function _cat_sort($a, $b) {
 		$comp = strcmp($a['cat'], $b['cat']);
 		if ($comp == 0) {

@@ -11,10 +11,6 @@ class PL_Featured_Listings_CPT extends PL_Search_Listing_CPT {
 
 	protected $title = 'Featured Listings';
 
-	protected $help =
-		'<p>
-		</p>';
-
 	protected $options = array(
 		'context'			=> array( 'type' => 'select', 'label' => 'Template', 'default' => '' ),
 		'width'				=> array( 'type' => 'int', 'label' => 'Width', 'default' => 250, 'description' => '(px)' ),
@@ -68,7 +64,7 @@ For example, you might want to include the [compliance] shortcode.',
 	}
 
 	/**
-	 * No additional options
+	 * Override search_listings
 	 */
 	public function get_options_list($with_choices = false) {
 		return $this->options;
@@ -81,7 +77,7 @@ For example, you might want to include the [compliance] shortcode.',
 		return array();
 	}
 
-	public static function shortcode_handler($atts, $content) {
+	public function shortcode_handler($atts, $content) {
 		$content = PL_Component_Entity::featured_listings_entity($atts);
 
 		return self::wrap('featured_listings', $content);

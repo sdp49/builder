@@ -953,11 +953,11 @@ To add some text to your listings:<br />
 		$shortcode = $context[0].'_'.$context[1];
 		$template_id = $context[2];
 
-		$snippet_body = PL_Shortcodes::get_active_snippet_body($shortcode, $template_id);
+		$snippet_body = PL_Shortcode_CPT::get_snippet_body($shortcode, $template_id);
 		if (empty($snippet_body)) {
 			return $item_html;
 		}
-		return PL_Featured_Listings_CPT::do_templatetags($snippet_body, $listing);
+		return PL_Shortcode_CPT::do_templatetags($shortcode, $snippet_body, $listing);
 	}
 
 	/**
@@ -971,7 +971,7 @@ To add some text to your listings:<br />
 		if (empty($template['snippet_body']) || trim($template['snippet_body'])=='') {
 			return $form;
 		}
-		return PL_Form_CPT::do_templatetags($template['snippet_body'], $form_html);
+		return PL_Shortcode_CPT::do_templatetags('search_form', $template['snippet_body'], $form_html);
 	}
 
 	/**
@@ -1044,11 +1044,11 @@ To add some text to your listings:<br />
 		self::$listing = $listing;
 		self::$listing_index = $index;
 
-		$snippet_body = PL_Shortcodes::get_active_snippet_body($shortcode, $context);
+		$snippet_body = PL_Shortcode_CPT::get_snippet_body($shortcode, $context);
 		if (empty($snippet_body)) {
 			return $caption_html;
 		}
-		return PL_Listing_Slideshow_CPT::do_templatetags($snippet_body, $listing);
+		return PL_Shortcode_CPT::do_templatetags($shortcode, $snippet_body, $listing);
 	}
 
 	// that would work fine for output styling, not caption-specific
@@ -1059,7 +1059,7 @@ To add some text to your listings:<br />
 		}
 		self::$listing = $data['listing'];
 
-		$snippet_body = PL_Shortcodes::get_active_snippet_body($shortcode, $context);
+		$snippet_body = PL_Shortcode_CPT::get_snippet_body($shortcode, $context);
 		return do_shortcode($snippet_body . $html);
 	}
 
@@ -1073,11 +1073,11 @@ To add some text to your listings:<br />
 		$shortcode = $context[0].'_'.$context[1];
 		$template_id = $context[2];
 
-		$snippet_body = PL_Shortcodes::get_active_snippet_body($shortcode, $template_id);
+		$snippet_body = PL_Shortcode_CPT::get_snippet_body($shortcode, $template_id);
 		if (empty($snippet_body)) {
 			return $item_html;
 		}
-		return PL_Search_Listing_CPT::do_templatetags($snippet_body, $listing);
+		return PL_Shortcode_CPT::do_templatetags($shortcode, $snippet_body, $listing);
 	}
 
 	/**
@@ -1090,7 +1090,7 @@ To add some text to your listings:<br />
 		// get the template attached as a context arg, 33 is the length of the filter prefix
 		$template = $context;
 
-		$snippet_body = PL_Shortcodes::get_active_snippet_body($shortcode, $template);
+		$snippet_body = PL_Shortcode_CPT::get_snippet_body($shortcode, $template);
 		return do_shortcode($snippet_body);
 	}
 

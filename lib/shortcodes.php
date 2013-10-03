@@ -111,18 +111,6 @@ class PL_Shortcodes {
 		return ob_get_clean();
 	}
 
-	/**
-	 * Get the body for a shortcode's output from a template
-	 */
-	public static function get_active_snippet_body ($shortcode, $template_name = '') {
-		$html = '';
-		$template = PL_Shortcode_CPT::load_template($template_name, $shortcode);
-		if (!empty($template['snippet_body'])) {
-			$html = trim($template['snippet_body']);
-		}
-		return $html;
-	}
-
 	public static function init_bootloader () {
 		ob_start();
 		?>
