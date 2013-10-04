@@ -608,14 +608,8 @@ class PL_Shortcode_CPT {
 			}
 			if (in_array($id, $tpls)) {
 				$template = array();
-				$filename = (trailingslashit(PL_VIEWS_SHORT_DIR) . trailingslashit($shortcode) . $id . '.php');
-				ob_start();
+				$filename = (trailingslashit(PL_VIEWS_SHORT_DIR) . trailingslashit($shortcode) . $id . '/template.php');
 				include $filename;
-				$raw = ob_get_clean();
-				// support old style built in templates
-				if (empty($template)) {
-					$template['snippet_body'] = $raw;
-				}
 				return array_merge($template, array('shortcode'=>$shortcode, 'title'=>$id));
 			}
 		}

@@ -131,17 +131,15 @@ abstract class PL_SC_Base {
 	public function get_builtin_templates($get_title = false) {
 		if (empty($this->default_tpls) || $get_title) {
 			if (file_exists($dir = PL_VIEWS_SHORT_DIR . $this->shortcode)) {
-				foreach (new DirectoryIterator($dir) as $fileInfo) {
-					if ($fileInfo->isDot()) continue;
-					$matches = array();
-					if (preg_match('/^(.+)\.php/', $fileInfo->getFilename(), $matches)) {
+				foreach (new DirectoryIterator($dir) as $fldrInfo) {
+					if ($fldrInfo->isDir() && file_exists($fldrInfo->getPathname().'/template.php')) {
 						$template = array();
 						if ($get_title) {
 							// get name from 'title' parameter in template if set, otherwise use filename
-							include $fileInfo->getPathname();
+							include $fldrInfo->getPathname().'template.php';
 						}
-						$template += array('title'=>$matches[1]);
-						$this->default_tpls[$matches[1]] = $template['title'];
+						$template += array('title'=>$fldrInfo->getFilename());
+						$this->default_tpls[$fldrInfo->getFilename()] = $template['title'];
 					}
 				}
 			}
