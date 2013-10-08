@@ -136,7 +136,7 @@ abstract class PL_SC_Base {
 						$template = array();
 						if ($get_title) {
 							// get name from 'title' parameter in template if set, otherwise use filename
-							include $fldrInfo->getPathname().'template.php';
+							include $fldrInfo->getPathname().'/template.php';
 						}
 						$template += array('title'=>$fldrInfo->getFilename());
 						$this->default_tpls[$fldrInfo->getFilename()] = $template['title'];
@@ -144,7 +144,7 @@ abstract class PL_SC_Base {
 				}
 			}
 		}
-		return $this->default_tpls;
+		return $get_title ? $this->default_tpls : array_keys($this->default_tpls);
 	}
 
 	/**

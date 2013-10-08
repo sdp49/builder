@@ -48,7 +48,7 @@ class PL_Shortcode_Tpl_Table extends WP_List_Table {
 			$shortcodes = PL_Shortcode_CPT::get_shortcode_list();
 			$sc_attr = PL_Shortcode_CPT::get_shortcode_attrs();
 			foreach($shortcodes as $shortcode=>$inst) {
-				$sc_tpls = PL_Shortcode_CPT::template_list($shortcode);
+				$sc_tpls = PL_Shortcode_CPT::template_list($shortcode, false, true);
 				$shortcode_name = $sc_attr[$shortcode]['title'];
 				$tpls_in_use = PL_Shortcode_CPT::templates_in_use($shortcode);
 				foreach($sc_tpls as $sc_tpl) {
