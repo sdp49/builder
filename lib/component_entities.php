@@ -852,7 +852,7 @@ To add some text to your listings:<br />
 		echo "property_ids: ['" . implode("','", $property_ids) . "'],";
 	}
 
-	private static function convert_filters($filters) {
+	public static function convert_filters($filters) {
 		$av_filters = PL_Shortcode_CPT::get_listing_filters();
 		ob_start();
 		if (is_array($filters)) {
