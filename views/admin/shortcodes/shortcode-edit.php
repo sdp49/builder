@@ -213,16 +213,6 @@ $nonce_action = 'update-' . $post_type . '_' . $post_ID;
 			<?php
 				// featured listings dialog
 				include PLS_OPTRM_DIR . '/views/featured-listings.php';
-				// Enqueue all required stylings and scripts
-				wp_enqueue_script('datatable', trailingslashit( PLS_JS_URL ) . 'libs/datatables/jquery.dataTables.js' , array( 'jquery'), NULL, true );
-				wp_enqueue_script('jquery-ui-core');
-				wp_enqueue_style('jquery-ui-datepicker');
-				wp_enqueue_script('jquery-ui-datepicker');
-				wp_enqueue_style('jquery-ui-dialog', OPTIONS_FRAMEWORK_DIRECTORY.'css/jquery-ui-1.8.22.custom.css');
-				wp_enqueue_script('jquery-ui-dialog');
-				wp_enqueue_script('options-custom', OPTIONS_FRAMEWORK_DIRECTORY.'js/options-custom.js', array('jquery'));
-				wp_enqueue_style('featured-listings', OPTIONS_FRAMEWORK_DIRECTORY.'css/featured-listings.css');
-				wp_enqueue_script('featured-listing', OPTIONS_FRAMEWORK_DIRECTORY.'js/featured-listing.js', array('jquery'));
 			?>
 		</div>
 

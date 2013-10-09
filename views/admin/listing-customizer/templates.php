@@ -7,10 +7,6 @@ if(!class_exists('PL_Listing_Tpl_Table')){
 $wp_list_table = new PL_Listing_Tpl_Table();
 $wp_list_table->prepare_items();
 
-
-PL_Router::load_builder_view('header.php');
-
-
 $notice = $message = '';
 $action = empty($_REQUEST['action']) ? '' : $_REQUEST['action'];
 $search = empty($_REQUEST['s']) ? '' : esc_attr($_REQUEST['s']);

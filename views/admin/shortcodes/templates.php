@@ -9,9 +9,6 @@ if(!class_exists('PL_Shortcode_Tpl_Table')){
 $wp_list_table = new PL_Shortcode_Tpl_Table();
 $wp_list_table->prepare_items();
 
-
-PL_Router::load_builder_view('header.php');
-
 $search = (!empty($_REQUEST['s']) ? esc_attr($_REQUEST['s']) : '');
 
 ?>

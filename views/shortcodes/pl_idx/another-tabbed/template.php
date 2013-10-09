@@ -2,7 +2,7 @@
 
 $template = array(
 
-'title' => 'Sample Tabbed Template',
+'title' => 'Another Tabbed Template',
 
 'css' => '
 
@@ -439,7 +439,7 @@ jQuery(function($) {
 
 'group' => 'Index',
 
-'description' => 'Some description of Sample Tabbed Template here....',
+'description' => 'Some description of Another Tabbed Template here....',
 
 'keywords' => 'tabs,map',
 

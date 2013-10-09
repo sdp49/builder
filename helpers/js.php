@@ -108,6 +108,13 @@ class PL_Js_Helper {
 		}
 
 		// Shortcodes and Shortcode Templates
+		if ($hook == 'placester_page_placester_shortcodes_idx_page') {
+			self::register_enqueue_if_not('shortcodes-admin', trailingslashit(PL_JS_ADMIN_URL) . 'shortcodes/idx-page.js', array('jquery-ui-datepicker'));
+
+			wp_localize_script('shortcodes-admin', 'autosaveL10n', array(
+				'saveAlert' => __('The changes you made will be lost if you navigate away from this page.')
+			));
+		}
 		if ($hook == 'placester_page_placester_shortcodes_shortcode_edit') {
 			self::register_enqueue_if_not('shortcodes-admin', trailingslashit(PL_JS_ADMIN_URL) . 'shortcodes/all.js', array('jquery-ui-datepicker'));
 			self::register_enqueue_if_not('datatable', trailingslashit(PLS_JS_URL) . 'libs/datatables/jquery.dataTables.js' , array('jquery'), NULL, true);

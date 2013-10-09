@@ -128,23 +128,26 @@ abstract class PL_SC_Base {
 	/**
 	 * Return array of templates for this shortcode supplied with the plugin.
 	 */
-	public function get_builtin_templates($get_title = false) {
-		if (empty($this->default_tpls) || $get_title) {
+	public function get_builtin_templates($get_details = false) {
+		if (empty($this->default_tpls) || $get_details) {
 			if (file_exists($dir = PL_VIEWS_SHORT_DIR . $this->shortcode)) {
 				foreach (new DirectoryIterator($dir) as $fldrInfo) {
 					if ($fldrInfo->isDir() && file_exists($fldrInfo->getPathname().'/template.php')) {
 						$template = array();
-						if ($get_title) {
+						if ($get_details) {
 							// get name from 'title' parameter in template if set, otherwise use filename
 							include $fldrInfo->getPathname().'/template.php';
+							if (file_exists($fldrInfo->getPathname().'/screenshot.gif')) {
+								$template['screenshot'] = PL_VIEWS_SHORT_URL . $this->shortcode . '/'. $fldrInfo->getFilename().'/screenshot.gif';
+							}
 						}
 						$template += array('title'=>$fldrInfo->getFilename());
-						$this->default_tpls[$fldrInfo->getFilename()] = $template['title'];
+						$this->default_tpls[$fldrInfo->getFilename()] = $template;
 					}
 				}
 			}
 		}
-		return $get_title ? $this->default_tpls : array_keys($this->default_tpls);
+		return $this->default_tpls;
 	}
 
 	/**

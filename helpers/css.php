@@ -89,6 +89,10 @@ class PL_Css_Helper {
 			self::register_enqueue_if_not('settings-filtering', trailingslashit(PL_CSS_ADMIN_URL) . 'settings/filtering.css');					
 		}
 
+		if ($hook == 'placester_page_placester_shortcodes_idx_page') {
+			self::register_enqueue_if_not('placester-widget', trailingslashit(PL_CSS_ADMIN_URL) . 'shortcodes/idx-page.css');
+		}
+		
 		if ($hook == 'placester_page_placester_shortcodes_shortcode_edit') {
 			self::register_enqueue_if_not('featured-listings', trailingslashit(OPTIONS_FRAMEWORK_DIRECTORY) . 'css/featured-listings.css');
 			self::register_enqueue_if_not('placester-widget', trailingslashit(PL_CSS_ADMIN_URL) . 'shortcodes/all.css');

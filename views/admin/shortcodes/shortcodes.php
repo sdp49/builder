@@ -11,8 +11,6 @@ $wp_list_table = new PL_Shortcodes_Table();
 $wp_list_table->prepare_items();
 $pagenum = $wp_list_table->get_pagenum();
 
-
-PL_Router::load_builder_view('header.php');
 ?>
 <div class="wrap pl-sc-wrap">
 	<?php echo PL_Helper_Header::pl_subpages('placester_shortcodes', $shortcode_subpages, 'Custom Shortcodes'); ?>

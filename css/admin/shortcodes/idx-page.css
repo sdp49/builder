@@ -1,0 +1,93 @@
+/*
+ * IDX Page Generator
+ */
+ 
+.pl_tmplts {
+	overflow: hidden;
+}
+
+.pl_tmplt {
+	display: inline-block;
+	margin-right: 10px;
+	overflow: hidden;
+	padding: 20px 20px 20px 0;
+	vertical-align: top;
+	width: 300px;
+}
+
+.pl_tmplt .screenshot {
+	display: block;
+	margin-bottom: 10px;
+	border: 1px #ddd solid;
+	background-color: #f1f1f1;
+	width: 300px;
+	height: 300px;
+	overflow: hidden;
+}
+
+.pl_tmplt .screenshot img {
+	width: 300px;
+}
+
+
+/* Filter list for sc editor */
+.pl_filters {
+	float: left;
+}
+.pl_filters section {
+	display: none;
+}
+#pl_filter_picker .pl_filters label {
+	display: none;
+}
+#pl_filter_picker input {
+	display: block;
+	float: left;
+	margin: 0 .5em .5em 0;
+	height: auto;
+}
+#pl_filter_picker select {
+	display: block;
+	float: left;
+	margin: 0 .5em .5em 0;
+}
+#pl_filter_picker select[multiple] {
+	height: 8em;
+	min-width: 15em;
+}
+#pl_filter_picker input[type="checkbox"] {
+	clear: both;
+	margin: .3em .5em 0 0;
+}
+#pl_filter_picker input.form_item_int {
+	width: 5em;
+}
+#pl_filter_picker input.form_item_text {
+	width: 20em;
+}
+.add_filter {
+	display: block;
+	float: left;
+}
+.active_filters {
+	clear: both;
+}
+.active_filter {
+	clear: both;
+	margin-top: .3em;
+	border-top: 1px solid #dfdfdf;
+	padding-top: .3em;
+	overflow: hidden;
+}
+.active_filter label,
+.active_filter .filter_value {
+	display: block;
+	float: left;
+	padding: 0 1em 0 0;
+	width: 40%;
+}
+.active_filter .remove_filter {
+	display: block;
+	float: right;
+}
+

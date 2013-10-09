@@ -107,6 +107,10 @@ class PL_Router {
 		self::router('integrations.php', array());
 	}
 
+	public static function shortcodes_idx_page () {
+		self::load_builder_view('shortcodes/idx-page.php');
+	}
+	
 	public static function shortcodes () {
 		self::router('shortcodes/shortcodes.php', array());
 	}
