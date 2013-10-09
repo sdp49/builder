@@ -13,7 +13,7 @@ $PL_CUSTOMIZER_THEMES = array(
 		'Bluestone' => 'bluestone',
 		'Slate' => 'slate'
 	),
-	'Premium' => array(/*
+	'Premium' => array(
         'Bethesda' => 'bethesda',
         'Charlotte' => 'charlotte',
         'Franklin' => 'franklin',
@@ -23,7 +23,7 @@ $PL_CUSTOMIZER_THEMES = array(
         'Phoenix' => 'phoenix',
         'Plymouth' => 'plymouth',
         'Toronto' => 'toronto',
-        'Sedona' => 'sedona'*/
+        'Sedona' => 'sedona'
 	)
 );
 
