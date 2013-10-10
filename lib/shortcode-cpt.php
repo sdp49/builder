@@ -31,8 +31,9 @@ class PL_Shortcode_CPT {
 
 		// get list of shortcodes that can be widgetized:
 		$path = trailingslashit( PL_LIB_DIR ) . 'shortcodes/';
-		$ignore = array('sc_base.php', 'pl_neighborhood.php');
+		$ignore = array('sc_base.php', 'search_listings.php', 'pl_neighborhood.php');
 		include_once($path . 'sc_base.php');
+		include_once($path . 'search_listings.php');
 		if ($handle = opendir($path)) {
 			while (false !== ($file = readdir($handle))) {
 				if (pathinfo($file, PATHINFO_EXTENSION) == 'php' && !(in_array($file, $ignore))) {
