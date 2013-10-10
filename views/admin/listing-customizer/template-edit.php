@@ -172,7 +172,7 @@ $tpl_args = PL_Listing_Customizer::get_template_args();
 
 									<div id="misc-publishing-actions">
 										<div class="misc-pub-section">
-											<label for="pl_sc_tpl_csc_link">Status:</label> <span
+											<span>Status:</span> <span
 												id="post-status-display">
 												<?php echo ($id=='' ? __('Draft') : ($used_by ? __('In Use') : __('Not In Use')))?></span>
 										</div>

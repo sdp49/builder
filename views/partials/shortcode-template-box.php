@@ -77,7 +77,7 @@ $pl_shortcodes_attr = PL_Shortcode_CPT::get_shortcode_attrs(null, false, true);
 				?>
 
 			</div>
-
+			
 			<!-- Help -->
 			<div id="pl__tpl__help" class="span2">
 			<?php foreach( $pl_shortcodes_attr as $pl_shortcode=>$sct_args ) :?>
