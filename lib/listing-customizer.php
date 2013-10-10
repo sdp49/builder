@@ -108,7 +108,7 @@ You can use any valid CSS in this field to customize the listing, which will als
 		$tpls = self::get_builtin_templates();
 		if (in_array($id, array_keys($tpls))) {
 			$template = array();
-			$filename = PL_VIEWS_DIR . 'listings/' . $id . '.php';
+			$filename = PL_VIEWS_DIR . 'listings/' . $id . '/template.php';
 			include $filename;
 			return ($template + array('title'=>$id));
 		}
@@ -212,8 +212,8 @@ You can use any valid CSS in this field to customize the listing, which will als
 
 		// add default templates
 		$default_tpls = self::get_builtin_templates(true);
-		foreach ($default_tpls as $id => $title) {
-			$tpl_type_map[$id] = array('type'=>'default', 'title'=>$title, 'id'=>$id);
+		foreach ($default_tpls as $id => $template) {
+			$tpl_type_map[$id] = array('type'=>'default', 'title'=>$template['title'], 'id'=>$id, 'template'=>$template);
 		}
 
 		// get custom templates
@@ -230,20 +230,21 @@ You can use any valid CSS in this field to customize the listing, which will als
 	/**
 	 * Return a list of built-in templates as id/name pairs. By default does not fetch the actual name.
 	 */
-	public static function get_builtin_templates($get_title = false) {
+	public static function get_builtin_templates($get_details = false) {
 		if (empty(self::$default_tpls)) {
 			if (file_exists($dir = PL_VIEWS_DIR . 'listings')) {
-				foreach (new DirectoryIterator($dir) as $fileInfo) {
-					if ($fileInfo->isDot()) continue;
-					$matches = array();
-					if (preg_match('/^(.+)\.php$/', $fileInfo->getFilename(), $matches)) {
+				foreach (new DirectoryIterator($dir) as $fldrInfo) {
+					if ($fldrInfo->isDir() && file_exists($fldrInfo->getPathname().'/template.php')) {
 						$template = array();
-						if ($get_title) {
+						if ($get_details) {
 							// get name from 'title' parameter in template if set, otherwise use filename
-							include $fileInfo->getPathname();
+							include $fldrInfo->getPathname().'/template.php';
+							if (file_exists($fldrInfo->getPathname().'/screenshot.gif')) {
+								$template['screenshot'] = PL_VIEWS_URL.'listings/'.$fldrInfo->getFilename().'/screenshot.gif';
+							}
 						}
-						$template += array('title'=>$matches[1]);
-						self::$default_tpls[$matches[1]] = $template['title'];
+						$template += array('title'=>$fldrInfo->getFilename());
+						self::$default_tpls[$fldrInfo->getFilename()] = $template;
 					}
 				}
 			}
