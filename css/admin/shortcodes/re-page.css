@@ -2,6 +2,20 @@
  * IDX Page Generator
  */
  
+.pl_repage_group {
+}
+
+.pl_repage_idx {
+	overflow: hidden;
+	float: left;
+	margin-right: 20px;
+	border-right: 1px #ddd solid;
+	width: 322px;
+}
+
+.pl_repage_listings {
+}
+
 .pl_tmplts {
 	overflow: hidden;
 }
@@ -10,7 +24,7 @@
 	display: inline-block;
 	margin-right: 10px;
 	overflow: hidden;
-	padding: 20px 20px 20px 0;
+	padding: 0 20px 20px 0;
 	vertical-align: top;
 	width: 300px;
 }

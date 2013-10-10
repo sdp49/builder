@@ -68,7 +68,7 @@ class PL_Integration_Helper {
 				$page_args = array(
 						'post_name' => 'property-search',
 						'post_title' => 'Real Estate Search',
-						'post_content' => "[search_form]\n[search_listings]\n",
+						'post_content' => "[pl_idx]\n",
 						'post_type' => 'page',
 						'post_status' => 'publish',
 				);

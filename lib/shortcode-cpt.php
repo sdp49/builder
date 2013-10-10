@@ -27,7 +27,7 @@ class PL_Shortcode_CPT {
 		self::$shortcodes[$shortcode] = $instance;
 	}
 
-	public function __construct() {
+	public static function init() {
 
 		// get list of shortcodes that can be widgetized:
 		$path = trailingslashit( PL_LIB_DIR ) . 'shortcodes/';
@@ -42,24 +42,25 @@ class PL_Shortcode_CPT {
 			closedir($handle);
 		}
 
-		add_action( 'init', array( $this, 'register_post_type' ) );
+		add_action( 'init', array( __CLASS__, 'register_post_type' ) );
 		// sc editing
-		add_filter( 'get_edit_post_link', array( $this, 'shortcode_edit_link' ), 10, 3);
-		add_action( 'wp_ajax_pl_sc_changed', array( $this, 'ajax_shortcode_changed') );
-		add_action( 'wp_ajax_pl_sc_preview', array( $this, 'shortcode_preview') );
+		add_filter( 'get_edit_post_link', array( __CLASS__, 'shortcode_edit_link' ), 10, 3);
+		add_action( 'wp_ajax_pl_sc_changed', array( __CLASS__, 'ajax_shortcode_changed') );
+		add_action( 'wp_ajax_pl_sc_preview', array( __CLASS__, 'shortcode_preview') );
 		// tpl editing
-		add_action( 'wp_ajax_pl_sc_template_changed', array( $this, 'template_changed') );
-		add_action( 'wp_ajax_pl_sc_template_preview', array( $this, 'template_preview') );
+		add_action( 'wp_ajax_pl_sc_template_changed', array( __CLASS__, 'template_changed') );
+		add_action( 'wp_ajax_pl_sc_template_preview', array( __CLASS__, 'template_preview') );
 		// embedded sc support (fetch-widget.js)
-		add_action( 'wp_ajax_handle_widget_script', array( $this, 'handle_iframe_cross_domain' ) );
-		add_action( 'wp_ajax_nopriv_handle_widget_script', array( $this, 'handle_iframe_cross_domain' ) );
- 		add_action( 'template_redirect', array($this, 'post_type_templating') );
+		add_action( 'wp_ajax_handle_widget_script', array( __CLASS__, 'handle_iframe_cross_domain' ) );
+		add_action( 'wp_ajax_nopriv_handle_widget_script', array( __CLASS__, 'handle_iframe_cross_domain' ) );
+ 		add_action( 'template_redirect', array(__CLASS__, 'post_type_templating') );
 	}
+	
 
 	/**
 	 * Register the CPT used to create customized shortcodes
 	 */
-	public function register_post_type() {
+	public static function register_post_type() {
 
 		// custom post type to hold a customized shortcode
 		$args = array(
@@ -156,7 +157,7 @@ class PL_Shortcode_CPT {
 	 ***************************************************/
 
 
-	public function shortcode_edit_link($url, $ID, $context) {
+	public static function shortcode_edit_link($url, $ID, $context) {
 		global $pagenow;
 		if (get_post_type($ID) == 'pl_general_widget') {
 			return admin_url('admin.php?page=placester_shortcodes_shortcode_edit&ID='.$ID);
@@ -175,12 +176,12 @@ class PL_Shortcode_CPT {
 	 * @param object $single	: post object
 	 * @param bool $skipdb
 	 */
-	public function post_type_templating($single, $skipdb = false) {
+	public static function post_type_templating($single, $skipdb = false) {
 		global $post;
 
 		if (!empty($post) && $post->post_type == 'pl_general_widget') {
 			$sc_str = $post->post_content;
-			$sc_options = $this->load_shortcode($post->ID);
+			$sc_options = self::load_shortcode($post->ID);
 			include(PL_VIEWS_DIR . 'shortcode-embedded.php');
 			die;
 		}
@@ -189,19 +190,19 @@ class PL_Shortcode_CPT {
 	/**
 	 * Called by js when editing - pass back enough info to generate the preview pane
 	 */
-	public function ajax_shortcode_changed() {
+	public static function ajax_shortcode_changed() {
 		$response = array('sc_str'=>'');
 
 		// generate shortcode string
 		if ( isset($_POST['shortcode']) && !empty($_POST[$_POST['shortcode']])) {
 			$args = array_merge($_POST, $_POST[$_POST['shortcode']]);
-			$response['sc_long_str'] = $this->generate_shortcode_str($_POST['shortcode'], $args);
+			$response['sc_long_str'] = self::generate_shortcode_str($_POST['shortcode'], $args);
 			$response['sc_str'] = '';
 			$response['width'] = $args['width'];
 			$response['height'] = $args['height'];
 		}
 
-		header( "Content-Type: application/json" );
+		header( 'Content-Type: application/json' );
 		echo json_encode($response);
 		die;
 	}
@@ -220,14 +221,14 @@ class PL_Shortcode_CPT {
 	/**
 	 * Generate preview for the shortcode edit page.
 	 */
-	public function shortcode_preview() {
+	public static function shortcode_preview() {
 
 		$sc_str = '';
 		$sc_id = (!empty($_GET['sc_id']) ? stripslashes($_GET['sc_id']) : '');
 		if ($sc_id) {
-			$sc_vals = $this->load_shortcode($sc_id);
+			$sc_vals = self::load_shortcode($sc_id);
 			if (!empty($sc_vals)) {
-				$sc_str = $this->generate_shortcode_str($sc_vals['shortcode'], $sc_vals);
+				$sc_str = self::generate_shortcode_str($sc_vals['shortcode'], $sc_vals);
 			}
 		}
 		if (!empty($_GET['sc_str'])) {
@@ -271,7 +272,7 @@ class PL_Shortcode_CPT {
 	 * inside the iframe by fetching the post id of this shortcode in sc_base.php
 	 * This allows the body of the form, map, etc to be the size specified by the shortcode.
 	 */
-	public function handle_iframe_cross_domain() {
+	public static function handle_iframe_cross_domain() {
 		// don't process if widget ID is missing
 		if( ! isset( $_GET['id'] ) ) {
 			die();
@@ -281,7 +282,7 @@ class PL_Shortcode_CPT {
 		$args = array('width'=>'250', 'height'=>'250');
 
 		// get the post and the meta
-		$sc = $this->load_shortcode($_GET['id']);
+		$sc = self::load_shortcode($_GET['id']);
 		if (!empty($sc)) {
 			// clean it up to just the options needed to wrap the shortcode body
 			// (width, height, context, etc)
@@ -293,7 +294,7 @@ class PL_Shortcode_CPT {
 			}
 			// return the template if one is set, to use css, before, after
 			if (!empty($sc['context'])) {
-				$template = $this->load_template($sc['context'], $sc['shortcode']);
+				$template = self::load_template($sc['context'], $sc['shortcode']);
 				if (!empty($template['before_widget'])) {
 					$template['before_widget'] = do_shortcode($template['before_widget']);
 				}
@@ -483,7 +484,7 @@ class PL_Shortcode_CPT {
 	 * Have to save settings as a template in order for preview to work.
 	 * Use the special id 'pls_<shortcode>__preview' for the preview template name.
 	 */
-	public function template_changed() {
+	public static function template_changed() {
 		$response = array();
 		$shortcode = (!empty($_POST['shortcode']) ? stripslashes($_POST['shortcode']) : '');
 		if (!$shortcode || empty(self::$shortcodes[$shortcode]) || empty($_POST[$shortcode])) {
@@ -493,7 +494,7 @@ class PL_Shortcode_CPT {
 		$template_id = 'pls_'.$shortcode.'___preview';
 
 		$args = wp_parse_args($_POST[$shortcode], array('shortcode'=>$shortcode, 'title'=>'_preview'));
-		$this->save_custom_template($template_id, $args);
+		self::save_custom_template($template_id, $args);
 
 		header( "Content-Type: application/json" );
 		echo json_encode($response);
@@ -504,7 +505,7 @@ class PL_Shortcode_CPT {
 	 * Generate a preview of the template.
 	 * We always use the same id 'pls_<shortcode>__preview' for the template name.
 	 */
-	public function template_preview() {
+	public static function template_preview() {
 		$shortcode = (!empty($_GET['shortcode']) ? stripslashes($_GET['shortcode']) : '');
 		if (!$shortcode || empty(self::$shortcodes[$shortcode])) {
 			die;
@@ -512,7 +513,7 @@ class PL_Shortcode_CPT {
 		// set the defaults
 		$template_id = 'pls_'.$shortcode.'___preview';
 		$args = wp_parse_args($_GET, array('context'=>$template_id));
-		$sc_str = $this->generate_shortcode_str($shortcode, $args);
+		$sc_str = self::generate_shortcode_str($shortcode, $args);
 
 		include(PL_VIEWS_ADMIN_DIR . 'shortcodes/preview.php');
 		die;
@@ -908,4 +909,4 @@ class PL_Shortcode_CPT {
 	}
 }
 
-new PL_Shortcode_CPT();
+PL_Shortcode_CPT::init();

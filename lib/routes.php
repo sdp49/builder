@@ -32,7 +32,7 @@ class PL_Router {
 		include_once(trailingslashit($directory) . $template);
 	}
 
-	private static function load_builder_view ($template, $directory = PL_VIEWS_ADMIN_DIR, $params = array()) {
+	public static function load_builder_view ($template, $directory = PL_VIEWS_ADMIN_DIR, $params = array()) {
 		ob_start();
 		if (!empty($params)) {
 			extract($params);
@@ -107,8 +107,8 @@ class PL_Router {
 		self::router('integrations.php', array());
 	}
 
-	public static function shortcodes_idx_page () {
-		self::load_builder_view('shortcodes/idx-page.php');
+	public static function shortcodes_re_page () {
+		self::router('shortcodes/re-page.php', array());
 	}
 	
 	public static function shortcodes () {

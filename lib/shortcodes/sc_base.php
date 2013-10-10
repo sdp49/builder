@@ -138,7 +138,7 @@ abstract class PL_SC_Base {
 							// get name from 'title' parameter in template if set, otherwise use filename
 							include $fldrInfo->getPathname().'/template.php';
 							if (file_exists($fldrInfo->getPathname().'/screenshot.gif')) {
-								$template['screenshot'] = PL_VIEWS_SHORT_URL . $this->shortcode . '/'. $fldrInfo->getFilename().'/screenshot.gif';
+								$template['screenshot'] = PL_VIEWS_SHORT_URL.$this->shortcode.'/'.$fldrInfo->getFilename().'/screenshot.gif';
 							}
 						}
 						$template += array('title'=>$fldrInfo->getFilename());
