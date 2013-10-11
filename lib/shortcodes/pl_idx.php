@@ -272,7 +272,7 @@ For example, you might want to include the [compliance] shortcode.',
 		if (empty(self::$template_data['template']['search_listings'])) {
 			return $item_html;
 		}
-		return PL_Search_Listing_CPT::do_templatetags(self::$template_data['template']['search_listings'], $listing);
+		return PL_Shortcode_CPT::do_templatetags('search_listings', self::$template_data['template']['search_listings'], $listing);
 	}
 
 	/**
