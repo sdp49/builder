@@ -41,7 +41,7 @@ class PL_Js_Helper {
 		}
 
 		// NOTE:  This ensures that pages with the proper hook prefix make it past this point... (i.e., only plugin admin pages)
-		if (strpos($hook, 'placester_page_placester_') === false) { return; }
+		if (strpos($hook, 'page_placester_') === false) { return; }
 
 		// Load JS available to all of the plugin's pages...
 		self::register_enqueue_if_not('global', trailingslashit(PL_JS_ADMIN_URL) . 'global.js', array('jquery-ui-core', 'jquery-ui-dialog'));
@@ -108,6 +108,9 @@ class PL_Js_Helper {
 		}
 
 		// Shortcodes and Shortcode Templates
+		if ($hook == 'pages_page_placester_re_page_creator') {
+			self::register_enqueue_if_not('shortcodes-filters', trailingslashit(PL_JS_ADMIN_URL) . 'shortcodes/re-page.js', array('jquery-ui-datepicker'));
+		}
 		if ($hook == 'placester_page_placester_shortcodes_shortcode_edit') {
 			self::register_enqueue_if_not('shortcodes-admin', trailingslashit(PL_JS_ADMIN_URL) . 'shortcodes/all.js', array('jquery-ui-datepicker'));
 			self::register_enqueue_if_not('datatable', trailingslashit(PLS_JS_URL) . 'libs/datatables/jquery.dataTables.js' , array('jquery'), NULL, true);

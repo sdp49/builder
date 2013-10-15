@@ -197,26 +197,49 @@ For example, you might want to include the [compliance] shortcode.',
 				// if we have a template then use it for the shortcode components
 				add_filter('pls_listings_search_form_outer_'.$comp_context, array(__CLASS__,'pls_listings_search_form_outer_callback'), 10, 7);
 				add_filter('pls_listings_search_form_inner_'.$comp_context, array(__CLASS__,'pls_listings_search_form_inner_callback'), 10, 5);
+				// we dont have a wrapper for the listings and the filter for individual listings has to be registered where accessible by ajax (ie in the init)
 			}
 		}
 
-		return self::wrap('idx', apply_filters('pls_idx_html_' . $atts['context'], '', self::$template_data, $atts));
+		return self::wrap('idx', apply_filters('pls_idx_html_' . $atts['context'], '', self::$template_data, $atts, $filters));
 	}
 
-	public function pl_idx_html_callback($html, $form_data, $request) {
+	private function extract_filters($content) {
+		$filters = array();
+		
+		if (preg_match_all('/\[\s*pl_filter (.*)\]/', $content, $raw_filters)) {
+			unset($raw_filters[0]);
+			foreach ($raw_filters as $raw_filter) {
+				if (preg_match('/\bgroup\s*=\s*(\'([a-zA-Z0-9_]+)\'|([a-zA-Z0-9_]+))/', $raw_filter[0], $raw_filter_attr)) {
+					$group = $raw_filter_attr[2];
+					if (preg_match('/\bfilter\s*=\s*(\'([a-zA-Z0-9_]+)\'|([a-zA-Z0-9_]+))/', $raw_filter[0], $raw_filter_attr)) {
+						$filter = $raw_filter_attr[2];
+						if (preg_match('/\bvalue\s*=\s*(\'([a-zA-Z0-9_]+)\'|([a-zA-Z0-9_]+))/', $raw_filter[0], $raw_filter_attr)) {
+							$value = $raw_filter_attr[2];
+							$filters[$group][$filter] = $value;
+						}
+					}
+				}
+			}
+		}
+
+		return $filters;
+	}
+
+	public function pl_idx_html_callback($html, $template_data, $atts = array()) {
 		wp_enqueue_style('jquery-ui', trailingslashit(PLS_JS_URL) . 'libs/jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');
 		wp_enqueue_script('jquery');
 		wp_enqueue_script('jquery-ui-core');
 		wp_enqueue_script('jquery-ui-tabs');
 
 		$body = $header = $footer = '';
-		self::$template_data['template'] = $template = PL_Shortcode_CPT::load_template($request['context'], 'pl_idx');
+		self::$template_data['template'] = $template = PL_Shortcode_CPT::load_template($atts['context'], 'pl_idx');
 
 		$header .= empty($template['css']) ? '' : '<style type="text/css">'.$template['css'].'</style>';
 		$header .= empty($template['before_widget']) ? '' : do_shortcode($template['before_widget']);
 		$footer .= empty($template['javascript']) ? '' : '<script type="text/javascript">'.$template['javascript'].'</script>';
 		$footer .= empty($template['after_widget']) ? '' : do_shortcode($template['after_widget']);
-		$body = $this->do_templatetags($template['snippet_body'], $form_data);
+		$body = $this->do_templatetags($template['snippet_body'], $template_data);
 		return $header.$body.$footer;
 	}
 

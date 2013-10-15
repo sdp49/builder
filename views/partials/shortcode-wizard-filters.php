@@ -3,9 +3,7 @@
 $sct_args = PL_Shortcode_CPT::get_shortcode_attrs('pl_idx', true);
 
 ?>
-		<div id="pl_filter_picker" style="display:none;">
-			<h2>Real Estate Page Creator - Filter Results</h2>
-			<p>You can add filters if you want to limit the search results.</p>
+		<div id="pl_filter_picker">
 			<p><strong>Note:</strong> if you wish to limit searches to certain locations or property types for the whole site, then please use the <a href="<?php echo admin_url('admin.php?page=placester_settings_filtering')?>" target="_blank">Global Property Filtering</a> settings.</p> 
 			<?php
 				$js_filters = array();
@@ -52,8 +50,7 @@ $sct_args = PL_Shortcode_CPT::get_shortcode_attrs('pl_idx', true);
 			<div class="active_filters"></div>
 			<script>var active_filters = <?php echo json_encode($js_filters) ?>;</script>
 			
-			<p class="submit"><input type="submit" name="submit" id="submit" class="button-primary" value="Next"></p>
+			<p class="submit"><input type="submit" name="submit_prev" class="button-primary" value="Back"><input type="submit" name="submit_next" class="button-primary" value="Next"></p>
 			
 		</div>
-		
-	</form>
+

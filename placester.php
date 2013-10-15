@@ -234,6 +234,9 @@ function placester_admin_menu () {
         add_submenu_page( 'placester', $name, $name, 'edit_pages', 'placester_settings' . $page_url, array('PL_Router','settings' . $page_url) );
     }
 
+    $hook = add_pages_page( 'Real Estate Page Creator', 'Real Estate Page Creator', 'edit_pages', 'placester_re_page_creator', array('PL_Router', 're_page_creator') );
+    PL_Shortcodes::admin_buffer_op($hook);
+    
     global $shortcode_subpages;
     $shortcode_subpages = array(
         'Real Estate Page Creator' => '_re_page',

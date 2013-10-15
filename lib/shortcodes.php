@@ -76,7 +76,7 @@ class PL_Shortcodes {
 			$av_filter = $group . '.' . $av_filter;
 		}
 		$jsfilter = '';
-		if (strpos($value, '||') !==false ) {//print_r($atts);die;
+		if (strpos($value, '||') !==false ) {
 			$values = explode('||', $value);
 			if (count($values) > 1) {
 				$filterstr .= '[]';

@@ -107,7 +107,7 @@ class PL_Router {
 		self::router('integrations.php', array());
 	}
 
-	public static function shortcodes_re_page () {
+	public static function re_page_creator () {
 		self::router('shortcodes/re-page.php', array());
 	}
 	
