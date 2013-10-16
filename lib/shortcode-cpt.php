@@ -199,8 +199,8 @@ class PL_Shortcode_CPT {
 			$args = array_merge($_POST, $_POST[$_POST['shortcode']]);
 			$response['sc_long_str'] = self::generate_shortcode_str($_POST['shortcode'], $args);
 			$response['sc_str'] = '';
-			$response['width'] = $args['width'];
-			$response['height'] = $args['height'];
+			$response['width'] = empty($args['width']) ? '200' : $args['width'];
+			$response['height'] = empty($args['height']) ? '300' : $args['height'];
 		}
 
 		header( 'Content-Type: application/json' );

@@ -13,9 +13,7 @@ class PL_IDX_CPT extends PL_SC_Base {
 	protected $help = '';
 
 	protected $options = array(
-		'context'				=> array('type' => 'select', 'label' => 'Template', 'default' => '' ),
-		'width'					=> array('type' => 'int', 'label' => 'Width(px)', 'default' => 600 ),
-		'height'				=> array('type' => 'int', 'label' => 'Height(px)', 'default' => 600 ),
+		'context'			=> array('type' => 'select', 'label' => 'Template', 'default' => '' ),
 	);
 
 	protected $subcodes = array(
@@ -112,6 +110,7 @@ For example, you might want to include the [compliance] shortcode.',
 		if ($with_help) {
 			foreach ($ret['template'] as $field=>$fattrs) {
 				if ($field == 'snippet_body') {
+					// build help text
 					$template_tags = '<h4>IDX Template Tags</h4>';
 					$template_tags .= '<p>Use the following template tags to lay out your idx template.
 						You can only use each one once, but you can use JavaScript to manipulate how each one appears
@@ -158,23 +157,30 @@ For example, you might want to include the [compliance] shortcode.',
 	public function shortcode_handler($atts, $content) {
 		$this->template_data = array();
 
-		add_filter('pl_filter_wrap_filter', array(__CLASS__, 'js_filter_str'));
+		$listing_filters = array();
 		$filters = '';
 		if (!empty($content)) {
-			$filters = do_shortcode(strip_tags($content));
-			$filters = str_replace('&nbsp;', '', $filters);
+			$listing_filters = self::parse_filters($content);
 		}
-
 		if (!empty($atts['id'])) {
 			// if we are a custom shortcode fetch the record so we can display the correct filters
 			// for the js
-			$listing_filters = PL_Shortcode_CPT::get_shortcode_filters($this->shortcode, $atts['id']);
-			$filters = PL_Component_Entity::convert_filters($listing_filters) . $filters;
+			$listing_filters += PL_Shortcode_CPT::get_shortcode_filters($this->shortcode, $atts['id']);
+			// and template and other attributes
+			$options = PL_Shortcode_CPT::get_shortcode_options($this->shortcode, $atts['id']);
+			if ($options!==false) {
+				$atts = wp_parse_args($atts, $options);
+			}
+			else {
+				unset($atts['id']);
+			}
 		}
+		$filters = PL_Component_Entity::convert_filters($listing_filters);
 
 		$atts['context'] = empty($atts['context']) ? 'shortcode' : $atts['context'];
 		$comp_context = 'pl_idx_'.$atts['context'];
 
+		// set up hooks to be called to render each idx component when it is found in the template
 		self::$template_data['search_form'] = array(
 				'method' => array('PL_Component_Entity', 'search_form_entity'),
 				'param1' => array('context'=>$comp_context),
@@ -201,22 +207,35 @@ For example, you might want to include the [compliance] shortcode.',
 			}
 		}
 
-		return self::wrap('idx', apply_filters('pls_idx_html_' . $atts['context'], '', self::$template_data, $atts, $filters));
+		return self::wrap('idx', apply_filters('pls_idx_html_' . $atts['context'], '', self::$template_data, $atts, self::filters_to_json($listing_filters)));
 	}
 
-	private function extract_filters($content) {
+	/**
+	 * Find search filters in a shortcode's content
+	 * @param string $content	: shortcode content
+	 * @return array			: list of filters
+	 */
+	private function parse_filters($content) {
 		$filters = array();
-		
-		if (preg_match_all('/\[\s*pl_filter (.*)\]/', $content, $raw_filters)) {
+
+		if (preg_match_all('/\[\s*pl_filter ([^\]]*)\]/', $content, $raw_filters)) {
 			unset($raw_filters[0]);
-			foreach ($raw_filters as $raw_filter) {
-				if (preg_match('/\bgroup\s*=\s*(\'([a-zA-Z0-9_]+)\'|([a-zA-Z0-9_]+))/', $raw_filter[0], $raw_filter_attr)) {
-					$group = $raw_filter_attr[2];
-					if (preg_match('/\bfilter\s*=\s*(\'([a-zA-Z0-9_]+)\'|([a-zA-Z0-9_]+))/', $raw_filter[0], $raw_filter_attr)) {
-						$filter = $raw_filter_attr[2];
-						if (preg_match('/\bvalue\s*=\s*(\'([a-zA-Z0-9_]+)\'|([a-zA-Z0-9_]+))/', $raw_filter[0], $raw_filter_attr)) {
-							$value = $raw_filter_attr[2];
-							$filters[$group][$filter] = $value;
+			foreach ($raw_filters[1] as $raw_filter) {
+				if (preg_match('/\bgroup\s*=\s*("([^\s"]+)"|\'([^\s\']+)\')/', $raw_filter, $raw_filter_attr)) {
+					$group = substr($raw_filter_attr[1], 1, -1);
+					if (preg_match('/\bfilter\s*=\s*("([^\s"]+)"|\'([^\s\']+)\')/', $raw_filter, $raw_filter_attr)) {
+						$filter = substr($raw_filter_attr[1], 1, -1);
+						if (preg_match('/\bvalue\s*=\s*("([^\s"]+)"|\'([^\s\']+)\'|([^\s]+))/', $raw_filter, $raw_filter_attr)) {
+							$value = substr($raw_filter_attr[1], 1, -1);
+							if (strpos($value, '||') !==false ) {
+								$values = explode('||', $value);
+								foreach ($values as $value) {
+									$filters[$group][$filter][] = $value;
+								}
+							}
+							else {
+								$filters[$group][$filter][] = $value;
+							}
 						}
 					}
 				}
@@ -226,6 +245,61 @@ For example, you might want to include the [compliance] shortcode.',
 		return $filters;
 	}
 
+	/**
+	 * Turns an array of filters into a suitable json array
+	 */
+	private function filters_to_json($filters = array()) {
+		$json = '';
+		$filter_list = array();
+
+		if (is_array($filters)) {
+			$av_filters = PL_Shortcode_CPT::get_listing_filters();
+			foreach($filters as $key1 => $value1) {
+				if (is_array($value1)) {
+					// we store custom data as custom but it uses filter name metadata
+					$key = $key1 == 'custom' ? 'metadata' : $key1;
+					if (array_diff_key($value1,array_keys(array_keys($value1)))) {
+						foreach($value1 as $key2 => $value2) {
+							$skey = count($value2) > 1 ? '[]' :'';
+							foreach($value2 as $value3) {
+								$filter_list[] = array('name'=>$key.'['.$key2.']'.$skey, 'value'=>$value3);
+								//$filter_list[$key.'['.$key2.']'.$skey] = $value3;
+							}
+							if ($skey) {
+								$filter_list[] = array('name'=>$key.'['.$key2.'_match]'.$skey, 'value'=>'in');
+								//$filter_list[$key.'['.$key2.'_match]'] = 'in';
+							}
+							elseif (!empty($av_filters[$key1.'.'.$key2]['type']) && ($av_filters[$key.'.'.$key2]['type']=='text'|| $av_filters[$key.'.'.$key2]['type']=='textarea')) {
+								$filter_list[] = array('name'=>$key.'['.$key2.'_match]'.$skey, 'value'=>'like');
+								//$filter_list[$key.'['.$key2.'_match]'] = 'like';
+							}
+						}
+					}
+					else {
+						// list
+						$skey = count($value1) > 1 ? '[]' :'';
+						foreach($value1 as $value2) {
+							$filter_list[] = array('name'=>$key.$skey, 'value'=>$value2);
+							//$filter_list[$key.$skey] = $value2;
+						}
+						if ($skey) {
+							$filter_list[] = array('name'=>$key.'_match]', 'value'=>'in');
+							//$filter_list[$key.'_match'] = 'in';
+						}
+						elseif (!empty($av_filters[$key]['type']) && ($av_filters[$key]['type']=='text' || $av_filters[$key]['type']=='textarea')) {
+							$filter_list[] = array('name'=>$key.'_match]', 'value'=>'like');
+							//$filter_list[$key.'_match'] = 'like';
+						}
+					}
+				}
+			}
+		}
+		return json_encode($filter_list);
+	}
+	
+	/**
+	 * Generate body of idx shortcode
+	 */
 	public function pl_idx_html_callback($html, $template_data, $atts = array()) {
 		wp_enqueue_style('jquery-ui', trailingslashit(PLS_JS_URL) . 'libs/jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');
 		wp_enqueue_script('jquery');

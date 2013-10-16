@@ -207,7 +207,6 @@ To add some text to your listings:<br />
 	 * Generate search_listings shortcode output
 	 */
 	public static function search_listings_entity($atts, $filters = '') {
-//return print_r($atts, true);
 		if (empty($atts['id'])) {
 			// default filter options
 			$filters_string = '';
@@ -751,7 +750,6 @@ To add some text to your listings:<br />
 	 * Generate output for search_form shortcode
 	 */
 	public static function search_form_entity($atts) {
-//return print_r($atts, true);
 		if (!empty($atts['id'])) {
 			// get template and other attributes
 			$options = PL_Shortcode_CPT::get_shortcode_options('search_form', $atts['id']);

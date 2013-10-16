@@ -1,6 +1,13 @@
 <?php
 
 $templates = PL_Shortcode_CPT::template_list('pl_idx', false, true);
+if (has_filter('pls_idx_html_shortcode')) {
+	// theme has a handler for shortcode, so offer it as an option
+	$templates['shortcode'] = array('title'=>'Theme\'s search page template', 
+			'template'=>array('description'=>'Use the theme\'s built in search form to create a search page.'));
+}
+
+
 $shortcode_title = 'IDX Search Page: ';
 
 ?>

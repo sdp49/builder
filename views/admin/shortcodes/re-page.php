@@ -12,10 +12,12 @@ if (!empty($values['submit_prev'])) {
 }
 
 if ($values['action']=='idx_template_selected') {
+	// just selected search page creation
 	$next_action = 'filters_selected';
 } 
 elseif ($values['action']=='filters_selected') {
-	$args = array_merge(array('context'=>$values['tpl_id']), $values['filters']);
+	// filters selected - create page
+	$args = array_merge(array('context'=>$values['tpl_id']=='shortcode'?'':$values['tpl_id']), $values['filters']);
 	$new_page = array(
 		'post_name' => 'property-search',
 		'post_title' => 'Real Estate Search',
@@ -24,12 +26,14 @@ elseif ($values['action']=='filters_selected') {
 		'post_status' => 'draft',
 	);
 	$page_id = wp_insert_post($new_page);
-	// set the page template
-	$page_templates = apply_filters('pls_available_theme_page_templates');
+	// try to find a full width page template
+	$page_templates = apply_filters('pls_available_theme_page_templates', array());
 	if (count($page_templates)) {
 		$templates = get_page_templates();
 		foreach ($templates as $title=>$slug) {
-			if (!empty($page_templates[$slug]['type']) && $page_templates[$slug]['type']=='full_width') {
+			if (!empty($page_templates[$slug]) && empty($page_templates[$slug]['sidebar-left']) && empty($page_templates[$slug]['sidebar-right'])) {
+				// TODO: support selecting non full width pages also
+				// full width blank page
 				update_post_meta($page_id, '_wp_page_template', $slug);
 				break;
 			}
@@ -37,6 +41,11 @@ elseif ($values['action']=='filters_selected') {
 	}
 	wp_redirect(admin_url('post.php?action=edit&post='.$page_id));
 	die;
+}
+else {
+	// default
+	$values['action'] = 'edit';
+	$next_action = 'idx_template_selected';
 }
 
 $submit_link = admin_url('admin.php?page='.$plugin_page);
