@@ -12,27 +12,6 @@ $template = array(
 }
 ',
 
-'snippet_body' => '
-[search_form]
-<div id="pl_idx">
-	<!-- tabs -->
-	<ul>
-		<li><a class="pl_idx_tab_listings" href="#idx_list">Listings</a></li>
-		<li><a class="pl_idx_tab_map" href="#idx_map">Map</a></li>
-		<li><a class="pl_idx_tab_gallery" href="#idx_gallery">Gallery</a></li>
-	</ul>
-	<!-- tab panels, everything starts in the first panel -->
-	<div id="idx_list" class="pl_listings pl_col-111">
-		<div id="idx_items" class="pl_idx_tab_listings">
-			<div id="idx_map_item">[search_map]</div>
-			<div id="idx_list_item" class="pl_listings">[search_listings]</div>
-		</div>
-	</div>
-	<div id="idx_map" class="pl_listings pl_col-122"></div>
-	<div id="idx_gallery" class="pl_listings pl_col-122"></div>
-</div>
-',
-
 'search_form' => '
 <div class="pl_form pl_col-124">
 	
@@ -123,24 +102,68 @@ $template = array(
   </div>
 ',
 
+'snippet_body' => '
+<div id="pl_idx">
+  
+  [search_form]
+  
+  <div id="pl_idx-tabs-wrapper" class="pl_idx-tabs-wrapper">
+
+    <!-- tabs -->
+    <ul id="pl_idx-tabs" class="pl_idx-tabs">
+      <li class="active">
+        <a class="pl_idx_tab_listings" href="#" data-class="pl_col-111">List</a>
+      </li>
+      <li>
+        <a class="pl_idx_tab_map" href="#" data-class="pl_col-122">Map</a>
+      </li>
+      <li>
+        <a class="pl_idx_tab_gallery" href="#" data-class="pl_col-122">Gallery</a>
+      </li>
+    </ul>
+
+    <!-- tab content -->
+    <div id="idx_results" class="idx_results">
+      <div id="idx_map_item">[search_map]</div>
+      <div id="idx_results-list" class="pl_listings pl_col-111">[search_listings]</div>
+    </div>
+
+  </div>
+
+</div>
+',
+
 'javascript' => '
 jQuery(function($) {
-	// when a tab is selected, move the listings to the new tab
-	$("#pl_idx").tabs({
-		select: function(event, ui) {
-			var idx_items = $("#idx_items").detach();
-			$(ui.panel).append(idx_items);
-		}
-	});
 
-	$("#pl_idx").bind("tabsshow", function(event, ui) {
-		if (ui.panel.id == "idx_map") {
-			mapRefresh();
-		}
-	});
+  // Hide Map on initial load
+  $("#idx_map_item").hide();
+
+  // Tabbing
+  $("#pl_idx-tabs li").live("click", function(e) {
+    e.preventDefault();
+
+    // Toggle .active for styling
+    $(this).addClass("active");
+    $(this).siblings().removeClass("active");
+
+    // Change content classes
+    $("#idx_results #idx_results-list").removeClass();
+    var new_classes = $(this).children("a").attr("data-class");
+    $("#idx_results #idx_results-list").addClass(new_classes + " " + "pl_listings");
+
+    // Show/hide map
+    if ($(this).children("a").attr("class") == "pl_idx_tab_map") {
+      $("#idx_map_item").show();
+      mapRefresh();
+    } else {
+      $("#idx_map_item").hide();
+    }
+
+  });
 
 	function mapRefresh() {
-		var pl_map = $("#pl_idx .custom_google_map").data("pl_map");
+		var pl_map = $("#pl_idx-tabs .custom_google_map").data("pl_map");
 		// TODO: remove after updates to blueprint
 		if (!pl_map && map) {
 			pl_map = map;
