@@ -163,7 +163,7 @@ jQuery(function($) {
   });
 
 	function mapRefresh() {
-		var pl_map = $("#pl_idx-tabs .custom_google_map").data("pl_map");
+		var pl_map = $("#idx_results .custom_google_map").data("pl_map");
 		// TODO: remove after updates to blueprint
 		if (!pl_map && map) {
 			pl_map = map;
