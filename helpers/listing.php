@@ -52,7 +52,7 @@ class PL_Listing_Helper {
 
 		// Respect block address setting if it's already set, otherwise, defer to the plugin setting...
 		if (empty($args['address_mode'])) {
-			$args['address_mode'] = ( PL_Option_Helper::get_block_address() ? 'exact' : 'polygon' );
+			$args['address_mode'] = ( PL_Option_Helper::get_block_address() ? 'polygon' : 'exact' );
 		}
 
 		// Call the API with the given args...
