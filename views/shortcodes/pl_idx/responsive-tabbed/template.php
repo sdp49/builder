@@ -76,7 +76,7 @@ $template = array(
       </p>
       
       <div class="pl_listing-img-wrapper">
-        <a href="[url]">[image width=300]</a>
+        <a href="[url]">[image]</a>
         <div class="pl_listing-fav">
           <a href="#">Save</a>
         </div>

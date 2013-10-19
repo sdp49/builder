@@ -521,8 +521,8 @@ To add some text to your listings:<br />
 				$val = substr($val, 0, $max_len);
 				break;
 			case 'image':
-				$width = !empty($atts['width']) ? (int)$atts['width'] : 180;
-				$height = !empty($atts['height']) ? (int)$atts['height'] : 120;
+				$width = !empty($atts['width']) ? (int)$atts['width'] : '';
+				$height = !empty($atts['height']) ? (int)$atts['height'] : '';
 				$val = PLS_Image::load(!empty($listing_list['images'][0]['url']) ? $listing_list['images'][0]['url'] : '',
 					array('resize' => array('w' => $width, 'h' => $height),
 						'fancybox' => true,
