@@ -2,10 +2,12 @@
 global $shortcode_subpages, $plugin_page;
 
 $post_type_object = get_post_type_object('page');
-if ( ! current_user_can( $post_type_object->cap->edit_posts ) )
-	wp_die( __( 'Cheatin&#8217; uh?' ) );
+if (!current_user_can($post_type_object->cap->edit_posts)) {
+	wp_die();
+}
 
 $values = wp_parse_args($_REQUEST, array('action'=>'edit', 'curr_action'=>'edit', 'prev_action'=>'edit', 'shortcode'=>'pl_idx', 'tpl_id'=>'', 'filters'=>array()));
+$shortcode_subpage = $plugin_page == 'placester_shortcodes_re_page_creator';
 
 if (!empty($values['submit_prev'])) {
 	$values['action'] = $values['prev_action'];
@@ -39,6 +41,10 @@ elseif ($values['action']=='filters_selected') {
 			}
 		}
 	}
+	// most newer Placester themes use this as a full width template name
+	elseif (file_exists(get_stylesheet_directory().'/page-template-full-width.php')) {
+		update_post_meta($page_id, '_wp_page_template', 'page-template-full-width.php');
+	}
 	wp_redirect(admin_url('post.php?action=edit&post='.$page_id));
 	die;
 }
@@ -52,6 +58,10 @@ $submit_link = admin_url('admin.php?page='.$plugin_page);
 
 ?>
 <div class="wrap">
+	<?php if ($shortcode_subpage):?>
+	<?php echo PL_Helper_Header::pl_subpages('placester_shortcodes', $shortcode_subpages, 'Real Estate Page Creator'); ?>
+	<?php endif?>
+
 	<h2>Real Estate Page Creator</h2>
 
 	<form action="<?php echo $submit_link ?>" method="post">

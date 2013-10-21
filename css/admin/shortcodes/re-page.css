@@ -38,6 +38,10 @@
 	overflow: hidden;
 }
 
+.pl_custom .pl_tmplt_screenshot {
+	background-image: url(../../../images/re-creator-custom-fullwidth-thumb.png);
+}
+
 .pl_tmplt_screenshot img {
 	margin: 20% 0 0 2%;
 	width: 96%;

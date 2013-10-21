@@ -108,7 +108,7 @@ class PL_Js_Helper {
 		}
 
 		// Shortcodes and Shortcode Templates
-		if ($hook == 'pages_page_placester_re_page_creator') {
+		if ($hook == 'pages_page_placester_re_page_creator' || $hook == 'placester_page_placester_shortcodes_re_page_creator') {
 			self::register_enqueue_if_not('shortcodes-filters', trailingslashit(PL_JS_ADMIN_URL) . 'shortcodes/re-page.js', array('jquery-ui-datepicker'));
 		}
 		if ($hook == 'placester_page_placester_shortcodes_shortcode_edit') {

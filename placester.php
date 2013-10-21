@@ -239,6 +239,7 @@ function placester_admin_menu () {
     
     global $shortcode_subpages;
     $shortcode_subpages = array(
+    	'Real Estate Creator Page' => '_re_page_creator',
     	'All Custom Shortcodes' => '',
         'Create Custom Shortcode' => '_shortcode_edit',
         'Shortcode Templates' => '_templates',

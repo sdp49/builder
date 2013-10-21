@@ -111,6 +111,10 @@ class PL_Router {
 		self::router('shortcodes/re-page.php', array());
 	}
 	
+	public static function shortcodes_re_page_creator () {
+		self::router('shortcodes/re-page.php', array());
+	}
+	
 	public static function shortcodes () {
 		self::router('shortcodes/shortcodes.php', array());
 	}

@@ -89,7 +89,7 @@ class PL_Css_Helper {
 			self::register_enqueue_if_not('settings-filtering', trailingslashit(PL_CSS_ADMIN_URL) . 'settings/filtering.css');					
 		}
 
-		if ($hook == 'pages_page_placester_re_page_creator') {
+		if ($hook == 'pages_page_placester_re_page_creator' || $hook == 'placester_page_placester_shortcodes_re_page_creator') {
 			self::register_enqueue_if_not('placester-widget', trailingslashit(PL_CSS_ADMIN_URL) . 'shortcodes/re-page.css');
 		}
 		
