@@ -3,7 +3,7 @@ Contributors: Placester, MattBarba
 Tags: real estate, realestate, home, housing, rentals, properties, neighborhood, map, mortgage, listing, listings, craigslist, rental, google map, mls, idx, rets, agent, broker, leasing, realty, realtor, placester, widget, buddypress, homes, property, property management, estate, realestate, real estate crm, real estate maps
 Requires at least: 2.8
 Tested up to: 3.5.1
-Stable tag: 1.1.22
+Stable tag: 1.1.24
 
 Easily create and manage real estate sites powered by WordPress.
 
@@ -141,6 +141,29 @@ Absolutely, [reach out](mailto:support@placester.com) to us and let us know what
 In general - real-time. But if you use 3rd party property management services, the updates will only be as recent as your provider allows.
 
 == Changelog ==
+
+= 1.1.24 =
+* Adding Dragonfly image resizing logic for property images.
+
+= 1.1.23 =
+* Minor updates in support of more fundamental BP changes
+* Cleaning the pipes for listing searches -- need to remove extraneous args for storage of saved-search filters
+* More CRM lead integration updates:
+    * Basic impl for Contactually solidified, need work with them to expose more constructive endpoints for push leads
+    * Substantial lead creation update -- site user registration flow corrected + integration with CRM platforms enhanced
+    * Lead fixes + CRM integration gaps filled...
+* Shortcodes template editor:
+    * Fix issue with dialog showing list of custom attributes not displaying correctly on WP 3.6.1
+    * HTML cleanup
+* Shortcode templates: 
+    * Better way to support image_url tag
+    * New template tag [image_url index placeholder] that displays listing image url
+* Deleting old, unnecessary files
+* Fix: WP 3.6.1/jquery-ui 10.1 - make sure the grey mask is on top and the modal dialog is on top of that
+* Fix: If a certain locality field is missing for a property, the permalink/URL generated will simply say the field, i.e., 'state' instead of 'unassigned-state'
+* Fix: Custom drawn polygons - allow existing polygons to be edited
+* Fix: Search form not showing available locations when global filters are set for a location attribute AND some other attribute.
+* Fix: Compatibility issues with PHP 5.4.
 
 = 1.1.22 =
 * Cleanup lead capture functionality.

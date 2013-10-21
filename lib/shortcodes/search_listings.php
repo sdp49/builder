@@ -183,6 +183,10 @@ For example, you might want to include the [compliance] shortcode.',
 				$key = (empty($group) ? '' : $group.'.').$args['attribute'];
 				self::$sl_sort_list[$key] = $args['label'];
 			}
+			if (!empty(self::$sl_sort_list)) {
+				// save the full list of sort by names so we can use on the front end
+				update_option('pl_'.$this->shortcode.'_formval_sort_by_options', self::$sl_sort_list);
+			}
 		}
 		$this->options['sort_by_options']['options'] = self::$sl_sort_list;
 		$this->options['sort_by']['options'] = self::$sl_sort_list;
