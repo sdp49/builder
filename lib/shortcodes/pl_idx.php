@@ -22,7 +22,7 @@ class PL_IDX_CPT extends PL_SC_Base {
 		'search_listings'	=> array('help' => 'Inserts a list of listings filtered by the search form.'),
 	);
 
-	protected $default_tpl_id = 'sample-tabbed';
+	protected $default_tpl_id = 'responsive-tabbed';
 
 	protected $template = array(
 		'snippet_body' => array(
