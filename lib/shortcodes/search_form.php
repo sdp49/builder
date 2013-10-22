@@ -33,6 +33,7 @@ class PL_Form_CPT extends PL_SC_Base {
 		'purchase_types'	=> array('help' => 'Drop list to select the purchase type (rent/buy).'),
 		'available_on'		=> array('help' => 'Drop list to select date of when the property should be available.'),
 		'cities'			=> array('help' => 'Drop list to select a city.'),
+		'neighborhood'		=> array('help' => 'Drop list to select a neighborhood.'),
 		'states'			=> array('help' => 'Drop list to select a state.'),
 		'zips'				=> array('help' => 'Drop list to select a zip/postal code.'),
 		'min_price'			=> array('help' => 'Drop list to select the minimum price.'),
