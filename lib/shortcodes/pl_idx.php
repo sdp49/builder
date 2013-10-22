@@ -22,7 +22,7 @@ class PL_IDX_CPT extends PL_SC_Base {
 		'search_listings'	=> array('help' => 'Inserts a list of listings filtered by the search form.'),
 	);
 
-	protected $default_tpl_id = 'responsive-tabbed';
+	protected $default_tpl_id = 'all-purpose-sales';
 
 	protected $template = array(
 		'snippet_body' => array(
@@ -176,6 +176,13 @@ For example, you might want to include the [compliance] shortcode.',
 			}
 		}
 		$filters = PL_Component_Entity::convert_filters($listing_filters);
+		
+		if (!empty($atts['context'])) {
+			$tpl = PL_Shortcode_CPT::load_template($atts['context'], 'pl_idx');
+			if ($tpl['title'] != $atts['context']) {
+				unset($atts['context']);
+			}
+		}
 
 		$atts['context'] = empty($atts['context']) ? 'shortcode' : $atts['context'];
 		$comp_context = 'pl_idx_'.$atts['context'];

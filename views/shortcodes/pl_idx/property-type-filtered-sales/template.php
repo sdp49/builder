@@ -17,7 +17,7 @@ $template = array(
 
     <div class="pl_form-item pl_col">
       <label>Neighborhood</label>
-      [neighborhoods]
+      [neighborhood]
     </div>
 
     <div class="pl_form-item pl_col">
