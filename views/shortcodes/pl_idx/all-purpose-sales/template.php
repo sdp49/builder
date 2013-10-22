@@ -17,7 +17,7 @@ $template = array(
 
     <div class="pl_form-item pl_col">
       <label>Neighborhood</label>
-      [neighborhoods]
+      [neighborhood]
     </div>
 
     <div class="pl_form-item pl_col">
@@ -66,7 +66,7 @@ $template = array(
     </div>
 
     <div class="pl_form-group pl_col pl_form-group--right">
-      <div class="pl_form-item pl_form-item--btn">
+      <div class="pl_form-item pl_form-item--btn pl_form-item--btn-top-bumper">
         <input type="submit" value="Search" />
       </div>
     </div>
