@@ -18,12 +18,13 @@ if ($values['action']=='idx_template_selected') {
 	$next_action = 'filters_selected';
 } 
 elseif ($values['action']=='filters_selected') {
-	// filters selected - create page
-	$args = array_merge(array('context'=>$values['tpl_id']=='shortcode'?'':$values['tpl_id']), $values['filters']);
+	// filters selected - create shortcode, page
+	$sc_attr = array('post_title'=>'Real Estate Search Page', 'context'=>$values['tpl_id']) + $values['filters'];
+	$sc_id = PL_Shortcode_CPT::save_shortcode(0, 'pl_idx', $sc_attr);
 	$new_page = array(
 		'post_name' => 'property-search',
 		'post_title' => 'Real Estate Search',
-		'post_content' => PL_Shortcode_CPT::generate_shortcode_str($values['shortcode'], $args),
+		'post_content' => "[pl_idx id='".$sc_id."']",
 		'post_type' => 'page',
 		'post_status' => 'draft',
 	);
