@@ -49,7 +49,8 @@
 }
 
 .pl_tmplt_description {
-	height: 3em;
+	/*height: 3em;*/
+	margin-bottom: 10px;
 }
 
 

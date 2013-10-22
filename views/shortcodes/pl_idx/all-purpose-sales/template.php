@@ -2,7 +2,7 @@
 
 $template = array(
 
-'title' => 'Responsive Tabbed Template',
+'title' => 'All-Purpose Sales Template',
 
 'css' => '
 /* Hide the map if not in map view */
@@ -14,30 +14,10 @@ $template = array(
 
 'search_form' => '
 <div class="pl_form pl_col-124">
-	
-    <div class="pl_form-item pl_col no-search">
-      <label>Min Beds</label>
-      [min_beds]
-    </div>
 
-    <div class="pl_form-item pl_col hide-tablet no-search">
-      <label>Min Baths</label>
-      [min_baths]
-    </div>
-
-    <div class="pl_form-item pl_col hide-tablet no-search">
-      <label>Min Price</label>
-      [min_price]
-    </div>
-
-    <div class="pl_form-item pl_col no-search">
-      <label>Max Price</label>
-      [max_price]
-    </div>
-
-    <div class="pl_form-item pl_col no-search">
-      <label>Purchase Type</label>
-      [purchase_types]
+    <div class="pl_form-item pl_col">
+      <label>Neighborhood</label>
+      [neighborhoods]
     </div>
 
     <div class="pl_form-item pl_col">
@@ -54,16 +34,46 @@ $template = array(
       <label>Zip Code</label>
       [zips]
     </div>
+
+    <div class="pl_form-item pl_col hide-tablet no-search">
+      <label>Min Price</label>
+      [min_price]
+    </div>
+
+    <div class="pl_form-item pl_col no-search">
+      <label>Max Price</label>
+      [max_price]
+    </div>
+
+    <div class="pl_form-item pl_col no-search">
+      <label>Min Beds</label>
+      [min_beds]
+    </div>
+
+    <div class="pl_form-item pl_col hide-tablet no-search">
+      <label>Min Baths</label>
+      [min_baths]
+    </div>
+
+    <div class="pl_form-item pl_col no-search">
+      <label>Min Sqft</label>
+      [custom attribute="min_sqft"]
+    </div>
   
+    <div class="pl_form-item pl_col no-search">
+      <label>Property Type</label>
+      [property_type]
+    </div>
+
     <div class="pl_form-group pl_col pl_form-group--right">
       <div class="pl_form-item pl_form-item--btn">
         <input type="submit" value="Search" />
       </div>
     </div>
-		
-	<div class="pl_clearfix"></div>
+    
+  <div class="pl_clearfix"></div>
 
-</div>	
+</div>
 ',
 
 'search_listings' => '
@@ -76,7 +86,7 @@ $template = array(
       </p>
       
       <div class="pl_listing-img-wrapper">
-        <a href="[url]">[image]</a>
+        <a href="[url]">[image width=600 height=300]</a>
         <div class="pl_listing-fav">
           <a href="#">Save</a>
         </div>
@@ -186,7 +196,7 @@ jQuery(function($) {
 
 'group' => 'Index',
 
-'description' => 'This search page includes list, gallery and map views in a search page.',
+'description' => 'The All-Purpose Sales Template includes form options for searching on location, beds, baths, price, sqft, and property type. The price ranges are in Sales ranges.',
 
 'keywords' => 'tabs,map,list,gallery',
 
