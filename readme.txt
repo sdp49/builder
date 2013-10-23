@@ -3,7 +3,7 @@ Contributors: Placester, MattBarba
 Tags: real estate, realestate, home, housing, rentals, properties, neighborhood, map, mortgage, listing, listings, craigslist, rental, google map, mls, idx, rets, agent, broker, leasing, realty, realtor, placester, widget, buddypress, homes, property, property management, estate, realestate, real estate crm, real estate maps
 Requires at least: 2.8
 Tested up to: 3.5.1
-Stable tag: 1.1.24
+Stable tag: 1.1.25
 
 Easily create and manage real estate sites powered by WordPress.
 
@@ -142,9 +142,12 @@ In general - real-time. But if you use 3rd party property management services, t
 
 == Changelog ==
 
+<<<<<<< HEAD
 = 1.1.24 =
 * Adding Dragonfly image resizing logic for property images.
 
+=======
+>>>>>>> 0e872c19e52813205903cb3a8ec172f7a0c2acfb
 = 1.1.23 =
 * Minor updates in support of more fundamental BP changes
 * Cleaning the pipes for listing searches -- need to remove extraneous args for storage of saved-search filters
