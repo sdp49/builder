@@ -142,12 +142,14 @@ In general - real-time. But if you use 3rd party property management services, t
 
 == Changelog ==
 
-<<<<<<< HEAD
+= 1.1.25 =
+* Fixed block address behavior as set from Settings page.
+* Added support to limit selections for property type in search form if global filters set.
+* Search and static listing shortcodes now have sort_by drop downs.
+
 = 1.1.24 =
 * Adding Dragonfly image resizing logic for property images.
 
-=======
->>>>>>> 0e872c19e52813205903cb3a8ec172f7a0c2acfb
 = 1.1.23 =
 * Minor updates in support of more fundamental BP changes
 * Cleaning the pipes for listing searches -- need to remove extraneous args for storage of saved-search filters
