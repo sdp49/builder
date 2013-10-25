@@ -75,8 +75,9 @@ jQuery(document).ready(function($) {
         login_user(data);
     });
     
-    if (typeof $.fancybox == "function") {
+    if (typeof $.fancybox == "function" && $('.pl_login_link, #pl_logout_link').length) {
         // Register Form Fancybox
+    	$('#pl_add_remove_lead_favorites').show();    	
         $('.pl_register_lead_link').fancybox({
             "hideOnContentClick": false,
             "scrolling": true,

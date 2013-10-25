@@ -187,7 +187,7 @@ class PL_People_Helper {
 
         ob_start();
         ?>
-            <div id="pl_add_remove_lead_favorites">
+            <div id="pl_add_remove_lead_favorites" style="display:none;">
 
                 <?php pls_do_atomic( 'before_add_to_fav' ); ?>
 
