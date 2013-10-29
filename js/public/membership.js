@@ -75,9 +75,12 @@ jQuery(document).ready(function($) {
         login_user(data);
     });
     
-    if (typeof $.fancybox == "function" && $('.pl_login_link, #pl_logout_link').length) {
+    if (typeof $.fancybox == "function") {
+    	// If reg form available or logged in then show add to favorites 
+    	if ($('.pl_lead_register_form').length || $('.pl_add_remove_lead_favorites #pl_add_favorite').length) {
+        	$('div#pl_add_remove_lead_favorites,.pl_add_remove_lead_favorites').show();    	
+    	}
         // Register Form Fancybox
-    	$('#pl_add_remove_lead_favorites').show();    	
         $('.pl_register_lead_link').fancybox({
             "hideOnContentClick": false,
             "scrolling": true,
