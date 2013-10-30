@@ -1413,7 +1413,7 @@ To add some text to your listings:<br />
 						'class': '.placester_listings_list',
 						context: '<?php echo $group['listings']['atts']['context'] ?>',
 						dom_id: '#<?php echo $group['listings']['atts']['table_id'] ?>',
-						limit_default: '<?php echo $group['listings']['atts']['query_limit'] ?>'
+						limit_default: <?php echo $group['listings']['atts']['query_limit'] ?>
 					});
 
 					<?php if (!empty($group['listings']['filters'])): ?>
