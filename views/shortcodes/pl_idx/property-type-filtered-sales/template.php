@@ -162,6 +162,10 @@ jQuery(function($) {
 
   });
 
+  $(document).delegate(".paginate_button", "click", function() {
+    $("html, body").animate({scrollTop: $("#idx_results-list").offset().top - 50}, 1000);
+  });
+
 	function mapRefresh() {
 		var pl_map = $("#idx_results .custom_google_map").data("pl_map");
 		// TODO: remove after updates to blueprint
