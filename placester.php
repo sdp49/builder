@@ -225,7 +225,6 @@ function placester_admin_menu () {
         'Client Settings' => '_client',
         'Global Property Filtering' => '_filtering', 
         'Custom Drawn Areas' => '_polygons', 
-        'Property Pages' => '_property_pages',
         'International Settings' => '_international'
     );
 

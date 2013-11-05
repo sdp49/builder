@@ -74,10 +74,6 @@ class PL_Router {
 		self::router('settings/polygons.php', array());
 	}
 	
-	public static function settings_property_pages () {
-		self::router('settings/property.php', array());
-	}
-	
 	public static function settings_international () {
 		self::router('settings/international.php', array());
 	}

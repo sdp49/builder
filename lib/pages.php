@@ -7,6 +7,17 @@ PL_Pages::init();
 class PL_Pages {
 
 	public static $property_post_type = 'property';
+	public static $all_taxonomies = array(
+		'state',
+		'zip',
+		'city',
+		'neighborhood',
+		'street',
+		'beds',
+		'baths',
+		'half-baths',
+		'mlsid'
+	);
 	public static $rewrite_rules = array(
 		'property/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]*)/?$' =>	'index.php?property=$matches[6]&property_neighborhood=$matches[4]&post_type=property',
 	);
