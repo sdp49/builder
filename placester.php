@@ -119,7 +119,6 @@ include_once('config/analytics.php');
 include_once('lib/config.php');
 include_once('lib/routes.php');
 include_once('lib/http.php');
-// include_once('lib/debug.php');
 include_once('lib/form.php');
 include_once('lib/validation.php');
 include_once('lib/pages.php');

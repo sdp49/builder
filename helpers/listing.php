@@ -61,7 +61,7 @@ class PL_Listing_Helper {
 		// Make sure it contains listings, then process accordingly...
 		if (!empty($listings['listings'])) {
 			foreach ($listings['listings'] as $key => $listing) {
-				$listings['listings'][$key]['cur_data']['url'] = PL_Page_Helper::get_url($listing['id']);
+				$listings['listings'][$key]['cur_data']['url'] = PL_Page_Helper::get_url($listing['id'], $listing);
 				$listings['listings'][$key]['location']['full_address'] = $listing['location']['address'] . ' ' . $listing['location']['locality'] . ' ' . $listing['location']['region'];
 			}
 		}
@@ -105,21 +105,28 @@ class PL_Listing_Helper {
 	public static function get_listing_in_loop () {
 		global $post;
 
-		// If the current $post is of type 'property', it's 'post_name' will be set to that listing's unique property ID (as set by the API)...
-		$args = array('listing_ids' => array($post->post_name), 'address_mode' => 'exact');
-		$response = PL_Listing::get($args);
-		
-		// Despite the name we also call this outside of the loop. Make sure global $post is a Property before deleting.
 		$listing_data = null;
-		if ( empty($response['listings']) ) {
-			if ($post->post_type === PL_Pages::$property_post_type) {
-				wp_delete_post($post->ID, true);
-				PL_Pages::ping_yoast_sitemap();
+
+		if ($post->post_type === PL_Pages::$property_post_type) {
+			if (PL_Pages::$listing_details) {
+				$listing_data = PL_Pages::$listing_details;
 			}
-		} else {
-			$listing_data = $response['listings'][0];
+			else {
+				// If the current $post is of type 'property', it's 'post_name' will be set to that listing's unique property ID (as set by the API)...
+				$args = array('listing_ids' => array($post->post_name), 'address_mode' => 'exact');
+				$response = PL_Listing::get($args);
+
+				// Despite the name we also call this outside of the loop. Make sure global $post is a Property before deleting.
+				if ( empty($response['listings']) ) {
+					if ($post->post_type === PL_Pages::$property_post_type) {
+						PL_Pages::ping_yoast_sitemap();
+					}
+				} else {
+					$listing_data = $response['listings'][0];
+				}
+			}
 		}
-		
+
 		return $listing_data;		
 	}
 

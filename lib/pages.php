@@ -7,67 +7,21 @@ PL_Pages::init();
 class PL_Pages {
 
 	public static $property_post_type = 'property';
-	public static $all_taxonomies = array(
-		'state',
-		'zip',
-		'city',
-		'neighborhood',
-		'street',
-		'beds',
-		'baths',
-		'half-baths',
-		'mlsid'
+	public static $rewrite_rules = array(
+		'property/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]*)/?$' =>	'index.php?property=$matches[6]&property_neighborhood=$matches[4]&post_type=property',
 	);
+	public static $listing_details = null;
 
 	public static function init () {
-		add_action( 'init', array(__CLASS__, 'create_taxonomies') );
+		add_action( 'wp_loaded', array(__CLASS__, 'check_rules') );
+		add_filter( 'pre_get_posts', array(__CLASS__, 'pre_get_posts') );
+		add_filter( 'query_vars', array(__CLASS__, 'query_vars') );
+		add_filter( 'the_posts', array(__CLASS__, 'the_posts') );
+
 		add_action( 'wp_footer', array(__CLASS__,'force_rewrite_update') );
 		add_action( 'admin_footer', array(__CLASS__,'force_rewrite_update') );
 		add_action( '404_template', array( __CLASS__, 'dump_permalinks') );
 		add_action( 'wp', array(__CLASS__, 'catch_404s') );
-	}
-
-	//return many page urls
-	public static function get () {
-		global $wpdb;
-		$sql = $wpdb->prepare('SELECT * FROM ' . $wpdb->posts .' WHERE post_type = %s', self::$property_post_type);
-	    $rows = $wpdb->get_results($sql, ARRAY_A);
-		
-		return $rows;
-	}
-
-	// Return a page URL
-	public static function details ($placester_id) {
-		global $wpdb;
-		$sql = $wpdb->prepare("SELECT ID, post_modified FROM " . $wpdb->posts . " WHERE post_type = %s AND post_name = %s LIMIT 0, 1", self::$property_post_type, $placester_id);
-	    $row = $wpdb->get_row($sql, OBJECT, 0);
-	    
-	    $post_id = ( isset($row->ID) ? $row->ID : null );
-	    
-	    return $post_id; 	
-	}
-
-	// Create listing property CPT
-	public static function manage_listing ($api_listing) {
-		$page_details = array();
-		$page_details['post_id'] = self::details($api_listing['id']);
-		$page_details['type'] = self::$property_post_type;
-		$page_details['title'] = $api_listing['location']['address'];
-		$page_details['name'] = $api_listing['id'];
-		$page_details['content'] = '';
-		$page_details['taxonomies'] = array(
-			'zip' => $api_listing['location']['postal'], 
-			'city' => $api_listing['location']['locality'],
-			'state' => $api_listing['location']['region'],
-			'neighborhood' => $api_listing['location']['neighborhood'],
-			'street' => $api_listing['location']['address'],
-			'beds' => (string) $api_listing['cur_data']['beds'],
-			'baths' => (string) $api_listing['cur_data']['beds'],
-			'half-baths' => (string) $api_listing['cur_data']['half_baths'],
-			'mlsid' => (string) $api_listing['rets']['mls_id']
-		);
-		
-		return self::manage($page_details);
 	}
 
 	public static function create_once ($pages_to_create, $force_template = true) {
@@ -233,20 +187,117 @@ class PL_Pages {
 	}
 */
 
-	public static function create_taxonomies () {
-		register_post_type(self::$property_post_type, array('labels' => array('name' => __( 'Properties' ),'singular_name' => __( 'property' )),'public' => true,'has_archive' => true, 'rewrite' => true, 'query_var' => true, 'taxonomies' => array('category', 'post_tag')));
-		
-		global $wp_rewrite;
-		
-		// Allows for <URL>?property=<ID> access...
-		$wp_rewrite->add_rewrite_tag("%property%", "([^/]+)", "property=");
-	   	
-	    $property_structure = "/property/%state%/%city%/%zip%/%neighborhood%/%street%/%" . self::$property_post_type . "%";
-        $wp_rewrite->add_permastruct("property", $property_structure, false);
-        
-        remove_post_type_support(self::$property_post_type, "comments");
+	/**
+	 * Flush and reload rules if our rules are not yet included 
+	 */
+	function check_rules(){
+
+		$rules = get_option( 'rewrite_rules' );
+		$flush = false;
+		foreach(self::$rewrite_rules as $rule=>$rewrite) {
+			if (!isset($rules[$rule])) {
+				$flush = true;
+			}
+		}
+		if ($flush) {
+			foreach(self::$rewrite_rules as $rule=>$rewrite) {
+				if (!isset($rules[$rule])) {
+					add_rewrite_rule($rule, $rewrite, true);
+				}
+			}
+			global $wp_rewrite;
+			$wp_rewrite->flush_rules();
+		}
 	}
 
+	/**
+	 * Setup wp_query values to detect
+	 */
+	public function query_vars( $vars )	{
+		array_push($vars, 'post_type');
+		array_push($vars, 'property');
+
+		return $vars;
+	}
+
+	/**
+	 * Fetch listing details if this is a details page
+	 */
+	public function pre_get_posts( $query ) {
+		if (!empty($query->query_vars[self::$property_post_type])) {
+			$req_id = $query->query_vars[self::$property_post_type];
+			$args = array('listing_ids' => array($req_id));
+			$response = PL_Listing::get($args);
+
+			if (!empty($response['listings'][0])) {
+				$query->set('post_type', self::$property_post_type);
+				self::$listing_details = $response['listings'][0];
+				$query->set('post_type', 'property');
+			}
+			else {
+				$query->set('post_type', '');
+				$query->set('property', '');
+				$query->set('property_neighborhood', '');
+			}
+		}
+	}
+
+	/**
+	 * If details page and have a listing, make a dummy post
+	 */
+	public function the_posts( $posts ) {
+		global $wp, $wp_query;
+
+		if (count($posts) == 0 && !empty($wp_query->query_vars[self::$property_post_type])) {
+			//create a fake post instance
+			$post = new stdClass;
+			// fill properties of $post with everything a page in the database would have
+			$post->ID = -1;						// use an illegal value for page ID
+			$post->post_author = 1;				// post author id
+			$post->post_date = null;			// date of post
+			$post->post_date_gmt = null;
+			$post->post_content = '';
+			$post->post_title = self::$listing_details['location']['address'];
+			$post->post_excerpt = '';
+			$post->post_status = 'publish';
+			$post->comment_status = 'closed';	// mark as closed for comments, since page doesn't exist
+			$post->ping_status = 'closed';		// mark as closed for pings, since page doesn't exist
+			$post->post_password = '';			// no password
+			$post->post_name = self::$listing_details['id'];
+			$post->to_ping = '';
+			$post->pinged = '';
+			$post->modified = $post->post_date;
+			$post->modified_gmt = $post->post_date_gmt;
+			$post->post_content_filtered = '';
+			$post->post_parent = 0;
+			$post->guid = null;
+			$post->menu_order = 0;
+			$post->post_style = '';
+			$post->post_type = 'property';
+			$post->post_mime_type = '';
+			$post->comment_count = 0;
+
+			// set filter results
+			$posts = array($post);
+
+			// reset wp_query properties to simulate a found page
+			$wp_query->is_page = true;
+			$wp_query->is_singular = true;
+			$wp_query->is_single = true;
+			$wp_query->is_home = false;
+			$wp_query->is_archive = false;
+			$wp_query->is_category = false;
+			unset($wp_query->query['error']);
+			$wp_query->query_vars['error'] = '';
+			$wp_query->is_404 = false;
+		}
+
+		return $posts;
+	}
+
+	/**
+	 * Plugin version change - run updates, flush rewrites, etc
+	 */
 	public static function force_rewrite_update () {
 		if (defined('PL_PLUGIN_VERSION')) {
 			$current_version = get_option('pl_plugin_version');
@@ -267,6 +318,9 @@ class PL_Pages {
 		}
 	}
 
+	/**
+	 * Flush rewrites after we get a 404
+	 */
 	public static function dump_permalinks () {
 		global $wp_rewrite;
 		$wp_rewrite->flush_rules();
@@ -328,5 +382,4 @@ class PL_Pages {
 			$wpseo_sitemaps->ping_search_engines();
 		}
 	}
-
 }
