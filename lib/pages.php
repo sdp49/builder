@@ -7,7 +7,7 @@ PL_Pages::init();
 class PL_Pages {
 
 	public static $property_post_type = 'property';
-	public static $all_taxonomies = array(
+	private static $all_taxonomies = array(
 		'state',
 		'zip',
 		'city',
@@ -18,10 +18,13 @@ class PL_Pages {
 		'half-baths',
 		'mlsid'
 	);
-	public static $rewrite_rules = array(
-		'property/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]*)/?$' =>	'index.php?property=$matches[6]&property_neighborhood=$matches[4]&post_type=property',
+	private static $rewrite_rules = array(
+		'property/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]+)/?$' => 'index.php?pls_page=property&property=$matches[6]&property_neighborhood=$matches[4]',
+		//'neighborhood/([^/]+)/?$' => 'index.php?pls_page=neighborhood&neighborhood=$matches[1]',
 	);
+	private static $flush_rules = false;
 	public static $listing_details = null;
+
 
 	public static function init () {
 		add_action( 'wp_loaded', array(__CLASS__, 'check_rules') );
@@ -199,35 +202,32 @@ class PL_Pages {
 */
 
 	/**
-	 * Flush and reload rules if our rules are not yet included 
+	 * Load rules if necessary 
 	 */
 	function check_rules(){
 
-		$rules = get_option( 'rewrite_rules' );
-		$flush = false;
+		//register_post_type(self::$property_post_type, array('labels' => array('name' => __( 'Properties' ),'singular_name' => __( 'property' )),'public' => true,'has_archive' => true, 'rewrite' => true, 'query_var' => true, 'taxonomies' => array('category', 'post_tag')));
+		
+		$rules = get_option('rewrite_rules');
 		foreach(self::$rewrite_rules as $rule=>$rewrite) {
 			if (!isset($rules[$rule])) {
-				$flush = true;
+				add_rewrite_rule($rule, $rewrite, 'top');
+				self::$flush_rules = true;
 			}
 		}
-		if ($flush) {
-			foreach(self::$rewrite_rules as $rule=>$rewrite) {
-				if (!isset($rules[$rule])) {
-					add_rewrite_rule($rule, $rewrite, true);
-				}
-			}
-			global $wp_rewrite;
-			$wp_rewrite->flush_rules();
-		}
+		//pls_trace($rules);
 	}
 
 	/**
-	 * Setup wp_query values to detect
+	 * Setup wp_query values to detect parameters
 	 */
 	public function query_vars( $vars )	{
-		array_push($vars, 'post_type');
+		//pls_trace();
+		array_push($vars, 'pls_page');
 		array_push($vars, 'property');
-
+		//array_push($vars, 'property_neighborhood');
+		//array_push($vars, 'neighborhood');
+		
 		return $vars;
 	}
 
@@ -235,21 +235,26 @@ class PL_Pages {
 	 * Fetch listing details if this is a details page
 	 */
 	public function pre_get_posts( $query ) {
-		if (!empty($query->query_vars[self::$property_post_type])) {
-			$req_id = $query->query_vars[self::$property_post_type];
-			$args = array('listing_ids' => array($req_id));
-			$response = PL_Listing::get($args);
-
-			if (!empty($response['listings'][0])) {
-				$query->set('post_type', self::$property_post_type);
-				self::$listing_details = $response['listings'][0];
-				$query->set('post_type', 'property');
+		if (!empty($query->query_vars['pls_page'])) {
+			switch($query->query_vars['pls_page']) {
+				case 'property':
+					//pls_trace('property page');
+					if (!empty($query->query_vars['property'])) {
+						$args = array('listing_ids' => array($query->query_vars['property']));
+						$response = PL_Listing::get($args);
+							
+						if (!empty($response['listings'][0])) {
+							$query->set('post_type', self::$property_post_type);
+							self::$listing_details = $response['listings'][0];
+							//pls_trace('Found property');
+							break;
+						}
+					}
+					$query->set('pls_page', '');
+					$query->set('property', '');
+					//$query->set('property_neighborhood', '');
 			}
-			else {
-				$query->set('post_type', '');
-				$query->set('property', '');
-				$query->set('property_neighborhood', '');
-			}
+			//pls_trace($query);
 		}
 	}
 
@@ -258,49 +263,64 @@ class PL_Pages {
 	 */
 	public function the_posts( $posts ) {
 		global $wp, $wp_query;
+		//pls_trace();
+		//pls_trace($posts);
+		//pls_trace($wp_query->query_vars);
 
-		if (count($posts) == 0 && !empty($wp_query->query_vars[self::$property_post_type])) {
-			//create a fake post instance
-			$post = new stdClass;
-			// fill properties of $post with everything a page in the database would have
-			$post->ID = -1;						// use an illegal value for page ID
-			$post->post_author = 1;				// post author id
-			$post->post_date = null;			// date of post
-			$post->post_date_gmt = null;
-			$post->post_content = '';
-			$post->post_title = self::$listing_details['location']['address'];
-			$post->post_excerpt = '';
-			$post->post_status = 'publish';
-			$post->comment_status = 'closed';	// mark as closed for comments, since page doesn't exist
-			$post->ping_status = 'closed';		// mark as closed for pings, since page doesn't exist
-			$post->post_password = '';			// no password
-			$post->post_name = self::$listing_details['id'];
-			$post->to_ping = '';
-			$post->pinged = '';
-			$post->modified = $post->post_date;
-			$post->modified_gmt = $post->post_date_gmt;
-			$post->post_content_filtered = '';
-			$post->post_parent = 0;
-			$post->guid = null;
-			$post->menu_order = 0;
-			$post->post_style = '';
-			$post->post_type = 'property';
-			$post->post_mime_type = '';
-			$post->comment_count = 0;
+		if (!empty($wp_query->query_vars['pls_page'])) {
+			if ($wp_query->query_vars['pls_page'] == 'property') {
+				// Creating a property page
+				//pls_trace('creating property post object');
+	
+				//create a fake post instance
+				$post = new stdClass;
+				// fill properties of $post with everything a page in the database would have
+				$post->ID = -1;						// use an illegal value for page ID
+				$post->post_author = 1;				// post author id
+				$post->post_date = null;			// date of post
+				$post->post_date_gmt = null;
+				$post->post_content = '';
+				$post->post_title = self::$listing_details['location']['address'];
+				$post->post_excerpt = '';
+				$post->post_status = 'publish';
+				$post->comment_status = 'closed';	// mark as closed for comments, since page doesn't exist
+				$post->ping_status = 'closed';		// mark as closed for pings, since page doesn't exist
+				$post->post_password = '';			// no password
+				$post->post_name = self::$listing_details['id'];
+				$post->to_ping = '';
+				$post->pinged = '';
+				$post->modified = $post->post_date;
+				$post->modified_gmt = $post->post_date_gmt;
+				$post->post_content_filtered = '';
+				$post->post_parent = 0;
+				$post->guid = null;
+				$post->menu_order = 0;
+				$post->post_style = '';
+				$post->post_type = 'property';
+				$post->post_mime_type = '';
+				$post->comment_count = 0;
 
-			// set filter results
-			$posts = array($post);
+				// set filter results
+				$posts = array($post);
 
-			// reset wp_query properties to simulate a found page
-			$wp_query->is_page = true;
-			$wp_query->is_singular = true;
-			$wp_query->is_single = true;
-			$wp_query->is_home = false;
-			$wp_query->is_archive = false;
-			$wp_query->is_category = false;
-			unset($wp_query->query['error']);
-			$wp_query->query_vars['error'] = '';
-			$wp_query->is_404 = false;
+				// reset wp_query properties to simulate a found page
+				$wp_query->is_page = true;
+				$wp_query->is_singular = true;
+				$wp_query->is_single = true;
+				$wp_query->is_home = false;
+				$wp_query->is_archive = false;
+				$wp_query->is_category = false;
+				unset($wp_query->query['error']);
+				$wp_query->query_vars['error'] = '';
+				$wp_query->is_404 = false;
+			}
+			/*
+			elseif ($wp_query->query_vars['pls_page'] == 'neighborhood') {
+				//pls_trace('neighborhood');
+				$wp_query->set('name', $wp_query->query_vars['neighborhood']);
+				$wp_query->is_tax = true;
+			}
+			*/
 		}
 
 		return $posts;
@@ -318,14 +338,19 @@ class PL_Pages {
 
 				// Update version in DB
 				update_option('pl_plugin_version', PL_PLUGIN_VERSION);
-				
-				// global $wp_rewrite;
-				// $wp_rewrite->flush_rules();
 
-				PL_Cache::invalidate();
-
-				// self::delete_all();
+				self::$flush_rules = true;
 			}
+		}
+
+		if (self::$flush_rules) {				
+			//pls_trace();
+			global $wp_rewrite;
+			$wp_rewrite->flush_rules();
+
+			PL_Cache::invalidate();
+
+			// self::delete_all();
 		}
 	}
 
