@@ -19,15 +19,14 @@ class PL_Pages {
 		'mlsid'
 	);
 	private static $rewrite_rules = array(
-		'property/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]+)/?$' => 'index.php?pls_page=property&property=$matches[6]&property_neighborhood=$matches[4]',
-		//'neighborhood/([^/]+)/?$' => 'index.php?pls_page=neighborhood&neighborhood=$matches[1]',
+		'property/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]+)/?$' => 'index.php?pls_page=property&property=$matches[6]',
 	);
 	private static $flush_rules = false;
 	public static $listing_details = null;
 
 
 	public static function init () {
-		add_action( 'wp_loaded', array(__CLASS__, 'check_rules') );
+		add_action( 'init', array(__CLASS__, 'check_rules') );
 		add_filter( 'pre_get_posts', array(__CLASS__, 'pre_get_posts') );
 		add_filter( 'query_vars', array(__CLASS__, 'query_vars') );
 		add_filter( 'the_posts', array(__CLASS__, 'the_posts') );
@@ -210,10 +209,7 @@ class PL_Pages {
 		
 		$rules = get_option('rewrite_rules');
 		foreach(self::$rewrite_rules as $rule=>$rewrite) {
-			if (!isset($rules[$rule])) {
-				add_rewrite_rule($rule, $rewrite, 'top');
-				self::$flush_rules = true;
-			}
+			add_rewrite_rule($rule, $rewrite, 'top');
 		}
 		//pls_trace($rules);
 	}
@@ -225,8 +221,6 @@ class PL_Pages {
 		//pls_trace();
 		array_push($vars, 'pls_page');
 		array_push($vars, 'property');
-		//array_push($vars, 'property_neighborhood');
-		//array_push($vars, 'neighborhood');
 		
 		return $vars;
 	}
@@ -235,10 +229,11 @@ class PL_Pages {
 	 * Fetch listing details if this is a details page
 	 */
 	public function pre_get_posts( $query ) {
+		//pls_trace($query);
 		if (!empty($query->query_vars['pls_page'])) {
 			switch($query->query_vars['pls_page']) {
 				case 'property':
-					//pls_trace('property page');
+					pls_trace('property page');
 					if (!empty($query->query_vars['property'])) {
 						$args = array('listing_ids' => array($query->query_vars['property']));
 						$response = PL_Listing::get($args);
@@ -246,16 +241,15 @@ class PL_Pages {
 						if (!empty($response['listings'][0])) {
 							$query->set('post_type', self::$property_post_type);
 							self::$listing_details = $response['listings'][0];
-							//pls_trace('Found property');
+							pls_trace('Found property');
 							break;
 						}
 					}
-					$query->set('pls_page', '');
-					$query->set('property', '');
-					//$query->set('property_neighborhood', '');
+					$query->is_404 = true;
+					break;
 			}
-			//pls_trace($query);
 		}
+		//pls_trace($query);
 	}
 
 	/**
@@ -265,62 +259,58 @@ class PL_Pages {
 		global $wp, $wp_query;
 		//pls_trace();
 		//pls_trace($posts);
-		//pls_trace($wp_query->query_vars);
-
-		if (!empty($wp_query->query_vars['pls_page'])) {
-			if ($wp_query->query_vars['pls_page'] == 'property') {
-				// Creating a property page
-				//pls_trace('creating property post object');
+		//pls_trace($wp_query);
 	
-				//create a fake post instance
-				$post = new stdClass;
-				// fill properties of $post with everything a page in the database would have
-				$post->ID = -1;						// use an illegal value for page ID
-				$post->post_author = 1;				// post author id
-				$post->post_date = null;			// date of post
-				$post->post_date_gmt = null;
-				$post->post_content = '';
-				$post->post_title = self::$listing_details['location']['address'];
-				$post->post_excerpt = '';
-				$post->post_status = 'publish';
-				$post->comment_status = 'closed';	// mark as closed for comments, since page doesn't exist
-				$post->ping_status = 'closed';		// mark as closed for pings, since page doesn't exist
-				$post->post_password = '';			// no password
-				$post->post_name = self::$listing_details['id'];
-				$post->to_ping = '';
-				$post->pinged = '';
-				$post->modified = $post->post_date;
-				$post->modified_gmt = $post->post_date_gmt;
-				$post->post_content_filtered = '';
-				$post->post_parent = 0;
-				$post->guid = null;
-				$post->menu_order = 0;
-				$post->post_style = '';
-				$post->post_type = 'property';
-				$post->post_mime_type = '';
-				$post->comment_count = 0;
-
-				// set filter results
-				$posts = array($post);
-
-				// reset wp_query properties to simulate a found page
-				$wp_query->is_page = true;
-				$wp_query->is_singular = true;
-				$wp_query->is_single = true;
-				$wp_query->is_home = false;
-				$wp_query->is_archive = false;
-				$wp_query->is_category = false;
-				unset($wp_query->query['error']);
-				$wp_query->query_vars['error'] = '';
-				$wp_query->is_404 = false;
+		if (!empty($wp_query->query_vars['pls_page'])) {
+			pls_trace('building pls virtual page');
+			if ($wp_query->query_vars['pls_page'] == 'property') {
+				if (self::$listing_details) {
+					// Creating a property page
+					//pls_trace('creating property post object');
+		
+					//create a fake post instance
+					$post = new stdClass;
+					// fill properties of $post with everything a page in the database would have
+					$post->ID = -1;						// use an illegal value for page ID
+					$post->post_author = 1;				// post author id
+					$post->post_date = null;			// date of post
+					$post->post_date_gmt = null;
+					$post->post_content = '';
+					$post->post_title = self::$listing_details['location']['address'];
+					$post->post_excerpt = '';
+					$post->post_status = 'publish';
+					$post->comment_status = 'closed';	// mark as closed for comments, since page doesn't exist
+					$post->ping_status = 'closed';		// mark as closed for pings, since page doesn't exist
+					$post->post_password = '';			// no password
+					$post->post_name = self::$listing_details['id'];
+					$post->to_ping = '';
+					$post->pinged = '';
+					$post->modified = $post->post_date;
+					$post->modified_gmt = $post->post_date_gmt;
+					$post->post_content_filtered = '';
+					$post->post_parent = 0;
+					$post->guid = null;
+					$post->menu_order = 0;
+					$post->post_style = '';
+					$post->post_type = 'property';
+					$post->post_mime_type = '';
+					$post->comment_count = 0;
+	
+					// set filter results
+					$posts = array($post);
+	
+					// reset wp_query properties to simulate a found page
+					$wp_query->is_page = true;
+					$wp_query->is_singular = true;
+					$wp_query->is_single = true;
+					$wp_query->is_home = false;
+					$wp_query->is_archive = false;
+					$wp_query->is_category = false;
+					unset($wp_query->query['error']);
+					$wp_query->query_vars['error'] = '';
+					$wp_query->is_404 = false;
+				}
 			}
-			/*
-			elseif ($wp_query->query_vars['pls_page'] == 'neighborhood') {
-				//pls_trace('neighborhood');
-				$wp_query->set('name', $wp_query->query_vars['neighborhood']);
-				$wp_query->is_tax = true;
-			}
-			*/
 		}
 
 		return $posts;
@@ -344,7 +334,7 @@ class PL_Pages {
 		}
 
 		if (self::$flush_rules) {				
-			//pls_trace();
+			pls_trace('flushing rules');
 			global $wp_rewrite;
 			$wp_rewrite->flush_rules();
 
@@ -372,9 +362,10 @@ class PL_Pages {
 		if (!is_404()) {
 			return;
 		}
-
+		pls_trace();
+		
 		if ($wp_query->query_vars['post_type'] === self::$property_post_type 
-			&& $wp_query->query_vars[self::$property_post_type] != '') {
+			&& !empty($wp_query->query_vars[self::$property_post_type])) {
 
 			$req_id = $wp_query->query_vars[self::$property_post_type];
 			$args = array( 'listing_ids' => array($req_id) );

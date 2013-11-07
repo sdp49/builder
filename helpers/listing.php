@@ -25,6 +25,7 @@ class PL_Listing_Helper {
 	}
 	
 	public static function results ($args = array(), $global_filters = true) {
+		pls_trace($args);
 		// Handle edge-case $args formatting and value...
 		if (!is_array($args)) { $args = wp_parse_args($args); } 
 		elseif (empty($args)) { $args = $_GET; }
@@ -75,6 +76,7 @@ class PL_Listing_Helper {
 	}
 
 	public static function details ($args) {
+		pls_trace();
 		if (empty($args['property_ids'])) { 
 			return array('listings' => array(), 'total' => 0); 
 		}
@@ -108,23 +110,7 @@ class PL_Listing_Helper {
 		$listing_data = null;
 
 		if ($post->post_type === PL_Pages::$property_post_type) {
-			if (PL_Pages::$listing_details) {
-				$listing_data = PL_Pages::$listing_details;
-			}
-			else {
-				// If the current $post is of type 'property', it's 'post_name' will be set to that listing's unique property ID (as set by the API)...
-				$args = array('listing_ids' => array($post->post_name), 'address_mode' => 'exact');
-				$response = PL_Listing::get($args);
-
-				// Despite the name we also call this outside of the loop. Make sure global $post is a Property before deleting.
-				if ( empty($response['listings']) ) {
-					if ($post->post_type === PL_Pages::$property_post_type) {
-						PL_Pages::ping_yoast_sitemap();
-					}
-				} else {
-					$listing_data = $response['listings'][0];
-				}
-			}
+			$listing_data = PL_Pages::$listing_details;
 		}
 
 		return $listing_data;		

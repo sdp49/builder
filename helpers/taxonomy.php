@@ -31,16 +31,8 @@ class PL_Taxonomy_Helper {
 	}
 
 	public static function register_taxonomies () {
-		register_taxonomy('state', array('property'), array('hierarchical' => TRUE,'label' => __('States'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
-		register_taxonomy('zip', array('property'), array('hierarchical' => TRUE,'label' => __('Zip Codes'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
-		register_taxonomy('city', array('property'), array('hierarchical' => TRUE,'label' => __('Cities'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
-		register_taxonomy('neighborhood', array('property'), array('hierarchical' => TRUE,'label' => __('Neighborhoods'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
-		register_taxonomy('street', array('property'), array('hierarchical' => TRUE,'label' => __('Streets'), 'public' => TRUE,'show_in_nav_menus' => false,'show_ui' => TRUE,'show_in_nav_menus' => false,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
-		
-		register_taxonomy('beds', 'property', array('hierarchical' => TRUE,'label' => __('Beds'), 'public' => TRUE,'show_in_nav_menus' => false,'show_ui' => TRUE,'query_var' => true,'rewrite' => true ) );
-		register_taxonomy('baths', 'property', array('hierarchical' => TRUE,'label' => __('Baths'), 'public' => TRUE,'show_in_nav_menus' => false,'show_ui' => TRUE,'query_var' => true,'rewrite' => true ) );
-		register_taxonomy('half-baths', 'property', array('hierarchical' => TRUE,'label' => __('Half-baths'), 'public' => TRUE,'show_in_nav_menus' => false,'show_ui' => TRUE,'query_var' => true,'rewrite' => true ) );
-		register_taxonomy('mlsid', 'property', array('hierarchical' => TRUE,'label' => __('MLS ID'), 'public' => TRUE,'show_in_nav_menus' => false,'show_ui' => TRUE,'query_var' => true,'rewrite' => true ) );
+		register_taxonomy('neighborhood', 'property', array('label'=>__('Neighborhoods'), 'public'=>true, 'hierarchical'=>true, 'query_var'=>true, 'rewrite'=>array('with_front'=>false, 'hierarchical'=>false)));
+		register_taxonomy('city', 'property', array('label'=>__('Cities'), 'public'=>true, 'hierarchical'=>true, 'query_var'=>true, 'rewrite'=>array('with_front'=>false, 'hierarchical'=>false)));
 	}
 
 	public static function ajax_polygon_listings () {
