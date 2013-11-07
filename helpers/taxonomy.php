@@ -11,7 +11,7 @@ class PL_Taxonomy_Helper {
 
 	public static function init () {
 		add_action('init', array(__CLASS__, 'register_taxonomies'));
-		add_filter('post_type_link', array(__CLASS__, 'get_property_permalink'), 10, 3);
+//		add_filter('post_type_link', array(__CLASS__, 'get_property_permalink'), 10, 3);
 		add_action('wp_ajax_save_polygon', array(__CLASS__, 'save_polygon'));
 		add_action('wp_ajax_update_polygon', array(__CLASS__, 'update_polygon'));
 		add_action('wp_ajax_delete_polygon', array(__CLASS__, 'delete_polygon'));
@@ -31,8 +31,10 @@ class PL_Taxonomy_Helper {
 	}
 
 	public static function register_taxonomies () {
-		register_taxonomy('neighborhood', 'property', array('label'=>__('Neighborhoods'), 'public'=>true, 'hierarchical'=>true, 'query_var'=>true, 'rewrite'=>array('with_front'=>false, 'hierarchical'=>false)));
-		register_taxonomy('city', 'property', array('label'=>__('Cities'), 'public'=>true, 'hierarchical'=>true, 'query_var'=>true, 'rewrite'=>array('with_front'=>false, 'hierarchical'=>false)));
+		register_taxonomy('state', array('property'), array('hierarchical' => TRUE,'label' => __('States'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
+		register_taxonomy('zip', array('property'), array('hierarchical' => TRUE,'label' => __('Zip Codes'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
+		register_taxonomy('city', array('property'), array('hierarchical' => TRUE,'label' => __('Cities'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
+		register_taxonomy('neighborhood', array('property'), array('hierarchical' => TRUE,'label' => __('Neighborhoods'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
 	}
 
 	public static function ajax_polygon_listings () {
@@ -399,6 +401,7 @@ class PL_Taxonomy_Helper {
 		return $default;
 	}
 
+	// TODO: purge
 	public static function get_property_permalink ($permalink, $post_id, $leavename) {
 		$post = get_post($post_id);
 		$state = '';

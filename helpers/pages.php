@@ -40,8 +40,16 @@ class PL_Page_Helper {
 				'neighborhood' => 'neighborhood',
 				'address' => 'address',
 		)));
-		$url = "/property/{$listing['location']['region']}/{$listing['location']['locality']}/{$listing['location']['postal']}/{$listing['location']['neighborhood']}/{$listing['location']['address']}/$placester_id";
-		return site_url(preg_replace('/[^a-z0-9\-\/]+/', '-', strtolower($url)));
+		// not using get_permalink because it's a virtual page
+		$permalink_struct = get_option('permalink_structure');
+		if (empty($permalink_struct)) {
+			// non pretty format
+			return site_url().'?pls_page=property&property='.$placester_id;
+		}
+		else {
+			$url = "/property/{$listing['location']['region']}/{$listing['location']['locality']}/{$listing['location']['postal']}/{$listing['location']['neighborhood']}/{$listing['location']['address']}/$placester_id";
+			return site_url().preg_replace('/[^a-z0-9\-\/]+/', '-', strtolower($url));
+		}
 	}
 
 	public static function get_pages_datatable ($placester_id) {
