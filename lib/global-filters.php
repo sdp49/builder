@@ -26,6 +26,7 @@ class PL_Global_Filters {
   				// Used to determine whether or not $value is array of values representing filter type $attribute, or a subfilter 
   				// (i.e, location => array("state" => "AZ", "postal" => "85215") -- location contains subfilters, not values)
   				$keys_are_ints = true;
+  				$r_empty = empty($args[$attribute]);
 
   				foreach ($value as $k => $v) {
 	  				// Respect existing value if it is already set...
@@ -41,7 +42,7 @@ class PL_Global_Filters {
   				}
 
   				// Check whether or not to add the match key...
-  				if ($keys_are_ints && count($value) > 0) {
+  				if ($keys_are_ints && count($value) && $r_empty) {
   					$args["{$attribute}_match"] = "in";
   				}
   			}
