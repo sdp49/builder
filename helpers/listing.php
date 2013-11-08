@@ -25,7 +25,6 @@ class PL_Listing_Helper {
 	}
 	
 	public static function results ($args = array(), $global_filters = true) {
-		pls_trace($args);
 		// Handle edge-case $args formatting and value...
 		if (!is_array($args)) { $args = wp_parse_args($args); } 
 		elseif (empty($args)) { $args = $_GET; }
@@ -76,7 +75,6 @@ class PL_Listing_Helper {
 	}
 
 	public static function details ($args) {
-		pls_trace();
 		if (empty($args['property_ids'])) { 
 			return array('listings' => array(), 'total' => 0); 
 		}

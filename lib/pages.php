@@ -21,7 +21,6 @@ class PL_Pages {
 	private static $rewrite_rules = array(
 		'property/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]+)/?$' => 'index.php?pls_page=property&property=$matches[6]',
 	);
-	private static $flush_rules = false;
 	public static $listing_details = null;
 
 
@@ -103,7 +102,6 @@ class PL_Pages {
 
 	/**
 	 * Deletes all properties and their associated post meta.
-	 *
 	 * @return bool true if delete successful
 	 */
 	public static function delete_all () {
@@ -206,7 +204,7 @@ class PL_Pages {
 	 */
 	function setup_rewrite(){
 
-		//register_post_type(self::$property_post_type, array('labels' => array('name' => __( 'Properties' ),'singular_name' => __( 'property' )),'public' => true,'has_archive' => true, 'rewrite' => true, 'query_var' => true, 'taxonomies' => array('category', 'post_tag')));
+		register_post_type(self::$property_post_type, array('labels' => array('name' => __( 'Properties' ),'singular_name' => __( 'property' )),'public' => true,'has_archive' => true, 'rewrite' => true, 'query_var' => true, 'taxonomies' => array('category', 'post_tag')));
 
 		$rules = get_option('rewrite_rules');
 		foreach(self::$rewrite_rules as $rule=>$rewrite) {
@@ -333,21 +331,17 @@ class PL_Pages {
 			if ($current_version != PL_PLUGIN_VERSION) {
 				// Run the updater script before updating the version number...
 				include_once(trailingslashit(PL_PARENT_DIR) . 'updater.php');
-
+	
 				// Update version in DB
 				update_option('pl_plugin_version', PL_PLUGIN_VERSION);
-
-				self::$flush_rules = true;
+				
+				global $wp_rewrite;
+				$wp_rewrite->flush_rules();
+	
+				PL_Cache::invalidate();
+	
+				// self::delete_all();
 			}
-		}
-
-		if (self::$flush_rules) {
-			global $wp_rewrite;
-			$wp_rewrite->flush_rules();
-
-			PL_Cache::invalidate();
-
-			// self::delete_all();
 		}
 	}
 
