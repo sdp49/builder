@@ -41,7 +41,7 @@ class PL_Global_Filters {
   				}
 
   				// Check whether or not to add the match key...
-  				if ($keys_are_ints && count($value) > 0) {
+  				if ($keys_are_ints && count($value) > 0 && empty($args[$attribute])) {
   					$args["{$attribute}_match"] = "in";
   				}
   			}
