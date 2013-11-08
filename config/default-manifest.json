@@ -13,7 +13,7 @@
         {
             "title": "Search",
             "template": "page-template-listings.php",
-            "slug": "listings"
+            "slug": "listings-search"
         },
         {
             "title": "Blog",
