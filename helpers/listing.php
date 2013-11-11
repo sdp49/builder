@@ -374,7 +374,9 @@ class PL_Listing_Helper {
 		else {
 			$response = PL_Listing::locations();
 		}
-
+		$response['neighborhood'][] = 'test1';
+		error_log(print_r($response,true));
+		
 		if (!$return_only) {
 			return $response;
 		}
@@ -415,6 +417,7 @@ class PL_Listing_Helper {
 	}
 
 	public static function polygon_locations ($return_only = false) {
+		error_log(print_r(debug_backtrace(),true));
 		$response = array();
 		$polygons = PL_Option_Helper::get_polygons();
 
