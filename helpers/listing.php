@@ -57,7 +57,6 @@ class PL_Listing_Helper {
 
 		// Call the API with the given args...
 		$listings = PL_Listing::get($args);
-
 		// Make sure it contains listings, then process accordingly...
 		if (!empty($listings['listings'])) {
 			foreach ($listings['listings'] as $key => $listing) {
@@ -108,7 +107,7 @@ class PL_Listing_Helper {
 		$listing_data = null;
 
 		if ($post->post_type === PL_Pages::$property_post_type) {
-			$listing_data = PL_Pages::$listing_details;
+			$listing_data = PL_Pages::get_listing_details();
 		}
 
 		return $listing_data;		

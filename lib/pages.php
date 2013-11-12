@@ -18,11 +18,9 @@ class PL_Pages {
 		'half-baths',
 		'mlsid'
 	);
-	private static $rewrite_rules = array(
-		'property/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]+)/?$' => 'index.php?pls_page=property&property=$matches[6]',
-	);
-	public static $listing_details = null;
-
+	private static $listing_details = null;
+	private static $taxonomy_object = null;
+	
 
 
 	public static function init () {
@@ -206,10 +204,7 @@ class PL_Pages {
 
 		register_post_type(self::$property_post_type, array('labels' => array('name' => __( 'Properties' ),'singular_name' => __( 'property' )),'public' => true,'has_archive' => true, 'rewrite' => true, 'query_var' => true, 'taxonomies' => array('category', 'post_tag')));
 
-		$rules = get_option('rewrite_rules');
-		foreach(self::$rewrite_rules as $rule=>$rewrite) {
-			add_rewrite_rule($rule, $rewrite, 'top');
-		}
+		add_rewrite_rule('property/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]+)/?$', 'index.php?pls_page=property&property=$matches[6]', 'top');
 	}
 
 	/**
@@ -232,7 +227,6 @@ class PL_Pages {
 					if (!empty($query->query_vars['property'])) {
 						$args = array('listing_ids' => array($query->query_vars['property']));
 						$response = PL_Listing::get($args);
-
 						if (!empty($response['listings'][0])) {
 							$query->set('post_type', self::$property_post_type);
 							self::$listing_details = $response['listings'][0];
@@ -246,13 +240,14 @@ class PL_Pages {
 	}
 
 	/**
-	 * If details page and have a listing, make a dummy post
+	 * When we get here should have some object to display, so create something if necessary
 	 */
 	public function the_posts( $posts ) {
 		global $wp, $wp_query;
 
 		if (!empty($wp_query->query_vars['pls_page'])) {
 			if ($wp_query->query_vars['pls_page'] == 'property') {
+				// If details page and have a listing, make a dummy post
 				if (self::$listing_details) {
 					// Creating a property page by creating a fake post instance
 					$post = new stdClass;
@@ -298,8 +293,59 @@ class PL_Pages {
 				}
 			}
 		}
+		elseif (!empty($wp_query->query_vars['neighborhood']) || !empty($wp_query->query_vars['city']) || !empty($wp_query->query_vars['state'])) {
+			// location page - create a term object if we dont have anything saved for this neighborhood
+			$qo = $wp_query->get_queried_object();
+			if (!is_object($qo)) {
+				$tax = $wp_query->query_vars['taxonomy'];
+				switch($tax) {
+					case 'state':
+						$loc = 'region';
+						break;
+					case 'city':
+						$loc = 'locality';
+						break;
+					case 'zip':
+						$loc = 'postal';
+						break;
+					default:
+						$loc = $tax;
+						break;
+				}
+				$slug = strtolower($wp_query->query_vars[$tax]);
+				// check if this is an mls neighborhood
+				$response = PL_Listing::locations();
+				if (!empty($response[$loc])) {
+					$key = array_search($slug, array_map('sanitize_title_with_dashes', $response[$loc]));
+					if ($key !== false) {
+						$qo = new stdClass();
+						$qo->term_id = -1;
+						$qo->name = $response[$loc][$key];
+						$qo->slug = $slug;
+						$qo->term_group = 0;
+						$qo->term_taxonomy_id = -1;
+						$qo->taxonomy = $tax;
+						$qo->description = '';
+						$qo->parent = 0;
+						$qo->count = 1;
+						$wp_query->$tax = $slug;
+						$wp_query->queried_object = $qo;
+						$wp_query->queried_object_id = -1;
+						self::$taxonomy_object = $qo; 
+					}
+				}
+			}
+		}
 
 		return $posts;
+	}
+
+	public static function get_listing_details() {
+		return self::$listing_details;
+	} 
+	
+	public static function get_taxonomy_object() {
+		return self::$taxonomy_object;
 	}
 
 	/**

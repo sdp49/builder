@@ -400,8 +400,67 @@ class PL_Taxonomy_Helper {
 		// Not found
 		return $default;
 	}
+	
+	/**
+	 * Called from BP: Get taxonomy object either from db if user saved data or from the dynamic page
+	 */
+	public static function get_term ($args = array()) {
+		extract(wp_parse_args($args, array('field'=>'slug', 'value'=>'', 'taxonomy'=>'', 'get_polygon'=>false, 'custom_meta'=>array())));
+		$term = get_term_by($field, $value, $taxonomy);
+		if (!$term && $field == 'slug') {
+			// no match in db - see if this is a dynamically created location page
+			$cterm = PL_Pages::get_taxonomy_object();
+			if ($cterm && $cterm->taxonomy == $taxonomy && $cterm->slug == sanitize_title_with_dashes($value)) {
+				$term = $cterm; 
+			}
+		}
 
-	// TODO: purge
+		if ($term && $term->term_id>0) {
+			if (!empty($custom_meta)) {
+				$custom_data = array();
+				foreach ($custom_meta as $meta) {
+					if (empty($term->$meta['id'])) {
+						$term->$meta['id'] = get_tax_meta($term->term_id, $meta['id']);
+					}
+				}
+			}
+			if ($get_polygon) {
+				$term->polygon = self::get_polygon_detail(array('slug'=>$term->slug, 'tax'=>$term->taxonomy));
+			}
+		}
+		return $term;
+	}
+	
+	/**
+	 * Called from BP: Get meta data for a term using its id
+	 */
+	public static function get_term_meta ($args = array()) {
+		extract(wp_parse_args($args, array('id'=>'-1', 'meta'=>'')));
+		if ($id > 0 && $meta) {
+			return get_tax_meta($id, $meta);
+		}
+		return false;
+	}
+
+	/**
+	 * Return templates for building taxonomy permalinks
+	 */
+	public function get_permalink_templates () {
+		$permalink_struct = get_option('permalink_structure');
+		if (empty($permalink_struct)) {
+			// non pretty format
+			$templates = array('state'=>'?state=%state%', 'city'=>'?city=%city%', 'zip'=>'?zip=%zip%', 'neighborhood'=>'?neighborhood=%neighborhood%');
+		}
+		else {
+			$templates = array('state'=>'state/%state%/', 'city'=>'city/%city%/', 'zip'=>'zip/%zip%/', 'neighborhood'=>'neighborhood/%neighborhood%/');
+		}
+		foreach($templates as $key=>&$template) {
+			$template = home_url($template);
+		}
+		return $templates;
+	}
+	
+	// TODO: purge?
 	public static function get_property_permalink ($permalink, $post_id, $leavename) {
 		$post = get_post($post_id);
 		$state = '';
