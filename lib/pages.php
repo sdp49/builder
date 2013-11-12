@@ -293,7 +293,8 @@ class PL_Pages {
 				}
 			}
 		}
-		elseif (!empty($wp_query->query_vars['neighborhood']) || !empty($wp_query->query_vars['city']) || !empty($wp_query->query_vars['state'])) {
+		elseif (!empty($wp_query->query_vars['taxonomy']) && !empty($wp_query->query_vars[$wp_query->query_vars['taxonomy']]) 
+			&& (!empty($wp_query->query_vars['neighborhood']) || !empty($wp_query->query_vars['zip']) || !empty($wp_query->query_vars['city']) || !empty($wp_query->query_vars['state']))) {
 			// location page - create a term object if we dont have anything saved for this neighborhood
 			$qo = $wp_query->get_queried_object();
 			if (!is_object($qo)) {
@@ -331,7 +332,7 @@ class PL_Pages {
 						$wp_query->$tax = $slug;
 						$wp_query->queried_object = $qo;
 						$wp_query->queried_object_id = -1;
-						self::$taxonomy_object = $qo; 
+						self::$taxonomy_object = $qo;
 					}
 				}
 			}
