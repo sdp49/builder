@@ -109,7 +109,10 @@ jQuery(document).ready(function($) {
         if (typeof $.fancybox == 'function') {
             $('.pl_register_lead_favorites_link').fancybox({
                 "hideOnContentClick": false,
-                "scrolling": true
+                "scrolling": true,
+                onClosed: function () {
+                    $('.register-form-validator-error').remove();
+                }
             }); 
         }
     }
