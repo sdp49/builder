@@ -5,14 +5,17 @@
 global $pagenow;
 
 $page = $_REQUEST['page'];
-$location = "$pagenow?page=$page";
 
 $taxlist = array('neighborhood'=>'neighborhood', 'zip'=>'postal', 'city'=>'locality', 'state'=>'region');
 $taxnow = empty($_REQUEST['taxonomy']) ? '' : $_REQUEST['taxonomy'];
 if (!array_key_exists($taxnow, $taxlist)) {
-	$taxnow = current(array_keys($taxlist));;
+	$taxnow = current(array_keys($taxlist));
+	wp_redirect("$pagenow?page=$page&taxonomy=$taxnow");
+	exit;
 }
 $taxonomy = $taxnow;
+// table needs tax in the url to construct nav links
+$baseurl = "$pagenow?page=$page&taxonomy=$taxonomy";
 
 $tax = get_taxonomy($taxonomy);
 if (!$tax) {
@@ -143,7 +146,8 @@ $messages[7] = __('No item selected.');
 
 	<h2>Display Properties Grouped By Location</h2>
 	<p>If your theme supports custom pages for displaying properties by location, you can use this screen to customize pages displayed for different location types.</p>
-	<form id="taxonomy-select" action="" method="post">
+	<form id="taxonomy-select" action="<?php echo $baseurl; ?>" method="get">
+		<input type="hidden" name="page" class="post_page" value="<?php echo $page ?>" />
 		<label for="page-type">Edit Pages For:</label>
 		<select name="taxonomy" id="page-type">
 		<?php
@@ -180,7 +184,7 @@ $messages[7] = __('No item selected.');
 
 		<div id="col-right">
 			<div class="col-wrap">
-				<form id="posts-filter" action="" method="post">
+				<form id="posts-filter" action="<?php echo $baseurl; ?>" method="post">
 					<input type="hidden" name="taxonomy" value="<?php echo esc_attr($taxonomy); ?>" />
 					<?php $wp_list_table->display(); ?>
 					<br class="clear" />
@@ -199,7 +203,7 @@ $messages[7] = __('No item selected.');
 					<?php else:?>
 						<p>Select from the list of <?php echo $tax->labels->name; ?> provided by your MLS below, or if you want to create your own custom <?php echo $tax->labels->singular_name; ?>
 						use the <a href="admin.php?page=placester_settings_polygons">Custom Drawn Areas</a> tool.
-						<form id="addtag" method="post" action="">
+						<form id="addtag" method="post" action="<?php echo $baseurl; ?>">
 						<input type="hidden" name="action" value="add-tag" />
 						<input type="hidden" name="screen" value="<?php echo esc_attr($current_screen->id); ?>" />
 						<input type="hidden" name="taxonomy" value="<?php echo esc_attr($taxonomy); ?>" />

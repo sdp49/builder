@@ -231,7 +231,8 @@ function placester_admin_menu () {
 
     foreach ($settings_subpages as $name => $page_url) {
         // Leave parent slug empty to add pages without adding them to the menu...
-        add_submenu_page( 'placester', $name, $name, 'edit_pages', 'placester_settings' . $page_url, array('PL_Router','settings' . $page_url) );
+        $hook = add_submenu_page( 'placester', $name, $name, 'edit_pages', 'placester_settings' . $page_url, array('PL_Router','settings' . $page_url) );
+        PL_Router::buffer_op($hook);
     }
 
     global $shortcode_subpages;
