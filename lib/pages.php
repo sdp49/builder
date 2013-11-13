@@ -24,15 +24,15 @@ class PL_Pages {
 
 
 	public static function init () {
-		add_action( 'init', array(__CLASS__, 'setup_rewrite') );
-		add_filter( 'pre_get_posts', array(__CLASS__, 'detect_virtual_pages') );
-		add_filter( 'query_vars', array(__CLASS__, 'setup_url_vars') );
-		add_filter( 'the_posts', array(__CLASS__, 'the_posts') );
-		add_filter( 'post_link', array(__CLASS__, 'get_property_permalink'), 10, 3);
+		add_action('init', array(__CLASS__, 'setup_rewrite'));
+		add_filter('pre_get_posts', array(__CLASS__, 'detect_virtual_pages'));
+		add_filter('query_vars', array(__CLASS__, 'setup_url_vars'));
+		add_filter('the_posts', array(__CLASS__, 'the_posts'));
+		add_filter('post_type_link', array(__CLASS__, 'get_property_permalink'), 10, 3);
 				
-		add_action( 'wp_footer', array(__CLASS__,'force_rewrite_update') );
-		add_action( 'admin_footer', array(__CLASS__,'force_rewrite_update') );
-		add_action( '404_template', array( __CLASS__, 'dump_permalinks') );
+		add_action('wp_footer', array(__CLASS__,'force_rewrite_update'));
+		add_action('admin_footer', array(__CLASS__,'force_rewrite_update'));
+		add_action('404_template', array(__CLASS__, 'dump_permalinks'));
 	}
 
 	public static function create_once ($pages_to_create, $force_template = true) {
@@ -52,8 +52,8 @@ class PL_Pages {
 			}
 			elseif ($force_template) {
 		        if (isset($page_info['template'])) {
-		        	delete_post_meta( $page->ID, '_wp_page_template' );
-		        	add_post_meta( $page->ID, '_wp_page_template', get_template_directory_uri().'/'.$page_info['template']);
+		        	delete_post_meta($page->ID, '_wp_page_template');
+		        	add_post_meta($page->ID, '_wp_page_template', get_template_directory_uri().'/'.$page_info['template']);
 		        }
 			}
 		}
@@ -113,7 +113,7 @@ class PL_Pages {
 		}
 
 		$id_str = implode(',', $prop_ids);
-    	$results = $wpdb->query( "DELETE FROM $wpdb->posts WHERE ID IN ($id_str)");
+    	$results = $wpdb->query("DELETE FROM $wpdb->posts WHERE ID IN ($id_str)");
 
     	if (empty($results)) {
     		return false;
@@ -177,7 +177,7 @@ class PL_Pages {
 			'fields' => 'ids'
 		);
 
-		$all_terms = get_terms( self::$all_taxonomies, $args );
+		$all_terms = get_terms(self::$all_taxonomies, $args);
 
 		if (!is_array($all_terms) || count($all_terms) === 0) {
 			return;
@@ -201,7 +201,7 @@ class PL_Pages {
 	 * Load rules
 	 */
 	function setup_rewrite(){
-		register_post_type(self::$property_post_type, array('labels'=>array('name'=>__('Properties'), 'singular_name'=>__( 'property' )), 'public'=>false, 'has_archive'=>true, 'rewrite'=>true, 'query_var'=>true, 'taxonomies'=>array(), 'exclude_from_search'=>true, 'publicly_queryable'=>false));
+		register_post_type(self::$property_post_type, array('labels'=>array('name'=>__('Properties'), 'singular_name'=>__('property')), 'public'=>false, 'has_archive'=>true, 'rewrite'=>true, 'query_var'=>true, 'taxonomies'=>array(), 'exclude_from_search'=>true, 'publicly_queryable'=>false));
 
 		add_rewrite_rule('property/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]+)/?$', 'index.php?pls_page=property&property=$matches[6]', 'top');
 	}
@@ -209,7 +209,7 @@ class PL_Pages {
 	/**
 	 * Setup wp_query values to detect parameters
 	 */
-	public function setup_url_vars( $vars )	{
+	public function setup_url_vars($vars)	{
 		array_push($vars, 'pls_page');
 		array_push($vars, 'property');
 
@@ -219,7 +219,7 @@ class PL_Pages {
 	/**
 	 * Fetch listing details if this is a details page
 	 */
-	public function detect_virtual_pages( $query ) {
+	public function detect_virtual_pages($query) {
 		if (!empty($query->query_vars['pls_page'])) {
 			switch($query->query_vars['pls_page']) {
 				case 'property':
@@ -241,7 +241,7 @@ class PL_Pages {
 	/**
 	 * When we get here should have some object to display, so create something if necessary
 	 */
-	public function the_posts( $posts ) {
+	public function the_posts($posts) {
 		global $wp, $wp_query;
 
 		if (!empty($wp_query->query_vars['pls_page'])) {
@@ -353,7 +353,7 @@ class PL_Pages {
 	 * Handles when we have a dummy property post object - normally only when viewing a property details page 
 	 */
 	public static function get_property_permalink ($permalink, $post, $leavename) {
-		if ( !empty($permalink) && is_object($post) && $post->post_type == 'property' && !empty($post->post_name) && !in_array($post->post_status, array('draft', 'pending', 'auto-draft')) ) {
+		if (!empty($permalink) && is_object($post) && $post->post_type == 'property' && !empty($post->post_name) && !in_array($post->post_status, array('draft', 'pending', 'auto-draft'))) {
 			if (!empty(self::$listing_details) && self::$listing_details['id']==$post->post_name) {
 				return PL_Page_Helper::get_url($post->post_name, self::$listing_details);
 			}
