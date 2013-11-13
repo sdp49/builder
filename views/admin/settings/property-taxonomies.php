@@ -7,7 +7,7 @@ global $pagenow;
 $page = $_REQUEST['page'];
 $location = "$pagenow?page=$page";
 
-$taxlist = array('neighborhood'=>'neighborhood', 'city'=>'locality', 'state'=>'region');
+$taxlist = array('neighborhood'=>'neighborhood', 'zip'=>'postal', 'city'=>'locality', 'state'=>'region');
 $taxnow = empty($_REQUEST['taxonomy']) ? '' : $_REQUEST['taxonomy'];
 if (!array_key_exists($taxnow, $taxlist)) {
 	$taxnow = current(array_keys($taxlist));;
@@ -38,6 +38,7 @@ $post_type = 'property';
 
 add_screen_option('per_page', array('label' => 'Per page', 'default' => 20, 'option' => 'edit_' . $tax->name . '_per_page'));
 $action = $wp_list_table->current_action();
+$message = 0;
 
 switch ($action) {
 
@@ -46,12 +47,17 @@ case 'add-tag':
 	if (!current_user_can($tax->cap->edit_terms)) {
 		wp_die(__('Cheatin&#8217; uh?'));
 	}
-	$ret = wp_insert_term($_POST['tag-name'], $taxonomy, $_POST);
-	if ($ret && !is_wp_error($ret)) {
-		$message = 1;
+	if (empty($_POST['tag-name'])) {
+		$message = 7;
 	}
 	else {
-		$message = 4;
+		$ret = wp_insert_term($_POST['tag-name'], $taxonomy, $_POST);
+		if ($ret && !is_wp_error($ret)) {
+			$message = 1;
+		}
+		else {
+			$message = 4;
+		}
 	}
 	break;
 
@@ -115,7 +121,14 @@ if (!current_user_can($tax->cap->edit_terms)) {
 	wp_die(__('You are not allowed to edit this item.'));
 }
 
-$locations = (array)PL_Listing_Helper::locations_for_options($taxlist[$taxonomy]);
+$locations = (array)PL_Listing_Helper::locations_for_options();
+if (empty($locations[$taxlist[$taxonomy]])) {
+	$locations = array();
+}
+else {
+	$locations = $locations[$taxlist[$taxonomy]];
+	sort($locations);
+}
 
 $messages[1] = __('Item added.');
 $messages[2] = __('Item deleted.');
@@ -123,12 +136,13 @@ $messages[3] = __('Item updated.');
 $messages[4] = __('Item not added.');
 $messages[5] = __('Item not updated.');
 $messages[6] = __('Items deleted.');
+$messages[7] = __('No item selected.');
 ?>
 <div class="wrap nosubsub">
 	<?php echo PL_Helper_Header::pl_settings_subpages(); ?>
 
 	<h2>Display Properties Grouped By Location</h2>
-	<p>If your theme supports custom pages for displaying properties by location, you can use this screen to create pages for different location types.</p>
+	<p>If your theme supports custom pages for displaying properties by location, you can use this screen to customize pages displayed for different location types.</p>
 	<form id="taxonomy-select" action="" method="post">
 		<label for="page-type">Edit Pages For:</label>
 		<select name="taxonomy" id="page-type">
@@ -151,8 +165,8 @@ $messages[6] = __('Items deleted.');
 		<?php printf('<span class="subtitle">' . __('Search results for &#8220;%s&#8221;') . '</span>', esc_html(stripslashes($_REQUEST['s']))); ?>
 	<?php endif ?>
 	</h3>
-	<?php if (isset($_REQUEST['message']) && ($msg = (int) $_REQUEST['message'])) : ?>
-	<div id="message" class="updated"><p><?php echo $messages[$msg]; ?></p></div>
+	<?php if ($message) : ?>
+	<div id="message" class="updated"><p><?php echo $messages[$message]; ?></p></div>
 	<?php $_SERVER['REQUEST_URI'] = remove_query_arg(array('message'), $_SERVER['REQUEST_URI']);
 	endif; ?>
 	<div id="ajax-response"></div>
@@ -179,39 +193,45 @@ $messages[6] = __('Items deleted.');
 			<?php if (current_user_can($tax->cap->edit_terms)): ?>
 				<div class="form-wrap">
 					<h3>Add A <?php echo $tax->labels->singular_name; ?></h3>
-					<p>If your theme supports custom pages for <?php echo $tax->labels->name; ?>, you can add a page for any <?php echo $tax->labels->singular_name; ?>
-					provided in your MLS.</p>
-					<form id="addtag" method="post" action="">
-					<input type="hidden" name="action" value="add-tag" />
-					<input type="hidden" name="screen" value="<?php echo esc_attr($current_screen->id); ?>" />
-					<input type="hidden" name="taxonomy" value="<?php echo esc_attr($taxonomy); ?>" />
-					<?php wp_nonce_field('add-tag', '_wpnonce_add-tag'); ?>
-
-					<div class="form-field form-required">
-						<label for="tag-name"><?php _ex('Name', 'Taxonomy Name'); ?></label>
-						<select name="tag-name" id="tag-name">
-						<?php foreach($locations as $location):?>
-							<?php if (trim($location)!=''):?>
-							<option><?php echo $location ?></option>
-							<?php endif ?>
-						<?php endforeach;?>
-						</select>
-					</div>
-					<div class="form-field">
-						<label for="tag-description"><?php _ex('Description', 'Taxonomy Description'); ?></label>
-						<textarea name="description" id="tag-description" rows="5" cols="40"></textarea>
-						<p><?php _e('The description is not prominent by default; however, some themes may show it.'); ?></p>
-					</div>
-
-					<?php
-					if (!is_taxonomy_hierarchical($taxonomy)) {
-						do_action('add_tag_form_fields', $taxonomy);
-					}
-					do_action($taxonomy . '_add_form_fields', $taxonomy);
-
-					submit_button('Add '.$tax->labels->singular_name, 'submit');
-					?>
-					</form>
+					<?php if (empty($locations)):?>
+						<p>Your MLS does not have any <?php echo $tax->labels->name; ?>. You can still create custom <?php echo $tax->labels->singular_name; ?>
+						pages by using <a href="admin.php?page=placester_settings_polygons">Custom Drawn Areas</a> for <?php echo $tax->labels->name; ?>.
+					<?php else:?>
+						<p>Select from the list of <?php echo $tax->labels->name; ?> provided by your MLS below, or if you want to create your own custom <?php echo $tax->labels->singular_name; ?>
+						use the <a href="admin.php?page=placester_settings_polygons">Custom Drawn Areas</a> tool.
+						<form id="addtag" method="post" action="">
+						<input type="hidden" name="action" value="add-tag" />
+						<input type="hidden" name="screen" value="<?php echo esc_attr($current_screen->id); ?>" />
+						<input type="hidden" name="taxonomy" value="<?php echo esc_attr($taxonomy); ?>" />
+						<?php wp_nonce_field('add-tag', '_wpnonce_add-tag'); ?>
+	
+						<div class="form-field form-required">
+							<label for="tag-name"><?php _ex('Name', 'Taxonomy Name'); ?></label>
+							<select name="tag-name" id="tag-name">
+								<option value="">Select</option>
+								<?php foreach($locations as $location):?>
+									<?php if (trim($location)!=''):?>
+									<option><?php echo $location ?></option>
+									<?php endif ?>
+								<?php endforeach;?>
+							</select>
+						</div>
+						<div class="form-field">
+							<label for="tag-description"><?php _ex('Description', 'Taxonomy Description'); ?></label>
+							<textarea name="description" id="tag-description" rows="5" cols="40"></textarea>
+							<p><?php _e('The description is not prominent by default; however, some themes may show it.'); ?></p>
+						</div>
+	
+						<?php
+						if (!is_taxonomy_hierarchical($taxonomy)) {
+							do_action('add_tag_form_fields', $taxonomy);
+						}
+						do_action($taxonomy . '_add_form_fields', $taxonomy);
+	
+						submit_button('Add '.$tax->labels->singular_name, 'submit');
+						?>
+						</form>
+					<?php endif; ?>
 				</div>
 			<?php endif ?>
 			</div>
