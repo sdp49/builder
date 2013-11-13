@@ -75,7 +75,7 @@ class PL_Router {
 	}
 	
 	public static function settings_property_pages () {
-		self::router('settings/property.php', array());
+		self::router('settings/property-taxonomies.php', array());
 	}
 	
 	public static function settings_international () {
