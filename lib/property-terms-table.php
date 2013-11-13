@@ -19,7 +19,7 @@ class PL_Property_Terms_Table extends WP_List_Table {
 		if (!taxonomy_exists($args['taxonomy'])) {
 			wp_die(__('Invalid taxonomy'));
 		}
-		parent::__construct();
+		parent::__construct($args);
 
 		$page = $_REQUEST['page'];
 		$this->base_page = admin_url($pagenow.'?page='.$page);
@@ -256,7 +256,7 @@ class PL_Property_Terms_Table extends WP_List_Table {
 			$actions['edit'] = '<a href="' . $edit_link . '">' . __('Edit') . '</a>';
 		}
 		if (current_user_can($tax->cap->delete_terms) && $tag->term_id != $default_term)
-			$actions['delete'] = "<a class='delete-tag' href='" . wp_nonce_url($this->base_page."&action=delete&amp;taxonomy=$taxonomy&amp;tag_ID=$tag->term_id", 'delete-tag_' . $tag->term_id) . "'>" . __('Delete') . "</a>";
+			$actions['delete'] = "<a class='delete-tag' href='" . wp_nonce_url($this->base_page."&amp;action=delete&amp;taxonomy=$taxonomy&amp;tag_ID=$tag->term_id", 'delete-tag_' . $tag->term_id) . "'>" . __('Delete') . "</a>";
 		$actions['view'] = '<a href="' . get_term_link($tag) . '">' . __('View') . '</a>';
 
 		$actions = apply_filters('tag_row_actions', $actions, $tag);
@@ -312,55 +312,5 @@ class PL_Property_Terms_Table extends WP_List_Table {
 
 	function column_default($tag, $column_name) {
 		return apply_filters("manage_{$this->taxonomy}_custom_column", '', $column_name, $tag->term_id);
-	}
-
-	/**
-	 * Outputs the hidden row displayed when inline editing
-	 */
-	function inline_edit() {
-		$tax = get_taxonomy($this->taxonomy);
-
-		if (! current_user_can($tax->cap->edit_terms))
-			return;
-		?>
-		<form method="get" action=""><table style="display: none"><tbody id="inlineedit">
-			<tr id="inline-edit" class="inline-edit-row" style="display: none"><td colspan="<?php echo $this->get_column_count(); ?>" class="colspanchange">
-	
-				<fieldset><div class="inline-edit-col">
-					<h4><?php _e('Quick Edit'); ?></h4>
-	
-					<label>
-						<span class="title"><?php _ex('Name', 'term name'); ?></span>
-						<span class="input-text-wrap"><input type="text" name="name" class="ptitle" value="" /></span>
-					</label>
-		<?php if (!global_terms_enabled()) { ?>
-					<label>
-						<span class="title"><?php _e('Slug'); ?></span>
-						<span class="input-text-wrap"><input type="text" name="slug" class="ptitle" value="" /></span>
-					</label>
-		<?php } ?>
-				</div></fieldset>
-		<?php
-			$core_columns = array('cb' => true, 'description' => true, 'name' => true, 'slug' => true, 'posts' => true);
-			list($columns) = $this->get_column_info();
-			foreach ($columns as $column_name => $column_display_name) {
-				if (isset($core_columns[$column_name]))
-					continue;
-				do_action('quick_edit_custom_box', $column_name, 'edit-tags', $this->taxonomy);
-			}
-		?>
-				<p class="inline-edit-save submit">
-					<a accesskey="c" href="#inline-edit" class="cancel button-secondary alignleft"><?php _e('Cancel'); ?></a>
-					<a accesskey="s" href="#inline-edit" class="save button-primary alignright"><?php echo $tax->labels->update_item; ?></a>
-					<span class="spinner"></span>
-					<span class="error" style="display:none;"></span>
-					<?php wp_nonce_field('taxinlineeditnonce', '_inline_edit', false); ?>
-					<input type="hidden" name="taxonomy" value="<?php echo esc_attr($this->taxonomy); ?>" />
-					<input type="hidden" name="post_type" value="<?php echo esc_attr($this->post_type); ?>" />
-					<br class="clear" />
-				</p>
-			</td></tr>
-		</tbody></table></form>
-	<?php
 	}
 }

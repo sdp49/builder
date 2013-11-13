@@ -31,10 +31,10 @@ class PL_Taxonomy_Helper {
 	}
 
 	public static function register_taxonomies () {
-		register_taxonomy('state', array('property'), array('hierarchical'=>TRUE, 'labels'=>array('singular_name'=>__('State'), 'name'=>__('States')), 'public'=>TRUE,'show_ui'=>TRUE,'query_var'=>true,'rewrite'=>array('with_front'=>false, 'hierarchical'=>false) ) );
-		register_taxonomy('zip', array('property'), array('hierarchical'=>TRUE, 'labels'=>array('singular_name'=>__('Zip Codes'), 'name'=>__('Zip Codes')), 'public'=>TRUE,'show_ui'=>TRUE,'query_var'=>true,'rewrite'=>array('with_front'=>false, 'hierarchical'=>false) ) );
-		register_taxonomy('city', array('property'), array('hierarchical'=>TRUE, 'labels'=>array('singular_name'=>__('City'), 'name'=>__('Cities')), 'public'=>TRUE,'show_ui'=>TRUE,'query_var'=>true,'rewrite'=>array('with_front'=>false, 'hierarchical'=>false) ) );
-		register_taxonomy('neighborhood', array('property'), array('hierarchical'=>TRUE, 'labels'=>array('singular_name'=>__('Neighborhood'), 'name'=>__('Neighborhoods')), 'public'=>TRUE,'show_ui'=>TRUE,'query_var'=>true,'rewrite'=>array('with_front'=>false, 'hierarchical'=>false) ) );
+		register_taxonomy('state', array('property'), array('hierarchical'=>false, 'labels'=>array('singular_name'=>__('State'), 'name'=>__('States')), 'public'=>TRUE,'show_ui'=>TRUE,'query_var'=>true,'rewrite'=>array('with_front'=>false, 'hierarchical'=>false) ) );
+		register_taxonomy('zip', array('property'), array('hierarchical'=>false, 'labels'=>array('singular_name'=>__('Zip Codes'), 'name'=>__('Zip Codes')), 'public'=>TRUE,'show_ui'=>TRUE,'query_var'=>true,'rewrite'=>array('with_front'=>false, 'hierarchical'=>false) ) );
+		register_taxonomy('city', array('property'), array('hierarchical'=>false, 'labels'=>array('singular_name'=>__('City'), 'name'=>__('Cities')), 'public'=>TRUE,'show_ui'=>TRUE,'query_var'=>true,'rewrite'=>array('with_front'=>false, 'hierarchical'=>false) ) );
+		register_taxonomy('neighborhood', array('property'), array('hierarchical'=>false, 'labels'=>array('singular_name'=>__('Neighborhood'), 'name'=>__('Neighborhoods')), 'public'=>TRUE,'show_ui'=>TRUE,'query_var'=>true,'rewrite'=>array('with_front'=>false, 'hierarchical'=>false) ) );
 	}
 
 	public static function ajax_polygon_listings () {

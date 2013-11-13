@@ -13,17 +13,11 @@ if (empty($tag_ID) ) { ?>
 	return;
 }
 
-// Back compat hooks
-if ('category' == $taxonomy )
-	do_action('edit_category_form_pre', $tag );
-elseif ('link_category' == $taxonomy )
-	do_action('edit_link_category_form_pre', $tag );
-else
-	do_action('edit_tag_form_pre', $tag);
-
 do_action($taxonomy . '_pre_edit_form', $tag, $taxonomy); ?>
 
 <div class="wrap">
+	<?php echo PL_Helper_Header::pl_settings_subpages(); ?>
+
 	<h2>Edit <?php echo $tax->labels->singular_name; ?> Page</h2>
 	<div id="ajax-response"></div>
 	<form name="edittag" id="edittag" method="post" action="" class="validate">
@@ -49,9 +43,6 @@ do_action($taxonomy . '_pre_edit_form', $tag, $taxonomy); ?>
 				<th scope="row" valign="top"><label for="parent"><?php _ex('Parent', 'Taxonomy Parent'); ?></label></th>
 				<td>
 					<?php wp_dropdown_categories(array('hide_empty' => 0, 'hide_if_empty' => false, 'name' => 'parent', 'orderby' => 'name', 'taxonomy' => $taxonomy, 'selected' => $tag->parent, 'exclude_tree' => $tag->term_id, 'hierarchical' => true, 'show_option_none' => __('None'))); ?>
-					<?php if ('category' == $taxonomy ) : ?>
-					<p class="description"><?php _e('Categories, unlike tags, can have a hierarchy. You might have a Jazz category, and under that have children categories for Bebop and Big Band. Totally optional.'); ?></p>
-					<?php endif; ?>
 				</td>
 			</tr>
 	<?php endif; // is_taxonomy_hierarchical() ?>
@@ -68,22 +59,14 @@ do_action($taxonomy . '_pre_edit_form', $tag, $taxonomy); ?>
 				do_action('edit_link_category_form_fields', $tag);
 			else
 				do_action('edit_tag_form_fields', $tag);
-	
+
 			do_action($taxonomy . '_edit_form_fields', $tag, $taxonomy);
 			?>
 		</table>
 	<?php
-	// Back compat hooks
-	if ('category' == $taxonomy )
-		do_action('edit_category_form', $tag);
-	elseif ('link_category' == $taxonomy )
-		do_action('edit_link_category_form', $tag);
-	else
-		do_action('edit_tag_form', $tag);
-	
 	do_action($taxonomy . '_edit_form', $tag, $taxonomy);
-	
-	submit_button(__('Update') );
+
+	submit_button(__('Update'));
 	?>
 	</form>
 </div>

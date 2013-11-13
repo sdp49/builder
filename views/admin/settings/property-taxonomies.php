@@ -8,8 +8,7 @@ $page = $_REQUEST['page'];
 $location = "$pagenow?page=$page";
 
 $taxlist = array('neighborhood'=>'neighborhood', 'city'=>'locality', 'state'=>'region');
-print_r($_REQUEST);
-$taxnow = empty($_REQUEST['taxonomy']) ? '' : $_REQUEST['taxonomy']; 
+$taxnow = empty($_REQUEST['taxonomy']) ? '' : $_REQUEST['taxonomy'];
 if (!array_key_exists($taxnow, $taxlist)) {
 	$taxnow = current(array_keys($taxlist));;
 }
@@ -26,8 +25,12 @@ if (!current_user_can($tax->cap->manage_terms)) {
 if(!class_exists('PL_Property_Terms_Table')){
 	require_once(PL_LIB_DIR . 'property-terms-table.php');
 }
+// Include Yoast SEO for taxonomy if available
+if (!class_exists('aaWPSEO_Taxonomy') && defined('WPSEO_PATH') && file_exists(WPSEO_PATH.'admin/class-taxonomy.php')) {
+	require WPSEO_PATH.'admin/class-taxonomy.php';
+}
 
-$wp_list_table = new PL_Property_Terms_Table(array('taxonomy'=>$taxonomy));
+$wp_list_table = new PL_Property_Terms_Table(array('singular'=>strtolower($tax->labels->singular_name), 'plural'=>strtolower($tax->labels->name), 'taxonomy'=>$taxonomy));
 $pagenum = $wp_list_table->get_pagenum();
 $current_screen = get_current_screen();
 $title = $tax->labels->name;
@@ -65,7 +68,7 @@ case 'delete':
 	break;
 
 case 'bulk-delete':
-	check_admin_referer('bulk-tags');
+	check_admin_referer('bulk-'.strtolower($tax->labels->name));
 	if (!current_user_can($tax->cap->delete_terms)) {
 		wp_die(__('Cheatin&#8217; uh?'));
 	}
@@ -84,7 +87,7 @@ case 'edit':
 		wp_die(__('You attempted to edit an item that doesn&#8217;t exist. Perhaps it was deleted?'));
 	}
 	PL_Router::load_builder_partial('property-terms-form.php', array('taxonomy'=>$taxonomy, 'tax'=>$tax, 'tag_ID'=>$tag_ID, 'tag'=>$tag));
-	exit;
+	return;
 
 case 'editedtag':
 	$tag_ID = (int) $_POST['tag_ID'];
@@ -123,6 +126,7 @@ $messages[6] = __('Items deleted.');
 ?>
 <div class="wrap nosubsub">
 	<?php echo PL_Helper_Header::pl_settings_subpages(); ?>
+
 	<h2>Display Properties Grouped By Location</h2>
 	<p>If your theme supports custom pages for displaying properties by location, you can use this screen to create pages for different location types.</p>
 	<form id="taxonomy-select" action="" method="post">
@@ -136,14 +140,14 @@ $messages[6] = __('Items deleted.');
 				<option value="<?php echo $tlslug ?>" <?php echo ($tlslug==$taxonomy ? 'selected="selected"' : '') ?>><?php echo $tltax->labels->name ?></option>
 			<?php
 			}
-		} 
+		}
 		?>
 		</select>
 		<input type="submit" name="submit" class="button" value="Select" />
 	</form>
-	
+
 	<h3>
-	<?php if (!empty($_REQUEST['s'])): ?> 
+	<?php if (!empty($_REQUEST['s'])): ?>
 		<?php printf('<span class="subtitle">' . __('Search results for &#8220;%s&#8221;') . '</span>', esc_html(stripslashes($_REQUEST['s']))); ?>
 	<?php endif ?>
 	</h3>
@@ -155,11 +159,11 @@ $messages[6] = __('Items deleted.');
 	<form class="search-form" action="<?php echo $pagenow?>" method="get">
 		<input type="hidden" name="page" class="post_page" value="<?php echo $page ?>" />
 		<input type="hidden" name="taxonomy" value="<?php echo esc_attr($taxonomy); ?>" />
-		<?php $wp_list_table->search_box($tax->labels->search_items, 'tag'); ?>
+		<?php $wp_list_table->search_box('Search Current '.$tax->labels->singular_name.' Pages', 'tag'); ?>
 	</form>
 	<br class="clear" />
 	<div id="col-container">
-	
+
 		<div id="col-right">
 			<div class="col-wrap">
 				<form id="posts-filter" action="" method="post">
@@ -169,7 +173,7 @@ $messages[6] = __('Items deleted.');
 				</form>
 			</div>
 		</div><!-- /col-right -->
-		
+
 		<div id="col-left">
 			<div class="col-wrap">
 			<?php if (current_user_can($tax->cap->edit_terms)): ?>
@@ -182,14 +186,14 @@ $messages[6] = __('Items deleted.');
 					<input type="hidden" name="screen" value="<?php echo esc_attr($current_screen->id); ?>" />
 					<input type="hidden" name="taxonomy" value="<?php echo esc_attr($taxonomy); ?>" />
 					<?php wp_nonce_field('add-tag', '_wpnonce_add-tag'); ?>
-					
+
 					<div class="form-field form-required">
 						<label for="tag-name"><?php _ex('Name', 'Taxonomy Name'); ?></label>
 						<select name="tag-name" id="tag-name">
 						<?php foreach($locations as $location):?>
 							<?php if (trim($location)!=''):?>
 							<option><?php echo $location ?></option>
-							<?php endif ?> 
+							<?php endif ?>
 						<?php endforeach;?>
 						</select>
 					</div>
@@ -198,13 +202,13 @@ $messages[6] = __('Items deleted.');
 						<textarea name="description" id="tag-description" rows="5" cols="40"></textarea>
 						<p><?php _e('The description is not prominent by default; however, some themes may show it.'); ?></p>
 					</div>
-					
+
 					<?php
 					if (!is_taxonomy_hierarchical($taxonomy)) {
 						do_action('add_tag_form_fields', $taxonomy);
 					}
 					do_action($taxonomy . '_add_form_fields', $taxonomy);
-					
+
 					submit_button('Add '.$tax->labels->singular_name, 'submit');
 					?>
 					</form>
@@ -214,6 +218,6 @@ $messages[6] = __('Items deleted.');
 		</div><!-- /col-left -->
 
 	</div><!-- /col-container -->
-			
+
 </div><!-- /wrap -->
-<?php 
+<?php
