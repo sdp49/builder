@@ -228,7 +228,9 @@ function placester_admin_menu () {
         'Property Pages' => '_property_pages',
         'International Settings' => '_international'
     );
-
+    if (!current_theme_supports('pls-custom-polygons')) {
+    	unset($settings_subpages['Custom Drawn Areas']);
+    }
     foreach ($settings_subpages as $name => $page_url) {
         // Leave parent slug empty to add pages without adding them to the menu...
         $hook = add_submenu_page( 'placester', $name, $name, 'edit_pages', 'placester_settings' . $page_url, array('PL_Router','settings' . $page_url) );
