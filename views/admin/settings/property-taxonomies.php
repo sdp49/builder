@@ -198,11 +198,19 @@ $messages[7] = __('No item selected.');
 				<div class="form-wrap">
 					<h3>Add A <?php echo $tax->labels->singular_name; ?></h3>
 					<?php if (empty($locations)):?>
-						<p>Your MLS does not have any <?php echo $tax->labels->name; ?>. You can still create custom <?php echo $tax->labels->singular_name; ?>
+						<p>Your MLS does not have any <?php echo $tax->labels->name; ?>. 
+						<?php if (current_theme_supports('pls-custom-polygons')): ?>
+						You can still create custom <?php echo $tax->labels->singular_name; ?>
 						pages by using <a href="admin.php?page=placester_settings_polygons">Custom Drawn Areas</a> for <?php echo $tax->labels->name; ?>.
+						<?php endif; ?>
+						</p>
 					<?php else:?>
-						<p>Select from the list of <?php echo $tax->labels->name; ?> provided by your MLS below, or if you want to create your own custom <?php echo $tax->labels->singular_name; ?>
+						<p>Select from the list of <?php echo $tax->labels->name; ?> provided by your MLS below. 
+						<?php if (current_theme_supports('pls-custom-polygons')): ?>
+						If you want to create your own custom <?php echo $tax->labels->singular_name; ?>
 						use the <a href="admin.php?page=placester_settings_polygons">Custom Drawn Areas</a> tool.
+						<?php endif; ?>
+						</p>
 						<form id="addtag" method="post" action="<?php echo $baseurl; ?>">
 						<input type="hidden" name="action" value="add-tag" />
 						<input type="hidden" name="screen" value="<?php echo esc_attr($current_screen->id); ?>" />
@@ -227,9 +235,6 @@ $messages[7] = __('No item selected.');
 						</div>
 	
 						<?php
-						if (!is_taxonomy_hierarchical($taxonomy)) {
-							do_action('add_tag_form_fields', $taxonomy);
-						}
 						do_action($taxonomy . '_add_form_fields', $taxonomy);
 	
 						submit_button('Add '.$tax->labels->singular_name, 'submit');
