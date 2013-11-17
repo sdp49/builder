@@ -382,6 +382,22 @@ class PL_Listing_Helper {
 		return $options;
 	}
 
+	public static function counts_for_locations ($args, $allow_globals = true) {
+		extract(wp_parse_args($args, array('locations'=>array(), 'type'=>'neighborhood')));
+		$result = array();
+		foreach($locations as $location) {
+			$result[$location] = 0;
+			if (!empty($location['type'])) {
+				$api_response = self::results(array('location'=>array($type=>$location),'limit'=>1), $allow_globals);
+				if ($api_response) {
+					$result[$location] = $api_response['total'];
+				}
+			}
+		}
+		pls_trace($result);
+		return $result;
+	}
+
 	/* 
 	 * Aggregates listing data to produce all unique values that exist for the given set of keys passed
 	 * in as array.  Classified as "basic" because no filters are incorporated (might add this later...)

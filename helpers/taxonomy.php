@@ -8,7 +8,8 @@ class PL_Taxonomy_Helper {
 	
 	// List of taxonomies used to bulid URLs, etc.
 	public static $all_loc_taxonomies = array('state', 'zip', 'city', 'neighborhood', 'street');
-
+	public static $tax_loc_map = array('state'=>'region', 'zip'=>'postal', 'city'=>'locality', 'neighborhood'=>'neighborhood', 'street'=>'address');
+	
 	public static function init () {
 		add_action('init', array(__CLASS__, 'register_taxonomies'));
 //		add_filter('post_type_link', array(__CLASS__, 'get_property_permalink'), 10, 3);
@@ -36,6 +37,21 @@ class PL_Taxonomy_Helper {
 		register_taxonomy('city', array('property'), array('hierarchical'=>false, 'labels'=>array('singular_name'=>__('City'), 'name'=>__('Cities')), 'public'=>false, 'show_ui'=>false, 'query_var'=>true,'rewrite'=>array('with_front'=>false, 'hierarchical'=>false) ) );
 		register_taxonomy('neighborhood', array('property'), array('hierarchical'=>false, 'labels'=>array('singular_name'=>__('Neighborhood'), 'name'=>__('Neighborhoods')), 'public'=>false, 'show_ui'=>false, 'query_var'=>true,'rewrite'=>array('with_front'=>false, 'hierarchical'=>false) ) );
 	}
+
+	public static function create_object($tax, $name, $slug = '') {
+		$slug = $slug ? $slug : sanitize_title_with_dashes($name);
+		$qo = new stdClass();
+		$qo->term_id = -1;
+		$qo->name = $name;
+		$qo->slug = $slug;
+		$qo->term_group = 0;
+		$qo->term_taxonomy_id = -1;
+		$qo->taxonomy = $tax;
+		$qo->description = '';
+		$qo->parent = 0;
+		$qo->count = 0;
+		return $qo;
+	} 
 
 	public static function ajax_polygon_listings () {
 		if (isset($_POST['polygon'])) {
@@ -405,13 +421,23 @@ class PL_Taxonomy_Helper {
 	 * Called from BP: Get taxonomy object either from db if user saved data or from the dynamic page
 	 */
 	public static function get_term ($args = array()) {
-		extract(wp_parse_args($args, array('field'=>'slug', 'value'=>'', 'taxonomy'=>'', 'get_polygon'=>false, 'custom_meta'=>array())));
+		extract(wp_parse_args($args, array('field'=>'slug', 'value'=>'', 'taxonomy'=>'', 'get_meta'=>false, 'get_polygon'=>false, 'custom_meta'=>array())));
 		$term = get_term_by($field, $value, $taxonomy);
-		if (!$term && $field == 'slug') {
-			// no match in db - see if this is a dynamically created location page
-			$cterm = PL_Pages::get_taxonomy_object();
-			if ($cterm && $cterm->taxonomy == $taxonomy && $cterm->slug == sanitize_title_with_dashes($value)) {
-				$term = $cterm; 
+		if (!$term) {
+			// no match in tax db - see if this is a dynamically created location page
+			if ($field == 'slug') {
+				$cterm = PL_Pages::get_taxonomy_object();
+				// slug for current page?
+				if ($cterm && $cterm->taxonomy == $taxonomy && $cterm->slug == sanitize_title_with_dashes($value)) {
+					$term = $cterm; 
+				}
+			}
+			elseif ($field == 'name' && isset(self::$tax_loc_map[$taxonomy])) {
+				$loc_type = self::$tax_loc_map[$taxonomy];
+				$locations = PL_Listing_Helper::locations_for_options();
+				if (in_array($value, $locations[$loc_type])) {
+					$term = self::create_object($taxonomy, $value);
+				}
 			}
 		}
 
@@ -428,6 +454,7 @@ class PL_Taxonomy_Helper {
 				$term->polygon = self::get_polygon_detail(array('slug'=>$term->slug, 'tax'=>$term->taxonomy));
 			}
 		}
+
 		return $term;
 	}
 	
