@@ -394,7 +394,6 @@ class PL_Listing_Helper {
 				}
 			}
 		}
-		pls_trace($result);
 		return $result;
 	}
 
