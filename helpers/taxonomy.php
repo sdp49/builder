@@ -421,7 +421,7 @@ class PL_Taxonomy_Helper {
 	 * Called from BP: Get taxonomy object either from db if user saved data or from the dynamic page
 	 */
 	public static function get_term ($args = array()) {
-		extract(wp_parse_args($args, array('field'=>'slug', 'value'=>'', 'taxonomy'=>'', 'get_meta'=>false, 'get_polygon'=>false, 'custom_meta'=>array())));
+		extract(wp_parse_args($args, array('field'=>'slug', 'value'=>'', 'taxonomy'=>'', 'get_polygon'=>false)));
 		$term = get_term_by($field, $value, $taxonomy);
 		if (!$term) {
 			// no match in tax db - see if this is a dynamically created location page
@@ -442,14 +442,6 @@ class PL_Taxonomy_Helper {
 		}
 
 		if ($term && $term->term_id>0) {
-			if (!empty($custom_meta)) {
-				$custom_data = array();
-				foreach ($custom_meta as $meta) {
-					if (empty($term->$meta['id'])) {
-						$term->$meta['id'] = get_tax_meta($term->term_id, $meta['id']);
-					}
-				}
-			}
 			if ($get_polygon) {
 				$term->polygon = self::get_polygon_detail(array('slug'=>$term->slug, 'tax'=>$term->taxonomy));
 			}
@@ -458,17 +450,6 @@ class PL_Taxonomy_Helper {
 		return $term;
 	}
 	
-	/**
-	 * Called from BP: Get meta data for a term using its id
-	 */
-	public static function get_term_meta ($args = array()) {
-		extract(wp_parse_args($args, array('id'=>'-1', 'meta'=>'')));
-		if ($id > 0 && $meta) {
-			return get_tax_meta($id, $meta);
-		}
-		return false;
-	}
-
 	/**
 	 * Return templates for building taxonomy permalinks
 	 */
