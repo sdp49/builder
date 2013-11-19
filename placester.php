@@ -102,6 +102,11 @@ if (defined('DOING_AJAX') && isset($_POST['action']) && $_POST['action'] == 'crm
     return;
 }
 
+// Sitemap support 
+if (!is_admin() && file_exists(WP_PLUGIN_DIR.'/wordpress-seo/inc/class-sitemaps.php') && strpos($_SERVER["REQUEST_URI"],'sitemap')!==false) {
+	include('lib/sitemaps.php');
+}
+
 //config
 include_once('config/toggle_form_sections.php');
 include_once('config/api/custom_attributes.php');
