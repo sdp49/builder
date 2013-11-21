@@ -20,7 +20,7 @@ class PL_Pages {
 	);
 	private static $listing_details = null;
 	private static $taxonomy_object = null;
-	
+
 
 
 	public static function init () {
@@ -29,7 +29,7 @@ class PL_Pages {
 		add_filter('query_vars', array(__CLASS__, 'setup_url_vars'));
 		add_filter('the_posts', array(__CLASS__, 'the_posts'));
 		add_filter('post_type_link', array(__CLASS__, 'get_property_permalink'), 10, 3);
-				
+
 		add_action('wp_footer', array(__CLASS__,'force_rewrite_update'));
 		add_action('admin_footer', array(__CLASS__,'force_rewrite_update'));
 		add_action('404_template', array(__CLASS__, 'dump_permalinks'));
@@ -201,9 +201,11 @@ class PL_Pages {
 	 * Load rules
 	 */
 	function setup_rewrite(){
+		// do not make public or Yoast will create sitemaps - we are making our own elsewhere
 		register_post_type(self::$property_post_type, array('labels'=>array('name'=>__('Properties'), 'singular_name'=>__('property')), 'public'=>false, 'has_archive'=>true, 'rewrite'=>true, 'query_var'=>true, 'taxonomies'=>array(), 'exclude_from_search'=>true, 'publicly_queryable'=>false));
-
 		add_rewrite_rule('property/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]+)/?$', 'index.php?pls_page=property&property=$matches[6]', 'top');
+		// in case someone has old style link cached
+		add_rewrite_rule('property/([^/]+)/?$', 'index.php?pls_page=property&property=$matches[1]', 'top');
 	}
 
 	/**
@@ -292,7 +294,7 @@ class PL_Pages {
 				}
 			}
 		}
-		elseif (!empty($wp_query->query_vars['taxonomy']) && !empty($wp_query->query_vars[$wp_query->query_vars['taxonomy']]) 
+		elseif (!empty($wp_query->query_vars['taxonomy']) && !empty($wp_query->query_vars[$wp_query->query_vars['taxonomy']])
 			&& (!empty($wp_query->query_vars['neighborhood']) || !empty($wp_query->query_vars['zip']) || !empty($wp_query->query_vars['city']) || !empty($wp_query->query_vars['state']))) {
 			// location page - create a term object if we dont have anything saved for this neighborhood
 			$qo = $wp_query->get_queried_object();
@@ -342,28 +344,22 @@ class PL_Pages {
 
 	public static function get_listing_details() {
 		return self::$listing_details;
-	} 
-	
+	}
+
 	public static function get_taxonomy_object() {
 		return self::$taxonomy_object;
 	}
 
 	/**
 	 * Build a permalink for a property page
-	 * Handles when we have a dummy property post object - normally only when viewing a property details page 
+	 * Handles when we have a dummy property post object - normally only when viewing a property details page
 	 */
 	public static function get_property_permalink ($permalink, $post, $leavename) {
 		if (!empty($permalink) && is_object($post) && $post->post_type == 'property' && !empty($post->post_name) && !in_array($post->post_status, array('draft', 'pending', 'auto-draft'))) {
 			if (!empty(self::$listing_details) && self::$listing_details['id']==$post->post_name) {
+				// viewing virtual details page
 				return PL_Page_Helper::get_url($post->post_name, self::$listing_details);
 			}
-			else {
-				$args = array('listing_ids' => array($query->query_vars['property']));
-				$response = PL_Listing::get($args);
-				if (!empty($response['listings'][0])) {
-					return PL_Page_Helper::get_url($post->post_name, $response['listings'][0]);
-				}
-			}				
 		}
 		return $permalink;
 	}
@@ -377,15 +373,15 @@ class PL_Pages {
 			if ($current_version != PL_PLUGIN_VERSION) {
 				// Run the updater script before updating the version number...
 				include_once(trailingslashit(PL_PARENT_DIR) . 'updater.php');
-	
+
 				// Update version in DB
 				update_option('pl_plugin_version', PL_PLUGIN_VERSION);
-				
+
 				global $wp_rewrite;
 				$wp_rewrite->flush_rules();
-	
+
 				PL_Cache::invalidate();
-	
+
 				// self::delete_all();
 			}
 		}

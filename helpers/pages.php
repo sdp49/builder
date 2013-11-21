@@ -1,32 +1,44 @@
-<?php 
+<?php
 
-PL_Page_Helper::init();
 class PL_Page_Helper {
 
-	public static function init () {
+	public static function get_link_template () {
+		$permalink_struct = get_option('permalink_structure');
+		if (empty($permalink_struct)) {
+			// non pretty format
+			$link = '?pls_page=property&property=%id%';
+		}
+		else {
+			$link = "/property/%region%/%locality%/%postal%/%neighborhood%/%address%/%id%/";
+		}
+		return home_url($link);
 	}
 
 	/**
 	 * Create a pretty link for property details page
 	 */
 	public static function get_url ($placester_id, $listing = array()) {
-		$listing = wp_parse_args($listing, array('location' => array(
+		$default = array(
 				'region' => 'region',
 				'locality' => 'locality',
 				'postal' => 'postal',
 				'neighborhood' => 'neighborhood',
 				'address' => 'address',
-		)));
+				'id' => ''
+		);
+		$listing = wp_parse_args($listing, array('location' => array()));
+		$listing = $listing['location'];
+		$listing['id'] = $placester_id;
 		// not using get_permalink because it's a virtual page
-		$permalink_struct = get_option('permalink_structure');
-		if (empty($permalink_struct)) {
-			// non pretty format
-			$link = '?pls_page=property&property='.$placester_id;
+		$url = self::get_link_template();
+
+		$tmpl_replace = $tmpl_keys = array();
+		foreach ($default as $key=>$val) {
+			$tmpl_replace[] = empty($listing[$key]) ? $key : sanitize_title_with_dashes($listing[$key]);
+			$tmpl_keys[] = '%'.$key.'%';
 		}
-		else {
-			$link = "/property/{$listing['location']['region']}/{$listing['location']['locality']}/{$listing['location']['postal']}/{$listing['location']['neighborhood']}/{$listing['location']['address']}/$placester_id";
-			$link = preg_replace('/[^a-z0-9\-\/]+/', '-', strtolower($link));
-		}
-		return home_url($link);
+		$url = str_replace($tmpl_keys, $tmpl_replace, $url);
+
+		return $url;
 	}
 }
