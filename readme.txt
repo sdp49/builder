@@ -143,9 +143,16 @@ In general - real-time. But if you use 3rd party property management services, t
 == Changelog ==
 
 = 1.1.25 =
-* Fixed block address behavior as set from Settings page.
-* Added support to limit selections for property type in search form if global filters set.
 * Search and static listing shortcodes now have sort_by drop downs.
+* Added new short code [pl_login_block] for use with non Placester themes - adds the login and register links and enables the 'add to favorites link' on non Placester themes.
+* Fixes:
+    * Block address behavior as set from Settings page.
+    * Featured listing image is not the appropriate image.
+    * Limit selections for property type in search form if global filters set.
+    * Agent Widget - Can not adjust email address on non-home page pages.
+    * Remove taxonomies (MLS IDs, half-baths, streets) from the nav menus page.
+    * Global filters not working for custom fields.
+    * 'Add to favorites' link does not work on non Placester theme - now works when [pl_login_block] short code is added to the page.
 
 = 1.1.24 =
 * Adding Dragonfly image resizing logic for property images.
