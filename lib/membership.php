@@ -135,7 +135,7 @@ class PL_Membership {
 			$userdata = get_user_by('login', $sanitized_username);
 
 			if (empty($userdata)) {
-                $errors['user_login'] = "The email address is invalid";
+                $errors['user_login'] = "There is no user for this email address";
             }
             else if ($userdata && !wp_check_password($password, $userdata->user_pass, $userdata->ID)) {
                 $errors['user_pass'] = "The password isn't correct";
