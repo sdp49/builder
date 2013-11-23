@@ -1,9 +1,9 @@
 === Plugin Name ===
 Contributors: Placester, MattBarba
 Tags: real estate, realestate, home, housing, rentals, properties, neighborhood, map, mortgage, listing, listings, craigslist, rental, google map, mls, idx, rets, agent, broker, leasing, realty, realtor, placester, widget, buddypress, homes, property, property management, estate, realestate, real estate crm, real estate maps
-Requires at least: 2.8
-Tested up to: 3.5.1
-Stable tag: 1.1.25
+Requires at least: 3.0
+Tested up to: 3.7.1
+Stable tag: 1.1.26
 
 Easily create and manage real estate sites powered by WordPress.
 
@@ -33,11 +33,11 @@ http://www.youtube.com/watch?v=a6sJi4iXObU&feature=plcp
 http://www.youtube.com/watch?v=pBneS5LjuNU&feature=player_embedded
 
 
-Check out premium themes available to hosted users:
-[Manchester Theme](http://manchester.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=manchester)
-[Tampa Theme](http://tampa.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=tampa)
+Check out some of the premium themes available to hosted users:
+[Franklin Theme](http://franklin.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=franklin)
+[Plymouth Theme](http://plymouth.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=plymouth)
+[Sedona Theme](http://sedona.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=sedona)
 [Highland Theme](http://highland.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=highland)
-[Slate Theme](http://slate.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=slate)
 
 
 Find the latest themes and theme updates at [Placester.com/portfolio/](https://placester.com/portfolio/)
@@ -141,6 +141,11 @@ Absolutely, [reach out](mailto:support@placester.com) to us and let us know what
 In general - real-time. But if you use 3rd party property management services, the updates will only be as recent as your provider allows.
 
 == Changelog ==
+
+= 1.1.26 =
+* Update WordPress version compatability information.
+* Fixes:
+    * Make the Placester theme gallery links work a bit better.
 
 = 1.1.25 =
 * Search and static listing shortcodes now have sort_by drop downs.
