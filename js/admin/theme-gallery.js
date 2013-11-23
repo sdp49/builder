@@ -19,7 +19,6 @@ jQuery(document).ready(function($) {
 					width: 700,
 				});
 				if (data && data.type == 'subscribe') {
-					prompt_free_trial('', premium_theme_success, premium_theme_cancel, 'wtg');
 				} else {
 					window.location.href = adminurl + "?page=placester_theme_gallery&theme_url=" + encodeURIComponent(data.url);
 				};
@@ -40,7 +39,6 @@ jQuery(document).ready(function($) {
 					width: 700,
 				});
 				if (data && data.type == 'subscribe') {
-					prompt_free_trial('Start your 15 day free trial and begin the download', premium_theme_success, premium_theme_cancel, 'wtg');
 				} else {
 					window.location.href = adminurl + "?page=placester_theme_gallery&theme_url=" + encodeURIComponent(data.url);
 				};
