@@ -26,7 +26,7 @@ class PL_Page_Helper {
 				'address' => 'address',
 				'id' => ''
 		);
-		$listing = wp_parse_args($listing, array('location' => array()));
+		$listing = wp_parse_args($listing, array('location' => $default));
 		$listing = $listing['location'];
 		$listing['id'] = $placester_id;
 		// not using get_permalink because it's a virtual page
@@ -34,7 +34,7 @@ class PL_Page_Helper {
 
 		$tmpl_replace = $tmpl_keys = array();
 		foreach ($default as $key=>$val) {
-			$tmpl_replace[] = empty($listing[$key]) ? $key : sanitize_title_with_dashes($listing[$key]);
+			$tmpl_replace[] = empty($listing[$key]) ? '-' : preg_replace('/[^a-z0-9\-]+/', '-', strtolower($listing[$key]));
 			$tmpl_keys[] = '%'.$key.'%';
 		}
 		$url = str_replace($tmpl_keys, $tmpl_replace, $url);
