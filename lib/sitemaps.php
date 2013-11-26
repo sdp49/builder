@@ -178,7 +178,7 @@ class PL_Sitemaps {
 	}
 
 	public static function configure_sitemaps() {
-		global $wpseo_admin_pages;
+		global $wpseo_sitemaps, $wpseo_admin_pages;
 
 		$content = '<div id="pl_sitemapinfo">';
 		$content .= '<strong>Exclude property search pages</strong><br/>';
@@ -190,7 +190,22 @@ class PL_Sitemaps {
 		}
 		$content .= '<br class="clear"/>';
 		$content .= '</div>';
+		ob_start();
+		?>
+		<script type="text/javascript"> 
+		jQuery(document).ready(function () {
+			jQuery("#enablexmlsitemap").change(function() {
+				if (jQuery("#enablexmlsitemap").is(':checked')) {
+					jQuery("#pl_sitemapinfo").css("display","block");
+				} else {
+					jQuery("#pl_sitemapinfo").css("display","none");
+				}
+			});
+		});
+		</script>
+		<?php
+		$content .= ob_get_clean();
 
-		$wpseo_admin_pages->postbox( 'pl_xmlsitemaps', '', $content );
+		$wpseo_admin_pages->postbox('pl_xmlsitemaps', '', $content);
 	}
 }
