@@ -123,13 +123,11 @@ class PL_Sitemaps {
 		self::finish_sitemap($sitemap);
 	}
 
+	/**
+	 * Build url with placeholders for empty fields. Should match the PL_Page_Helper::get_url() functionality
+	 */
 	public static function _template_replace($arg) {
-		if (empty(self::$current_listing[$arg[1]])) {
-			return $arg[1];
-		}
-		else {
-			return preg_replace('/[^a-z0-9\-]+/', '-', strtolower(self::$current_listing[$arg[1]]));
-		}
+		return empty(self::$current_listing[$arg[1]]) ? '-' : preg_replace('/[^a-z0-9\-]+/', '-', strtolower(self::$current_listing[$arg[1]]));
 	}
 
 	public static function taxonomy_sitemap($arg) {
