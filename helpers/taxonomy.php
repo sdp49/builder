@@ -9,6 +9,8 @@ class PL_Taxonomy_Helper {
 	// List of taxonomies used to build URLs, etc.
 	private static $all_loc_taxonomies = array('state', 'zip', 'city', 'neighborhood', 'street');
 	private static $tax_loc_map = array('state'=>'region', 'zip'=>'postal', 'city'=>'locality', 'neighborhood'=>'neighborhood', 'street'=>'address');
+	
+	private static $location_list = null;
 
 	public static function init () {
 		add_action('init', array(__CLASS__, 'register_taxonomies'));
@@ -435,8 +437,10 @@ class PL_Taxonomy_Helper {
 			}
 			elseif ($field == 'name' && isset(self::$tax_loc_map[$taxonomy])) {
 				$loc_type = self::$tax_loc_map[$taxonomy];
-				$locations = PL_Listing_Helper::locations_for_options();
-				if (in_array($value, $locations[$loc_type])) {
+				if (!self::$location_list) {
+					self::$location_list = PL_Listing_Helper::locations_for_options(false, false);
+				}
+				if (in_array($value, self::$location_list[$loc_type])) {
 					$term = self::create_object($taxonomy, $value);
 				}
 			}

@@ -338,7 +338,7 @@ class PL_Listing_Helper {
 		return $options;
 	}
 
-	public static function locations_for_options ($return_only = false, $allow_globals = true) {
+	public static function locations_for_options ($return_only = false, $allow_globals = false) {
 		$options = array();
 		$response = null;
 		
