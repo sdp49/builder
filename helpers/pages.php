@@ -6,7 +6,7 @@ class PL_Page_Helper {
 		$permalink_struct = get_option('permalink_structure');
 		if (empty($permalink_struct)) {
 			// non pretty format
-			$link = '?pls_page=property&property=%id%';
+			$link = '?property=%id%';
 		}
 		else {
 			$link = "/property/%region%/%locality%/%postal%/%neighborhood%/%address%/%id%/";
