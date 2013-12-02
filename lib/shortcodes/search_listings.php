@@ -113,7 +113,7 @@ To add some text to your listings:<br />
 		<a href="[url]">[address] [locality], [region]</a>
 	</p>
 	<p class="wf-basics">
-		<span class="hidden-phone">Beds: <strong>[beds]</strong>&nbsp;</span> <span class="hidden-phone">Baths: <strong>[baths]</strong>&nbsp;</span> <span class="wf-mls">MLS #: [mls_id]</span>
+		<span class="hidden-phone">Beds: <strong>[beds]</strong> </span> <span class="hidden-phone">Baths: <strong>[baths]</strong> </span> <span class="wf-mls">MLS #: [mls_id]</span>
 	</p>
 </div>
 			',
