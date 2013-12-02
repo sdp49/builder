@@ -210,8 +210,8 @@ To add some text to your listings:<br />
 			'type' => 'textarea',
 			'label' => 'Add content after the listings',
 			'css' => 'mime_html',
-			'default' => '</div>',
-			'description' => 'You can use any valid HTML in this field and it will appear after the listings.'
+			'default' => '<div class="pl-tpl-footer">[compliance]</div></div>',
+			'description' => 'You can use any valid HTML in this field and it will appear after the listings. It is suggested that you include the [compliance] shortcode to display the compliance statement for your MLS.'
 		),
 	);
 
