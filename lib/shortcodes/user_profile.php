@@ -124,19 +124,17 @@ For example, to only display user name if it has a value:<br />
 		}
 
 		self::$form_data = PL_People_helper::person_details();
-		self::$form_data += array('cur_data'=>array());
+		self::$form_data += array('cur_data'=>array(), 'location'=>array());
 		if (is_admin()) {
-			self::$form_data += array(
-					'cur_data'	=> array('name'=>'User Name', 'email'=>'email@domain.com', 'phone'=>'123-456-7890', 'company'=>'Company Name'),
-					'location'	=> array('address'=>'Address', 'locality'=>'City', 'postal'=>'Postal Code', 'region'=>'State', 'country'=>'Country'));
+			self::$form_data['cur_data'] += array('name'=>'User Name', 'email'=>'email@domain.com', 'phone'=>'123-456-7890', 'company'=>'Company Name');
+			self::$form_data['location'] += array('address'=>'Address', 'locality'=>'City', 'postal'=>'Postal Code', 'region'=>'State', 'country'=>'Country');
 		}
 		elseif (!is_user_logged_in()) {
 			return $op.$template['not_logged_in'];
 		}
 		else {
-			self::$form_data += array(
-					'cur_data'	=> array('name'=>'', 'email'=>'', 'phone'=>'', 'company'=>''),
-					'location'	=> array('address'=>'', 'locality'=>'', 'postal'=>'', 'region'=>'', 'country'=>''));
+			self::$form_data['cur_data'] += array('name'=>'', 'email'=>'', 'phone'=>'', 'company'=>'');
+			self::$form_data['location'] += array('address'=>'', 'locality'=>'', 'postal'=>'', 'region'=>'', 'country'=>'');
 		}
 
 		return $op.self::do_templatetags($template['snippet_body']).self::_get_edit_form();
