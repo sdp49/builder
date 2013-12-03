@@ -183,6 +183,9 @@ For example, to only display user name if it has a value:<br />
 	}
 
 	private static function _get_edit_form() {
+		wp_enqueue_script('jquery-ui-dialog');
+		wp_register_style('jquery-ui', trailingslashit( PLS_JS_URL ) . 'libs/jquery-ui/css/smoothness/jquery-ui-1.8.17.custom.css');
+		wp_enqueue_style('jquery-ui');
 		$form = '
 		<div id="edit_profile" style="display:none;">
 			<div id="edit_profile_message"></div>
@@ -197,7 +200,7 @@ For example, to only display user name if it has a value:<br />
 				</div>
 				<div>
 					<label>Phone</label>
-					<input type="text" name="metadata[phone]" value="'.self::$form_data['cur_data']['phone'].'" required="required" data-message="Enter a valid phone number">
+					<input type="text" name="metadata[phone]" value="'.self::$form_data['cur_data']['phone'].'">
 				</div>
 				<div>
 					<label>Street</label>
