@@ -17,9 +17,9 @@ class PL_Favorite_Listing_CPT extends PL_Search_Listing_CPT {
 		</p>';
 
 	protected $options = array(
-		'context'				=> array( 'type' => 'select', 'label' => 'Template', 'default' => '' ),
-		'width'					=> array( 'type' => 'int', 'label' => 'Width', 'default' => 250, 'description' => '(px)' ),
-		'height'				=> array( 'type' => 'int', 'label' => 'Height', 'default' => 250, 'description' => '(px)' ),
+		'context'		=> array( 'type' => 'select', 'label' => 'Template', 'default' => '' ),
+		'width'			=> array( 'type' => 'int', 'label' => 'Width', 'default' => 250, 'description' => '(px)' ),
+		'height'		=> array( 'type' => 'int', 'label' => 'Height', 'default' => 250, 'description' => '(px)' ),
 		'widget_class'	=> array( 'type' => 'text', 'label' => 'CSS Class', 'default' => '', 'description' => '(optional)' ),
 	);
 
