@@ -582,7 +582,7 @@ $PL_API_LISTINGS = array(
 	),
 	'get.locations' => array(
 		'request' => array(
-			'url' => 'http://ec2-54-201-98-90.us-west-2.compute.amazonaws.com:8081/location_list',
+			'url' => 'http://search-ctp.cfk.placester.net/location_list',
 			'type' => 'GET'
 		),
 		'args' => array(
