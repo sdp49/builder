@@ -4,7 +4,7 @@ global $PL_API_USERS;
 $PL_API_USERS = array(
 	'whoami' => array(
 		'request' => array(
-			'url' => 'https://api.placester.com/v2/organizations/whoami',
+			'url' => API_V2_URL.'organizations/whoami',
 			'type' => 'GET'
 		),
 		'args' => array(),
@@ -49,7 +49,7 @@ $PL_API_USERS = array(
 	),
 	'setup' => array(
 		'request' => array(
-			'url' => 'https://api.placester.com/v2/users/setup',
+			'url' => API_V2_URL.'users/setup',
 			'type' => 'POST'
 		),
 		'args' => array(
@@ -81,7 +81,7 @@ $PL_API_USERS = array(
 	),
 	'update' => array(
 		'request' => array(
-			'url' => 'https://api.placester.com/v2/users',
+			'url' => API_V2_URL.'users',
 			'type' => 'PUT'
 		),
 		'args' => array(

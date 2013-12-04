@@ -4,7 +4,7 @@ global $PL_API_LISTINGS;
 $PL_API_LISTINGS = array(
 	'get' => array(
 		'request' => array(
-			'url' => 'https://api.placester.com/v2.1/listings',
+			'url' => API_V2_1_URL.'listings',
 			'type' => 'GET'
 		),
 		'args' => array(
@@ -388,7 +388,7 @@ $PL_API_LISTINGS = array(
 	),
 	'create' => array(
 		'request' => array(
-			'url' => 'https://api.placester.com/v2/listings',
+			'url' => API_V2_URL.'listings',
 			'type' => 'POST'
 		),
 		'args' => array(
@@ -554,7 +554,7 @@ $PL_API_LISTINGS = array(
 	),
 	'temp_image' => array(
 		'request' => array(
-			'url' => 'https://api.placester.com/v2/listings/media/temp/image',
+			'url' => API_V2_URL.'listings/media/temp/image',
 			'type' => 'POST'
 		),
 		'args' => array(
@@ -564,7 +564,7 @@ $PL_API_LISTINGS = array(
 	),
 	'update' => array(
 		'request' => array(
-			'url' => 'https://api.placester.com/v2/listings',
+			'url' => API_V2_URL.'listings',
 			'type' => 'PUT'
 		),
 		'args' => array(),
@@ -572,7 +572,7 @@ $PL_API_LISTINGS = array(
 	),
 	'delete' => array(
 		'request' => array(
-			'url' => 'https://api.placester.com/v2/listings',
+			'url' => API_V2_URL.'listings',
 			'type' => 'DELETE'
 		),
 		'args' => array(
@@ -582,7 +582,7 @@ $PL_API_LISTINGS = array(
 	),
 	'get.locations' => array(
 		'request' => array(
-			'url' => 'http://search-ctp.cfk.placester.net/location_list',
+			'url' => API_LOCATION_LIST_URL,
 			'type' => 'GET'
 		),
 		'args' => array(
@@ -601,7 +601,7 @@ $PL_API_LISTINGS = array(
 	),
 	'get.aggregate' => array(
 		'request' => array(
-			'url' => 'https://api.placester.com/v2.1/listings/aggregate/',
+			'url' => API_V2_1_URL.'listings/aggregate/',
 			'type' => 'GET'
 		),
 		'args' => array(
