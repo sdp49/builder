@@ -109,24 +109,30 @@ if ((!is_admin() && file_exists(WP_PLUGIN_DIR.'/wordpress-seo/inc/class-sitemaps
 }
 
 //config
-if (!defined('PLS_HOST_ENV')) {
+if (!defined('PLACESTER_ENV')) {
 	if (strpos($_SERVER['HTTP_HOST'],'ctpost.wph-plcstrint.com')!==false) { 
-		define('PLS_HOST_ENV', 'staging');
+		define('PLACESTER_ENV', 'staging');
 	}
 	else {
-		define('PLS_HOST_ENV', 'production');
+		define('PLACESTER_ENV', 'production');
 	}
 }
 
-if (PLS_HOST_ENV == 'staging') {
-	define('API_V2_URL', 'https://api.cfk.placester.net/v2/');
-	define('API_V2_1_URL', 'https://api.cfk.placester.net/v2.1/');
+if (PLACESTER_ENV == 'staging') {
+	define('API_V2_URL', 'http://api.cfk.placester.net/v2/');
+	define('API_V2_1_URL', 'http://api.cfk.placester.net/v2.1/');
 	define('API_LOCATION_LIST_URL', 'http://ec2-54-201-98-90.us-west-2.compute.amazonaws.com:8081/location_list');
+	define('API_V3_URL', 'http://ec2-54-201-98-90.us-west-2.compute.amazonaws.com:8600/apiv3');
+	define('AUTOSUGGEST_URL', 'http://ec2-54-201-98-90.us-west-2.compute.amazonaws.com:8200/autosuggest');
+	define('POP_SEARCH_URL', 'http://ec2-54-201-98-90.us-west-2.compute.amazonaws.com:8081/popular_searches');
 }
 else {
-	define('API_V2_URL', 'https://api.placester.com/v2/');
-	define('API_V2_1_URL', 'https://api.placester.com/v2.1/');
+	define('API_V2_URL', 'http://api.placester.com/v2/');
+	define('API_V2_1_URL', 'http://api.placester.com/v2.1/');
 	define('API_LOCATION_LIST_URL', 'http://search-ctp.cfk.placester.net/location_list');
+	define('API_V3_URL', 'http://mux-ctp.cfk.placester.net/apiv3');
+	define('AUTOSUGGEST_URL', 'http://search-ctp.cfk.placester.net/autosuggest');
+	define('POP_SEARCH_URL', 'http://popsearch-ctp.cfk.placester.net/popular_searches');
 }
 include_once('config/toggle_form_sections.php');
 include_once('config/api/custom_attributes.php');
@@ -314,6 +320,15 @@ function placester_info_bar () {
     if ( PL_Option_Helper::get_demo_data_flag() && current_user_can('manage_options') ) {
         PL_Router::load_builder_partial('infobar.php');
     }
+}
+
+add_action('wp_footer', 'placester_print_api_urls');
+function placester_print_api_urls() {
+	?>
+	<script type="text/javascript">
+	//window.
+	</script>
+	<?php
 }
 
 ?>
