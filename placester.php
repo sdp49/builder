@@ -326,7 +326,9 @@ add_action('wp_footer', 'placester_print_api_urls');
 function placester_print_api_urls() {
 	?>
 	<script type="text/javascript">
-	//window.
+	window.plsSearchUrl = '<?php echo API_V3_URL; ?>';
+	window.plsAutosuggestUrl = '<?php echo AUTOSUGGEST_URL; ?>';
+	window.plsPopularSearchUrl = '<?php echo POP_SEARCH_URL; ?>';
 	</script>
 	<?php
 }
