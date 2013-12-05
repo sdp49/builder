@@ -143,6 +143,10 @@ In general - real-time. But if you use 3rd party property management services, t
 == Changelog ==
 
 = 1.1.26 =
+* New shortcode [favorite_listings] displays user's favorited listings if they are logged in and allows them to edit their profile.
+* New shortcode [pl_user_profile] displays user's profile if they are logged in.
+* Can use neighborhoods as a search option in [search_form] shortcode. 
+* Show custom neighborhoods in search forms along with neighborhoods from the MLS.
 * Update WordPress version compatability information.
 * Fixes:
     * Make the Placester theme gallery links work a bit better.

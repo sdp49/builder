@@ -53,6 +53,10 @@ class PL_Favorite_Listing_CPT extends PL_Search_Listing_CPT {
 		add_shortcode($this->shortcode, array($this, 'shortcode_handler'));
 	}
 
+	public function get_options_list($with_choices = false) {
+		return $this->options;
+	}
+
 	public function get_filters_list($with_choices = false) {
 		return array();
 	}
