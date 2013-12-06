@@ -229,7 +229,7 @@ class PL_Pages {
 				self::$listing_details = $response['listings'][0];
 			}
 			else {
-				$query->is_404 = true;
+				$query->set_404();
 			}
 		}
 	}
