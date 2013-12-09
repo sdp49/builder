@@ -266,6 +266,10 @@ jQuery(document).ready(function($) {
                 else {
                     $(that).parent().find('#pl_add_favorite').show();
                 };
+
+                if (typeof window.plsUserFavs !== 'undefined') {
+                	plsUserFavs.push(parseInt(data.property_id));
+                }
             }
         }, 'json');
     });
@@ -288,6 +292,15 @@ jQuery(document).ready(function($) {
             if ( response != 'errors' ) {
                 $('#pl_add_favorite').show();
                 $('#pl_remove_favorite').hide();
+
+                if (typeof window.plsUserFavs !== 'undefined') {
+                	plsUserFavs.push(data.property_id);
+                	for (var i in plsUserFavs) {
+                		if (plsUserFavs[i] === parseInt(property_id.substr(1))) {
+                			delete plsUserFavs[i];
+                		}
+                	}
+                }
             }
         }, 'json');
     }); 

@@ -13,6 +13,9 @@ class PL_People_Helper {
 		add_action('wp_ajax_remove_favorite_property', array(__CLASS__,'ajax_remove_favorite_property'));
 
 		add_shortcode('favorite_link_toggle', array(__CLASS__,'placester_favorite_link_toggle'));
+
+		add_action('wp_footer', array(__CLASS__, 'print_login_status'));
+		add_action('wp_footer', array(__CLASS__, 'print_user_favorites'));
 	}
 
 	public static function add_person ($args = array()) {
@@ -211,6 +214,29 @@ class PL_People_Helper {
         }
 
         return $contents;
+    }
+
+    /**
+     * Lets us determine whether user is logged in via js. Not to be used for anything sensitive.
+     */
+    public static function print_login_status() {
+    	?>
+    	<script type="text/javascript">
+    		window.plsUserLoggedIn = <?php echo is_user_logged_in() ? 'true' : 'false'; ?>;
+    	</script>
+    	<?php
+    }
+
+    /**
+     * Defines favorite listing IDs for use in js.
+     */
+    public static function print_user_favorites() {
+    	$fav_listings = is_user_logged_in() ? self::get_favorite_ids() : null;
+    	?>
+    	<script type="text/javascript">
+    		window.plsUserFavs = <?php echo json_encode($fav_listings); ?>;
+    	</script>
+    	<?php
     }
 
 }
