@@ -164,8 +164,6 @@ class PL_Js_Helper {
 		// listings
 		self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) . 'datatables/jquery.dataTables.js', array('jquery'));
 		// favorites/contact form
-		self::register_enqueue_if_not('validator', trailingslashit( PLS_JS_URL ) . 'libs/jquery-tools/validator.js' , array( 'jquery'), NULL, true );
-		self::register_enqueue_if_not('cookies', trailingslashit( PLS_JS_URL ) . 'libs/cookies/cookies.jquery.js' , array( 'jquery' ), NULL, false );
 		self::register_enqueue_if_not('membership', trailingslashit(PL_JS_PUB_URL) . 'membership.js', array('jquery'));
 		// self::register_enqueue_if_not('saved-search', trailingslashit(PL_JS_PUB_URL) . 'saved-search.js', array('jquery'));
 		self::register_enqueue_if_not('general', trailingslashit(PL_JS_PUB_URL) . 'general.js', array('jquery'));
