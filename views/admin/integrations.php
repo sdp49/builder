@@ -82,7 +82,7 @@
 			</div>
 			<div class="clear"></div>
 			<p>The Real Estate Website Builder plugin can pull listings from your local MLS using a widely supported format called RETS. Once activated, the plugin will automatically update your website with listings as they are added, edited, and removed. All regulatory and compliance concerns will be handled automatically so long as you are using a theme built for the real estate website builder plugin (see <a href="https://placester.com/wordpress-themes/">here</a> for a complete list).</p>
-			<p>Please note that MLS integrations require a <a href="https://placester.com/subscription/">Premium Subscription</a> to Placester which is $45 there is a 15 day, no-credit card free trial available to make sure you are happy with the service.  Fill out the form below to get started.</p>
+			<p>Please note that MLS integrations require a <a href="https://placester.com/subscription/">Premium Subscription</a> to Placester which is $45 per month. Fill out the form below to get started.</p>
 			<div class="clear"></div>
 			<!-- <h3 class="get_started">Fill out the form to get started</h3> -->
 			
