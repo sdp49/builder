@@ -446,9 +446,15 @@ class PL_Taxonomy_Helper {
 			}
 		}
 
-		if ($term && $term->term_id>0) {
-			if ($get_polygon) {
-				$term->polygon = self::get_polygon_detail(array('slug'=>$term->slug, 'tax'=>$term->taxonomy));
+		if ($term) { 
+			if ($term->term_id>0) {
+				if ($get_polygon) {
+					$term->polygon = self::get_polygon_detail(array('slug'=>$term->slug, 'tax'=>$term->taxonomy));
+				}
+			}
+			if (empty($term->api_name)) {
+				$term->api_name = $term->name;
+				$term->name = str_replace(':', ', ', $term->name);
 			}
 		}
 
