@@ -96,6 +96,13 @@
   font-size:13px;
 }
 
+
+/* Search Filters */
+#pls_admin_my_listings .form_group {
+	display: none;
+}
+
+
 .row_actions {
   display: none;
 }
