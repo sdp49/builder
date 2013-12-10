@@ -201,16 +201,17 @@ class PL_Pages {
 	 * Load rules
 	 */
 	function setup_rewrite(){
+		// do not make public or Yoast will create sitemaps - we are making our own elsewhere
 		register_post_type(self::$property_post_type, array('labels'=>array('name'=>__('Properties'), 'singular_name'=>__('property')), 'public'=>false, 'has_archive'=>true, 'rewrite'=>true, 'query_var'=>true, 'taxonomies'=>array(), 'exclude_from_search'=>true, 'publicly_queryable'=>false));
-
-		add_rewrite_rule('property/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]+)/?$', 'index.php?pls_page=property&property=$matches[6]', 'top');
+		add_rewrite_rule('property/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]+)/?$', 'index.php?property=$matches[6]', 'top');
+		// in case someone has old style link cached
+		add_rewrite_rule('property/([^/]+)/?$', 'index.php?property=$matches[1]', 'top');
 	}
 
 	/**
 	 * Setup wp_query values to detect parameters
 	 */
 	public function setup_url_vars($vars)	{
-		array_push($vars, 'pls_page');
 		array_push($vars, 'property');
 
 		return $vars;
@@ -220,20 +221,15 @@ class PL_Pages {
 	 * Fetch listing details if this is a details page
 	 */
 	public function detect_virtual_pages($query) {
-		if (!empty($query->query_vars['pls_page'])) {
-			switch($query->query_vars['pls_page']) {
-				case 'property':
-					if (!empty($query->query_vars['property'])) {
-						$args = array('listing_ids' => array($query->query_vars['property']));
-						$response = PL_Listing::get($args);
-						if (!empty($response['listings'][0])) {
-							$query->set('post_type', self::$property_post_type);
-							self::$listing_details = $response['listings'][0];
-							break;
-						}
-					}
-					$query->is_404 = true;
-					break;
+		if (!empty($query->query_vars['property'])) {
+			$args = array('listing_ids' => array($query->query_vars['property']));
+			$response = PL_Listing::get($args);
+			if (!empty($response['listings'][0])) {
+				$query->set('post_type', self::$property_post_type);
+				self::$listing_details = $response['listings'][0];
+			}
+			else {
+				$query->set_404();
 			}
 		}
 	}
@@ -244,55 +240,53 @@ class PL_Pages {
 	public function the_posts($posts) {
 		global $wp, $wp_query;
 
-		if (!empty($wp_query->query_vars['pls_page'])) {
-			if ($wp_query->query_vars['pls_page'] == 'property') {
-				// If details page and have a listing, make a dummy post
-				if (self::$listing_details) {
-					// Creating a property page by creating a fake post instance
-					$post = new stdClass;
-					// fill properties of $post with everything a page in the database would have
-					$post->ID = -1;						// use an illegal value for page ID
-					$post->post_author = 1;				// post author id
-					$post->post_date = null;			// date of post
-					$post->post_date_gmt = null;
-					$post->post_content = '';
-					$post->post_title = self::$listing_details['location']['address'];
-					$post->post_excerpt = '';
-					$post->post_status = 'publish';
-					$post->comment_status = 'closed';	// mark as closed for comments, since page doesn't exist
-					$post->ping_status = 'closed';		// mark as closed for pings, since page doesn't exist
-					$post->post_password = '';			// no password
-					$post->post_name = self::$listing_details['id'];
-					$post->to_ping = '';
-					$post->pinged = '';
-					$post->modified = $post->post_date;
-					$post->modified_gmt = $post->post_date_gmt;
-					$post->post_content_filtered = '';
-					$post->post_parent = 0;
-					$post->guid = null;
-					$post->menu_order = 0;
-					$post->post_style = '';
-					$post->post_type = 'property';
-					$post->post_mime_type = '';
-					$post->comment_count = 0;
+		if (!empty($wp_query->query_vars['property'])) {
+			// If details page and have a listing, make a dummy post
+			if (self::$listing_details) {
+				// Creating a property page by creating a fake post instance
+				$post = new stdClass;
+				// fill properties of $post with everything a page in the database would have
+				$post->ID = -1;						// use an illegal value for page ID
+				$post->post_author = 1;				// post author id
+				$post->post_date = null;			// date of post
+				$post->post_date_gmt = null;
+				$post->post_content = '';
+				$post->post_title = self::$listing_details['location']['address'];
+				$post->post_excerpt = '';
+				$post->post_status = 'publish';
+				$post->comment_status = 'closed';	// mark as closed for comments, since page doesn't exist
+				$post->ping_status = 'closed';		// mark as closed for pings, since page doesn't exist
+				$post->post_password = '';			// no password
+				$post->post_name = self::$listing_details['id'];
+				$post->to_ping = '';
+				$post->pinged = '';
+				$post->modified = $post->post_date;
+				$post->modified_gmt = $post->post_date_gmt;
+				$post->post_content_filtered = '';
+				$post->post_parent = 0;
+				$post->guid = null;
+				$post->menu_order = 0;
+				$post->post_style = '';
+				$post->post_type = 'property';
+				$post->post_mime_type = '';
+				$post->comment_count = 0;
 
-					// set filter results
-					$posts = array($post);
+				// set filter results
+				$posts = array($post);
 
-					// reset wp_query properties to simulate a found page
-					$wp_query->is_page = true;
-					$wp_query->is_singular = true;
-					$wp_query->is_single = true;
-					$wp_query->is_home = false;
-					$wp_query->is_archive = false;
-					$wp_query->is_category = false;
-					unset($wp_query->query['error']);
-					$wp_query->query_vars['error'] = '';
-					$wp_query->is_404 = false;
-				}
+				// reset wp_query properties to simulate a found page
+				$wp_query->is_page = true;
+				$wp_query->is_singular = true;
+				$wp_query->is_single = true;
+				$wp_query->is_home = false;
+				$wp_query->is_archive = false;
+				$wp_query->is_category = false;
+				unset($wp_query->query['error']);
+				$wp_query->query_vars['error'] = '';
+				$wp_query->is_404 = false;
 			}
 		}
-		elseif (!empty($wp_query->query_vars['taxonomy']) && !empty($wp_query->query_vars[$wp_query->query_vars['taxonomy']]) 
+		elseif (!empty($wp_query->query_vars['taxonomy']) && !empty($wp_query->query_vars[$wp_query->query_vars['taxonomy']])
 			&& (!empty($wp_query->query_vars['neighborhood']) || !empty($wp_query->query_vars['zip']) || !empty($wp_query->query_vars['city']) || !empty($wp_query->query_vars['state']))) {
 			// location page - create a term object if we dont have anything saved for this neighborhood
 			$qo = $wp_query->get_queried_object();
@@ -342,28 +336,22 @@ class PL_Pages {
 
 	public static function get_listing_details() {
 		return self::$listing_details;
-	} 
-	
+	}
+
 	public static function get_taxonomy_object() {
 		return self::$taxonomy_object;
 	}
 
 	/**
 	 * Build a permalink for a property page
-	 * Handles when we have a dummy property post object - normally only when viewing a property details page 
+	 * Handles when we have a dummy property post object - normally only when viewing a property details page
 	 */
 	public static function get_property_permalink ($permalink, $post, $leavename) {
 		if (!empty($permalink) && is_object($post) && $post->post_type == 'property' && !empty($post->post_name) && !in_array($post->post_status, array('draft', 'pending', 'auto-draft'))) {
 			if (!empty(self::$listing_details) && self::$listing_details['id']==$post->post_name) {
+				// viewing virtual details page
 				return PL_Page_Helper::get_url($post->post_name, self::$listing_details);
 			}
-			else {
-				$args = array('listing_ids' => array($query->query_vars['property']));
-				$response = PL_Listing::get($args);
-				if (!empty($response['listings'][0])) {
-					return PL_Page_Helper::get_url($post->post_name, $response['listings'][0]);
-				}
-			}				
 		}
 		return $permalink;
 	}
@@ -377,15 +365,15 @@ class PL_Pages {
 			if ($current_version != PL_PLUGIN_VERSION) {
 				// Run the updater script before updating the version number...
 				include_once(trailingslashit(PL_PARENT_DIR) . 'updater.php');
-	
+
 				// Update version in DB
 				update_option('pl_plugin_version', PL_PLUGIN_VERSION);
-				
+
 				global $wp_rewrite;
 				$wp_rewrite->flush_rules();
-	
+
 				PL_Cache::invalidate();
-	
+
 				// self::delete_all();
 			}
 		}
