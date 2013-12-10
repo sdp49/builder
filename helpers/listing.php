@@ -211,10 +211,54 @@ class PL_Listing_Helper {
 		$arg_groups = array('zoning_types', 'purchase_types', 'property_type', 'location', 'rets', 'metadata', 'custom');
 		foreach ($arg_groups as $key) {
 			if (!empty($_POST[$key])) {
-				$args[$key] = $_POST[$key];
+				if ($key == 'custom') {
+					// get list of text fields
+					$attrs = self::custom_attributes();
+					$text_fields = array();
+					$textarea_fields = array();
+					foreach($attrs as $attr) {
+						if ($attr['attr_type'] == 2) {
+							$text_fields[] = $attr['key'];
+						}
+						elseif ($attr['attr_type'] == 3) {
+							$textarea_fields[] = $attr['key'];
+						}
+					}
+					// custom text fields do a non exact search and they need to be queried as 'metadata'
+					foreach($_POST[$key] as $subkey => $val) {
+						if (!empty($val)) {
+							if (in_array($subkey, $text_fields)) {
+								$args['metadata'][$subkey] = $val;
+								$args['metadata'][$subkey.'_match'] = 'like';
+							}
+							elseif (in_array($subkey, $textarea_fields)) {
+								$vals = explode(',', $val);
+								if (count($vals) > 1) {
+									foreach($vals as $val) {
+										$val = trim($val);
+										if ($val) {
+											$args['metadata'][$subkey][] = $val;
+											$args['metadata'][$subkey.'_match'] = 'in';
+										}
+									}
+								}
+								else {
+									$args['metadata'][$subkey] = $val;
+									$args['metadata'][$subkey.'_match'] = 'like';
+								}
+							}
+							else {
+								$args['metadata'][$subkey] = $val;
+							}
+						}
+					}
+				}
+				else {
+					$args[$key] = $_POST[$key];
+				}
 			}
 		}
-		
+
 		// Get listings from model -- no global filters applied...
 		$api_response = PL_Listing::get($args);
 		
