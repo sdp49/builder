@@ -54,7 +54,7 @@ jQuery(document).ready(function($) {
 
 		//Parking
 		$('div#park_rental_details_admin_ui_basic').hide().find('input, select').prop('disabled', true);
-		$('div#park_rental_details_admin_ui_ad').hide().find('input, select').prop('disabled', true);
+		$('div#park_rental_details_admin_ui_advanced').hide().find('input, select').prop('disabled', true);
 
 		//show the right boxes
 		// console.log('#' + $('select#compound_type').val() + '_details_admin_ui_basic');
@@ -140,7 +140,7 @@ jQuery(document).ready(function($) {
         
         //get each of the form values, set key/values in array based off name attribute
         $.each($('#add_listing_form :input').serializeArray(), function(i, field) {
-    		form_values[field.name] = field.value;
+			form_values[field.name] = field.value;
         });
         //set context of the form.
        var form = $('#add_listing_form');
