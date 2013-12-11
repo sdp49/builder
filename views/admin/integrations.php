@@ -3,7 +3,6 @@
 		// error_log(var_export($integration_obj, true));
 		extract($integration_obj); 
 	?>
-	<div class="wrap">
 		<?php if (!empty($integration_status['integration'][0]['id'])): ?>
 			<div class="header-wrapper">
 				<h2>You have an integration pending</h2>
@@ -92,4 +91,3 @@
 	
 			<div class="clear"></div>	
 		<?php endif ?>	
-	</div>

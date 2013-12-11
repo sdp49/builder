@@ -1,5 +1,5 @@
 <?php extract(PL_Helper_User::get_default_country()); ?>
-<div class="wrap">
+
 	<?php echo PL_Helper_Header::pl_settings_subpages(); ?>
 	<div class="settings_option_wrapper">
 		<div class="header-wrapper">
@@ -22,4 +22,3 @@
 		</div>
 		<p>Setting the default country will change the default option in the country selector everywhere in the plugin. This is most convenient when creating a website with listings in a specific country.</p>
 	</div>
-</div>
