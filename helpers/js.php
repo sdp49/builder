@@ -44,7 +44,10 @@ class PL_Js_Helper {
 
 		// Load JS available to all of the plugin's pages...
 		self::register_enqueue_if_not('global', trailingslashit(PL_JS_ADMIN_URL) . 'global.js', array('jquery-ui-core', 'jquery-ui-dialog'));
-
+		// Try to make old IE look decent
+		self::register_enqueue_if_not('modernizr', trailingslashit( PLS_JS_URL ) . 'libs/modernizr/modernizr.min.js' , array(), '2.6.1');
+		
+		
 		// If no API key is set, load the following JS files for use by the wizard on ANY plugin settings page...
 		if (!PL_Option_Helper::api_key()) {
 			global $i_am_a_placester_theme;

@@ -217,11 +217,8 @@ class PL_Listing_Helper {
 					$text_fields = array();
 					$textarea_fields = array();
 					foreach($attrs as $attr) {
-						if ($attr['attr_type'] == 2) {
+						if ($attr['attr_type'] == 2 || $attr['attr_type'] == 3) {
 							$text_fields[] = $attr['key'];
-						}
-						elseif ($attr['attr_type'] == 3) {
-							$textarea_fields[] = $attr['key'];
 						}
 					}
 					// custom text fields do a non exact search and they need to be queried as 'metadata'
@@ -230,22 +227,6 @@ class PL_Listing_Helper {
 							if (in_array($subkey, $text_fields)) {
 								$args['metadata'][$subkey] = $val;
 								$args['metadata'][$subkey.'_match'] = 'like';
-							}
-							elseif (in_array($subkey, $textarea_fields)) {
-								$vals = explode(',', $val);
-								if (count($vals) > 1) {
-									foreach($vals as $val) {
-										$val = trim($val);
-										if ($val) {
-											$args['metadata'][$subkey][] = $val;
-											$args['metadata'][$subkey.'_match'] = 'in';
-										}
-									}
-								}
-								else {
-									$args['metadata'][$subkey] = $val;
-									$args['metadata'][$subkey.'_match'] = 'like';
-								}
 							}
 							else {
 								$args['metadata'][$subkey] = $val;
