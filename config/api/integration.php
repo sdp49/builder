@@ -1,10 +1,10 @@
 <?php 
+global $PL_API_INTEGRATION, $PL_API_URLS;
 
-global $PL_API_INTEGRATION;
 $PL_API_INTEGRATION = array(
 	'get' => array(
 		'request' => array(
-			'url' => API_V2_URL.'integration/requests',
+			'url' => 'http://'.$PL_API_URLS['API_V2_URL'].'integration/requests',
 			'type' => 'GET'
 		),
 		'args' => array(),
@@ -20,7 +20,7 @@ $PL_API_INTEGRATION = array(
 	),	
 	'create' => array(
 		'request' => array(
-			'url' => API_V2_URL.'integration/requests',
+			'url' => 'http://'.$PL_API_URLS['API_V2_URL'].'integration/requests',
 			'type' => 'POST'
 		),
 		'args' => array(
@@ -34,7 +34,7 @@ $PL_API_INTEGRATION = array(
 	),
 	'mls_list' => array(
 		'request' => array(
-			'url' => API_V2_URL.'integration/requests/mls',
+			'url' => 'http://'.$PL_API_URLS['API_V2_URL'].'integration/requests/mls',
 			'type' => 'GET'
 		),
 		'args' => array(),

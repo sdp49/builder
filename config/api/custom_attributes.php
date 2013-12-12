@@ -1,10 +1,10 @@
 <?php 
+global $PL_API_CUST_ATTR, $PL_API_URLS;
 
-global $PL_API_CUST_ATTR;
 $PL_API_CUST_ATTR = array(
 	'get' => array(
 		'request' => array(
-			'url' => API_V2_URL.'custom/attributes',
+			'url' => 'http://'.$PL_API_URLS['API_V2_URL'].'custom/attributes',
 			'type' => 'GET'
 		),
 		'args' => array(

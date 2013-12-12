@@ -108,32 +108,61 @@ if ((!is_admin() && file_exists(WP_PLUGIN_DIR.'/wordpress-seo/inc/class-sitemaps
 	include('lib/sitemaps.php');
 }
 
-//config
+
+/* ================================
+ * START MOVE TO CONFIG
+ * BUT NEEDS TO STAY HERE UNTIL WE SET UP ADDITIONAL STAGING SERVERS 
+ * ================================
+ */
 if (!defined('PLACESTER_ENV')) {
-	if (strpos($_SERVER['HTTP_HOST'],'ctpost.wph-plcstrint.com')!==false) { 
+	if (strpos($_SERVER['HTTP_HOST'],'ctpost.wph-plcstrint.com')!==false) {
 		define('PLACESTER_ENV', 'staging');
 	}
 	else {
 		define('PLACESTER_ENV', 'production');
 	}
 }
+$PL_API_URLS_TABLE['staging'] = array(
+		'API_V2_URL'			=> 'api.cfk.placester.net/v2/',
+		'API_V2_1_URL'			=> 'api.cfk.placester.net/v2.1/',
+		'API_LOCATION_LIST_URL'	=> 'ec2-54-201-98-90.us-west-2.compute.amazonaws.com:8081/location_list',
+		'API_V3_URL'			=> 'ec2-54-201-98-90.us-west-2.compute.amazonaws.com:8600/apiv3',
+		'AUTOSUGGEST_URL'		=> 'ec2-54-201-98-90.us-west-2.compute.amazonaws.com:8081/autosuggest',
+		'POP_SEARCH_URL'		=> 'ec2-54-201-98-90.us-west-2.compute.amazonaws.com:31201/popular_searches',
+);
+$PL_API_URLS_TABLE['production'] = array(
+		'API_V2_URL'			=> 'api.cfk.placester.net/v2/',
+		'API_V2_1_URL'			=> 'api.cfk.placester.net/v2.1/',
+		'API_LOCATION_LIST_URL'	=> 'search-ctp.cfk.placester.net/location_list',
+		'API_V3_URL'			=> 'mux-ctp.cfk.placester.net/apiv3',
+		'AUTOSUGGEST_URL'		=> 'search-ctp.cfk.placester.net/autosuggest',
+		'POP_SEARCH_URL'		=> 'popsearch-ctp.cfk.placester.net/popular_searches',
+);
+if (!empty($PL_API_URLS_TABLE[PLACESTER_ENV])) {
+	$PL_API_URLS = $PL_API_URLS_TABLE[PLACESTER_ENV];
+}
+/* ================================
+ * END MOVE TO CONFIG
+ * ================================
+ */
 
-if (PLACESTER_ENV == 'staging') {
-	define('API_V2_URL', 'http://api.cfk.placester.net/v2/');
-	define('API_V2_1_URL', 'http://api.cfk.placester.net/v2.1/');
-	define('API_LOCATION_LIST_URL', 'http://ec2-54-201-98-90.us-west-2.compute.amazonaws.com:8081/location_list');
-	define('API_V3_URL', 'http://ec2-54-201-98-90.us-west-2.compute.amazonaws.com:8600/apiv3');
-	define('AUTOSUGGEST_URL', 'http://ec2-54-201-98-90.us-west-2.compute.amazonaws.com:8081/autosuggest');
-	define('POP_SEARCH_URL', 'http://ec2-54-201-98-90.us-west-2.compute.amazonaws.com:31201/popular_searches');
+
+
+//config
+global $PL_API_URLS;
+$PL_API_URLS_DEFAULT = array(
+	// TODO: Change to 'normal' values suitable for off hosted users 
+	'API_V2_URL'			=> 'api.cfk.placester.net/v2/',
+	'API_V2_1_URL'			=> 'api.cfk.placester.net/v2.1/',
+	'API_LOCATION_LIST_URL'	=> 'search-ctp.cfk.placester.net/location_list',
+	'API_V3_URL'			=> 'mux-ctp.cfk.placester.net/apiv3',
+	'AUTOSUGGEST_URL'		=> 'search-ctp.cfk.placester.net/autosuggest',
+	'POP_SEARCH_URL'		=> 'popsearch-ctp.cfk.placester.net/popular_searches',
+);
+if (empty($PL_API_URLS)) {
+	$PL_API_URLS = $PL_API_URLS_DEFAULT;
 }
-else {
-	define('API_V2_URL', 'http://api.cfk.placester.net/v2/');
-	define('API_V2_1_URL', 'http://api.cfk.placester.net/v2.1/');
-	define('API_LOCATION_LIST_URL', 'http://search-ctp.cfk.placester.net/location_list');
-	define('API_V3_URL', 'http://mux-ctp.cfk.placester.net/apiv3');
-	define('AUTOSUGGEST_URL', 'http://search-ctp.cfk.placester.net/autosuggest');
-	define('POP_SEARCH_URL', 'http://popsearch-ctp.cfk.placester.net/popular_searches');
-}
+
 include_once('config/toggle_form_sections.php');
 include_once('config/api/custom_attributes.php');
 include_once('config/api/listings.php');
@@ -324,11 +353,12 @@ function placester_info_bar () {
 
 add_action('wp_footer', 'placester_print_api_urls');
 function placester_print_api_urls() {
+	global $PL_API_URLS;
 	?>
 	<script type="text/javascript">
-	window.plsSearchUrl = '<?php echo API_V3_URL; ?>';
-	window.plsAutosuggestUrl = '<?php echo AUTOSUGGEST_URL; ?>';
-	window.plsPopularSearchUrl = '<?php echo POP_SEARCH_URL; ?>';
+	window.plsSearchUrl = 'http://<?php echo $PL_API_URLS['API_V3_URL']; ?>';
+	window.plsAutosuggestUrl = 'http://<?php echo $PL_API_URLS['AUTOSUGGEST_URL']; ?>';
+	window.plsPopularSearchUrl = 'http://<?php echo $PL_API_URLS['POP_SEARCH_URL']; ?>';
 	</script>
 	<?php
 }
