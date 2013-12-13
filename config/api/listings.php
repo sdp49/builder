@@ -360,6 +360,23 @@ $PL_API_LISTINGS = array(
 			'type' => 'POST'
 		),
 		'args' => array(
+			'compound_type' => array(
+				'attr_type' => 'text',
+				'multi' => '1',
+				'label' => 'Listing Type',
+				'type' => 'select',
+				'group' => 'Basic Details',
+				'options' => array(
+					'false' => 'Not Set',
+					'res_sale' => 'Residential Sale',
+					'res_rental' => 'Residential Rental',
+					'vac_rental' => 'Vacation Rental',
+					'park_rental' => 'Parking',
+					'comm_rental' => 'Commercial Rental',
+					'comm_sale' => 'Commercial Sale',
+					'sublet' => 'Sublet'
+				)
+			),
 			'property_type' => array(
 				'type' => 'text',
 				'label' => 'Property Type',

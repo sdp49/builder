@@ -962,6 +962,12 @@ To add some text to your listings:<br />
 				?>
 				listings.init();
 
+				$('.dataTables_paginate').click(function(){
+					var y = $(this).parent('.dataTables_wrapper').offset().top;
+					if (y < $(window).scrollTop()) {
+						$(window).scrollTop(y);
+					}
+				});
 			});
 
 		</script>
