@@ -7,7 +7,7 @@ class PL_Custom_Attribute_Helper {
 	public static function get_translations () {
 		// Check for memoized version...
 		if (!is_null(self::$translations)) {
-			error_log("Using memoized translations!!!");
+			// error_log("Using memoized translations!!!");
 			return self::$translations;
 		}
 
@@ -20,7 +20,7 @@ class PL_Custom_Attribute_Helper {
 
 		// Memoize translations...
 		self::$translations = $dictionary;
-		error_log("Memoizing translations...");
+		// error_log("Memoizing translations...");
 
 		return $dictionary;
 	}

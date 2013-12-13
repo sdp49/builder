@@ -7,7 +7,7 @@ class PL_Custom_Attributes {
 	public static function get($args = array()) {
 		// If args array is empty, check for memoized response...
 		if (empty($args) && !is_null(self::$get_memo)) {
-			error_log("Using memoized custom_attributes!!!");
+			// error_log("Using memoized custom_attributes!!!");
 			return self::$get_memo;
 		}
 
@@ -26,7 +26,7 @@ class PL_Custom_Attributes {
 
 		// Memoize response if args array is empty...
 		if (empty($args)) {
-			error_log("Memoizing custom_attributes...");
+			// error_log("Memoizing custom_attributes...");
 			self::$get_memo = $response;
 		}
 		
