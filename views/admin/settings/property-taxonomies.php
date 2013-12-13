@@ -41,7 +41,7 @@ $post_type = 'property';
 
 add_screen_option('per_page', array('label' => 'Per page', 'default' => 20, 'option' => 'edit_' . $tax->name . '_per_page'));
 $action = $wp_list_table->current_action();
-$message = 0;
+$message = isset($_REQUEST['message']) ? (int)$_REQUEST['message'] : 0;
 
 switch ($action) {
 
@@ -72,12 +72,12 @@ case 'delete':
 			wp_die(__('Cheatin&#8217; uh?'));
 		}
 		wp_delete_term($tag_ID, $taxonomy);
-		$message = 2;
+		wp_redirect("$pagenow?page=$page&taxonomy=$taxnow&message=2");
 	}
 	break;
 
 case 'bulk-delete':
-	check_admin_referer('bulk-'.strtolower($tax->labels->name));
+	// TODO: check_admin_referer('bulk-'.strtolower($tax->labels->name));
 	if (!current_user_can($tax->cap->delete_terms)) {
 		wp_die(__('Cheatin&#8217; uh?'));
 	}
@@ -85,7 +85,7 @@ case 'bulk-delete':
 	foreach ($tags as $tag_ID) {
 		wp_delete_term($tag_ID, $taxonomy);
 	}
-	$message = 6;
+	wp_redirect("$pagenow?page=$page&taxonomy=$taxnow&message=6");
 	break;
 
 case 'edit':
@@ -109,12 +109,13 @@ case 'editedtag':
 		wp_die(__('You attempted to edit an item that doesn&#8217;t exist. Perhaps it was deleted?'));
 	}
 	$ret = wp_update_term($tag_ID, $taxonomy, $_POST);
-	if ($ret && !is_wp_error($ret)) {
-		$message = 3;
-	}
-	else {
-		$message = 5;
-	}
+	$location = "$pagenow?page=$page&taxonomy=$taxonomy";
+	if ($ret && !is_wp_error($ret))
+		$location = add_query_arg('message', 3, $location);
+	else
+		$location = add_query_arg('message', 5, $location);
+	wp_redirect($location);
+	exit;
 	break;
 }
 
