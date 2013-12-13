@@ -199,14 +199,14 @@ $messages[7] = __('No item selected.');
 					<h3>Add A <?php echo $tax->labels->singular_name; ?></h3>
 					<?php if (empty($locations)):?>
 						<p>Your MLS does not have any <?php echo $tax->labels->name; ?>. 
-						<?php if (current_theme_supports('pls-custom-polygons')): ?>
+						<?php if (current_theme_supports('pls-custom-polygons-disabled')): ?>
 						You can still create custom <?php echo $tax->labels->singular_name; ?>
 						pages by using <a href="admin.php?page=placester_settings_polygons">Custom Drawn Areas</a> for <?php echo $tax->labels->name; ?>.
 						<?php endif; ?>
 						</p>
 					<?php else:?>
 						<p>Select from the list of <?php echo $tax->labels->name; ?> provided by your MLS below. 
-						<?php if (current_theme_supports('pls-custom-polygons')): ?>
+						<?php if (current_theme_supports('pls-custom-polygons-disabled')): ?>
 						If you want to create your own custom <?php echo $tax->labels->singular_name; ?>
 						use the <a href="admin.php?page=placester_settings_polygons">Custom Drawn Areas</a> tool.
 						<?php endif; ?>

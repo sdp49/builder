@@ -308,7 +308,6 @@ class PL_Taxonomy_Helper {
 
 	public static function get_polygon_detail ($args = array()) {
 		extract(wp_parse_args($args, array('tax' => false, 'slug' => false)));
-		$response = array();
 		$polygons = PL_Option_Helper::get_polygons();
 		if ($slug && $tax) {
 			foreach ($polygons as $key => $polygon) {
@@ -441,9 +440,12 @@ class PL_Taxonomy_Helper {
 			}
 		}
 
-		if ($term && $term->term_id>0) {
-			if ($get_polygon) {
+		if ($term) {
+			if ($term->term_id>0 && $get_polygon) {
 				$term->polygon = self::get_polygon_detail(array('slug'=>$term->slug, 'tax'=>$term->taxonomy));
+			}
+			else {
+				$term->polygon = array();
 			}
 		}
 
