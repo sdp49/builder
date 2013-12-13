@@ -509,7 +509,7 @@ class PL_Membership {
     		$loginout_link = '<a class="pl_login_link" href="#pl_login_form">Log in</a>';
     	} 
         else {
-    		$loginout_link = '<a href="' . esc_url( wp_logout_url(site_url()) ) . '" id="pl_logout_link">Log out</a>';
+    		$loginout_link = '<a href="' . esc_url( wp_logout_url(site_url()) ) . '" id="pl_logout_link" class="pl_logout_link">Log out</a>';
     	}
     	
         if ($anchor_tag) {
