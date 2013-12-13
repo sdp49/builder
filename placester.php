@@ -288,7 +288,7 @@ function placester_admin_menu () {
         'Property Pages' => '_property_pages',
         'International Settings' => '_international'
     );
-    if (current_theme_supports('pls-custom-polygons-disabled')) {
+    if (!current_theme_supports('pls-custom-polygons')) {
     	unset($settings_subpages['Custom Drawn Areas']);
     }
     foreach ($settings_subpages as $name => $page_url) {
