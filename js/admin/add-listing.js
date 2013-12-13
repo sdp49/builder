@@ -176,9 +176,9 @@ jQuery(document).ready(function($) {
 					$(form).prepend('<div id="message" class="error"><h3>'+ response['message'] + '</h3>' + item_messages.join(' ') + '</div>');
 				} else if (response && response['id']) {
 					if (form_values['action'] == 'add_listing') {
-						$('#manage_listing_message').html('<div id="message" class="updated below-h2"><p> Listing successfully created! You may <a href="'+siteurl+'/properties/'+response['id']+'" class="button-secondary">View</a> or <a href="'+adminurl+'?page=placester_property_add&id='+response['id']+'" class="button-secondary">Edit</a></p></div>')
+						$('#manage_listing_message').html('<div id="message" class="updated below-h2"><p> Listing successfully created! You may <a href="'+siteurl+'/property/'+response['id']+'" class="button-secondary">View</a> or <a href="'+adminurl+'?page=placester_property_add&id='+response['id']+'" class="button-secondary">Edit</a></p></div>')
 					} else {
-						$('#manage_listing_message').html('<div id="message" class="updated below-h2"><p> Listing successfully updated! You may <a href="'+siteurl+'/properties/'+response['id']+'" class="button-secondary">View</a> or <a href="'+adminurl+'?page=placester_property_add&id='+response['id']+'" class="button-secondary">Edit</a></p></div>')
+						$('#manage_listing_message').html('<div id="message" class="updated below-h2"><p> Listing successfully updated! You may <a href="'+siteurl+'/property/'+response['id']+'" class="button-secondary">View</a> or <a href="'+adminurl+'?page=placester_property_add&id='+response['id']+'" class="button-secondary">Edit</a></p></div>')
 					}
 				}
 			}
