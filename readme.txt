@@ -1,9 +1,9 @@
 === Plugin Name ===
 Contributors: Placester, MattBarba
 Tags: real estate, realestate, home, housing, rentals, properties, neighborhood, map, mortgage, listing, listings, craigslist, rental, google map, mls, idx, rets, agent, broker, leasing, realty, realtor, placester, widget, buddypress, homes, property, property management, estate, realestate, real estate crm, real estate maps
-Requires at least: 2.8
-Tested up to: 3.5.1
-Stable tag: 1.1.25
+Requires at least: 3.0
+Tested up to: 3.7.1
+Stable tag: 1.1.26
 
 Easily create and manage real estate sites powered by WordPress.
 
@@ -33,11 +33,11 @@ http://www.youtube.com/watch?v=a6sJi4iXObU&feature=plcp
 http://www.youtube.com/watch?v=pBneS5LjuNU&feature=player_embedded
 
 
-Check out premium themes available to hosted users:
-[Manchester Theme](http://manchester.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=manchester)
-[Tampa Theme](http://tampa.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=tampa)
+Check out some of the premium themes available to hosted users:
+[Franklin Theme](http://franklin.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=franklin)
+[Plymouth Theme](http://plymouth.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=plymouth)
+[Sedona Theme](http://sedona.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=sedona)
 [Highland Theme](http://highland.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=highland)
-[Slate Theme](http://slate.placester.net/?utm_source=wordpress&utm_medium=theme&utm_campaign=slate)
 
 
 Find the latest themes and theme updates at [Placester.com/portfolio/](https://placester.com/portfolio/)
@@ -142,10 +142,26 @@ In general - real-time. But if you use 3rd party property management services, t
 
 == Changelog ==
 
+= 1.1.26 =
+* New shortcode [favorite_listings] displays user's favorited listings if they are logged in and allows them to edit their profile.
+* New shortcode [pl_user_profile] displays user's profile if they are logged in.
+* Can use neighborhoods as a search option in [search_form] shortcode. 
+* Show custom neighborhoods in search forms along with neighborhoods from the MLS.
+* Update WordPress version compatability information.
+* Fixes:
+    * Make the Placester theme gallery links work a bit better.
+
 = 1.1.25 =
-* Fixed block address behavior as set from Settings page.
-* Added support to limit selections for property type in search form if global filters set.
 * Search and static listing shortcodes now have sort_by drop downs.
+* Added new short code [pl_login_block] for use with non Placester themes - adds the login and register links and enables the 'add to favorites link' on non Placester themes.
+* Fixes:
+    * Block address behavior as set from Settings page.
+    * Featured listing image is not the appropriate image.
+    * Limit selections for property type in search form if global filters set.
+    * Agent Widget - Can not adjust email address on non-home page pages.
+    * Remove taxonomies (MLS IDs, half-baths, streets) from the nav menus page.
+    * Global filters not working for custom fields.
+    * 'Add to favorites' link does not work on non Placester theme - now works when [pl_login_block] short code is added to the page.
 
 = 1.1.24 =
 * Adding Dragonfly image resizing logic for property images.

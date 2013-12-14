@@ -70,11 +70,6 @@ class PL_Css_Helper {
 			self::register_enqueue_if_not('colorpicker', trailingslashit(PL_JS_URL) . 'lib/colorpicker/css/colorpicker.css');					
 		}
 
-		if ($hook == 'placester_page_placester_settings_property_pages') {
-			self::register_enqueue_if_not('settings-all', trailingslashit(PL_CSS_ADMIN_URL) . 'settings/all.css');		
-			self::register_enqueue_if_not('settings-pages', trailingslashit(PL_CSS_ADMIN_URL) . 'settings/pages.css');					
-		}
-		
 		if ($hook == 'placester_page_placester_settings_international') {
 			self::register_enqueue_if_not('settings', trailingslashit(PL_CSS_ADMIN_URL) . 'settings/all.css');					
 		}

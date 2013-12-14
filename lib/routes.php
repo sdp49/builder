@@ -75,7 +75,7 @@ class PL_Router {
 	}
 	
 	public static function settings_property_pages () {
-		self::router('settings/property.php', array());
+		self::router('settings/property-taxonomies.php', array());
 	}
 	
 	public static function settings_international () {
@@ -137,6 +137,19 @@ class PL_Router {
 	
 	public static function crm () {
 		self::router('crm.php', array());
+	}
+
+	public static function buffer_op($page_hook) {
+		add_action('load-'.$page_hook, array(__CLASS__, 'admin_header'));
+		add_action('admin_footer-'.$page_hook, array(__CLASS__, 'admin_footer'));
+	}
+	
+	public static function admin_header() {
+		ob_start();
+	}
+	
+	public static function admin_footer() {
+		ob_end_flush();
 	}
 }
 // end of class

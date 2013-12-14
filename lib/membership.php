@@ -13,8 +13,9 @@ class PL_Membership {
 		// add_action( 'wp_ajax_nopriv_connect_wp_fb', array(__CLASS__, 'connect_fb_with_wp' ));
 		// add_action( 'wp_ajax_nopriv_parse_signed_request', array(__CLASS__, 'fb_parse_signed_request' ));
 
-		add_shortcode('lead_user_navigation', array(__CLASS__,'placester_lead_control_panel'));
-
+		add_shortcode('lead_user_navigation', array(__CLASS__, 'placester_lead_control_panel'));
+		add_shortcode('pl_login_block', array(__CLASS__, 'placester_lead_control_panel'));
+		
 		$capabilities = array(
 			'add_roomates' => true,
 			'read_roomates' => true,
@@ -33,7 +34,7 @@ class PL_Membership {
 		global $wpdb;
 		$page_id = $wpdb->get_var("SELECT ID FROM $wpdb->posts WHERE post_name = 'client-profile'");
 		
-        return get_permalink($page_id);
+        return $page_id ? get_permalink($page_id) : '';
 	}
 
 	// Callback function for when the frontend lead register form is submitted
@@ -522,7 +523,9 @@ class PL_Membership {
     	}
 
     	/** The profile link. */
-    	$profile_link = '<a id="pl_lead_profile_link" target="_blank" href="' . self::get_client_area_url() . '">My Account</a>';
+    	$profile_url = self::get_client_area_url();
+    	$profile = $profile && $profile_url!=='';
+    	$profile_link = '<a id="pl_lead_profile_link" target="_blank" href="' . $profile_url . '">My Account</a>';
     	if ($anchor_tag) {
     		$profile_link = "<{$anchor_tag} class={$anchor_class}>" . $inside_pre_tag . $profile_link . $inside_post_tag . "</{$anchor_tag}>";
     	}

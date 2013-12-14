@@ -40,6 +40,18 @@ class PL_Listing_Helper {
 			$args['listing_ids'] = $args['property_ids']; 
 		}
 
+		// check if we are using a custom drawn neighborhood
+		if (!empty($args['location']['neighborhood'])){
+			$polygons = PL_Option_Helper::get_polygons();
+			foreach ($polygons as $polygon) {
+				if ($polygon['tax']=='neighborhood' && $polygon['name']==$args['location']['neighborhood']) {
+					$args['polygon'] = $polygon['vertices'];
+					unset($args['location']);
+					break;
+				}
+			}
+		}
+		
 		// Respect the ability for this function to return results that do NOT respect global filters..
 		if ($global_filters) { 
 			$args = PL_Global_Filters::merge_global_filters($args); 
@@ -57,11 +69,10 @@ class PL_Listing_Helper {
 
 		// Call the API with the given args...
 		$listings = PL_Listing::get($args);
-
 		// Make sure it contains listings, then process accordingly...
 		if (!empty($listings['listings'])) {
 			foreach ($listings['listings'] as $key => $listing) {
-				$listings['listings'][$key]['cur_data']['url'] = PL_Page_Helper::get_url($listing['id']);
+				$listings['listings'][$key]['cur_data']['url'] = PL_Page_Helper::get_url($listing['id'], $listing);
 				$listings['listings'][$key]['location']['full_address'] = $listing['location']['address'] . ' ' . $listing['location']['locality'] . ' ' . $listing['location']['region'];
 			}
 		}
@@ -105,21 +116,12 @@ class PL_Listing_Helper {
 	public static function get_listing_in_loop () {
 		global $post;
 
-		// If the current $post is of type 'property', it's 'post_name' will be set to that listing's unique property ID (as set by the API)...
-		$args = array('listing_ids' => array($post->post_name), 'address_mode' => 'exact');
-		$response = PL_Listing::get($args);
-		
-		// Despite the name we also call this outside of the loop. Make sure global $post is a Property before deleting.
 		$listing_data = null;
-		if ( empty($response['listings']) ) {
-			if ($post->post_type === PL_Pages::$property_post_type) {
-				wp_delete_post($post->ID, true);
-				PL_Pages::ping_yoast_sitemap();
-			}
-		} else {
-			$listing_data = $response['listings'][0];
+
+		if ($post->post_type === PL_Pages::$property_post_type) {
+			$listing_data = PL_Pages::get_listing_details();
 		}
-		
+
 		return $listing_data;		
 	}
 
@@ -199,10 +201,35 @@ class PL_Listing_Helper {
 		$arg_groups = array('zoning_types', 'purchase_types', 'property_type', 'location', 'rets', 'metadata', 'custom');
 		foreach ($arg_groups as $key) {
 			if (!empty($_POST[$key])) {
-				$args[$key] = $_POST[$key];
+				if ($key == 'custom') {
+					// get list of text fields
+					$attrs = self::custom_attributes();
+					$text_fields = array();
+					$textarea_fields = array();
+					foreach($attrs as $attr) {
+						if ($attr['attr_type'] == 2 || $attr['attr_type'] == 3) {
+							$text_fields[] = $attr['key'];
+						}
+					}
+					// custom text fields do a non exact search and they need to be queried as 'metadata'
+					foreach($_POST[$key] as $subkey => $val) {
+						if (!empty($val)) {
+							if (in_array($subkey, $text_fields)) {
+								$args['metadata'][$subkey] = $val;
+								$args['metadata'][$subkey.'_match'] = 'like';
+							}
+							else {
+								$args['metadata'][$subkey] = $val;
+							}
+						}
+					}
+				}
+				else {
+					$args[$key] = $_POST[$key];
+				}
 			}
 		}
-		
+
 		// Get listings from model -- no global filters applied...
 		$api_response = PL_Listing::get($args);
 		
@@ -374,7 +401,16 @@ class PL_Listing_Helper {
 		else {
 			$response = PL_Listing::locations();
 		}
-
+		
+		// add custom drawn neighborhoods to the lists
+		$polygons = PL_Option_Helper::get_polygons();
+		foreach ($polygons as $polygon) {
+			switch($polygon['tax']) {
+				case 'neighborhood':
+					$response['neighborhood'][] = $polygon['name'];
+			}
+		}
+		
 		if (!$return_only) {
 			return $response;
 		}
@@ -390,6 +426,21 @@ class PL_Listing_Helper {
 		}
 
 		return $options;
+	}
+
+	public static function counts_for_locations ($args, $allow_globals = true) {
+		extract(wp_parse_args($args, array('locations'=>array(), 'type'=>'neighborhood')));
+		$result = array();
+		foreach($locations as $location) {
+			$result[$location] = 0;
+			if (!empty($location['type'])) {
+				$api_response = self::results(array('location'=>array($type=>$location),'limit'=>1), $allow_globals);
+				if ($api_response) {
+					$result[$location] = $api_response['total'];
+				}
+			}
+		}
+		return $result;
 	}
 
 	/* 

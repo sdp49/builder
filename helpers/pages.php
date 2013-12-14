@@ -1,69 +1,44 @@
-<?php 
+<?php
 
-PL_Page_Helper::init();
 class PL_Page_Helper {
 
-	public static function init () {
-		add_action('wp_ajax_ajax_delete_all', array(__CLASS__, 'ajax_delete_all' ) );
-		add_action('wp_ajax_get_pages', array(__CLASS__, 'get_pages_datatable' ) );
-	}
-
-	public static function ajax_delete_all () {
-		$response = PL_Pages::delete_all();
-		$reply = array('result' => false, 'message' => "There was an error. Your property pages we're removed. Try refreshing.");
-		if ($response) {
-			$reply = array('result' => true, 'message' => "You've successfully deleted all your property pages");
+	public static function get_link_template () {
+		$permalink_struct = get_option('permalink_structure');
+		if (empty($permalink_struct)) {
+			// non pretty format
+			$link = '?property=%id%';
 		}
-
-		echo json_encode($reply);
-		die();
+		else {
+			$link = "/property/%region%/%locality%/%postal%/%neighborhood%/%address%/%id%/";
+		}
+		return home_url($link);
 	}
 
-	public static function get_types () {
-		$page_details = array();
-		$pages = PL_Pages::get();
-		
-		$page_details['total_pages'] = count($pages);
-		$page_details['pages'] = $pages;
+	/**
+	 * Create a pretty link for property details page
+	 */
+	public static function get_url ($placester_id, $listing = array()) {
+		$default = array(
+				'region' => 'region',
+				'locality' => 'locality',
+				'postal' => 'postal',
+				'neighborhood' => 'neighborhood',
+				'address' => 'address',
+				'id' => ''
+		);
+		$listing = wp_parse_args($listing, array('location' => $default));
+		$listing = $listing['location'];
+		$listing['id'] = $placester_id;
+		// not using get_permalink because it's a virtual page
+		$url = self::get_link_template();
 
-		return $page_details;
-	}
+		$tmpl_replace = $tmpl_keys = array();
+		foreach ($default as $key=>$val) {
+			$tmpl_replace[] = empty($listing[$key]) ? '-' : preg_replace('/[^a-z0-9\-]+/', '-', strtolower($listing[$key]));
+			$tmpl_keys[] = '%'.$key.'%';
+		}
+		$url = str_replace($tmpl_keys, $tmpl_replace, $url);
 
-	public static function get_url ($placester_id) {
-		$url = get_permalink(PL_Pages::details($placester_id));
 		return $url;
 	}
-
-	public static function get_pages_datatable ($placester_id) {
-		$response = array();
-		
-		// Get listings from model
-		$pages = PL_Pages::get();
-
-		$items = array();
-
-		if (!empty($pages)) {
-			foreach ($pages as $key => $page) {
-
-				$items[$key][] = $page['ID'];
-				$items[$key][] = $page['post_date'];
-				$items[$key][] = $page['post_name'];
-				$items[$key][] = $page['post_title'];
-				$items[$key][] = '<div class="overflow">' . $page['post_excerpt'] . '</div>';
-				$items[$key][] = '<div class="overflow">' . $page['post_content'] . '</div>';
-				$items[$key][] = '<a href="'.$page['guid'].'">View</a> | <a href="#" id="'.$page['ID'].'" class="delete_cache">Delete</a>';
-			}
-		}
-
-		// Required for datatables.js to function properly.
-		// $response['sEcho'] = $_POST['sEcho'];
-		$response['aaData'] = $items;
-		$response['iTotalRecords'] = count($pages);
-		$response['iTotalDisplayRecords'] = count($pages);
-		echo json_encode($response);
-
-		//wordpress echos out a 0 randomly. die prevents it.
-		die();
-	}
-
 }

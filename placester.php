@@ -4,7 +4,7 @@ Plugin Name: Real Estate Website Builder
 Description: Quickly create a lead generating real estate website for your real property.
 Plugin URI: https://placester.com/
 Author: Placester.com
-Version: 1.1.25
+Version: 1.1.26
 Author URI: https://www.placester.com/
 */
 
@@ -27,7 +27,7 @@ Author URI: https://www.placester.com/
 	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-define('PL_PLUGIN_VERSION','1.1.25');
+define('PL_PLUGIN_VERSION','1.1.26');
 
 define( 'PL_PARENT_DIR', plugin_dir_path(__FILE__) );
 define( 'PL_PARENT_URL', plugin_dir_url(__FILE__) );
@@ -124,7 +124,6 @@ include_once('config/analytics.php');
 include_once('lib/config.php');
 include_once('lib/routes.php');
 include_once('lib/http.php');
-// include_once('lib/debug.php');
 include_once('lib/form.php');
 include_once('lib/validation.php');
 include_once('lib/pages.php');
@@ -234,10 +233,13 @@ function placester_admin_menu () {
         'Property Pages' => '_property_pages',
         'International Settings' => '_international'
     );
-
+    if (!current_theme_supports('pls-custom-polygons')) {
+    	unset($settings_subpages['Custom Drawn Areas']);
+    }
     foreach ($settings_subpages as $name => $page_url) {
         // Leave parent slug empty to add pages without adding them to the menu...
-        add_submenu_page( 'placester', $name, $name, 'edit_pages', 'placester_settings' . $page_url, array('PL_Router','settings' . $page_url) );
+        $hook = add_submenu_page( 'placester', $name, $name, 'edit_pages', 'placester_settings' . $page_url, array('PL_Router','settings' . $page_url) );
+        PL_Router::buffer_op($hook);
     }
 
     global $shortcode_subpages;

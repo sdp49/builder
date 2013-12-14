@@ -8,10 +8,11 @@ class PL_Taxonomy_Helper {
 	
 	// List of taxonomies used to bulid URLs, etc.
 	public static $all_loc_taxonomies = array('state', 'zip', 'city', 'neighborhood', 'street');
-
+	public static $tax_loc_map = array('state'=>'region', 'zip'=>'postal', 'city'=>'locality', 'neighborhood'=>'neighborhood', 'street'=>'address');
+	
 	public static function init () {
 		add_action('init', array(__CLASS__, 'register_taxonomies'));
-		add_filter('post_type_link', array(__CLASS__, 'get_property_permalink'), 10, 3);
+//		add_filter('post_type_link', array(__CLASS__, 'get_property_permalink'), 10, 3);
 		add_action('wp_ajax_save_polygon', array(__CLASS__, 'save_polygon'));
 		add_action('wp_ajax_update_polygon', array(__CLASS__, 'update_polygon'));
 		add_action('wp_ajax_delete_polygon', array(__CLASS__, 'delete_polygon'));
@@ -31,17 +32,26 @@ class PL_Taxonomy_Helper {
 	}
 
 	public static function register_taxonomies () {
-		register_taxonomy('state', array('property'), array('hierarchical' => TRUE,'label' => __('States'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
-		register_taxonomy('zip', array('property'), array('hierarchical' => TRUE,'label' => __('Zip Codes'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
-		register_taxonomy('city', array('property'), array('hierarchical' => TRUE,'label' => __('Cities'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
-		register_taxonomy('neighborhood', array('property'), array('hierarchical' => TRUE,'label' => __('Neighborhoods'), 'public' => TRUE,'show_ui' => TRUE,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
-		register_taxonomy('street', array('property'), array('hierarchical' => TRUE,'label' => __('Streets'), 'public' => TRUE,'show_in_nav_menus' => false,'show_ui' => TRUE,'show_in_nav_menus' => false,'query_var' => true,'rewrite' => array('with_front' => false, 'hierarchical' => false) ) );
-		
-		register_taxonomy('beds', 'property', array('hierarchical' => TRUE,'label' => __('Beds'), 'public' => TRUE,'show_in_nav_menus' => false,'show_ui' => TRUE,'query_var' => true,'rewrite' => true ) );
-		register_taxonomy('baths', 'property', array('hierarchical' => TRUE,'label' => __('Baths'), 'public' => TRUE,'show_in_nav_menus' => false,'show_ui' => TRUE,'query_var' => true,'rewrite' => true ) );
-		register_taxonomy('half-baths', 'property', array('hierarchical' => TRUE,'label' => __('Half-baths'), 'public' => TRUE,'show_in_nav_menus' => false,'show_ui' => TRUE,'query_var' => true,'rewrite' => true ) );
-		register_taxonomy('mlsid', 'property', array('hierarchical' => TRUE,'label' => __('MLS ID'), 'public' => TRUE,'show_in_nav_menus' => false,'show_ui' => TRUE,'query_var' => true,'rewrite' => true ) );
+		register_taxonomy('state', array('property'), array('hierarchical'=>false, 'labels'=>array('singular_name'=>__('State'), 'name'=>__('States')), 'public'=>false, 'show_ui'=>false, 'query_var'=>true, 'rewrite'=>array('with_front'=>false, 'hierarchical'=>false)));
+		register_taxonomy('zip', array('property'), array('hierarchical'=>false, 'labels'=>array('singular_name'=>__('Zip Codes'), 'name'=>__('Zip Codes')), 'public'=>false, 'show_ui'=>false, 'query_var'=>true,'rewrite'=>array('with_front'=>false, 'hierarchical'=>false) ) );
+		register_taxonomy('city', array('property'), array('hierarchical'=>false, 'labels'=>array('singular_name'=>__('City'), 'name'=>__('Cities')), 'public'=>false, 'show_ui'=>false, 'query_var'=>true,'rewrite'=>array('with_front'=>false, 'hierarchical'=>false) ) );
+		register_taxonomy('neighborhood', array('property'), array('hierarchical'=>false, 'labels'=>array('singular_name'=>__('Neighborhood'), 'name'=>__('Neighborhoods')), 'public'=>false, 'show_ui'=>false, 'query_var'=>true,'rewrite'=>array('with_front'=>false, 'hierarchical'=>false) ) );
 	}
+
+	public static function create_object($tax, $name, $slug = '') {
+		$slug = $slug ? $slug : sanitize_title_with_dashes($name);
+		$qo = new stdClass();
+		$qo->term_id = -1;
+		$qo->name = $name;
+		$qo->slug = $slug;
+		$qo->term_group = 0;
+		$qo->term_taxonomy_id = -1;
+		$qo->taxonomy = $tax;
+		$qo->description = '';
+		$qo->parent = 0;
+		$qo->count = 0;
+		return $qo;
+	} 
 
 	public static function ajax_polygon_listings () {
 		if (isset($_POST['polygon'])) {
@@ -298,7 +308,6 @@ class PL_Taxonomy_Helper {
 
 	public static function get_polygon_detail ($args = array()) {
 		extract(wp_parse_args($args, array('tax' => false, 'slug' => false)));
-		$response = array();
 		$polygons = PL_Option_Helper::get_polygons();
 		if ($slug && $tax) {
 			foreach ($polygons as $key => $polygon) {
@@ -406,7 +415,62 @@ class PL_Taxonomy_Helper {
 		// Not found
 		return $default;
 	}
+	
+	/**
+	 * Called from BP: Get taxonomy object either from db if user saved data or from the dynamic page
+	 */
+	public static function get_term ($args = array()) {
+		extract(wp_parse_args($args, array('field'=>'slug', 'value'=>'', 'taxonomy'=>'', 'get_polygon'=>false)));
+		$term = get_term_by($field, $value, $taxonomy);
+		if (!$term) {
+			// no match in tax db - see if this is a dynamically created location page
+			if ($field == 'slug') {
+				$cterm = PL_Pages::get_taxonomy_object();
+				// slug for current page?
+				if ($cterm && $cterm->taxonomy == $taxonomy && $cterm->slug == sanitize_title_with_dashes($value)) {
+					$term = $cterm; 
+				}
+			}
+			elseif ($field == 'name' && isset(self::$tax_loc_map[$taxonomy])) {
+				$loc_type = self::$tax_loc_map[$taxonomy];
+				$locations = PL_Listing_Helper::locations_for_options();
+				if (in_array($value, $locations[$loc_type])) {
+					$term = self::create_object($taxonomy, $value);
+				}
+			}
+		}
 
+		if ($term) {
+			if ($term->term_id>0 && $get_polygon) {
+				$term->polygon = self::get_polygon_detail(array('slug'=>$term->slug, 'tax'=>$term->taxonomy));
+			}
+			else {
+				$term->polygon = array();
+			}
+		}
+
+		return $term;
+	}
+	
+	/**
+	 * Return templates for building taxonomy permalinks
+	 */
+	public function get_permalink_templates () {
+		$permalink_struct = get_option('permalink_structure');
+		if (empty($permalink_struct)) {
+			// non pretty format
+			$templates = array('state'=>'?state=%state%', 'city'=>'?city=%city%', 'zip'=>'?zip=%zip%', 'neighborhood'=>'?neighborhood=%neighborhood%');
+		}
+		else {
+			$templates = array('state'=>'state/%state%/', 'city'=>'city/%city%/', 'zip'=>'zip/%zip%/', 'neighborhood'=>'neighborhood/%neighborhood%/');
+		}
+		foreach($templates as $key=>&$template) {
+			$template = home_url($template);
+		}
+		return $templates;
+	}
+	
+	// TODO: purge?
 	public static function get_property_permalink ($permalink, $post_id, $leavename) {
 		$post = get_post($post_id);
 		$state = '';
