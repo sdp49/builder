@@ -1,4 +1,5 @@
-<div class="wrap">
+<?php extract(PL_Page_Helper::get_types()); ?>
+
 	<?php echo PL_Helper_Header::pl_settings_subpages(); ?>
 	<div class="settings_option_wrapper">
 		<?php echo PL_Router::load_builder_partial('admin-box-top.php', array('title' => 'Client Welcome Email')); ?>
@@ -28,4 +29,3 @@
 			</form>
 		<?php echo PL_Router::load_builder_partial('admin-box-bottom.php'); ?>
 	</div>
-</div>

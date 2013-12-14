@@ -93,7 +93,7 @@ abstract class PL_SC_Base {
 	 */
 	public function get_args($with_choices = false) {
 		if (empty($this->default_tpls)) {
-			$this->default_tpls = $this->_get_builtin_templates();
+			$this->default_tpls = $this->get_builtin_templates();
 		}
 		return array(
 				'shortcode'		=> $this->shortcode,
@@ -319,8 +319,7 @@ abstract class PL_SC_Base {
 			case 'checkbox':
 				?>
 				<input id="<?php echo $id ?>" <?php echo $class ?> type="<?php echo $attr['type'] ?>"
-						name="<?php echo $name ?>" value="true"
-						<?php echo $value ? 'checked' : '' ?> />
+						name="<?php echo $name ?>" value="<?php echo (empty($attr['value']) ? 'true' : $attr['value']) ?>" />
 				<?php
 				break;
 			case 'radio':
