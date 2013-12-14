@@ -103,7 +103,8 @@ if (defined('DOING_AJAX') && isset($_POST['action']) && $_POST['action'] == 'crm
 }
 
 // Sitemap support 
-if (!is_admin() && file_exists(WP_PLUGIN_DIR.'/wordpress-seo/inc/class-sitemaps.php') && strpos($_SERVER["REQUEST_URI"],'sitemap')!==false) {
+if ((!is_admin() && file_exists(WP_PLUGIN_DIR.'/wordpress-seo/inc/class-sitemaps.php') && strpos($_SERVER["REQUEST_URI"],'sitemap')!==false)
+	|| is_admin()) {
 	include('lib/sitemaps.php');
 }
 
