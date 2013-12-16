@@ -177,21 +177,26 @@ jQuery(document).ready(function($) {
 
 	function validate_register_form (form_el) {
 		var $form = $(form_el).closest('form');
+		
+		if(jQuery().validator) {
+			// get fields that are required from form and execute validator()
+			var inputs = $form.find("input[required]").validator({
+				messageClass: "register-form-validator-error", 
+				offset: [10,0],
+				message: "<div><span></span></div>",
+				position: "top center"
+			});
 
-		// get fields that are required from form and execute validator()
-		var inputs = $form.find("input[required]").validator({
-			messageClass: "register-form-validator-error", 
-			offset: [10,0],
-			message: "<div><span></span></div>",
-			position: "top center"
-		});
-
-		return inputs.data("validator").checkValidity();
+			return inputs.data("validator").checkValidity();
+		} else {
+			return true;
+		}
 	}
 
 	function validate_login_form (form_el) {
 		var $form = $(form_el).closest('form');
 
+		if(jQuery().validator) {
 		// get fields that are required from form and execute validator()
 		var inputs = $form.find("input[required]").validator({
 			messageClass: "login-form-validator-error", 
@@ -200,7 +205,10 @@ jQuery(document).ready(function($) {
 			position: "top center"
 		});
 
-		return inputs.data("validator").checkValidity();
+			return inputs.data("validator").checkValidity();
+		} else {
+			return true;
+		}
 	}
 
 	/*
