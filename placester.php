@@ -174,7 +174,7 @@ if (defined('PLACESTER_ENV') && PLACESTER_ENV === 'staging') {
 	$theme_opts = get_option($curr_theme);
 	$site_key = $theme_opts['pls_search_site_id'];
 }
-error_log('site key: ' . $site_key);
+// error_log('site key: ' . $site_key);
 if ( !is_null($site_key) && array_key_exists($site_key, $PL_API_URLS_TABLE) ) {
 	$PL_API_URLS = $PL_API_URLS_TABLE[$site_key];
 }
