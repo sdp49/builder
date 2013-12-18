@@ -108,45 +108,76 @@ if ((!is_admin() && file_exists(WP_PLUGIN_DIR.'/wordpress-seo/inc/class-sitemaps
 	include('lib/sitemaps.php');
 }
 
-
-/* ================================
- * START MOVE TO CONFIG
- * BUT NEEDS TO STAY HERE UNTIL WE SET UP ADDITIONAL STAGING SERVERS 
- * ================================
- */
-if (!defined('PLACESTER_ENV')) {
-	if (strpos($_SERVER['HTTP_HOST'],'ctpost.wph-plcstrint.com')!==false) {
-		define('PLACESTER_ENV', 'staging');
-	}
-	else {
-		define('PLACESTER_ENV', 'production');
-	}
-}
-$PL_API_URLS_TABLE['staging'] = array(
+$PL_API_URLS_TABLE = array(
+	'staging' => array(
 		'API_V2_URL'			=> 'api.cfk.placester.net/v2/',
 		'API_V2_1_URL'			=> 'api.cfk.placester.net/v2.1/',
 		'API_LOCATION_LIST_URL'	=> 'ec2-54-201-98-90.us-west-2.compute.amazonaws.com:8081/location_list',
 		'API_V3_URL'			=> 'ec2-54-201-98-90.us-west-2.compute.amazonaws.com:8600/apiv3',
 		'AUTOSUGGEST_URL'		=> 'ec2-54-201-98-90.us-west-2.compute.amazonaws.com:8081/autosuggest',
 		'POP_SEARCH_URL'		=> 'ec2-54-201-98-90.us-west-2.compute.amazonaws.com:31201/popular_searches',
-);
-$PL_API_URLS_TABLE['production'] = array(
+	),
+	// CT Post
+	'ctpost' => array(
 		'API_V2_URL'			=> 'api.cfk.placester.net/v2/',
 		'API_V2_1_URL'			=> 'api.cfk.placester.net/v2.1/',
 		'API_LOCATION_LIST_URL'	=> 'search-ctp.cfk.placester.net/location_list',
 		'API_V3_URL'			=> 'mux-ctp.cfk.placester.net/apiv3',
 		'AUTOSUGGEST_URL'		=> 'search-ctp.cfk.placester.net/autosuggest',
 		'POP_SEARCH_URL'		=> 'popsearch-ctp.cfk.placester.net/popular_searches',
+	),
+	// Albany Times Union
+	'timesunion' => array(
+		'API_V2_URL'			=> 'api.cfk.placester.net/v2/',
+		'API_V2_1_URL'			=> 'api.cfk.placester.net/v2.1/',
+		'API_LOCATION_LIST_URL'	=> 'search-tu.cfk.placester.net/location_list',
+		'API_V3_URL'			=> 'mux-tu.cfk.placester.net/apiv3',
+		'AUTOSUGGEST_URL'		=> 'search-tu.cfk.placester.net/autosuggest',
+		'POP_SEARCH_URL'		=> 'popsearch-tu.cfk.placester.net/popular_searches',
+	),
+	// San Antonio Express-News
+	'mysanantonio' => array(
+		'API_V2_URL'			=> 'api.cfk.placester.net/v2/',
+		'API_V2_1_URL'			=> 'api.cfk.placester.net/v2.1/',
+		'API_LOCATION_LIST_URL'	=> 'search-msa.cfk.placester.net/location_list',
+		'API_V3_URL'			=> 'mux-msa.cfk.placester.net/apiv3',
+		'AUTOSUGGEST_URL'		=> 'search-msa.cfk.placester.net/autosuggest',
+		'POP_SEARCH_URL'		=> 'popsearch-msa.cfk.placester.net/popular_searches',
+	),
+	// Houston Chronicle
+	'chron' => array(
+		'API_V2_URL'			=> 'api.cfk.placester.net/v2/',
+		'API_V2_1_URL'			=> 'api.cfk.placester.net/v2.1/',
+		'API_LOCATION_LIST_URL'	=> 'search-hc.cfk.placester.net/location_list',
+		'API_V3_URL'			=> 'mux-hc.cfk.placester.net/apiv3',
+		'AUTOSUGGEST_URL'		=> 'search-hc.cfk.placester.net/autosuggest',
+		'POP_SEARCH_URL'		=> 'popsearch-hc.cfk.placester.net/popular_searches',
+	),
+	// San Francisco Chronicle
+	'sfgate' => array(
+		'API_V2_URL'			=> 'api.cfk.placester.net/v2/',
+		'API_V2_1_URL'			=> 'api.cfk.placester.net/v2.1/',
+		'API_LOCATION_LIST_URL'	=> 'search-sfg.cfk.placester.net/location_list',
+		'API_V3_URL'			=> 'mux-sfg.cfk.placester.net/apiv3',
+		'AUTOSUGGEST_URL'		=> 'search-sfg.cfk.placester.net/autosuggest',
+		'POP_SEARCH_URL'		=> 'popsearch-sfg.cfk.placester.net/popular_searches',
+	),
 );
-if (!empty($PL_API_URLS_TABLE[PLACESTER_ENV])) {
-	$PL_API_URLS = $PL_API_URLS_TABLE[PLACESTER_ENV];
+
+if (defined('PLACESTER_ENV') && PLACESTER_ENV === 'staging') {
+	$site_key = 'staging';
+} else {
+	// Right now Blueprint stores all theme options in an option named for the theme, which
+	// is number than a pounded thumb more often than it's helpful. Since BP isn't loaded yet we can't 
+	// use pls_get_option here
+	$curr_theme = get_option('template');
+	$theme_opts = get_option($curr_theme);
+	$site_key = $theme_opts['pls_search_site_id'];
 }
-/* ================================
- * END MOVE TO CONFIG
- * ================================
- */
-
-
+error_log('site key: ' . $site_key);
+if ( !is_null($site_key) && array_key_exists($site_key, $PL_API_URLS_TABLE) ) {
+	$PL_API_URLS = $PL_API_URLS_TABLE[$site_key];
+}
 
 //config
 global $PL_API_URLS;
