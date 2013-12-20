@@ -247,7 +247,7 @@ class PL_Saved_Search {
 				$search_hash = $_POST['search_hash'];
 			}
 			else if (!empty($_POST['search_filters'])) {
-				$filters = self::strip_empty_filters($search_filters);
+				$filters = self::strip_empty_filters($_POST['search_filters']);
 				$search_hash = self::generate_search_hash($filters);
 			}
 			else {
@@ -289,14 +289,17 @@ class PL_Saved_Search {
 
 	public static function toggle_search_notification ($search_hash, $toggle_flag) {
 		// Translate flag...
-		$enable = empty($toggle_flag) ? false : true;
+		$enable = ($toggle_flag == 'false') ? false : true;
+		
+		// Get authenticated user's Wordpress ID...
+		$user_id = get_current_user_id();
 
 		// See if a saved search that matches the hash exists...
-		$saved_searches = self::get_user_saved_searches();
+		$saved_searches = self::get_user_saved_searches($user_id);
 
 		if (isset($saved_searches[$search_hash])) {
 			$saved_searches[$search_hash]['notification'] = $enable;
-
+			
 			// Save the altered searches array...
 			$update_success = update_user_meta($user_id, self::user_saved_search_key(), $saved_searches);
 			
