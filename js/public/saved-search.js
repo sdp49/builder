@@ -9,35 +9,34 @@ jQuery(document).ready(function($) {
         
         var data = {
             action: 'delete_user_saved_search',
-            search_hash: $(this).attr('id')
+            search_hash: $(this).attr('href')
         };
-        console.log(data);
 
         $.post(info.ajaxurl, data, function (response, textStatus, xhr) {
-            console.log(response);
+            // console.log(response);
             if (response && response.success === true) {
-                $('.saved_search_block#' + data.search_hash).remove();
+                $('.pl_saved-search--single#' + data.search_hash).remove();
             }
         }, 'json');
     });
 
-    function toggleNotification(flag) {
+    function toggleNotification(flag, elem) {
         var data = {
             action: 'toggle_search_notification',
+            search_hash: $(elem).attr('href'),
             toggle_flag: flag
         };
-
-        var that = this;
+        
         $.post(info.ajaxurl, data, function (response, textStatus, xhr) {
             // console.log(response);
             if (response && response.success === true) {
-                if (data.toggle_flag) {
-                    $(that).attr('class', 'pls_disable_notification');
-                    $(that).text('Disable Email Notification');
+                if (flag) {
+                    $(elem).attr('class', 'pl_ss-disable-notification');
+                    $(elem).text('Disable Email Notification');
                 }
                 else {
-                    $(that).attr('class', 'pls_enable_notification');
-                    $(that).text('Enable Email Notification');
+                    $(elem).attr('class', 'pl_ss-enable-notification');
+                    $(elem).text('Enable Email Notification');
                 }
             }
         }, 'json');
@@ -47,14 +46,14 @@ jQuery(document).ready(function($) {
         event.preventDefault();
 
         // Enable an e-mail notification for the given saved search...
-        toggleNotification(true);
+        toggleNotification(true, this);
     });
 
     $('.pl_ss-disable-notification').live('click', function (event) {
         event.preventDefault();
 
         // Disable an e-mail notification for the given saved search...
-        toggleNotification(false);
+        toggleNotification(false, this);
     });
 
 });

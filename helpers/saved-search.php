@@ -246,6 +246,7 @@ class PL_Saved_Search {
 			if (!empty($_POST['search_hash'])) {
 				$search_hash = $_POST['search_hash'];
 			}
+
 			else if (isset($_POST['search_filters']) && !empty($_POST['search_filters'])) {
 				$filters = self::strip_empty_filters($search_filters);
 				$search_hash = self::generate_search_hash($filters);
@@ -289,10 +290,13 @@ class PL_Saved_Search {
 
 	public static function toggle_search_notification ($search_hash, $toggle_flag) {
 		// Translate flag...
-		$enable = empty($toggle_flag) ? false : true;
+		$enable = ($toggle_flag == 'false') ? false : true;
+		
+		// Get authenticated user's Wordpress ID...
+		$user_id = get_current_user_id();
 
 		// See if a saved search that matches the hash exists...
-		$saved_searches = self::get_user_saved_searches();
+		$saved_searches = self::get_user_saved_searches($user_id);
 
 		if (isset($saved_searches[$search_hash])) {
 			$saved_searches[$search_hash]['notification'] = $enable;
@@ -336,15 +340,12 @@ class PL_Saved_Search {
 
     public static function translate_key ($key) {
 		static $translations = array(
-			'location[locality]' => 'City',
-			'location[postal]' => 'Zip Code',
-			'location[neighborhood]' => 'Neighborhood',
-			'metadata[min_sqft]' => 'Min Sqft',
-			'purchase_types[]' => 'Purchase Type',
-			'price_off' => 'Min Price',
-			'metadata[min_beds]' => 'Min Beds',
-			'metadata[min_baths]' => 'Min Baths',
-			'metadata[min_price]' => 'Min Price'
+			'min_sqft' => 'Min Sqft',
+			'min_beds' => 'Min Beds',
+			'min_baths' => 'Min Baths',
+			'max_price' => 'Max Price',
+			'min_price' => 'Min Price',
+			'prop_type' => 'Property Type'
 		);
 
 		$val = ( isset($translations[$key]) ? $translations[$key] : $key );
