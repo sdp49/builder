@@ -4,18 +4,19 @@ jQuery(document).ready(function($) {
      * Bindings for UI that generates the list of saved searches in the user's client profile... 
      */
 
-    $('.pls_remove_search').live('click', function (event) {
+    $('.pl_ss-remove-search').live('click', function (event) {
         event.preventDefault();
         
         var data = {
             action: 'delete_user_saved_search',
             search_hash: $(this).attr('id')
         };
+        console.log(data);
 
         $.post(info.ajaxurl, data, function (response, textStatus, xhr) {
-            // console.log(response);
+            console.log(response);
             if (response && response.success === true) {
-                $('.saved_search_block #' + data.search_hash).remove();
+                $('.saved_search_block#' + data.search_hash).remove();
             }
         }, 'json');
     });
@@ -42,18 +43,18 @@ jQuery(document).ready(function($) {
         }, 'json');
     }
 
-    $('.pls_enable_notification').live('click', function (event) {
+    $('.pl_ss-enable-notification').live('click', function (event) {
         event.preventDefault();
 
         // Enable an e-mail notification for the given saved search...
         toggleNotification(true);
-    }
+    });
 
-    $('.pls_disable_notification').live('click', function (event) {
+    $('.pl_ss-disable-notification').live('click', function (event) {
         event.preventDefault();
 
         // Disable an e-mail notification for the given saved search...
         toggleNotification(false);
-    }
+    });
 
 });
