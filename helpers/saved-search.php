@@ -246,7 +246,7 @@ class PL_Saved_Search {
 			if (!empty($_POST['search_hash'])) {
 				$search_hash = $_POST['search_hash'];
 			}
-			else if (!empty($_POST['search_filters'])) {
+			else if (isset($_POST['search_filters']) && !empty($_POST['search_filters'])) {
 				$filters = self::strip_empty_filters($search_filters);
 				$search_hash = self::generate_search_hash($filters);
 			}
