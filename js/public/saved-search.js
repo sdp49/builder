@@ -9,7 +9,7 @@ jQuery(document).ready(function($) {
         
         var data = {
             action: 'delete_user_saved_search',
-            search_hash: $(this).attr('id')
+            search_hash: $(this).attr('href')
         };
 
         $.post(info.ajaxurl, data, function (response, textStatus, xhr) {
@@ -23,7 +23,7 @@ jQuery(document).ready(function($) {
     function toggleNotification(flag, elem) {
         var data = {
             action: 'toggle_search_notification',
-            search_hash: $(elem).attr('id'),
+            search_hash: $(elem).attr('href'),
             toggle_flag: flag
         };
         
