@@ -244,7 +244,7 @@ class PL_Saved_Search {
 		if (!empty($user_id)) {
 			// Identify which search to delete...
 			if (!empty($_POST['search_hash'])) {
-				$search_hash = $_POST['unique_search_hash'];
+				$search_hash = $_POST['search_hash'];
 			}
 			else if (!empty($_POST['search_filters'])) {
 				$filters = self::strip_empty_filters($search_filters);
@@ -344,9 +344,7 @@ class PL_Saved_Search {
 			'price_off' => 'Min Price',
 			'metadata[min_beds]' => 'Min Beds',
 			'metadata[min_baths]' => 'Min Baths',
-			'metadata[min_price]' => 'Min Price',
-			'sort_by' => 'Sort By',
-        	'sort_type' => 'Sort Order'
+			'metadata[min_price]' => 'Min Price'
 		);
 
 		$val = ( isset($translations[$key]) ? $translations[$key] : $key );
