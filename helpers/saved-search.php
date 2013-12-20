@@ -299,7 +299,7 @@ class PL_Saved_Search {
 
 		if (isset($saved_searches[$search_hash])) {
 			$saved_searches[$search_hash]['notification'] = $enable;
-			
+
 			// Save the altered searches array...
 			$update_success = update_user_meta($user_id, self::user_saved_search_key(), $saved_searches);
 			
@@ -339,15 +339,12 @@ class PL_Saved_Search {
 
     public static function translate_key ($key) {
 		static $translations = array(
-			'location[locality]' => 'City',
-			'location[postal]' => 'Zip Code',
-			'location[neighborhood]' => 'Neighborhood',
-			'metadata[min_sqft]' => 'Min Sqft',
-			'purchase_types[]' => 'Purchase Type',
-			'price_off' => 'Min Price',
-			'metadata[min_beds]' => 'Min Beds',
-			'metadata[min_baths]' => 'Min Baths',
-			'metadata[min_price]' => 'Min Price'
+			'min_sqft' => 'Min Sqft',
+			'min_beds' => 'Min Beds',
+			'min_baths' => 'Min Baths',
+			'max_price' => 'Max Price',
+			'min_price' => 'Min Price',
+			'prop_type' => 'Property Type'
 		);
 
 		$val = ( isset($translations[$key]) ? $translations[$key] : $key );
