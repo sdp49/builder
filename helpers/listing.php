@@ -72,7 +72,7 @@ class PL_Listing_Helper {
 		// Make sure it contains listings, then process accordingly...
 		if (!empty($listings['listings'])) {
 			foreach ($listings['listings'] as $key => $listing) {
-				$listings['listings'][$key]['cur_data']['url'] = PL_Page_Helper::get_url($listing['id'], $listing);
+				$listings['listings'][$key]['cur_data']['url'] = PL_Pages::get_url($listing['id'], $listing);
 				$listings['listings'][$key]['location']['full_address'] = $listing['location']['address'] . ' ' . $listing['location']['locality'] . ' ' . $listing['location']['region'];
 			}
 		}
@@ -238,7 +238,7 @@ class PL_Listing_Helper {
 		foreach ($api_response['listings'] as $key => $listing) {
 			$images = $listing['images'];
 			$listings[$key][] = ((is_array($images) && isset($images[0])) ? '<img width=50 height=50 src="' . $images[0]['url'] . '" />' : 'empty');
-			$listings[$key][] = '<a class="address" href="' . ADMIN_MENU_URL . '?page=placester_property_add&id=' . $listing['id'] . '">' . $listing["location"]["address"] . ' ' . $listing["location"]["locality"] . ' ' . $listing["location"]["region"] . '</a><div class="row_actions"><a href="' . ADMIN_MENU_URL . '?page=placester_property_add&id=' . $listing['id'] . '" >Edit</a><span>|</span><a href=' . PL_Page_Helper::get_url($listing['id']) . '>View</a><span>|</span><a class="red" id="pls_delete_listing" href="#" ref="'.$listing['id'].'">Delete</a></div>';
+			$listings[$key][] = '<a class="address" href="' . ADMIN_MENU_URL . '?page=placester_property_add&id=' . $listing['id'] . '">' . $listing["location"]["address"] . ' ' . $listing["location"]["locality"] . ' ' . $listing["location"]["region"] . '</a><div class="row_actions"><a href="' . ADMIN_MENU_URL . '?page=placester_property_add&id=' . $listing['id'] . '" >Edit</a><span>|</span><a href=' . PL_Pages::get_url($listing['id'], $listing) . '>View</a><span>|</span><a class="red" id="pls_delete_listing" href="#" ref="'.$listing['id'].'">Delete</a></div>';
 			$listings[$key][] = $listing["location"]["postal"];
 			$listings[$key][] = implode($listing["zoning_types"], ', ') . ' ' . implode($listing["purchase_types"], ', ');
 			$listings[$key][] = $listing["property_type"];
@@ -290,7 +290,6 @@ class PL_Listing_Helper {
 		$api_response = PL_Listing::update($_POST);
 		echo json_encode($api_response);
 		if (isset($api_response['id'])) {
-			PL_Pages::delete_by_name($api_response['id']);
 			PL_Listing::get( array('listing_ids' => array($api_response['id'])) );
 		}
 		die();

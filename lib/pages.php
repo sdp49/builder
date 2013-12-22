@@ -20,8 +20,6 @@ class PL_Pages {
 	);
 	private static $listing_details = null;
 	private static $taxonomy_object = null;
-	
-
 
 	public static function init () {
 		add_action('init', array(__CLASS__, 'setup_rewrite'));
@@ -99,108 +97,9 @@ class PL_Pages {
 	}
 
 	/**
-	 * Deletes all properties and their associated post meta.
-	 * @return bool true if delete successful
-	 */
-	public static function delete_all () {
-		global $wpdb;
-
-		$q_ids = $wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_type = %s", self::$property_post_type);
-		$prop_ids = $wpdb->get_col($q_ids);
-
-		if (!is_array($prop_ids) || count($prop_ids) === 0) {
-			return false;
-		}
-
-		$id_str = implode(',', $prop_ids);
-    	$results = $wpdb->query("DELETE FROM $wpdb->posts WHERE ID IN ($id_str)");
-
-    	if (empty($results)) {
-    		return false;
-    	}
-
-		$wpdb->query("DELETE FROM $wpdb->postmeta WHERE post_id IN ($id_str)");
-
-		// NOTE: This call produces highly negative side-effects, as neighborhood meta-info created by clients
-		// relies on the related term and taxonomy to exist, even after clearing properties...re-evaluate ASAP!
-		//
-		// self::delete_all_terms();
-
-		self::ping_yoast_sitemap();
-
-    	return true;
-	}
-
-	/**
-	 * Given a name (property id), deletes the corresponding WP post and all associated data
-	 *
-	 * @param  string $name post_name (property id)
-	 * @return bool 	true if successful
-	 */
-	public static function delete_by_name ($name) {
-		global $wpdb;
-
-		if (!$name) {
-			return false;
-		}
-
-		$q_id = $wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE post_name = %s AND post_type = %s", $name, self::$property_post_type);
-		$post_id_arr = $wpdb->get_col($q_id);
-
-		if (!is_array($post_id_arr) || count($post_id_arr) === 0) {
-			return false;
-		}
-
-		$post_id = $post_id_arr[0];
-		$result = (bool) wp_delete_post($post_id, true);
-
-		if ($result) {
-			self::ping_yoast_sitemap();
-		}
-
-		return $result;
-	}
-
-	/**
-	 * Deletes all terms (and their relationships) associated with Property taxonomies.
-	 *
-	 * @todo can we prompt Yoast to rebuild its sitemap?
-	 *
-	 * NOTE: Decomissioned until further evaluation -- see note in the call to this function inside of "delete_all"
-	 */
-/*
-	public static function delete_all_terms() {
-		global $wpdb;
-
-		$args = array(
-			'hide_empty' => false,
-			'fields' => 'ids'
-		);
-
-		$all_terms = get_terms(self::$all_taxonomies, $args);
-
-		if (!is_array($all_terms) || count($all_terms) === 0) {
-			return;
-		}
-
-		$term_str = implode(',', $all_terms);
-		$wpdb->query("DELETE FROM $wpdb->terms WHERE term_id IN ($term_str)");
-		$term_tax_ids = $wpdb->get_col("SELECT term_taxonomy_id FROM $wpdb->term_taxonomy WHERE term_id IN ($term_str)");
-
-		if (!is_array($term_tax_ids) || count($term_tax_ids) === 0) {
-			return;
-		}
-
-		$term_tax_str = implode(',', $term_tax_ids);
-		$wpdb->query("DELETE FROM $wpdb->term_taxonomy WHERE term_taxonomy_id IN ($term_tax_str)");
-		$q_term_rel = $wpdb->query("DELETE FROM $wpdb->term_relationships WHERE term_taxonomy_id IN ($term_tax_str)");
-	}
-*/
-
-	/**
 	 * Load rules
 	 */
-	function setup_rewrite(){
+	public static function setup_rewrite(){
 		// do not make public or Yoast will create sitemaps - we are making our own elsewhere
 		register_post_type(self::$property_post_type, array('labels'=>array('name'=>__('Properties'), 'singular_name'=>__('property')), 'public'=>false, 'has_archive'=>true, 'rewrite'=>true, 'query_var'=>true, 'taxonomies'=>array(), 'exclude_from_search'=>true, 'publicly_queryable'=>false));
 		add_rewrite_rule('property/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]+)/?$', 'index.php?property=$matches[6]', 'top');
@@ -211,7 +110,7 @@ class PL_Pages {
 	/**
 	 * Setup wp_query values to detect parameters
 	 */
-	public function setup_url_vars($vars)	{
+	public static function setup_url_vars($vars)	{
 		array_push($vars, 'property');
 
 		return $vars;
@@ -220,7 +119,7 @@ class PL_Pages {
 	/**
 	 * Fetch listing details if this is a details page
 	 */
-	public function detect_virtual_pages($query) {
+	public static function detect_virtual_pages($query) {
 		if (!empty($query->query_vars['property'])) {
 			$args = array('listing_ids' => array($query->query_vars['property']));
 			$response = PL_Listing::get($args);
@@ -343,6 +242,49 @@ class PL_Pages {
 	}
 
 	/**
+	 * Provide template for property details page URLs
+	 */
+	public static function get_link_template () {
+		$permalink_struct = get_option('permalink_structure');
+		if (empty($permalink_struct)) {
+			// non pretty format
+			$link = '?property=%id%';
+		}
+		else {
+			$link = "/property/%region%/%locality%/%postal%/%neighborhood%/%address%/%id%/";
+		}
+		return home_url($link);
+	}
+
+	/**
+	 * Create a pretty link for property details page
+	 */
+	public static function get_url ($placester_id, $listing = array()) {
+		$default = array(
+				'region' => 'region',
+				'locality' => 'locality',
+				'postal' => 'postal',
+				'neighborhood' => 'neighborhood',
+				'address' => 'address',
+				'id' => ''
+		);
+		$listing = wp_parse_args($listing, array('location' => $default));
+		$listing = $listing['location'];
+		$listing['id'] = $placester_id;
+		// not using get_permalink because it's a virtual page
+		$url = self::get_link_template();
+
+		$tmpl_replace = $tmpl_keys = array();
+		foreach ($default as $key=>$val) {
+			$tmpl_replace[] = empty($listing[$key]) ? '-' : preg_replace('/[^a-z0-9\-]+/', '-', strtolower($listing[$key]));
+			$tmpl_keys[] = '%'.$key.'%';
+		}
+		$url = str_replace($tmpl_keys, $tmpl_replace, $url);
+
+		return $url;
+	}
+
+	/**
 	 * Build a permalink for a property page
 	 * Handles when we have a dummy property post object - normally only when viewing a property details page
 	 */
@@ -350,7 +292,7 @@ class PL_Pages {
 		if (!empty($permalink) && is_object($post) && $post->post_type == 'property' && !empty($post->post_name) && !in_array($post->post_status, array('draft', 'pending', 'auto-draft'))) {
 			if (!empty(self::$listing_details) && self::$listing_details['id']==$post->post_name) {
 				// viewing virtual details page
-				return PL_Page_Helper::get_url($post->post_name, self::$listing_details);
+				return self::get_url($post->post_name, self::$listing_details);
 			}
 		}
 		return $permalink;
@@ -373,8 +315,6 @@ class PL_Pages {
 				$wp_rewrite->flush_rules();
 
 				PL_Cache::invalidate();
-
-				// self::delete_all();
 			}
 		}
 	}
@@ -386,30 +326,5 @@ class PL_Pages {
 		global $wp_rewrite;
 		$wp_rewrite->flush_rules();
 	}
-
-	/**
-	 * If Yoast sitemaps are enabled, causes Yoast to request the sitemap (populating caches)
-	 * and to request that search engines re-index the site.
-	 */
-	public static function ping_yoast_sitemap() {
-		global $wpseo_sitemaps;
-
-		if (!$wpseo_sitemaps) {
-			$path = WP_PLUGIN_DIR . '/wordpress-seo/inc/class-sitemaps.php';
-			if (file_exists($path)) {
-				require_once $path;
-				$wpseo_sitemaps = new WPSEO_Sitemaps();
-			} else {
-				return;
-			}
-		}
-
-		if (method_exists($wpseo_sitemaps, 'hit_sitemap_index')) {
-			$wpseo_sitemaps->hit_sitemap_index();
-		}
-
-		if (method_exists($wpseo_sitemaps, 'ping_search_engines')) {
-			$wpseo_sitemaps->ping_search_engines();
-		}
-	}
+	
 }

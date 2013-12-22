@@ -12,7 +12,6 @@ class PL_Taxonomy_Helper {
 
 	public static function init () {
 		add_action('init', array(__CLASS__, 'register_taxonomies'));
-//		add_filter('post_type_link', array(__CLASS__, 'get_property_permalink'), 10, 3);
 		add_action('wp_ajax_save_polygon', array(__CLASS__, 'save_polygon'));
 		add_action('wp_ajax_update_polygon', array(__CLASS__, 'update_polygon'));
 		add_action('wp_ajax_delete_polygon', array(__CLASS__, 'delete_polygon'));
@@ -470,44 +469,7 @@ class PL_Taxonomy_Helper {
 		}
 		return $templates;
 	}
-
-	// TODO: purge?
-	public static function get_property_permalink ($permalink, $post_id, $leavename) {
-		$post = get_post($post_id);
-		$state = '';
-		$zip = '';
-		$city = '';
-		$street = '';
-		$neighborhood = '';
-        $rewritecode = array('%state%','%city%','%zip%','%neighborhood%','%street%', $leavename ? '' : '%postname%', $leavename ? '' : '%pagename%', $leavename ? '' : '%pagename%');
-
-        if ( !empty($permalink) && $post->post_type == 'property' && !in_array($post->post_status, array('draft', 'pending', 'auto-draft')) ) {
-            if (strpos($permalink, '%state%')) {
-            	$state = self::get_obj_term($post->ID, 'state', 'state');
-            }
-
-            if (strpos($permalink, '%zip%')) {
-            	$zip = self::get_obj_term($post->ID, 'zip', 'zip');
-            }
-
-	        if (strpos($permalink, '%city%')){
-            	$city = self::get_obj_term($post->ID, 'city', 'city');
-	        }
-
-	        if (strpos($permalink, '%neighborhood%')){
-	        	$neighborhood = self::get_obj_term($post->ID, 'neighborhood', 'neighborhood');
-	        }
-
-	        if (strpos($permalink, '%street%')){
-	        	$street = self::get_obj_term($post->ID, 'street', 'street');
-	        }
-
-	        $rewritereplace = array( $state, $city, $zip, $neighborhood, $street, $post->post_name, $post->post_name, $post->post_name, $post->post_name, $post->post_name);
-	        $permalink = str_replace($rewritecode, $rewritereplace, $permalink);
-        }
-        return $permalink;
-	}
-
+	
 	public static function create ($taxonomies) {
       	foreach ($taxonomies as $taxonomy) {
       		if ( !taxonomy_exists( $taxonomy['taxonomy_name'] ) ) {
