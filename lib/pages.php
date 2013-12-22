@@ -20,8 +20,6 @@ class PL_Pages {
 	);
 	private static $listing_details = null;
 	private static $taxonomy_object = null;
-	
-
 
 	public static function init () {
 		add_action('init', array(__CLASS__, 'setup_rewrite'));
@@ -101,7 +99,7 @@ class PL_Pages {
 	/**
 	 * Load rules
 	 */
-	function setup_rewrite(){
+	public static function setup_rewrite(){
 		// do not make public or Yoast will create sitemaps - we are making our own elsewhere
 		register_post_type(self::$property_post_type, array('labels'=>array('name'=>__('Properties'), 'singular_name'=>__('property')), 'public'=>false, 'has_archive'=>true, 'rewrite'=>true, 'query_var'=>true, 'taxonomies'=>array(), 'exclude_from_search'=>true, 'publicly_queryable'=>false));
 		add_rewrite_rule('property/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]+)/?$', 'index.php?property=$matches[6]', 'top');
@@ -112,7 +110,7 @@ class PL_Pages {
 	/**
 	 * Setup wp_query values to detect parameters
 	 */
-	public function setup_url_vars($vars)	{
+	public static function setup_url_vars($vars)	{
 		array_push($vars, 'property');
 
 		return $vars;
@@ -121,7 +119,7 @@ class PL_Pages {
 	/**
 	 * Fetch listing details if this is a details page
 	 */
-	public function detect_virtual_pages($query) {
+	public static function detect_virtual_pages($query) {
 		if (!empty($query->query_vars['property'])) {
 			$args = array('listing_ids' => array($query->query_vars['property']));
 			$response = PL_Listing::get($args);
@@ -328,30 +326,5 @@ class PL_Pages {
 		global $wp_rewrite;
 		$wp_rewrite->flush_rules();
 	}
-
-	/**
-	 * If Yoast sitemaps are enabled, causes Yoast to request the sitemap (populating caches)
-	 * and to request that search engines re-index the site.
-	 */
-	public static function ping_yoast_sitemap() {
-		global $wpseo_sitemaps;
-
-		if (!$wpseo_sitemaps) {
-			$path = WP_PLUGIN_DIR . '/wordpress-seo/inc/class-sitemaps.php';
-			if (file_exists($path)) {
-				require_once $path;
-				$wpseo_sitemaps = new WPSEO_Sitemaps();
-			} else {
-				return;
-			}
-		}
-
-		if (method_exists($wpseo_sitemaps, 'hit_sitemap_index')) {
-			$wpseo_sitemaps->hit_sitemap_index();
-		}
-
-		if (method_exists($wpseo_sitemaps, 'ping_search_engines')) {
-			$wpseo_sitemaps->ping_search_engines();
-		}
-	}
+	
 }
