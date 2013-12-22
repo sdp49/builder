@@ -290,7 +290,6 @@ class PL_Listing_Helper {
 		$api_response = PL_Listing::update($_POST);
 		echo json_encode($api_response);
 		if (isset($api_response['id'])) {
-			PL_Pages::delete_by_name($api_response['id']);
 			PL_Listing::get( array('listing_ids' => array($api_response['id'])) );
 		}
 		die();

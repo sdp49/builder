@@ -244,20 +244,6 @@ class PL_Pages {
 	}
 
 	/**
-	 * Build a permalink for a property page
-	 * Handles when we have a dummy property post object - normally only when viewing a property details page
-	 */
-	public static function get_property_permalink ($permalink, $post, $leavename) {
-		if (!empty($permalink) && is_object($post) && $post->post_type == 'property' && !empty($post->post_name) && !in_array($post->post_status, array('draft', 'pending', 'auto-draft'))) {
-			if (!empty(self::$listing_details) && self::$listing_details['id']==$post->post_name) {
-				// viewing virtual details page
-				return PL_Pages::get_url($post->post_name, self::$listing_details);
-			}
-		}
-		return $permalink;
-	}
-
-	/**
 	 * Provide template for property details page URLs
 	 */
 	public static function get_link_template () {
@@ -298,6 +284,20 @@ class PL_Pages {
 		$url = str_replace($tmpl_keys, $tmpl_replace, $url);
 
 		return $url;
+	}
+
+	/**
+	 * Build a permalink for a property page
+	 * Handles when we have a dummy property post object - normally only when viewing a property details page
+	 */
+	public static function get_property_permalink ($permalink, $post, $leavename) {
+		if (!empty($permalink) && is_object($post) && $post->post_type == 'property' && !empty($post->post_name) && !in_array($post->post_status, array('draft', 'pending', 'auto-draft'))) {
+			if (!empty(self::$listing_details) && self::$listing_details['id']==$post->post_name) {
+				// viewing virtual details page
+				return self::get_url($post->post_name, self::$listing_details);
+			}
+		}
+		return $permalink;
 	}
 
 	/**
