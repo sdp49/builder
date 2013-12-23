@@ -391,6 +391,7 @@ class PL_Taxonomy_Helper {
 	public static function get_term ($args = array()) {
 		extract(wp_parse_args($args, array('field'=>'slug', 'value'=>'', 'taxonomy'=>'', 'get_polygon'=>false)));
 		$term = get_term_by($field, $value, $taxonomy);
+		
 		if (!$term) {
 			// no match in tax db - see if this is a dynamically created location page
 			if ($field == 'slug') {
@@ -410,7 +411,7 @@ class PL_Taxonomy_Helper {
 		}
 
 		if ($term) {
-			if ($term->term_id>0 && $get_polygon) {
+			if ($term->term_id > 0 && $get_polygon) {
 				$term->polygon = self::get_polygon_detail(array('slug'=>$term->slug, 'tax'=>$term->taxonomy));
 			}
 			else {
