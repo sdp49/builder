@@ -374,48 +374,61 @@ class PL_Listing_Helper {
 		return $options;
 	}
 
+	private static $memo_locations = array();
 	public static function locations_for_options ($return_only = false, $allow_globals = true) {
 		$options = array();
-		$response = null;
+		$response = array();
 		
-		// Use merge (with no arguments) to get the existing filters properly formatted for API calls...
-		$global_filters = PL_Global_Filters::merge_global_filters();
+		$global_flag = ($allow_globals == true) ? 'global_on' : 'global_off';
 
-		// If global filters related to location are set, incorporate those and use aggregates API...
-		if ( $allow_globals && !empty($global_filters) && !empty($global_filters['location']) ) {
-			// TODO: Move these to a global var or constant...
-			$args = array();
-			$args['location'] = $global_filters['location'];
-			$args['keys'] = array('location.locality', 'location.region', 'location.postal', 'location.neighborhood', 'location.county');
-			$response = PL_Listing::aggregates($args);
-		
-			// Remove "location." from key names to conform to data standard expected by caller(s)...
-			$alt = array();
-			foreach ( $response as $key => $value ) {
-				$new_key = str_replace('location.', '', $key);
-				$alt[$new_key] = $value;
-			}
-			$response = $alt;
+		// Check if response is memoized for this request...
+		$memoized = empty(self::$memo_locations[$global_flag]) ? false : true;
+
+		if ($memoized) {
+			$response = self::$memo_locations[$global_flag];
 		}
 		else {
-			$response = PL_Listing::locations();
-		}
-		
-		// add custom drawn neighborhoods to the lists
-		$polygons = PL_Option_Helper::get_polygons();
-		foreach ($polygons as $polygon) {
-			switch($polygon['tax']) {
-				case 'neighborhood':
-					$response['neighborhood'][] = $polygon['name'];
+			// Use merge (with no arguments) to get the existing filters properly formatted for API calls...
+			$global_filters = $allow_globals ? PL_Global_Filters::merge_global_filters() : array();
+			
+			// If global filters related to location are set, incorporate those and use aggregates API...	
+			if (!empty($global_filters) && !empty($global_filters['location'])) {
+				// TODO: Move these to a global var or constant...
+				$args = array();
+				$args['location'] = $global_filters['location'];
+				$args['keys'] = array('location.locality', 'location.region', 'location.postal', 'location.neighborhood', 'location.county');
+				$response = PL_Listing::aggregates($args);
+			
+				// Remove "location." from key names to conform to data standard expected by caller(s)...
+				$alt = array();
+				foreach ( $response as $key => $value ) {
+					$new_key = str_replace('location.', '', $key);
+					$alt[$new_key] = $value;
+				}
+				$response = $alt;
 			}
-		}
+			else {
+				$response = PL_Listing::locations();
+			}
+			
+			// add custom drawn neighborhoods to the lists
+			$polygons = PL_Option_Helper::get_polygons();
+			foreach ($polygons as $polygon) {
+				switch($polygon['tax']) {
+					case 'neighborhood':
+						$response['neighborhood'][] = $polygon['name'];
+				}
+			}
+
+			// Memoize...
+			self::$memo_locations[$global_flag] = $response;
+		}	
 		
 		if (!$return_only) {
-			return $response;
+			$options = $response;
 		}
-
 		// Handle special case of 'return_only' being set to true...
-		if ($return_only && isset($response[$return_only])) {
+		else if ($return_only && isset($response[$return_only])) {
 			foreach ($response[$return_only] as $key => $value) {
 				$options[$value] = $value;
 			}
@@ -423,7 +436,7 @@ class PL_Listing_Helper {
 			ksort($options);
 			$options = array('false' => 'Any') + $options;	
 		}
-
+		
 		return $options;
 	}
 
