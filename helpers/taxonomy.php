@@ -383,36 +383,6 @@ class PL_Taxonomy_Helper {
 			$response[$key]['permalink'] = get_term_link($response[$key]['slug'], $tax);	
 		}
 		return $response;
-		// pls_dump($response);
-	}
-
-	/**
-	 * Retrieves all terms for an object & caches them for subsequent requests.
-	 * @param int $obj_id Object ID (post ID)
-	 * @param string $taxonomy name of the taxonomy to return
-	 * @param string $default Value returned if no matching taxonomy found
-	 * @return string
-	 */
-	private static function get_obj_term ($obj_id, $taxonomy, $default) {
-		
-		static $cache = array();
-
-		if(isset($cache[$obj_id])) {
-			$terms_for_obj = $cache[$obj_id];
-		}
-		else {
-			$terms_for_obj = wp_get_object_terms($obj_id, self::$all_loc_taxonomies);
-			$cache[$obj_id] = $terms_for_obj;
-		}
-
-		foreach($terms_for_obj as $term) {
-			if($term->taxonomy == $taxonomy) {
-				return $term->slug;
-			}
-		}
-
-		// Not found
-		return $default;
 	}
 	
 	/**
