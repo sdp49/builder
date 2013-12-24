@@ -6,6 +6,7 @@ class PL_Cache {
 
 	const TTL_LOW  = 1800; // 30 minutes
 	const TTL_HOUR = 3600; // 1 hour
+	const TTL_HOURS = 10800; // 3 hours
 	const TTL_MID = 43200; // 12 hours
 	const TTL_DAY = 86400; // 24 hours
 	const TTL_HIGH = 172800; // 48 hours
@@ -75,7 +76,7 @@ class PL_Cache {
 	public function save ($result, $duration = 172800) {
 		// Make sure the transient_id was properly set in the "get" call, and that caching is permitted...
 		if ( $this->transient_id && self::allow_caching() ) {
-			set_transient($this->transient_id, $result , $duration);
+			set_transient($this->transient_id, $result, $duration);
 		}
 	}
 

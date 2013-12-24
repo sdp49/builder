@@ -120,7 +120,7 @@ Class PL_HTTP extends WP_Http {
 					if ( (is_array($response) && isset($response['headers']) && isset($response['headers']['status']) && $response['headers']['status'] == 200) || $force_return) {
 						if (!empty($response['body'])) {
 							$body = json_decode($response['body'], true);
-							$cache->save($body);
+							$cache->save($body, PL_Cache::TTL_HOURS);
 							return $body;
 						} else {
 							return false;
