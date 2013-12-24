@@ -76,7 +76,7 @@ class PL_Cache {
 	public function save ($result, $duration = 172800) {
 		// Make sure the transient_id was properly set in the "get" call, and that caching is permitted...
 		if ( $this->transient_id && self::allow_caching() ) {
-			set_transient($this->transient_id, $result , $duration);
+			set_transient($this->transient_id, $result, $duration);
 		}
 	}
 
