@@ -79,7 +79,7 @@ class PL_Sitemaps {
 	}
 
 	public static function property_details_sitemap($arg) {
-		$url_tmpl = PL_Page_Helper::get_link_template();
+		$url_tmpl = PL_Pages::get_link_template();
 
 		$n = (int)get_query_var('sitemap_n');
 		$offset = ( $n > 1 ) ? ( $n - 1 ) * self::$max_prop_entries : 0;
@@ -124,7 +124,7 @@ class PL_Sitemaps {
 	}
 
 	/**
-	 * Build url with placeholders for empty fields. Should match the PL_Page_Helper::get_url() functionality
+	 * Build url with placeholders for empty fields. Should match the PL_Pages::get_url() functionality
 	 */
 	public static function _template_replace($arg) {
 		return empty(self::$current_listing[$arg[1]]) ? '-' : preg_replace('/[^a-z0-9\-]+/', '-', strtolower(self::$current_listing[$arg[1]]));
