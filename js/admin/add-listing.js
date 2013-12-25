@@ -140,7 +140,7 @@ jQuery(document).ready(function($) {
         
         //get each of the form values, set key/values in array based off name attribute
         $.each($('#add_listing_form :input').serializeArray(), function(i, field) {
-    		form_values[field.name] = field.value;
+			form_values[field.name] = field.value;
         });
         //set context of the form.
        var form = $('#add_listing_form');
