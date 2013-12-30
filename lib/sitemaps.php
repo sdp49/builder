@@ -45,8 +45,7 @@ class PL_Sitemaps {
 
 		if (!empty($sitemap_index)) {
 			// Cache hit -- return cached HTML...
-			$sitemap_list .= $sitemap_index;
-			return $sitemap_list;
+			return $sitemap_index;
 		}
 
 		// Cache miss -- construct sitemap index...
