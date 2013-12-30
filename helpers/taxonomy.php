@@ -42,7 +42,7 @@ class PL_Taxonomy_Helper {
 	}
 
 	public static function create_object($tax, $name, $slug = '') {
-		$slug = $slug ? $slug : sanitize_title_with_dashes($name);
+		$slug = $slug ? $slug : PL_Pages::format_url_slug($name);
 		$qo = new stdClass();
 		$qo->term_id = -1;
 		$qo->name = $name;

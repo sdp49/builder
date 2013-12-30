@@ -306,11 +306,12 @@ class PL_Pages {
 						$loc = $tax;
 						break;
 				}
-				$slug = strtolower($wp_query->query_vars[$tax]);
+				$slug = self::format_url_slug($wp_query->query_vars[$tax]);
 				// check if this is an mls neighborhood
 				$response = PL_Listing::locations();
+				
 				if (!empty($response[$loc])) {
-					$key = array_search($slug, array_map('sanitize_title_with_dashes', $response[$loc]));
+					$key = array_search( $slug, array_map( array(__CLASS__, 'format_url_slug'), $response[$loc] ) );
 					if ($key !== false) {
 						$qo = new stdClass();
 						$qo->term_id = -1;
@@ -332,6 +333,11 @@ class PL_Pages {
 		}
 
 		return $posts;
+	}
+
+	public static function format_url_slug($slug) {
+		$slug = str_replace(':', '-', $slug);
+		return sanitize_title_with_dashes($slug);
 	}
 
 	public static function get_listing_details() {
