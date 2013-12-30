@@ -105,7 +105,8 @@ class PL_Sitemaps {
 
 		if (!empty($sitemap)) {
 			// Cache hit -- return cached HTML...
-			return $sitemap;
+			self::finish_sitemap($sitemap);
+			return;
 		}
 
 		// Cache miss -- construct sitemap for the given offset...
