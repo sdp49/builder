@@ -68,6 +68,9 @@ class PL_Cache {
 		$args = func_get_args();
 		$this->transient_id = self::build_cache_key($this->group, $args);
 
+		// error_log(var_export($args, true));
+		// error_log($this->transient_id);
+
         $transient = get_transient($this->transient_id);
         // Return as is -- if transient doesn't exist, it's up to the caller to check...
         return $transient;
