@@ -72,7 +72,7 @@ class PL_Listing_Helper {
 		// Make sure it contains listings, then process accordingly...
 		if (!empty($listings['listings'])) {
 			foreach ($listings['listings'] as $key => $listing) {
-				$listings['listings'][$key]['cur_data']['url'] = PL_Page_Helper::get_url($listing['id'], $listing);
+				$listings['listings'][$key]['cur_data']['url'] = PL_Pages::get_url($listing['id'], $listing);
 				$listings['listings'][$key]['location']['full_address'] = $listing['location']['address'] . ' ' . $listing['location']['locality'] . ' ' . $listing['location']['region'];
 			}
 		}
@@ -238,7 +238,7 @@ class PL_Listing_Helper {
 		foreach ($api_response['listings'] as $key => $listing) {
 			$images = $listing['images'];
 			$listings[$key][] = ((is_array($images) && isset($images[0])) ? '<img width=50 height=50 src="' . $images[0]['url'] . '" />' : 'empty');
-			$listings[$key][] = '<a class="address" href="' . ADMIN_MENU_URL . '?page=placester_property_add&id=' . $listing['id'] . '">' . $listing["location"]["address"] . ' ' . $listing["location"]["locality"] . ' ' . $listing["location"]["region"] . '</a><div class="row_actions"><a href="' . ADMIN_MENU_URL . '?page=placester_property_add&id=' . $listing['id'] . '" >Edit</a><span>|</span><a href=' . PL_Page_Helper::get_url($listing['id']) . '>View</a><span>|</span><a class="red" id="pls_delete_listing" href="#" ref="'.$listing['id'].'">Delete</a></div>';
+			$listings[$key][] = '<a class="address" href="' . ADMIN_MENU_URL . '?page=placester_property_add&id=' . $listing['id'] . '">' . $listing["location"]["address"] . ' ' . $listing["location"]["locality"] . ' ' . $listing["location"]["region"] . '</a><div class="row_actions"><a href="' . ADMIN_MENU_URL . '?page=placester_property_add&id=' . $listing['id'] . '" >Edit</a><span>|</span><a href=' . PL_Pages::get_url($listing['id'], $listing) . '>View</a><span>|</span><a class="red" id="pls_delete_listing" href="#" ref="'.$listing['id'].'">Delete</a></div>';
 			$listings[$key][] = $listing["location"]["postal"];
 			$listings[$key][] = implode($listing["zoning_types"], ', ') . ' ' . implode($listing["purchase_types"], ', ');
 			$listings[$key][] = $listing["property_type"];
@@ -290,7 +290,6 @@ class PL_Listing_Helper {
 		$api_response = PL_Listing::update($_POST);
 		echo json_encode($api_response);
 		if (isset($api_response['id'])) {
-			PL_Pages::delete_by_name($api_response['id']);
 			PL_Listing::get( array('listing_ids' => array($api_response['id'])) );
 		}
 		die();
@@ -375,48 +374,61 @@ class PL_Listing_Helper {
 		return $options;
 	}
 
-	public static function locations_for_options ($return_only = false, $allow_globals = false) {
+	private static $memo_locations = array();
+	public static function locations_for_options ($return_only = false, $allow_globals = true) {
 		$options = array();
-		$response = null;
+		$response = array();
 		
-		// Use merge (with no arguments) to get the existing filters properly formatted for API calls...
-		$global_filters = PL_Global_Filters::merge_global_filters();
+		$global_flag = ($allow_globals == true) ? 'global_on' : 'global_off';
 
-		// If global filters related to location are set, incorporate those and use aggregates API...
-		if ( $allow_globals && !empty($global_filters) && !empty($global_filters['location']) ) {
-			// TODO: Move these to a global var or constant...
-			$args = array();
-			$args['location'] = $global_filters['location'];
-			$args['keys'] = array('location.locality', 'location.region', 'location.postal', 'location.neighborhood', 'location.county');
-			$response = PL_Listing::aggregates($args);
-		
-			// Remove "location." from key names to conform to data standard expected by caller(s)...
-			$alt = array();
-			foreach ( $response as $key => $value ) {
-				$new_key = str_replace('location.', '', $key);
-				$alt[$new_key] = $value;
-			}
-			$response = $alt;
+		// Check if response is memoized for this request...
+		$memoized = empty(self::$memo_locations[$global_flag]) ? false : true;
+
+		if ($memoized) {
+			$response = self::$memo_locations[$global_flag];
 		}
 		else {
-			$response = PL_Listing::locations();
-		}
-		
-		// add custom drawn neighborhoods to the lists
-		$polygons = PL_Option_Helper::get_polygons();
-		foreach ($polygons as $polygon) {
-			switch($polygon['tax']) {
-				case 'neighborhood':
-					$response['neighborhood'][] = $polygon['name'];
+			// Use merge (with no arguments) to get the existing filters properly formatted for API calls...
+			$global_filters = $allow_globals ? PL_Global_Filters::merge_global_filters() : array();
+			
+			// If global filters related to location are set, incorporate those and use aggregates API...	
+			if (!empty($global_filters) && !empty($global_filters['location'])) {
+				// TODO: Move these to a global var or constant...
+				$args = array();
+				$args['location'] = $global_filters['location'];
+				$args['keys'] = array('location.locality', 'location.region', 'location.postal', 'location.neighborhood', 'location.county');
+				$response = PL_Listing::aggregates($args);
+			
+				// Remove "location." from key names to conform to data standard expected by caller(s)...
+				$alt = array();
+				foreach ( $response as $key => $value ) {
+					$new_key = str_replace('location.', '', $key);
+					$alt[$new_key] = $value;
+				}
+				$response = $alt;
 			}
-		}
+			else {
+				$response = PL_Listing::locations();
+			}
+			
+			// add custom drawn neighborhoods to the lists
+			$polygons = PL_Option_Helper::get_polygons();
+			foreach ($polygons as $polygon) {
+				switch($polygon['tax']) {
+					case 'neighborhood':
+						$response['neighborhood'][] = $polygon['name'];
+				}
+			}
+
+			// Memoize...
+			self::$memo_locations[$global_flag] = $response;
+		}	
 		
 		if (!$return_only) {
-			return $response;
+			$options = $response;
 		}
-
 		// Handle special case of 'return_only' being set to true...
-		if ($return_only && isset($response[$return_only])) {
+		else if ($return_only && isset($response[$return_only])) {
 			foreach ($response[$return_only] as $key => $value) {
 				$options[$value] = $value;
 			}
@@ -424,7 +436,7 @@ class PL_Listing_Helper {
 			ksort($options);
 			$options = array('false' => 'Any') + $options;	
 		}
-
+		
 		return $options;
 	}
 

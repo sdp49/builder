@@ -39,6 +39,17 @@ class PL_Sitemaps {
 		global $wpseo_sitemaps;
 		$seo_options = get_wpseo_options();
 
+		// Try to fetch from cache...
+		$cache = new PL_Cache('sitemap_index');
+		$sitemap_index = $cache->get($seo_options);
+
+		if (!empty($sitemap_index)) {
+			// Cache hit -- return cached HTML...
+			return $sitemap_index;
+		}
+
+		// Cache miss -- construct sitemap index...
+
 		$base = $GLOBALS['wp_rewrite']->using_index_permalinks() ? 'index.php/' : '';
 		$date = date('c');
 
@@ -67,6 +78,9 @@ class PL_Sitemaps {
 			}
 		}
 
+		// Cache constructed sitemap index for 12 hours...
+		$cache->save($sitemap_list, PL_Cache::TTL_MID);
+
 		return $sitemap_list;
 	}
 
@@ -79,12 +93,24 @@ class PL_Sitemaps {
 	}
 
 	public static function property_details_sitemap($arg) {
-		$url_tmpl = PL_Page_Helper::get_link_template();
+		$sitemap = '';
 
 		$n = (int)get_query_var('sitemap_n');
 		$offset = ( $n > 1 ) ? ( $n - 1 ) * self::$max_prop_entries : 0;
 		$rem = self::$max_prop_entries;
-		$sitemap = '';
+
+		// Try to fetch from cache...
+		$cache = new PL_Cache('prop_sitemap');
+		$sitemap = $cache->get($offset, $rem);
+
+		if (!empty($sitemap)) {
+			// Cache hit -- return cached HTML...
+			self::finish_sitemap($sitemap);
+			return;
+		}
+
+		// Cache miss -- construct sitemap for the given offset...
+		$url_tmpl = PL_Pages::get_link_template();
 
 		while ($rem > 0) {
 			$args = array('offset'=>$offset, 'limit'=>self::$max_prop_entries);
@@ -120,11 +146,14 @@ class PL_Sitemaps {
 			$rem -= $response['count'];
 		}
 
+		// Cache constructed sitemap for 12 hours...
+		$cache->save($sitemap, PL_Cache::TTL_MID);
+
 		self::finish_sitemap($sitemap);
 	}
 
 	/**
-	 * Build url with placeholders for empty fields. Should match the PL_Page_Helper::get_url() functionality
+	 * Build url with placeholders for empty fields. Should match the PL_Pages::get_url() functionality
 	 */
 	public static function _template_replace($arg) {
 		return empty(self::$current_listing[$arg[1]]) ? '-' : preg_replace('/[^a-z0-9\-]+/', '-', strtolower(self::$current_listing[$arg[1]]));

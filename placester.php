@@ -249,7 +249,6 @@ include_once('helpers/css.php');
 include_once('helpers/js.php');
 include_once('helpers/header.php');
 include_once('helpers/user.php');
-include_once('helpers/pages.php');
 include_once('helpers/people.php');
 include_once('helpers/compliance.php');
 include_once('helpers/integrations.php');
