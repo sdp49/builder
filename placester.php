@@ -112,9 +112,9 @@ $PL_API_URLS_TABLE = array(
 	'staging' => array(
 		'API_V2_URL'			=> 'api.cfk.placester.net/v2/',
 		'API_V2_1_URL'			=> 'api.cfk.placester.net/v2.1/',
-		'API_LOCATION_LIST_URL'	=> 'ec2-54-201-98-90.us-west-2.compute.amazonaws.com:8081/location_list',
-		'API_V3_URL'			=> 'ec2-54-201-98-90.us-west-2.compute.amazonaws.com:8600/apiv3',
-		'AUTOSUGGEST_URL'		=> 'ec2-54-201-98-90.us-west-2.compute.amazonaws.com:8081/autosuggest',
+		'API_LOCATION_LIST_URL'	=> 'ec2-54-201-98-90.us-west-2.compute.amazonaws.com:31101/location_list',
+		'API_V3_URL'			=> 'ec2-54-201-98-90.us-west-2.compute.amazonaws.com:31001/apiv3',
+		'AUTOSUGGEST_URL'		=> 'ec2-54-201-98-90.us-west-2.compute.amazonaws.com:31101/autosuggest',
 		'POP_SEARCH_URL'		=> 'ec2-54-201-98-90.us-west-2.compute.amazonaws.com:31201/popular_searches',
 	),
 	// CT Post
