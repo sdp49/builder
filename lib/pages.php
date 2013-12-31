@@ -216,9 +216,10 @@ class PL_Pages {
 				if (!empty($response[$loc])) {
 					$key = array_search( $slug, array_map( array(__CLASS__, 'format_url_slug'), $response[$loc] ) );
 					if ($key !== false) {
+						$name = self::format_taxonomy_name($response[$loc][$key]);
 						$qo = new stdClass();
 						$qo->term_id = -1;
-						$qo->name = $response[$loc][$key];
+						$qo->name = $name;
 						$qo->slug = $slug;
 						$qo->term_group = 0;
 						$qo->term_taxonomy_id = -1;
@@ -241,6 +242,14 @@ class PL_Pages {
 	public static function format_url_slug($slug) {
 		$slug = str_replace(':', '-', $slug);
 		return sanitize_title_with_dashes($slug);
+	}
+
+	public static function format_taxonomy_name($name) {
+		if ( strpos($name, ':') !== false) {
+			$name_segments = array_map('trim', explode(':', $name) );
+			$name = implode(': ', $name_segments);
+		}
+		return $name;
 	}
 
 	public static function get_listing_details() {
