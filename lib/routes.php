@@ -59,7 +59,14 @@ class PL_Router {
 	}
 
 	public static function my_leads () {
-		self::router('my-leads.php', array());
+		//index page also doubles as the details page since wp doesn't make it easy to have an "admin"
+		//page that doesn't appear in the main navigation.
+		if (isset($_GET['id'])) {
+			self::router('lead-details.php', array());	
+		} else {
+			self::router('my-leads.php', array());	
+		}
+		
 	}
 
 	public static function theme_gallery () {
