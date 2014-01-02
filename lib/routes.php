@@ -99,6 +99,10 @@ class PL_Router {
 		self::router('lead-capture/general.php', array());
 	}
 
+	public static function settings_crm () {
+		self::router('crm.php', array());
+	}
+
 	public static function support () {
 		self::router('support.php', array());
 	}
@@ -133,10 +137,6 @@ class PL_Router {
 
 	public static function shortcodes_listing_template_edit () {
 		self::router('listing-customizer/template-edit.php', array());
-	}
-	
-	public static function settings_crm () {
-		self::router('crm.php', array());
 	}
 
 	public static function buffer_op($page_hook) {
