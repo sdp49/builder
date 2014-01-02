@@ -1,15 +1,15 @@
-<?php 
+<?php
 
 PL_Taxonomy_Helper::init();
 class PL_Taxonomy_Helper {
 
 	// List of taxonomies used to build a search UI
-	public static $location_taxonomies = array('state' => 'State', 'zip' => 'Zip', 'city' => 'City', 'neighborhood' => 'Neighborhood');
-	
-	// List of taxonomies used to bulid URLs, etc.
-	public static $all_loc_taxonomies = array('state', 'zip', 'city', 'neighborhood', 'street');
-	public static $tax_loc_map = array('state'=>'region', 'zip'=>'postal', 'city'=>'locality', 'neighborhood'=>'neighborhood', 'street'=>'address');
-	
+	private static $location_taxonomies = array('state' => 'State', 'zip' => 'Zip', 'city' => 'City', 'neighborhood' => 'Neighborhood');
+
+	// List of taxonomies used to build URLs, etc.
+	private static $all_loc_taxonomies = array('state', 'zip', 'city', 'neighborhood', 'street');
+	private static $tax_loc_map = array('state'=>'region', 'zip'=>'postal', 'city'=>'locality', 'neighborhood'=>'neighborhood', 'street'=>'address');
+
 	public static function init () {
 		add_action('init', array(__CLASS__, 'register_taxonomies'));
 		add_action('wp_ajax_save_polygon', array(__CLASS__, 'save_polygon'));
@@ -17,7 +17,7 @@ class PL_Taxonomy_Helper {
 		add_action('wp_ajax_delete_polygon', array(__CLASS__, 'delete_polygon'));
 		add_action('wp_ajax_get_polygons_datatable', array(__CLASS__, 'get_polygons_datatable'));
 		add_action('wp_ajax_get_polygon', array(__CLASS__, 'get_polygon'));
-		
+
 		add_action('wp_ajax_get_polygons_by_type', array(__CLASS__, 'ajax_get_polygons_by_type'));
 		add_action('wp_ajax_nopriv_get_polygons_by_type', array(__CLASS__, 'ajax_get_polygons_by_type'));
 
@@ -31,6 +31,7 @@ class PL_Taxonomy_Helper {
 	}
 
 	public static function register_taxonomies () {
+		// do not make public or Yoast will create sitemaps - we are making our own elsewhere
 		register_taxonomy('state', array('property'), array('hierarchical'=>false, 'labels'=>array('singular_name'=>__('State'), 'name'=>__('States')), 'public'=>false, 'show_ui'=>false, 'query_var'=>true, 'rewrite'=>array('with_front'=>false, 'hierarchical'=>false)));
 		register_taxonomy('zip', array('property'), array('hierarchical'=>false, 'labels'=>array('singular_name'=>__('Zip Codes'), 'name'=>__('Zip Codes')), 'public'=>false, 'show_ui'=>false, 'query_var'=>true,'rewrite'=>array('with_front'=>false, 'hierarchical'=>false) ) );
 		register_taxonomy('city', array('property'), array('hierarchical'=>false, 'labels'=>array('singular_name'=>__('City'), 'name'=>__('Cities')), 'public'=>false, 'show_ui'=>false, 'query_var'=>true,'rewrite'=>array('with_front'=>false, 'hierarchical'=>false) ) );
@@ -50,7 +51,7 @@ class PL_Taxonomy_Helper {
 		$qo->parent = 0;
 		$qo->count = 0;
 		return $qo;
-	} 
+	}
 
 	public static function ajax_polygon_listings () {
 		if (isset($_POST['polygon'])) {
@@ -221,17 +222,17 @@ class PL_Taxonomy_Helper {
 		}
 		$response = PL_Option_Helper::set_polygons($polygon);
 		if ($response) {
-			echo json_encode(array('response' => true, 'message' => 'Polygon successfully saved. Updating list...'));	
+			echo json_encode(array('response' => true, 'message' => 'Polygon successfully saved. Updating list...'));
 		} else {
-			echo json_encode(array('response' => false, 'message' => 'There was an error. Please try again.'));	
+			echo json_encode(array('response' => false, 'message' => 'There was an error. Please try again.'));
 		}
-		die();	
+		die();
 	}
 
 	public static function delete_polygon () {
 		$response = PL_Option_Helper::set_polygons(array(), (int)$_POST['id']);
 		echo json_encode($response);
-		die();		
+		die();
 	}
 
 	public static function get_polygon () {
@@ -363,8 +364,8 @@ class PL_Taxonomy_Helper {
 						<input type="radio" id="<?php echo $slug ?>" name="type" value="<?php echo $slug ?>">
 						<label for="<?php echo $slug ?>"><?php echo $label ?></label>
 					</section>
-				<?php endforeach ?>	
-			</form>		
+				<?php endforeach ?>
+			</form>
 		<?php
 		return ob_get_clean();
 	}
@@ -380,54 +381,25 @@ class PL_Taxonomy_Helper {
 			foreach ($term as $term_key => $term_value) {
 				$response[$key][$term_key] = $term_value;
 			}
-			$response[$key]['permalink'] = get_term_link($response[$key]['slug'], $tax);	
+			$response[$key]['permalink'] = get_term_link($response[$key]['slug'], $tax);
 		}
 		return $response;
-		// pls_dump($response);
 	}
 
-	/**
-	 * Retrieves all terms for an object & caches them for subsequent requests.
-	 * @param int $obj_id Object ID (post ID)
-	 * @param string $taxonomy name of the taxonomy to return
-	 * @param string $default Value returned if no matching taxonomy found
-	 * @return string
-	 */
-	private static function get_obj_term ($obj_id, $taxonomy, $default) {
-		
-		static $cache = array();
-
-		if(isset($cache[$obj_id])) {
-			$terms_for_obj = $cache[$obj_id];
-		}
-		else {
-			$terms_for_obj = wp_get_object_terms($obj_id, self::$all_loc_taxonomies);
-			$cache[$obj_id] = $terms_for_obj;
-		}
-
-		foreach($terms_for_obj as $term) {
-			if($term->taxonomy == $taxonomy) {
-				return $term->slug;
-			}
-		}
-
-		// Not found
-		return $default;
-	}
-	
 	/**
 	 * Called from BP: Get taxonomy object either from db if user saved data or from the dynamic page
 	 */
 	public static function get_term ($args = array()) {
 		extract(wp_parse_args($args, array('field'=>'slug', 'value'=>'', 'taxonomy'=>'', 'get_polygon'=>false)));
 		$term = get_term_by($field, $value, $taxonomy);
+		
 		if (!$term) {
 			// no match in tax db - see if this is a dynamically created location page
 			if ($field == 'slug') {
 				$cterm = PL_Pages::get_taxonomy_object();
 				// slug for current page?
 				if ($cterm && $cterm->taxonomy == $taxonomy && $cterm->slug == sanitize_title_with_dashes($value)) {
-					$term = $cterm; 
+					$term = $cterm;
 				}
 			}
 			elseif ($field == 'name' && isset(self::$tax_loc_map[$taxonomy])) {
@@ -440,7 +412,7 @@ class PL_Taxonomy_Helper {
 		}
 
 		if ($term) {
-			if ($term->term_id>0 && $get_polygon) {
+			if ($term->term_id > 0 && $get_polygon) {
 				$term->polygon = self::get_polygon_detail(array('slug'=>$term->slug, 'tax'=>$term->taxonomy));
 			}
 			else {
@@ -450,9 +422,9 @@ class PL_Taxonomy_Helper {
 
 		return $term;
 	}
-	
+
 	/**
-	 * Return templates for building taxonomy permalinks
+	 * Return templates for building taxonomy permalinks - useful when creating lots of links at once
 	 */
 	public function get_permalink_templates () {
 		$permalink_struct = get_option('permalink_structure');
@@ -468,7 +440,7 @@ class PL_Taxonomy_Helper {
 		}
 		return $templates;
 	}
-
+	
 	public static function create ($taxonomies) {
       	foreach ($taxonomies as $taxonomy) {
       		if ( !taxonomy_exists( $taxonomy['taxonomy_name'] ) ) {
@@ -481,4 +453,8 @@ class PL_Taxonomy_Helper {
       		}
       	}
     }
+
+    public static function get_tax_loc_map() {
+		return self::$tax_loc_map;
+	}
 }

@@ -29,7 +29,7 @@ if(!class_exists('PL_Property_Terms_Table')){
 	require_once(PL_LIB_DIR . 'property-terms-table.php');
 }
 // Include Yoast SEO for taxonomy if available
-if (!class_exists('aaWPSEO_Taxonomy') && defined('WPSEO_PATH') && file_exists(WPSEO_PATH.'admin/class-taxonomy.php')) {
+if (!class_exists('WPSEO_Taxonomy') && defined('WPSEO_PATH') && file_exists(WPSEO_PATH.'admin/class-taxonomy.php')) {
 	require WPSEO_PATH.'admin/class-taxonomy.php';
 }
 

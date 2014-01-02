@@ -122,6 +122,10 @@ class PL_Pages {
 	public static function detect_virtual_pages($query) {
 		if (!empty($query->query_vars['property'])) {
 			$args = array('listing_ids' => array($query->query_vars['property']));
+
+			// Respect address_mode type -- exact, or block adresses (i.e., 'polygon')
+			$args['address_mode'] = ( PL_Option_Helper::get_block_address() ? 'polygon' : 'exact' );
+
 			$response = PL_Listing::get($args);
 			if (!empty($response['listings'][0])) {
 				$query->set('post_type', self::$property_post_type);
