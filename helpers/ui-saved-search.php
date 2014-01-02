@@ -5,12 +5,21 @@ class PL_UI_Saved_Search {
 
 	public static $save_extension = 'pl_ss_';
 
+	private static $default_response = array(
+					'id' => '',
+					'email' => '(Not Provided)',
+					'first_name' => '(Not Provided)',
+					'last_name' => '(Not Provided)',
+					'phone' => '(Not Provided)',
+					'created' => '(Not Provided)',
+					'updated' => '(Not Provided)',
+					'saved_searches' => 0
+				);
+
 	public static function init () {
 		// Basic AJAX endpoints
 		add_action('wp_ajax_datatable_my_leads_ajax', array(__CLASS__, 'ajax_get_leads'));
-		// add_action('wp_ajax_nopriv_get_saved_search_filters', array(__CLASS__, 'ajax_get_saved_search_filters'));
-
-		
+		add_action('wp_ajax_datatable_leads_searches_ajax', array(__CLASS__, 'ajax_get_leads_searchs'));		
 	}
 
 	public static function ajax_get_leads () {
@@ -70,57 +79,53 @@ class PL_UI_Saved_Search {
 		die();
 	}
 
-	public static function ajax_get_leads_saved_searches () {
+	public static function ajax_get_leads_searchs () {
+		$lead_id = $_POST['lead_id'];
 
-		$response = array();
-
-		// Get leads from model -- no global filters applied...
-		// $api_response = PL_Lead::get($args);
+		// Get leads from model
+		// $api_response = PL_Lead::get($lead_id);
 		$api_response = array(
 			'total' => 1,
-			'leads' => array(
+			'searches' => array(
 				array(
 					'id' => '1',
-					'email' => 'john@smith.com',
-					'first_name' => 'john',
-					'last_name' => 'smith',
-					'phone' => '123 123 1234',
+					'name' => 'Boston Properties',
+					'saved_fields' => '1 Beds, City Boston, $500k+',
+					'link_to_search' => '/listings/something',
 					'created' => 'Today',
 					'updated' => 'Yesterday',
-					'saved_searches' => 5
+					'notification_schedule' => 'Once per week'
 				),
 				array(
-					'id' => '2',
-					'email' => 'john@smith.com',
-					'first_name' => 'Jane',
-					'last_name' => 'Johnson',
-					'phone' => '123 123 1234',
+					'id' => '1',
+					'name' => 'Cambridge Properties',
+					'saved_fields' => '1 Beds, City Boston, $500k+',
+					'link_to_search' => '/listings/something',
 					'created' => 'Today',
 					'updated' => 'Yesterday',
-					'saved_searches' => 5
-				)
+					'notification_schedule' => 'Once per week'
+				),
 			)
 		);
 		
 		// build response for datatables.js
-		$leads = array();
-		foreach ($api_response['leads'] as $key => $lead) {
+		$searches = array();
+		foreach ($api_response['searches'] as $key => $search) {
 			// $images = $listing['images'];
-			$leads[$key][] = $lead['created'];
-			$lead['full_name'] = $lead['first_name'] . ' ' . $lead['last_name'];
-			// $leads[$key][] = ((is_array($images) && isset($images[0])) ? '<img width=50 height=50 src="' . $images[0]['url'] . '" />' : 'empty');
-			$leads[$key][] = '<a class="address" href="' . ADMIN_MENU_URL . '?page=placester_my_leads&id=' . $lead['id'] . '">' . $lead['full_name'] . '</a><div class="row_actions"><a href="' . ADMIN_MENU_URL . '?page=placester_my_leads&id=' . $lead['id'] . '" >Edit</a><span>|</span><a href="' . ADMIN_MENU_URL . '?page=placester_my_leads&id=' . $lead['id'] . '">View</a><span>|</span><a class="red" id="pls_delete_listing" href="#" ref="'.$lead['id'].'">Delete</a></div>';
-			// $leads[$key][] = $listing["location"]["postal"];
+			$searches[$key][] = $search['created'];
+			// $searches[$key][] = ((is_array($images) && isset($images[0])) ? '<img width=50 height=50 src="' . $images[0]['url'] . '" />' : 'empty');
+			$searches[$key][] = '<a class="address" href="' . ADMIN_MENU_URL . $search['link_to_search'] . '">' . $search['name'] . '</a><div class="row_actions"><a href="' . ADMIN_MENU_URL . '?page=placester_my_searches&id=' . $search['id'] . '" >Edit</a><span>|</span><a href="' . ADMIN_MENU_URL . '?page=placester_my_searches&id=' . $search['id'] . '">View</a><span>|</span><a class="red" id="pls_delete_listing" href="#" ref="'.$search['id'].'">Delete</a></div>';
+			// $searches[$key][] = $listing["location"]["postal"];
 			
-			$leads[$key][] = $lead['email'];
-			$leads[$key][] = $lead['phone'];
-			$leads[$key][] = $lead['updated'];
-			$leads[$key][] = $lead['saved_searches'];
+			$searches[$key][] = $search['saved_fields'];
+			$searches[$key][] = $search['updated'];
+			$searches[$key][] = $search['notification_schedule'];
 		}
 
 		// Required for datatables.js to function properly.
+		$response = array();
 		$response['sEcho'] = $_POST['sEcho'];
-		$response['aaData'] = $leads;
+		$response['aaData'] = $searches;
 		$response['iTotalRecords'] = $api_response['total'];
 		$response['iTotalDisplayRecords'] = $api_response['total'];
 		echo json_encode($response);
@@ -129,7 +134,20 @@ class PL_UI_Saved_Search {
 
 
 	public static function get_lead_details_by_id ($lead_id) {
-		return false;
+		// $api_response = PL_Lead::get_by_id($lead_id);
+		$api_response = array(
+					'id' => '2',
+					'email' => 'john@smith.com',
+					'first_name' => 'Jane',
+					'last_name' => 'Johnson',
+					'phone' => '123 123 1234',
+					'created' => 'Today',
+					'updated' => 'Yesterday',
+					'saved_searches' => 5
+				);
+		$api_response['full_name'] = $api_response['first_name'] . ' ' . $api_response['last_name'];
+		$api_response = wp_parse_args($api_response, self::$default_response);
+		return $api_response;
 	}
 
 

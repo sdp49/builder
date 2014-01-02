@@ -71,7 +71,8 @@ class PL_Js_Helper {
 				self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) . 'datatables/jquery.dataTables.js', array('jquery'));
 				self::register_enqueue_if_not('my-leads', trailingslashit(PL_JS_ADMIN_URL) . 'my-leads.js', array('jquery', 'jquery-ui-datepicker'));
 			} else {
-				self::register_enqueue_if_not('my-leads', trailingslashit(PL_JS_ADMIN_URL) . 'lead-details.js', array('jquery', 'jquery-ui-datepicker'));
+				self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) . 'datatables/jquery.dataTables.js', array('jquery'));
+				self::register_enqueue_if_not('my-lead-details', trailingslashit(PL_JS_ADMIN_URL) . 'lead-details.js', array('jquery', 'jquery-ui-datepicker'));
 			}
 			
 		}
