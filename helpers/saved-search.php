@@ -246,8 +246,7 @@ class PL_Saved_Search {
 			if (!empty($_POST['search_hash'])) {
 				$search_hash = $_POST['search_hash'];
 			}
-
-			else if (isset($_POST['search_filters']) && !empty($_POST['search_filters'])) {
+			else if (!empty($_POST['search_filters'])) {
 				$filters = self::strip_empty_filters($_POST['search_filters']);
 				$search_hash = self::generate_search_hash($filters);
 			}
@@ -340,12 +339,23 @@ class PL_Saved_Search {
 
     public static function translate_key ($key) {
 		static $translations = array(
+			// Listing API V3 fields
 			'min_sqft' => 'Min Sqft',
 			'min_beds' => 'Min Beds',
 			'min_baths' => 'Min Baths',
 			'max_price' => 'Max Price',
 			'min_price' => 'Min Price',
-			'prop_type' => 'Property Type'
+			'prop_type' => 'Property Type',
+			// Listing API V2.1 fields
+			'location[locality]' => 'City',
+            'location[postal]' => 'Zip Code',
+            'location[neighborhood]' => 'Neighborhood',
+            'metadata[min_sqft]' => 'Min Sqft',
+            'purchase_types[]' => 'Purchase Type',
+            'price_off' => 'Min Price',
+            'metadata[min_beds]' => 'Min Beds',
+            'metadata[min_baths]' => 'Min Baths',
+            'metadata[min_price]' => 'Min Price'
 		);
 
 		$val = ( isset($translations[$key]) ? $translations[$key] : $key );
