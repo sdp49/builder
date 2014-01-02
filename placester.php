@@ -221,6 +221,8 @@ function placester_admin_menu () {
     global $settings_subpages;
     $settings_subpages = array(
         'Settings' => '',
+        'Lead Capture' => '_lead_capture',
+        'CRM Integration' => '_crm',
         'Client Settings' => '_client',
         'Global Property Filtering' => '_filtering', 
         'Custom Drawn Areas' => '_polygons', 
@@ -254,9 +256,9 @@ function placester_admin_menu () {
     add_submenu_page('placester', 'Shortcodes', 'Shortcodes', 'edit_pages', 'placester_shortcodes', array('PL_Router','shortcodes'));
     
     // TODO: Integrate shortcode and social pages into existing menu control structure...
-    add_submenu_page( 'placester', 'Lead Capture', 'Lead Capture', 'edit_pages', 'placester_lead_capture', array('PL_Router','lead_capture') );
+    // add_submenu_page( 'placester', 'Lead Capture', 'Lead Capture', 'edit_pages', 'placester_lead_capture', array('PL_Router','lead_capture') );
     add_submenu_page( 'placester', 'IDX / MLS', 'IDX / MLS', 'edit_pages', 'placester_integrations', array('PL_Router','integrations') );
-    add_submenu_page( 'placester', 'CRM', 'CRM', 'edit_pages', 'placester_crm', array('PL_Router','crm') );
+    // add_submenu_page( 'placester', 'CRM', 'CRM', 'edit_pages', 'placester_crm', array('PL_Router','crm') );
     add_submenu_page( 'placester', 'Support', 'Support', 'edit_pages', 'placester_support', array('PL_Router','support') );
     // add_submenu_page( 'placester', 'Social', 'Social', 'edit_pages', 'placester_social', array('PL_Social_Networks','add_social_settings_cb') );
 }

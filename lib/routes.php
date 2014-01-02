@@ -95,7 +95,7 @@ class PL_Router {
 		self::router('settings/client.php', PL_Membership_Helper::get_client_settings());
 	}
 
-	public static function lead_capture () {
+	public static function settings_lead_capture () {
 		self::router('lead-capture/general.php', array());
 	}
 
@@ -135,7 +135,7 @@ class PL_Router {
 		self::router('listing-customizer/template-edit.php', array());
 	}
 	
-	public static function crm () {
+	public static function settings_crm () {
 		self::router('crm.php', array());
 	}
 
