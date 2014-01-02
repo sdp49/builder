@@ -58,6 +58,10 @@ class PL_Router {
 		self::router('add-listing.php', array());
 	}
 
+	public static function my_leads () {
+		self::router('my-leads.php', array());
+	}
+
 	public static function theme_gallery () {
 		if (isset($_GET['theme_url'])) {
 			self::router('install-theme.php', array());	

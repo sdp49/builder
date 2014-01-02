@@ -66,6 +66,11 @@ class PL_Js_Helper {
 			self::register_enqueue_if_not('add-listing', trailingslashit(PL_JS_ADMIN_URL) . 'add-listing.js', array('jquery', 'jquery-ui-datepicker'));
 		}
 
+		if ($hook == 'placester_page_placester_my_leads') {
+			self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) . 'datatables/jquery.dataTables.js', array('jquery'));
+			self::register_enqueue_if_not('my-leads', trailingslashit(PL_JS_ADMIN_URL) . 'my-leads.js', array('jquery', 'jquery-ui-datepicker'));
+		}
+
 		if ($hook == 'placester_page_placester_theme_gallery') {
 			self::register_enqueue_if_not('theme-gallery', trailingslashit(PL_JS_ADMIN_URL) . 'theme-gallery.js', array('jquery'));
 		}

@@ -213,6 +213,8 @@ function placester_admin_menu () {
     add_submenu_page( 'placester', 'Listings','Listings', 'edit_pages', 'placester_properties', array('PL_Router','my_listings') );
     add_submenu_page( 'placester', 'Add Listing', 'Add Listing', 'edit_pages', 'placester_property_add', array('PL_Router','add_listings') );
     
+    add_submenu_page( 'placester', 'Leads', 'Leads', 'edit_pages', 'placester_my_leads', array('PL_Router','my_leads') );
+
     // If the site using the plugin is on our hosted network, don't show the theme gallery...
     if ( !defined('HOSTED_PLUGIN_KEY') ) {
     	add_submenu_page( 'placester', '', 'Theme Gallery', 'edit_pages', 'placester_theme_gallery', array('PL_Router','theme_gallery') );

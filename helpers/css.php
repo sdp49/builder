@@ -42,6 +42,10 @@ class PL_Css_Helper {
 			self::register_enqueue_if_not('add-listing', trailingslashit(PL_CSS_ADMIN_URL) . 'add-listing.css');			
 		}
 
+		if ($hook == 'placester_page_placester_my_leads') {
+			self::register_enqueue_if_not('my-leads', trailingslashit(PL_CSS_ADMIN_URL) . 'my-leads.css');					
+		}
+
 		if ($hook == 'placester_page_placester_support') {
 			self::register_enqueue_if_not('support', trailingslashit(PL_CSS_ADMIN_URL) . 'support.css');			
 		}
