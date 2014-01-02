@@ -175,6 +175,7 @@ include_once('helpers/education-com.php');
 include_once('helpers/caching.php');
 include_once('helpers/membership.php');
 include_once('helpers/saved-search.php');
+include_once('helpers/ui-saved-search.php');
 include_once('helpers/lead-capture.php');
 include_once('helpers/customizer.php');
 include_once('helpers/logging.php');

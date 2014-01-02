@@ -1,26 +1,18 @@
 <div id="container">
-  <table id="placester_listings_list" class="widefat post fixed placester_properties" cellspacing="0">
+  <table id="placester_leads_list" class="widefat post fixed placester_properties" cellspacing="0">
     <thead>
       <tr>
-        <th><span></span></th>
-        <th><span>Street</span></th>
-        <th><span>Zip</span></th>
-        <th><span>Listing Type</span></th>
-        <th><span>Property Type</span></th>
-        <th><span>Beds</span></th>
-        <th><span>Baths</span></th>
-        <th><span>Price</span></th>
-        <th><span>Sqft</span></th>
-        <th><span>Available</span></th>
+        <th><span>Date Created</span></th>
+        <th><span>Name</span></th>
+        <th><span>Email</span></th>
+        <th><span>Phone</span></th>
+        <th><span>Last Updated</span></th>
+        <th><span># of Saved Searches</span></th>
       </tr>
     </thead>
     <tbody></tbody>
     <tfoot>
       <tr>
-        <th></th>
-        <th></th>
-        <th></th>
-        <th></th>
         <th></th>
         <th></th>
         <th></th>
