@@ -74,7 +74,7 @@ class PL_Js_Helper {
 			self::register_enqueue_if_not('integration', trailingslashit(PL_JS_ADMIN_URL) . 'integration.js', array('jquery'));
 		}
 
-		if ($hook == 'placester_page_placester_lead_capture') {
+		if ($hook == 'placester_page_placester_settings_lead_capture') {
 			self::register_enqueue_if_not('lead-capture', trailingslashit(PL_JS_ADMIN_URL) . 'lead-capture/general.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 		}
 
