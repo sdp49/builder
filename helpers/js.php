@@ -143,7 +143,7 @@ class PL_Js_Helper {
 			));
 		}
 		
-		if ($hook == 'placester_page_placester_crm') {
+		if ($hook == 'placester_page_placester_settings_crm') {
 			self::register_enqueue_if_not('crm', trailingslashit(PL_JS_ADMIN_URL) . 'crm.js', array('jquery'));
 			self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) . 'datatables/jquery.dataTables.js', array('jquery'));	
 		}

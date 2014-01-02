@@ -50,7 +50,7 @@ class PL_Css_Helper {
 			self::register_enqueue_if_not('support', trailingslashit(PL_CSS_ADMIN_URL) . 'theme-gallery.css');			
 		}
 
-		if ($hook == 'placester_page_placester_lead_capture') {
+		if ($hook == 'placester_page_placester_settings_lead_capture') {
 			self::register_enqueue_if_not('settings-all', trailingslashit(PL_CSS_ADMIN_URL) . 'settings/all.css');					
 			self::register_enqueue_if_not('integrations', trailingslashit(PL_CSS_ADMIN_URL) . 'lead-capture/general.css');
 		}
@@ -101,7 +101,7 @@ class PL_Css_Helper {
 			self::register_enqueue_if_not('placester-widget-chosen', trailingslashit(PL_JS_URL) . 'lib/chosen/chosen.css');
 		}
 		
-		if ($hook == 'placester_page_placester_crm') {
+		if ($hook == 'placester_page_placester_settings_crm') {
 			self::register_enqueue_if_not('crm', trailingslashit(PL_CSS_ADMIN_URL) . 'crm.css');	
 		}
 	}
