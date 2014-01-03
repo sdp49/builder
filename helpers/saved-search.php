@@ -130,6 +130,14 @@ class PL_Saved_Search {
 		// Fetch saved searches
 		$result = get_user_meta($user_id, self::user_saved_search_key(), true);
 		if (!empty($result) && is_array($result)) {
+			foreach ($result as $hash => &$search) {
+				// Construct full search URL based on current site's URL...
+				if (!empty($search['url'])) {
+					$search['url'] = site_url($search['url']);
+				}
+			}
+			unset($search); // break the reference with the last element...
+
 			$saved_searches = $result;
 		}
 
@@ -165,7 +173,7 @@ class PL_Saved_Search {
 
     public static function ajax_add_user_saved_search () {
     	$search_url_path = $_POST['search_url_path'];
-    	$saved_search_name = $_POST['search_name'];
+    	$search_name = $_POST['search_name'];
     	$search_filters = $_POST['search_filters'];
 		
 		// error_log(var_export($_POST['search_filters'], true));
@@ -173,7 +181,7 @@ class PL_Saved_Search {
 
     	// Add meta to user for saved searches...
     	if (!empty($search_filters) && is_array($search_filters)) {
-    		$response = self::add_user_saved_search($search_filters, $saved_search_name, $search_url_path);
+    		$response = self::add_user_saved_search($search_filters, $search_name, $search_url_path);
     	}
     	else {
     		$response = array("success" => false, "message" => "No search filters to save -- select some and try again");
@@ -183,7 +191,7 @@ class PL_Saved_Search {
     	die();
     }
 
-	public static function add_user_saved_search ($search_filters, $saved_search_name, $search_url_path) {
+	public static function add_user_saved_search ($search_filters, $search_name, $search_url_path) {
 		// Default result...
 		$success = false;
 		$message = "";
@@ -209,14 +217,10 @@ class PL_Saved_Search {
 				$message = "A search with the same filters has already been saved";
 			}
 			else {
-				// Construct full search URL based on current site's URL...
-				$search_url_path = ($search_url_path[0] == '/') ? substr($search_url_path, 1) : $search_url_path;
-				$search_url = trailingslashit(site_url()) . $search_url_path;
-				
 				$saved_searches[$search_hash] = array(
 					'filters' => $filters, 
-					'name' => $saved_search_name,
-					'url' => $search_url,
+					'name' => $search_name,
+					'url' => $search_url_path,
 					'notification' => false
 				);
 				

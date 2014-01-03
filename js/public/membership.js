@@ -1,10 +1,10 @@
 jQuery(document).ready(function($) {
 
 	// Beat Chrome's HTML5 tooltips for form validation
-	$('form.pl_lead_register_form input[type="submit"]').on('mousedown', function() {
+	$('form.pl_lead_register_form').on('mousedown', 'input[type="submit"]', function() {
 		validate_register_form(this);
 	});
-	$('form#pl_login_form input[type="submit"]').on('mousedown', function() {
+	$('form#pl_login_form').on('mousedown', 'input[type="submit"]', function() {
 		validate_login_form(this);
 	});
 	$('.pl_lead_register_form').bind('keypress', function(e) {
@@ -33,6 +33,14 @@ jQuery(document).ready(function($) {
 		if (validate_login_form(this)) {
 			login_user(this);
 		}
+	});
+
+	// Bind link in registration form that allows user to switch to the login form..
+	$('form.pl_lead_register_form').on('click', '#switch_to_login', function (event) {
+		event.preventDefault();
+
+		// Simulate login link click to switch to login form...
+		$('.pl_login_link').trigger('click');
 	});
 
 	if (typeof $.fancybox == "function") {
