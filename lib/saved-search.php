@@ -3,6 +3,7 @@
 // JS in js/public/saved-search.js
 
 PL_Saved_Search::init();
+
 class PL_Saved_Search {
 
 	public static $save_extension = 'pl_ss_';
