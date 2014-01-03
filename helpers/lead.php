@@ -1,33 +1,29 @@
 <?php 
 
-PL_UI_Saved_Search::init();
-class PL_UI_Saved_Search {
+PL_Lead_Helper::init();
 
-	public static $save_extension = 'pl_ss_';
+class PL_Lead_Helper {
 
 	private static $default_response = array(
-					'id' => '',
-					'email' => '(Not Provided)',
-					'first_name' => '(Not Provided)',
-					'last_name' => '(Not Provided)',
-					'phone' => '(Not Provided)',
-					'created' => '(Not Provided)',
-					'updated' => '(Not Provided)',
-					'saved_searches' => 0
-				);
+		'id' => '',
+		'email' => '(Not Provided)',
+		'first_name' => '(Not Provided)',
+		'last_name' => '(Not Provided)',
+		'phone' => '(Not Provided)',
+		'created' => '(Not Provided)',
+		'updated' => '(Not Provided)',
+		'saved_searches' => 0
+	);
 
 	public static function init () {
 		// Basic AJAX endpoints
-		add_action('wp_ajax_datatable_my_leads_ajax', array(__CLASS__, 'ajax_get_leads'));
-		add_action('wp_ajax_datatable_leads_searches_ajax', array(__CLASS__, 'ajax_get_leads_searchs'));		
+		add_action('wp_ajax_datatable_my_leads', array(__CLASS__, 'ajax_get_leads'));
+		add_action('wp_ajax_datatable_leads_searches', array(__CLASS__, 'ajax_get_lead_searches'));		
 	}
 
-	public static function ajax_get_leads () {
-
-		$response = array();
-
+	public static function get_leads () {
 		// Get leads from model -- no global filters applied...
-		// $api_response = PL_Lead::get($args);
+		// $ = PL_Lead::get($args);
 		$api_response = array(
 			'total' => 2,
 			'leads' => array(
@@ -53,6 +49,13 @@ class PL_UI_Saved_Search {
 				)
 			)
 		);
+
+		return $api_response;
+	}
+
+	public static function ajax_get_leads () {
+		// Get all leads associated with this site...
+		$api_response = self::get_leads();
 		
 		// build response for datatables.js
 		$leads = array();
@@ -70,21 +73,21 @@ class PL_UI_Saved_Search {
 			$leads[$key][] = $lead['saved_searches'];
 		}
 
-		// Required for datatables.js to function properly.
+		// Required for datatables.js to function properly
+		$response = array();
 		$response['sEcho'] = $_POST['sEcho'];
 		$response['aaData'] = $leads;
 		$response['iTotalRecords'] = $api_response['total'];
 		$response['iTotalDisplayRecords'] = $api_response['total'];
+		
 		echo json_encode($response);
 		die();
 	}
 
-	public static function ajax_get_leads_searchs () {
-		$lead_id = $_POST['lead_id'];
-
+	public static function get_lead_searches ($lead_id) {
 		// Get leads from model
-		// $api_response = PL_Lead::get($lead_id);
-		$api_response = array(
+		// $saved_searches = PL_Lead::details($lead_id, array('saved_searches'));
+		$saved_searches = array(
 			'total' => 1,
 			'searches' => array(
 				array(
@@ -97,7 +100,7 @@ class PL_UI_Saved_Search {
 					'notification_schedule' => 'Once per week'
 				),
 				array(
-					'id' => '1',
+					'id' => '2',
 					'name' => 'Cambridge Properties',
 					'saved_fields' => '1 Beds, City Boston, $500k+',
 					'link_to_search' => '/listings/something',
@@ -107,10 +110,18 @@ class PL_UI_Saved_Search {
 				),
 			)
 		);
+
+		return $saved_searches;
+	}
+
+	public static function ajax_get_lead_searches () {
+		$lead_id = $_POST['lead_id'];
+
+		$saved_searches = self::get_lead_searches($lead_id);
 		
 		// build response for datatables.js
 		$searches = array();
-		foreach ($api_response['searches'] as $key => $search) {
+		foreach ($saved_searches['searches'] as $key => $search) {
 			// $images = $listing['images'];
 			$searches[$key][] = $search['created'];
 			// $searches[$key][] = ((is_array($images) && isset($images[0])) ? '<img width=50 height=50 src="' . $images[0]['url'] . '" />' : 'empty');
@@ -126,29 +137,30 @@ class PL_UI_Saved_Search {
 		$response = array();
 		$response['sEcho'] = $_POST['sEcho'];
 		$response['aaData'] = $searches;
-		$response['iTotalRecords'] = $api_response['total'];
-		$response['iTotalDisplayRecords'] = $api_response['total'];
+		$response['iTotalRecords'] = $saved_searches['total'];
+		$response['iTotalDisplayRecords'] = $saved_searches['total'];
+		
 		echo json_encode($response);
 		die();
 	}
 
 
 	public static function get_lead_details_by_id ($lead_id) {
-		// $api_response = PL_Lead::get_by_id($lead_id);
-		$api_response = array(
-					'id' => '2',
-					'email' => 'john@smith.com',
-					'first_name' => 'Jane',
-					'last_name' => 'Johnson',
-					'phone' => '123 123 1234',
-					'created' => 'Today',
-					'updated' => 'Yesterday',
-					'saved_searches' => 5
-				);
-		$api_response['full_name'] = $api_response['first_name'] . ' ' . $api_response['last_name'];
-		$api_response = wp_parse_args($api_response, self::$default_response);
-		return $api_response;
-	}
+		// $details = PL_Lead::details($lead_id);
+		$details = array(
+			'id' => '2',
+			'email' => 'john@smith.com',
+			'first_name' => 'Jane',
+			'last_name' => 'Johnson',
+			'phone' => '123 123 1234',
+			'created' => 'Today',
+			'updated' => 'Yesterday',
+			'saved_searches' => 5
+		);
 
+		$details['full_name'] = $details['first_name'] . ' ' . $details['last_name'];
+		$details = wp_parse_args($details, self::$default_response);
+		return $details;
+	}
 
 }

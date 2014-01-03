@@ -1,7 +1,6 @@
 // For datatable
 jQuery(document).ready(function($) {
 
-
     var my_leads_datatable = $('#placester_saved_search_list').dataTable( {
             "bFilter": false,
             "bProcessing": true,
@@ -18,7 +17,7 @@ jQuery(document).ready(function($) {
                 { sWidth: '200px' }     
             ],
             "fnServerParams": function ( aoData ) {
-                aoData.push( { "name": "action", "value" : "datatable_leads_searches_ajax"} );
+                aoData.push( { "name": "action", "value" : "datatable_leads_searches"} );
                 aoData.push( { "name": "lead_id", "value" : "1"} );
                 // aoData.push( { "name": "sSearch", "value" : $('input#address_search').val() })
                 // aoData = my_listings_search_params(aoData);
@@ -41,7 +40,6 @@ jQuery(document).ready(function($) {
         event.preventDefault();
         my_listings_datatable.fnDraw();
     });
-
 
 });
 
