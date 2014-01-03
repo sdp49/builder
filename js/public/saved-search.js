@@ -15,24 +15,6 @@ jQuery(document).ready(function($) {
         event.preventDefault();
         
         var data = {
-            action: "add_user_saved_search",
-            search_url_path: url_path,
-            search_name: $('#user_search_name').val(),
-            search_filters: get_search_filters()
-        };
-
-        $.post(info.ajaxurl, data, function (response, textStatus, xhr) {
-            // console.log(response);
-            if (response && response.success === true) {
-                $('.pl_saved-search--single#' + data.search_hash).remove();
-            }
-        }, 'json');
-    });
-
-    $('.pl_ss-remove-search').live('click', function (event) {
-        event.preventDefault();
-        
-        var data = {
             action: 'delete_user_saved_search',
             search_hash: $(this).attr('href')
         };
