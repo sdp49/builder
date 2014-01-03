@@ -16,7 +16,7 @@ class PL_People_Helper {
 	}
 
 	public static function add_person ($args = array()) {
-		// If 'Leads' functionality is enabled, add accordingly...
+		// If 'Leads' functionality is enabled, add in parallel...
 		if (defined('PL_LEADS_ENABLED')) {
 			PL_Lead_Helper::add_lead($args);
 		}
