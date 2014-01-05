@@ -28,14 +28,9 @@ $lead_details = PL_UI_Saved_Search::get_lead_details_by_id($_GET['id']);
 				<li class="titles">
 					<span class="col1">Attribute Name</span>
 					<span class="col2">Value</span>
-					<span class="col3"></span>
+					<span class="col3">Remove</span>
 				</li>
-				<li id="sample-row" style="display: none;">
-					<span class="col1">Property Type</span>
-					<span class="col2">Commercial</span>
-					<span class="col3"><a class="button-secondary" id="remove-single-filter">Remove Filter</a></span>
-				</li>
-				<p>No Filters are active. Select one above.</p>
+				<p id="empty">No Filters are active. Select one above.</p>
 			</ul>
 		
 	</form>	

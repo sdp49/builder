@@ -81,6 +81,7 @@ New Search Styling
     float: left;
     width: 100%;
     clear: both;
+    height: 20px;
 }
 ul .col1, ul .col2, ul .col3 {
     width: 33%;

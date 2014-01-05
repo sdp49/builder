@@ -208,13 +208,15 @@ jQuery(document).ready(function($) {
             else {
                 current_form_values[key] = value;
             }
-    
+            
 
-            var base_row = $('#sample-row').html()
-            console.log($(base_row).find('.col1'));
-            $(base_row).find('.col1').val(key.replace('_', ' '));
-            $(base_row).find('.col2').val(value.replace('_', ' '));
-            $('.pls_active_filters ul').append(base_row);
+            var new_row = '<li>';
+            new_row += '<span class="col1">' + key.replace('_', ' ') + '</span>';
+            new_row += '<span class="col2">' + value.replace('_', ' ') + '</span>';
+            new_row += '<span class="col3"><a class="button-secondary" id="remove-single-filter">Remove Filter</a></span>';
+            new_row += '</li>';
+
+            $('.pls_active_filters ul').append(new_row);
 
             // $('form#active_filters').append('<span id="active_filter_item"><a href="#" class="remove_filter"></a><span class="global_dark_label">'+key.replace('_', ' ')+'</span>: '+value.replace('_', ' ')+'<input type="hidden" name="'+key+'" value="'+value+'"></span>');
     
