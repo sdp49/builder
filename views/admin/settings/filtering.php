@@ -33,7 +33,7 @@
 					</form>
 				</div>
 				<div class="global_filter_col filter_button">
-					<a class="button-secondary" id="add-single-filter">Add Filter</a>	
+					<a class="button-secondary" id="add-single-filter">Add Filter to Search</a>	
 				</div>
 				<div class="global_filter_col" id="global_filter_message"></div>
 			</div>	
