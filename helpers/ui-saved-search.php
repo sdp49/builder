@@ -125,10 +125,6 @@ class PL_UI_Saved_Search {
 									$search['name'] . 
 								'</a>
 								<div class="row_actions">
-									<a href="' . ADMIN_MENU_URL . '?page=placester_my_searches&id=' . $search['id'] . '" >
-										Edit
-									</a>
-									<span>|</span>
 									<a href="' . ADMIN_MENU_URL . '?page=placester_my_searches&id=' . $search['id'] . '">
 										View
 									</a>
@@ -137,7 +133,10 @@ class PL_UI_Saved_Search {
 										Delete
 									</a>
 								</div>';
-			// $searches[$key][] = $listing["location"]["postal"];
+		
+			// <a href="' . ADMIN_MENU_URL . '?page=placester_my_searches&id=' . $search['id'] . '" >
+			// 							Edit
+			// 						</a>
 			
 			$searches[$key][] = $search['saved_fields'];
 			$searches[$key][] = $search['updated'];
