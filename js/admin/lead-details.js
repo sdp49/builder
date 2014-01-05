@@ -19,11 +19,15 @@ jQuery(document).ready(function($) {
             ],
             "fnServerParams": function ( aoData ) {
                 aoData.push( { "name": "action", "value" : "datatable_leads_searches_ajax"} );
-                aoData.push( { "name": "lead_id", "value" : "1"} );
-                // aoData.push( { "name": "sSearch", "value" : $('input#address_search').val() })
-                // aoData = my_listings_search_params(aoData);
+                aoData.push( { "name": "lead_id", "value" : $('input#lead_id').val()} );
             }
         });
+
+
+
+
+
+
 
     var my_favorites_datatable = $('#placester_favorite_listings_list').dataTable( {
             "bFilter": false,
@@ -44,9 +48,7 @@ jQuery(document).ready(function($) {
             ],
             "fnServerParams": function ( aoData ) {
                 aoData.push( { "name": "action", "value" : "datatable_favorites_ajax"} );
-                aoData.push( { "name": "lead_id", "value" : "1"} );
-                // aoData.push( { "name": "sSearch", "value" : $('input#address_search').val() })
-                // aoData = my_listings_search_params(aoData);
+                aoData.push( { "name": "lead_id", "value" : $('input#lead_id').val()} );
             }
         });
 
