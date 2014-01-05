@@ -7,7 +7,7 @@ $lead_details = PL_UI_Saved_Search::get_lead_details_by_id($_GET['id']);
 
 <h2>Create a New Search for <?php echo $lead_details['full_name'] ?></h2>
 
-<div class="wrapper both">
+<div class="new_search_wrapper both">
 	<p class="saved-searches-title both">1. Define the Users Search</p>
 	<p class="both">Using the filters below, pick what search criteria should define what updates your lead should recieve.</p>
 	<div class="global_filter_col">
@@ -23,12 +23,25 @@ $lead_details = PL_UI_Saved_Search::get_lead_details_by_id($_GET['id']);
 	</div>	
 	<div class="global_filter_col" id="global_filter_message"></div>
 	<div class="both"></div>
-	<form action="" id="active_filters">
-		No Filters are active. Select one above.		
+	<form action="" id="active_filters" class="pls_active_filters">
+			<ul>
+				<li class="titles">
+					<span class="col1">Attribute Name</span>
+					<span class="col2">Value</span>
+					<span class="col3"></span>
+				</li>
+				<li id="sample-row" style="display: none;">
+					<span class="col1">Property Type</span>
+					<span class="col2">Commercial</span>
+					<span class="col3"><a class="button-secondary" id="remove-single-filter">Remove Filter</a></span>
+				</li>
+				<p>No Filters are active. Select one above.</p>
+			</ul>
+		
 	</form>	
 </div>
 
-<div class="wrapper both">
+<div class="new_search_wrapper both">
 	<p class="saved-searches-title both">2. Email Update Frequency</p>
 	<p class="both">
 		Select your update frequency: 
@@ -43,9 +56,10 @@ $lead_details = PL_UI_Saved_Search::get_lead_details_by_id($_GET['id']);
 	</p>
 </div>
 
-<div class="wrapper both">
+<div class="new_search_wrapper both">
 	<p class="saved-searches-title both">3. Confirm & Save</p>
 	<p class="both">Double check the settings above and click "Confirm & Save".</p>
 	<input type="submit" class="button-primary" value="Confirm & Save" tabindex="5" accesskey="p">
 </div>
+
 	

@@ -57,6 +57,50 @@ p.saved-searches-title {
 
 
 
+/*
+
+New Search Styling
+
+*/
+.new_search_wrapper {
+    float: left;
+    width: 100%;
+    clear: both;
+}
+.pls_active_filters {
+    width: 600px;
+    float: left;
+}
+.pls_active_filters ul {
+    width: 100%;
+    padding: 10px 10px;
+    border: 1px #dfdfdf solid;
+    float: left;
+}
+.pls_active_filters ul li {
+    float: left;
+    width: 100%;
+    clear: both;
+}
+ul .col1, ul .col2, ul .col3 {
+    width: 33%;
+    float: left;
+}
+.pls_active_filters .titles {
+    font-weight: bold;
+}
+.pls_active_filters span.col1 {
+
+}
+.pls_active_filters span.col2 {
+
+}
+.pls_active_filters span.col3 {
+
+}
+
+
+
 /*  
 
 Create Search Styling

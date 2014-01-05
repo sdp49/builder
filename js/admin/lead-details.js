@@ -209,9 +209,16 @@ jQuery(document).ready(function($) {
                 current_form_values[key] = value;
             }
     
-            $('form#active_filters').append('<span id="active_filter_item"><a href="#" class="remove_filter"></a><span class="global_dark_label">'+key.replace('_', ' ')+'</span>: '+value.replace('_', ' ')+'<input type="hidden" name="'+key+'" value="'+value+'"></span>');
+
+            var base_row = $('#sample-row').html()
+            console.log($(base_row).find('.col1'));
+            $(base_row).find('.col1').val(key.replace('_', ' '));
+            $(base_row).find('.col2').val(value.replace('_', ' '));
+            $('.pls_active_filters ul').append(base_row);
+
+            // $('form#active_filters').append('<span id="active_filter_item"><a href="#" class="remove_filter"></a><span class="global_dark_label">'+key.replace('_', ' ')+'</span>: '+value.replace('_', ' ')+'<input type="hidden" name="'+key+'" value="'+value+'"></span>');
     
-            current_form_values['action'] = 'user_save_global_filters';
+            // current_form_values['action'] = 'user_save_global_filters';
             // console.log(current_form_values);
             // $.post(ajaxurl, current_form_values, function(data, textStatus, xhr) {
             //     // console.log(data);
