@@ -8,20 +8,27 @@
     padding-top: 20px;
 }
 h2.person-name-contact {
-    margin-bottom: 15px;
+    float: left;
+    width: 100%;
 }
-.person-name-contact span {
+h2.person-name-contact span {
+    font-weight: bold;
+}
+
+.person-details {
+    margin-bottom: 20px;
+    float: left;
+    width: 100%;
+}
+.person-details span {
     font-size: 15px;
     color: grey;
     margin-left: 15px;
 }
-.person-name-contact span.name {
-    font-size: inherit;
-    color: inherit;
+.person-details span.phone {
     margin-left: 0px;
-    font-weight: bold;
 }
-.person-name-contact span.created {
+.person-details span.created {
     font-size: 11px;
 }
 p.saved-searches-title {

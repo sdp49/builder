@@ -8,10 +8,15 @@ $lead_details = PL_UI_Saved_Search::get_lead_details_by_id($_GET['id']);
 <input id="lead_id" type="hidden" value="<?php echo $_GET['id'] ?>" >
 <h2 class="person-name-contact">
   <span class="name"><?php echo $lead_details['full_name'] ?></span>  
+  <a href="post-new.php" class="add-new-h2">Edit</a>
+  <a href="post-new.php" class="add-new-h2">Delete</a>
+</h2>
+<div class="person-details">
   <span class="phone"><?php echo $lead_details['phone'] ?></span>
   <span class="email"><a mailto="<?php echo $lead_details['email'] ?>"><?php echo $lead_details['email'] ?></a></span>
-  <span class="created">(Created on: <?php echo $lead_details['created'] ?>)</span>
-</h2>
+  <span class="created">(Created on: <?php echo $lead_details['created'] ?>)</span>  
+</div>
+
 
 <div class="both"></div>
 
