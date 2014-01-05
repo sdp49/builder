@@ -72,7 +72,7 @@ class PL_UI_Saved_Search {
 			 					$lead['full_name'] . 
 			 				'</a>
 			 				<div class="row_actions">
-			 				<a href="' . ADMIN_MENU_URL . '?page=placester_my_leads&id=' . $lead['id'] . '" >
+			 				<a href="' . ADMIN_MENU_URL . '?page=placester_my_leads&id='. $lead['id'] .'&edit=1" >
 			 					Edit
 			 				</a>
 			 				<span>|</span>
