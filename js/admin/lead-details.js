@@ -13,7 +13,7 @@ jQuery(document).ready(function($) {
             "aoColumns" : [
                 { sWidth: '120px' },    
                 { sWidth: '230px' },    
-                { sWidth: '350px' },    
+                { sWidth: '330px' },    
                 { sWidth: '100px' },    
                 { sWidth: '200px' }     
             ],
