@@ -68,7 +68,22 @@ class PL_UI_Saved_Search {
 			$leads[$key][] = $lead['created'];
 			$lead['full_name'] = $lead['first_name'] . ' ' . $lead['last_name'];
 			// $leads[$key][] = ((is_array($images) && isset($images[0])) ? '<img width=50 height=50 src="' . $images[0]['url'] . '" />' : 'empty');
-			$leads[$key][] = '<a class="address" href="' . ADMIN_MENU_URL . '?page=placester_my_leads&id=' . $lead['id'] . '">' . $lead['full_name'] . '</a><div class="row_actions"><a href="' . ADMIN_MENU_URL . '?page=placester_my_leads&id=' . $lead['id'] . '" >Edit</a><span>|</span><a href="' . ADMIN_MENU_URL . '?page=placester_my_leads&id=' . $lead['id'] . '">View</a><span>|</span><a class="red" id="pls_delete_listing" href="#" ref="'.$lead['id'].'">Delete</a></div>';
+			$leads[$key][] = '<a class="address" href="' . ADMIN_MENU_URL . '?page=placester_my_leads&id=' . $lead['id'] . '">' .
+			 					$lead['full_name'] . 
+			 				'</a>
+			 				<div class="row_actions">
+			 				<a href="' . ADMIN_MENU_URL . '?page=placester_my_leads&id=' . $lead['id'] . '" >
+			 					Edit
+			 				</a>
+			 				<span>|</span>
+			 				<a href="' . ADMIN_MENU_URL . '?page=placester_my_leads&id=' . $lead['id'] . '">
+			 					View
+			 				</a>
+			 				<span>|</span>
+			 				<a class="red" id="pls_delete_listing" href="#" ref="'.$lead['id'].'">
+			 					Delete
+			 				</a>
+			 				</div>';
 			// $leads[$key][] = $listing["location"]["postal"];
 			
 			$leads[$key][] = $lead['email'];
