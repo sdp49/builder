@@ -1,3 +1,4 @@
+<?php PL_Form::generate_form(PL_Config::PL_API_LEAD('get', 'args'), array('method' => "POST", 'title' => true, 'include_submit' => false, 'id' => 'pls_admin_my_leads', 'textarea_as_text' => true)); ?>
 <div id="container">
   <table id="placester_leads_list" class="widefat post fixed placester_properties" cellspacing="0">
     <thead>
