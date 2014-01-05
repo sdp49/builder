@@ -85,7 +85,7 @@ class PL_UI_Saved_Search {
 		// Get leads from model
 		// $api_response = PL_Lead::get($lead_id);
 		$api_response = array(
-			'total' => 1,
+			'total' => 40,
 			'searches' => array(
 				array(
 					'id' => '1',

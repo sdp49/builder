@@ -11,9 +11,32 @@ jQuery(document).ready(function($) {
             'sDom': '<"dataTables_top"pi>lftpir',
             "sAjaxSource": ajaxurl, //wordpress url thing
             "aoColumns" : [
+                { sWidth: '120px' },    
+                { sWidth: '230px' },    
+                { sWidth: '350px' },    
                 { sWidth: '100px' },    
-                { sWidth: '200px' },    
-                { sWidth: '250px' },    
+                { sWidth: '200px' }     
+            ],
+            "fnServerParams": function ( aoData ) {
+                aoData.push( { "name": "action", "value" : "datatable_leads_searches_ajax"} );
+                aoData.push( { "name": "lead_id", "value" : "1"} );
+                // aoData.push( { "name": "sSearch", "value" : $('input#address_search').val() })
+                // aoData = my_listings_search_params(aoData);
+            }
+        });
+
+    var my_favorites_datatable = $('#placester_favorite_listings_list').dataTable( {
+            "bFilter": false,
+            "bProcessing": true,
+            "bServerSide": true,
+            "sServerMethod": "POST",
+            'sPaginationType': 'full_numbers',
+            'sDom': '<"dataTables_top"pi>lftpir',
+            "sAjaxSource": ajaxurl, //wordpress url thing
+            "aoColumns" : [
+                { sWidth: '120px' },    
+                { sWidth: '230px' },    
+                { sWidth: '350px' },    
                 { sWidth: '100px' },    
                 { sWidth: '200px' }     
             ],
@@ -34,14 +57,6 @@ jQuery(document).ready(function($) {
     $('tr.odd, tr.even').live('mouseout', function(event) {
         $(this).find(".row_actions").hide();
     });
-
-
-    // prevents default on search button
-    $('#pls_admin_my_listings').live('change', function(event) {
-        event.preventDefault();
-        my_listings_datatable.fnDraw();
-    });
-
 
 });
 

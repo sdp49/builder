@@ -1,7 +1,7 @@
-#placester_listings_list_wrapper {
+.dataTables_wrapper {
   position: relative;
 }
-#placester_listings_list_processing {
+.dataTables_processing {
     /*float: left;*/
     text-indent: 20px;
     color: #444;

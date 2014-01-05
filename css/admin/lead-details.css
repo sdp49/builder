@@ -1,29 +1,96 @@
-ul.person-details {
-	float: left;
-	clear: both;
-	width: 100%;
-	margin-bottom: 20px;
+#container {
+    float: left;
+    clear: both;
 }
-.person-details li {
-	float: left;
-	margin-right: 15px;
-	font-size: 16px;
-	border-right: 1px solid black;
-	padding: 10px;
+#container.favorite-listings {
+    border-top: 1px #dfdfdf solid;
+    margin-top: 20px;
+    padding-top: 20px;
 }
-.person-details li.last {
-	border-right: none;
+h2.person-name-contact {
+    margin-bottom: 15px;
 }
-
-
+.person-name-contact span {
+    font-size: 15px;
+    color: grey;
+    margin-left: 15px;
+}
+.person-name-contact span.name {
+    font-size: inherit;
+    color: inherit;
+    margin-left: 0px;
+    font-weight: bold;
+}
+.person-name-contact span.created {
+    font-size: 11px;
+}
+p.saved-searches-title {
+    font-size: 16px;
+    margin-bottom: 0px;
+    float: left;
+}
 .both {
 	float: left;
 	clear: both;
 	width: 100%;
 }
 
+.dataTables_length {
+    display: none;
+}
+/*  */
+/*  */
 /* Datatable Styling */
+/*  */
+/*  */
+.dataTables_wrapper {
+  position: relative;
+}
+.dataTables_processing {
+    /*float: left;*/
+    text-indent: 20px;
+    color: #444;
+    visibility: visible;
+    position: absolute;
+    top: 45px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+    font-size: 30px;
+    padding: 50px 0 0 40%;
+    z-index: 1000;
+    font-family: "HelveticaNeue-Light","Helvetica Neue Light","Helvetica Neue",sans-serif;
+    font-weight: normal;
+    text-shadow: rgba(255, 255, 255, 1) 0 1px 0
+}
+.form_group {
+    display: none;
+}
+.row_actions {
+  display: none;
+}
+.row_actions a, .row_actions span {
+  padding-right: 10px;
+  float: left;
+}
+.red {
+    color: #BC0B0B;
+}
+tr.odd, tr.even {
+  height: 48px;
+}
+.address {
+  font-weight: bold;
+}
 
+.dataTables_info {
+    margin-right: 10px !important;
+    padding-right: 10px !important;
+}
+.paging_full_numbers span {
+    margin: 0 10px 0 10px;
+}
 
 .paging_full_numbers { 
     margin-top: 12px; 
