@@ -20,6 +20,7 @@ class PL_UI_Saved_Search {
 		// Basic AJAX endpoints
 		add_action('wp_ajax_datatable_my_leads_ajax', array(__CLASS__, 'ajax_get_leads'));
 		add_action('wp_ajax_datatable_leads_searches_ajax', array(__CLASS__, 'ajax_get_leads_searchs'));		
+		add_action('wp_ajax_datatable_favorites_ajax', array(__CLASS__, 'ajax_get_favorites_by_id'));		
 	}
 
 	public static function ajax_get_leads () {
@@ -114,7 +115,22 @@ class PL_UI_Saved_Search {
 			// $images = $listing['images'];
 			$searches[$key][] = $search['created'];
 			// $searches[$key][] = ((is_array($images) && isset($images[0])) ? '<img width=50 height=50 src="' . $images[0]['url'] . '" />' : 'empty');
-			$searches[$key][] = '<a class="address" href="' . ADMIN_MENU_URL . $search['link_to_search'] . '">' . $search['name'] . '</a><div class="row_actions"><a href="' . ADMIN_MENU_URL . '?page=placester_my_searches&id=' . $search['id'] . '" >Edit</a><span>|</span><a href="' . ADMIN_MENU_URL . '?page=placester_my_searches&id=' . $search['id'] . '">View</a><span>|</span><a class="red" id="pls_delete_listing" href="#" ref="'.$search['id'].'">Delete</a></div>';
+			$searches[$key][] = '<a class="address" href="' . ADMIN_MENU_URL . $search['link_to_search'] . '">' . 
+									$search['name'] . 
+								'</a>
+								<div class="row_actions">
+									<a href="' . ADMIN_MENU_URL . '?page=placester_my_searches&id=' . $search['id'] . '" >
+										Edit
+									</a>
+									<span>|</span>
+									<a href="' . ADMIN_MENU_URL . '?page=placester_my_searches&id=' . $search['id'] . '">
+										View
+									</a>
+									<span>|</span>
+									<a class="red" id="pls_delete_listing" href="#" ref="'.$search['id'].'">
+										Delete
+									</a>
+								</div>';
 			// $searches[$key][] = $listing["location"]["postal"];
 			
 			$searches[$key][] = $search['saved_fields'];
@@ -143,12 +159,82 @@ class PL_UI_Saved_Search {
 					'phone' => '123 123 1234',
 					'created' => 'Today',
 					'updated' => 'Yesterday',
-					'saved_searches' => 5
+					'saved_searches' => 5,
+					'favorited_listings' => 3
 				);
 		$api_response['full_name'] = $api_response['first_name'] . ' ' . $api_response['last_name'];
 		$api_response = wp_parse_args($api_response, self::$default_response);
 		return $api_response;
 	}
 
+	public static function ajax_get_favorites_by_id () {
+		$lead_id = $_POST['lead_id'];
+
+		// Get leads from model
+		// $api_response = PL_Lead::get($lead_id);
+		$api_response = array(
+			'total' => 40,
+			'searches' => array(
+				array(
+					'id' => '1',
+					'image' => '',
+					'full_address' => '38 W Cedar Street',
+					'beds' => '1',
+					'baths' => '2',
+					'price' => '500k',
+					'sqft' => '3454',
+					'mls_id' => '123123'
+				),
+				array(
+					'id' => '2',
+					'image' => '',
+					'full_address' => '38 W Cedar Street',
+					'beds' => '1',
+					'baths' => '2',
+					'price' => '500k',
+					'sqft' => '3454',
+					'mls_id' => '123123'
+				),
+			)
+		);
+		
+		// build response for datatables.js
+		$searches = array();
+		foreach ($api_response['searches'] as $key => $search) {
+			
+			$searches[$key][] = '<img src="' . $search['image'] . '" />';
+			$searches[$key][] = '<a class="address" href="' . ADMIN_MENU_URL . $search['id'] . '">' . 
+									$search['full_address'] . 
+								'</a>
+								<div class="row_actions">
+									<a href="' . ADMIN_MENU_URL . '?page=placester_my_searches&id=' . $search['id'] . '" >
+										Edit
+									</a>
+									<span>|</span>
+									<a href="' . ADMIN_MENU_URL . '?page=placester_my_searches&id=' . $search['id'] . '">
+										View
+									</a>
+									<span>|</span>
+									<a class="red" id="pls_delete_listing" href="#" ref="'.$search['id'].'">
+										Delete
+									</a>
+								</div>';
+			
+			$searches[$key][] = $search['beds'];
+			$searches[$key][] = $search['baths'];
+			$searches[$key][] = $search['price'];
+			$searches[$key][] = $search['sqft'];
+			$searches[$key][] = $search['mls_id'];
+		}
+
+		// Required for datatables.js to function properly.
+		$response = array();
+		$response['sEcho'] = $_POST['sEcho'];
+		$response['aaData'] = $searches;
+		$response['iTotalRecords'] = $api_response['total'];
+		$response['iTotalDisplayRecords'] = $api_response['total'];
+		echo json_encode($response);
+		die();
+	}
 
 }

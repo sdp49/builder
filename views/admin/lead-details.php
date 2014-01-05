@@ -43,15 +43,17 @@ $lead_details = PL_UI_Saved_Search::get_lead_details_by_id($_GET['id']);
 <div class="both"></div>
 
 <div id="container" class="favorite-listings">
-  <p class="saved-searches-title">Favorite Listings</p>
+  <p class="saved-searches-title">Favorite Listings (<?php echo $lead_details['favorited_listings']  ?>)</p>
   <table id="placester_favorite_listings_list" class="widefat post fixed placester_properties" cellspacing="0">
     <thead>
       <tr>
-        <th><span>Date Created</span></th>
-        <th><span>Search Name</span></th>
-        <th><span>Fields Saved</span></th>
-        <th><span>Last Updated</span></th>
-        <th><span># of Saved Searches</span></th>
+        <th><span></span></th>
+        <th><span>Address</span></th>
+        <th><span>Beds</span></th>
+        <th><span>Baths</span></th>
+        <th><span>Price</span></th>
+        <th><span>Sqft</span></th>
+        <th><span>MLS ID</span></th>
       </tr>
     </thead>
     <tbody></tbody>

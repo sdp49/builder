@@ -34,14 +34,16 @@ jQuery(document).ready(function($) {
             'sDom': '<"dataTables_top"pi>lftpir',
             "sAjaxSource": ajaxurl, //wordpress url thing
             "aoColumns" : [
-                { sWidth: '120px' },    
-                { sWidth: '230px' },    
-                { sWidth: '350px' },    
-                { sWidth: '100px' },    
-                { sWidth: '200px' }     
+                { sWidth: '60px' },    
+                { sWidth: '200px' },    
+                { sWidth: '60px' },    
+                { sWidth: '60px' },    
+                { sWidth: '100px' },  
+                { sWidth: '60px' },   
+                { sWidth: '100px' }     
             ],
             "fnServerParams": function ( aoData ) {
-                aoData.push( { "name": "action", "value" : "datatable_leads_searches_ajax"} );
+                aoData.push( { "name": "action", "value" : "datatable_favorites_ajax"} );
                 aoData.push( { "name": "lead_id", "value" : "1"} );
                 // aoData.push( { "name": "sSearch", "value" : $('input#address_search').val() })
                 // aoData = my_listings_search_params(aoData);
