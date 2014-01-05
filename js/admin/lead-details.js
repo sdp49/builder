@@ -23,7 +23,13 @@ jQuery(document).ready(function($) {
             }
         });
 
-
+    $('#delete_lead').live('click', function (event) {
+        event.preventDefault();
+        var lead_id = $('input#lead_id').val();
+        if ("DELETE" == prompt("Are you sure you want to DELETE " + $('span.name').text() + "?\n\nYou will never be able to recover this lead, their saved searches, or their favorites ever again. \n\n Type DELETE to remove this lead forever.")) {
+            
+        }
+    });
 
 
 

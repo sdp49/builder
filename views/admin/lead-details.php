@@ -9,7 +9,7 @@ $lead_details = PL_UI_Saved_Search::get_lead_details_by_id($_GET['id']);
 <h2 class="person-name-contact">
   <span class="name"><?php echo $lead_details['full_name'] ?></span>  
   <a href="<?php echo ADMIN_MENU_URL ?>?page=placester_my_leads&id=<?php echo $_GET['id'] ?>&edit=1" class="add-new-h2">Edit</a>
-  <a href="#" id="" class="add-new-h2">Delete</a>
+  <a href="#" id="delete_lead" class="add-new-h2">Delete</a>
 </h2>
 <div class="person-details">
   <span class="phone"><?php echo $lead_details['phone'] ?></span>
@@ -21,7 +21,7 @@ $lead_details = PL_UI_Saved_Search::get_lead_details_by_id($_GET['id']);
 <div class="both"></div>
 
 <div id="container" class="saved-searches">
-  <p class="saved-searches-title">Saved Searches (<?php echo $lead_details['saved_searches'] ?>)</p>
+  <p class="saved-searches-title">Saved Searches (<?php echo $lead_details['saved_searches'] ?>) <a href="#" id="add_search" class="add-new-h2">Add New Search</a></p>
   <table id="placester_saved_search_list" class="widefat post fixed placester_properties" cellspacing="0">
     <thead>
       <tr>
@@ -49,7 +49,7 @@ $lead_details = PL_UI_Saved_Search::get_lead_details_by_id($_GET['id']);
 <div class="both"></div>
 
 <div id="container" class="favorite-listings">
-  <p class="saved-searches-title">Favorite Listings (<?php echo $lead_details['favorited_listings']  ?>)</p>
+  <p class="saved-searches-title">Favorite Listings (<?php echo $lead_details['favorited_listings']  ?>) <a href="#" id="add_favorite" class="add-new-h2">Add New Favorite Listing</a></p>
   <table id="placester_favorite_listings_list" class="widefat post fixed placester_properties" cellspacing="0">
     <thead>
       <tr>
