@@ -27,7 +27,9 @@ jQuery(document).ready(function($) {
         event.preventDefault();
         var lead_id = $('input#lead_id').val();
         if ("DELETE" == prompt("Are you sure you want to DELETE " + $('span.name').text() + "?\n\nYou will never be able to recover this lead, their saved searches, or their favorites ever again. \n\n Type DELETE to remove this lead forever.")) {
-            
+
+        } else {
+            alert('You either cancelled the delete or did not type DELETE correctly. This lead HAS NOT been deleted.');
         }
     });
 
@@ -66,6 +68,12 @@ jQuery(document).ready(function($) {
     });
     $('tr.odd, tr.even').live('mouseout', function(event) {
         $(this).find(".row_actions").hide();
+    });
+
+
+    // Editing a lead
+    $('#cancel').click(function () {
+        alert('need to do this');
     });
 
 });

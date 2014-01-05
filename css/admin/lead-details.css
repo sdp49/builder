@@ -2,7 +2,7 @@
     float: left;
     clear: both;
 }
-#container.favorite-listings {
+#container {
     border-top: 1px #dfdfdf solid;
     margin-top: 20px;
     padding-top: 20px;
@@ -45,6 +45,12 @@ p.saved-searches-title {
 .dataTables_length {
     display: none;
 }
+
+#edit-lead-box {
+    float: left;
+    width: 100%;
+}
+
 /*  */
 /*  */
 /* Datatable Styling */
@@ -72,7 +78,7 @@ p.saved-searches-title {
     text-shadow: rgba(255, 255, 255, 1) 0 1px 0
 }
 .form_group {
-    display: none;
+    /*display: none;*/
 }
 .row_actions {
   display: none;

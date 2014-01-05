@@ -62,6 +62,7 @@ class PL_Router {
 		//index page also doubles as the details page since wp doesn't make it easy to have an "admin"
 		//page that doesn't appear in the main navigation.
 		if (isset($_GET['id']) && isset($_GET['edit']) && $_GET['edit'] === '1') {
+			$_POST = PL_UI_Saved_Search::get_lead_details_by_id($_GET['id']);
 			self::router('lead-edit.php', array());	
 		} elseif (isset($_GET['id'])) {
 			self::router('lead-details.php', array());	
