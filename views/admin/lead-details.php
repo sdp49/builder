@@ -2,8 +2,6 @@
 
 $lead_details = PL_UI_Saved_Search::get_lead_details_by_id($_GET['id']);
 
-// var_dump($lead_details);
-
  ?>
 <input id="lead_id" type="hidden" value="<?php echo $_GET['id'] ?>" >
 <h2 class="person-name-contact">
@@ -21,7 +19,7 @@ $lead_details = PL_UI_Saved_Search::get_lead_details_by_id($_GET['id']);
 <div class="both"></div>
 
 <div id="container" class="saved-searches">
-  <p class="saved-searches-title">Saved Searches (<?php echo $lead_details['saved_searches'] ?>) <a href="#" id="add_search" class="add-new-h2">Add New Search</a></p>
+  <p class="saved-searches-title">Saved Searches (<?php echo $lead_details['saved_searches'] ?>) <a href="<?php echo ADMIN_MENU_URL ?>?page=placester_my_leads&id=<?php echo $_GET['id'] ?>&new_search=1" class="add-new-h2">Add New Search</a></p>
   <table id="placester_saved_search_list" class="widefat post fixed placester_properties" cellspacing="0">
     <thead>
       <tr>

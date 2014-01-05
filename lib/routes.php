@@ -64,6 +64,10 @@ class PL_Router {
 		if (isset($_GET['id']) && isset($_GET['edit']) && $_GET['edit'] === '1') {
 			$_POST = PL_UI_Saved_Search::get_lead_details_by_id($_GET['id']);
 			self::router('lead-edit.php', array());	
+		} elseif ( isset($_GET['id']) && isset($_GET['new_search']) && $_GET['new_search'] === '1' ) {
+			self::router('/leads/new-search.php', array());	
+		} elseif ( isset($_GET['id']) && isset($_GET['search_id']) && isset($_GET['edit_search']) && $_GET['edit_search'] === '1' ) {
+			self::router('/leads/search-edit.php', array());	
 		} elseif (isset($_GET['id'])) {
 			self::router('lead-details.php', array());	
 		} else {

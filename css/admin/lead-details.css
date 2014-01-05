@@ -51,6 +51,10 @@ p.saved-searches-title {
     width: 100%;
 }
 
+.add-new-h2 {
+    z-index: 100;
+}
+
 /*  */
 /*  */
 /* Datatable Styling */
