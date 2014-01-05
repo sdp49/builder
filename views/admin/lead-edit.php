@@ -20,7 +20,7 @@
 						 		PL_Config::PL_API_LEAD('create', 'args'),
 							 	array('method'=>'POST', 
 								 	'include_submit' => true, 
-								 	'wrap_form' => false, 
+								 	'wrap_form' => true, 
 								 	'echo_form' => false,
 								 	'title' => true
 							 	) 

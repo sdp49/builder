@@ -76,6 +76,22 @@ jQuery(document).ready(function($) {
         alert('need to do this');
     });
 
+    $('#pls_search_form button#pls_search_form_submit_button').click(function (event) {
+        event.preventDefault();
+        var form_values = {};
+        form_values['action'] = 'pls_update_lead';
+        $.each($('#pls_search_form :input').serializeArray(), function(i, field) {
+            form_values[field.name] = field.value;
+        });
+        $.post(ajaxurl, form_values, function(data, textStatus, xhr) {
+            if (data.result && data.result == '1') {
+                alert('success');
+            } else {
+                alert('failed');
+            }
+        }, 'json');
+    });
+
 });
 
 
