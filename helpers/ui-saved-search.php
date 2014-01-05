@@ -213,10 +213,6 @@ class PL_UI_Saved_Search {
 									$search['full_address'] . 
 								'</a>
 								<div class="row_actions">
-									<a href="' . ADMIN_MENU_URL . '?page=placester_my_searches&id=' . $search['id'] . '" >
-										Edit
-									</a>
-									<span>|</span>
 									<a href="' . ADMIN_MENU_URL . '?page=placester_my_searches&id=' . $search['id'] . '">
 										View
 									</a>
