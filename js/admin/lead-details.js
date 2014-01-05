@@ -25,11 +25,42 @@ jQuery(document).ready(function($) {
 
     $('#delete_lead').live('click', function (event) {
         event.preventDefault();
-        var lead_id = $('input#lead_id').val();
-        if ("DELETE" == prompt("Are you sure you want to DELETE " + $('span.name').text() + "?\n\nYou will never be able to recover this lead, their saved searches, or their favorites ever again. \n\n Type DELETE to remove this lead forever.")) {
+        var delete_request = {}
+        delete_request['action'] = 'delete_lead';
+        delete_request['lead_id'] = $('input#lead_id').val();
 
+        if ("DELETE" == prompt("Are you sure you want to DELETE " + $('span.name').text() + "?\n\nYou will never be able to recover this lead, their saved searches, or their favorites ever again. \n\n Type DELETE to remove this lead forever.")) {
+            $.post(ajaxurl, delete_request, function(data, textStatus, xhr) {
+                if (data.result && data.result == '1') {
+                    alert('success');
+                } else {
+                    alert('failed');
+                }
+            }, 'json');    
         } else {
             alert('You either cancelled the delete or did not type DELETE correctly. This lead HAS NOT been deleted.');
+        }
+    });
+
+
+    $('#pls_delete_search').live('click', function (event) {
+        event.preventDefault();
+        var delete_request = {}
+        delete_request['action'] = 'delete_lead_search';
+        delete_request['lead_id'] = $('input#lead_id').val();
+        delete_request['search_id'] = $(this).attr('ref');
+        console.log(delete_request);
+
+        if ("DELETE" == prompt("Are you sure you want to DELETE this search?\n\nYou will never be able to recover this search and all email notifications will stop immediately. \n\n Type DELETE to remove this search forever.")) {
+            $.post(ajaxurl, delete_request, function(data, textStatus, xhr) {
+                if (data.result && data.result == '1') {
+                    alert('success');
+                } else {
+                    alert('failed');
+                }
+            }, 'json');    
+        } else {
+            alert('You either cancelled the delete or did not type DELETE correctly. This search HAS NOT been deleted.');
         }
     });
 

@@ -22,6 +22,18 @@ class PL_UI_Saved_Search {
 		add_action('wp_ajax_datatable_leads_searches_ajax', array(__CLASS__, 'ajax_get_leads_searchs'));		
 		add_action('wp_ajax_datatable_favorites_ajax', array(__CLASS__, 'ajax_get_favorites_by_id'));		
 		add_action('wp_ajax_pls_update_lead', array(__CLASS__, 'ajax_update_lead'));		
+		add_action('wp_ajax_delete_lead', array(__CLASS__, 'ajax_delete_lead'));		
+		add_action('wp_ajax_delete_lead_search', array(__CLASS__, 'ajax_delete_lead_search'));		
+	}
+
+	public static function ajax_delete_lead () {
+		echo json_encode(array('result' => 1, 'data_recieved' => json_encode($_POST)));
+		die();
+	}
+
+	public static function ajax_delete_lead_search () {
+		echo json_encode(array('result' => 1, 'data_recieved' => json_encode($_POST)));
+		die();
 	}
 
 	public static function ajax_update_lead () {
@@ -144,7 +156,7 @@ class PL_UI_Saved_Search {
 										View
 									</a>
 									<span>|</span>
-									<a class="red" id="pls_delete_listing" href="#" ref="'.$search['id'].'">
+									<a class="red" id="pls_delete_search" href="#" ref="'.$search['id'].'">
 										Delete
 									</a>
 								</div>';
