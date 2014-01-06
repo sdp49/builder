@@ -1,12 +1,9 @@
 <?php
 
-// Js in js/public/saved-search.js
-
-//TODO
-//Methods for generating the saved_search_form
-//Methods for adding the saved search link to subshort codes in widgets section.
+// JS in js/public/saved-search.js
 
 PL_Saved_Search::init();
+
 class PL_Saved_Search {
 
 	public static $save_extension = 'pl_ss_';

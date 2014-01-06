@@ -1,6 +1,6 @@
 <?php 
 
-$lead_details = PL_UI_Saved_Search::get_lead_details_by_id($_GET['id']);
+$lead_details = PL_Lead_Helper::get_lead_details_by_id($_GET['id']);
 
 
  ?>

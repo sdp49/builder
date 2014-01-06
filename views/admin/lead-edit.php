@@ -1,4 +1,4 @@
-<?php $lead_details = PL_UI_Saved_Search::get_lead_details_by_id($_GET['id']); ?>
+<?php $lead_details = PL_Lead_Helper::get_lead_details_by_id($_GET['id']); ?>
 
 <input id="lead_id" type="hidden" value="<?php echo $_GET['id'] ?>" >
 <h2 class="person-name-contact">

@@ -105,7 +105,7 @@ if (defined('DOING_AJAX') && isset($_POST['action']) && $_POST['action'] == 'crm
 // Sitemap support 
 if ((!is_admin() && file_exists(WP_PLUGIN_DIR.'/wordpress-seo/inc/class-sitemaps.php') && strpos($_SERVER["REQUEST_URI"],'sitemap')!==false)
 	|| is_admin()) {
-	include('lib/sitemaps.php');
+	include_once('lib/sitemaps.php');
 }
 
 //config
@@ -144,6 +144,7 @@ include_once('lib/bootup.php');
 include_once('lib/global-filters.php');
 include_once('lib/listing-customizer.php');
 include_once('lib/dragonfly-resize.php');
+include_once('lib/saved-search.php');
 
 //models
 include_once('models/listing.php');
@@ -175,8 +176,6 @@ include_once('helpers/wordpress.php');
 include_once('helpers/education-com.php');
 include_once('helpers/caching.php');
 include_once('helpers/membership.php');
-include_once('helpers/saved-search.php');
-include_once('helpers/ui-saved-search.php');
 include_once('helpers/lead-capture.php');
 include_once('helpers/customizer.php');
 include_once('helpers/logging.php');
@@ -186,6 +185,12 @@ include_once('third-party/tax-meta-class/tax-meta-class.php');
 include_once('third-party/convex-hull/convex-hull.php');
 include_once('third-party/mixpanel/mixpanel.php');
 
+// If constant is set, use new leads functionality...
+if (defined('PL_LEADS_ENABLED')) {
+    include_once('config/api/leads.php');
+    include_once('models/lead.php');
+    include_once('helpers/lead.php');
+}
 
 // Register hook to load blueprint from plugin if the active theme has yet to do so...
 add_action( 'after_setup_theme', 'load_blueprint_from_plugin', 18 );
@@ -221,7 +226,9 @@ function placester_admin_menu () {
     add_submenu_page( 'placester', 'Listings','Listings', 'edit_pages', 'placester_properties', array('PL_Router','my_listings') );
     add_submenu_page( 'placester', 'Add Listing', 'Add Listing', 'edit_pages', 'placester_property_add', array('PL_Router','add_listings') );
     
-    add_submenu_page( 'placester', 'Leads', 'Leads', 'edit_pages', 'placester_my_leads', array('PL_Router','my_leads') );
+    if (defined('PL_LEADS_ENABLED')) {
+        add_submenu_page( 'placester', 'Leads', 'Leads', 'edit_pages', 'placester_my_leads', array('PL_Router','my_leads') );
+    }
 
     // If the site using the plugin is on our hosted network, don't show the theme gallery...
     if ( !defined('HOSTED_PLUGIN_KEY') ) {

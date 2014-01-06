@@ -1,7 +1,6 @@
 // For datatable
 jQuery(document).ready(function($) {
 
-
     var my_leads_datatable = $('#placester_saved_search_list').dataTable( {
             "bFilter": false,
             "bProcessing": true,
@@ -251,6 +250,7 @@ jQuery(document).ready(function($) {
         }, 1500);
     });
 
+
     $('#active_filters').on('click', '.remove_filter', function (event) {
         event.preventDefault(); 
         $(this).closest('#active_filters span#active_filter_item').remove();
@@ -301,6 +301,7 @@ jQuery(document).ready(function($) {
             $('#global_filter_message_remove').html('');
         }, 1500);
     });
+
 });
 
 

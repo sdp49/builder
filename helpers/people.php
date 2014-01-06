@@ -16,19 +16,20 @@ class PL_People_Helper {
 	}
 
 	public static function add_person ($args = array()) {
+		// If 'Leads' functionality is enabled, add in parallel...
+		if (defined('PL_LEADS_ENABLED')) {
+			PL_Lead_Helper::add_lead($args);
+		}
+
 		// Try to push lead to CRM (if one is linked/active)...
-		self::add_person_to_CRM($_POST);	
+		self::add_person_to_CRM($_POST);
 
 		return PL_People::create($args);
 	}	
 
 	public static function add_person_ajax () {
-		$api_response = PL_People::create($_POST);
+		$api_response = self::add_person($_POST);
 		echo json_encode($api_response);
-
-		// Try to push lead to CRM (if one is linked/active)...
-		self::add_person_to_CRM($_POST);
-
 		die();
 	}
 
