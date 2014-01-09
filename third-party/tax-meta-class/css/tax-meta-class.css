@@ -22,7 +22,7 @@
 /* =Form Fields
 ----------------------------------------------- */
 .form-field input, .form-field textarea {width: auto !important;}
-.wp-editor-wrap{{width: 500px;} textarea.at-wysiwyg{width: 498px !important;}
+.wp-editor-wrap {width: 500px;} textarea.at-wysiwyg{width: 498px !important;}
 .rw-checkbox, .at-select, .at-text , .at-textarea{width: auto!important;}
 .postbox .at-field input,
 .postbox .at-field textarea { padding: 5px; line-height: 18px; } 
@@ -38,9 +38,11 @@
 /* =Uploaded Images
 ----------------------------------------------- */
 .at-images li { margin: 5px 10px 0px 0; float: left; width: 150px; height: 150px; text-align: center; border: 3px solid #ccc; cursor: move; position: relative; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px; }
-.at-images img { width: 150px; height: 150px; }
+.mupload_img_holder { display: block; }
+.at-images img, .mupload_img_holder img { width: 150px; height: 150px; }
 .at-images a { position: absolute; top: -12px; right: -12px; color: #fff;  font-weight: bold; padding: 5px; }
 .at-images .at-delete-file img{ width: 16px; height: 16px; }
+.at-delete_image_button { display: block; }
 
 /* =Upload Button
 ----------------------------------------------- */

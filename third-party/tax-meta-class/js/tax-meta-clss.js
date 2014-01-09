@@ -5,12 +5,25 @@
  *
  * Copyright 2012 Ohad Raz (admin@bainternet.info)
  * @since 1.0
+ * 
+ * @package Tax Meta Class
+ * 
  */
 
 var $ =jQuery.noConflict();
 function update_repeater_fields(){
     
-      
+    /**
+     * WysiWyg editor
+     *
+     * @since 1.9.6
+     */
+    $(".theEditor").each(function(){
+      if ( typeof( tinyMCE ) == "object" && typeof( tinyMCE.execCommand ) == "function" ) {
+      tinyMCE.execCommand("mceAddControl", false, $(this).attr('id'));
+      }
+    });
+    
     /**
      * Datepicker Field.
      *
@@ -102,37 +115,6 @@ function update_repeater_fields(){
       
     });
     
-    /**
-     * Thickbox Upload
-     *
-     * @since 1.0
-     */
-    $('.at-upload-button').click( function() {
-      
-      var data = $(this).attr('rel').split('|'),
-        post_id   = data[0],
-        field_id   = data[1],
-        backup     = window.send_to_editor; // backup the original 'send_to_editor' function which adds images to the editor
-          
-      // change the function to make it adds images to our section of uploaded images
-      window.send_to_editor = function(html) {
-        
-        $('#at-images-' + field_id).append( $(html) );
-  
-        tb_remove();
-        
-        window.send_to_editor = backup;
-      
-      };
-  
-      // note that we pass the field_id and post_id here
-      tb_show('', 'media-upload.php?post_id=' + post_id + '&field_id=' + field_id + '&type=image&TB_iframe=true');
-  
-      return false;
-    });
-  
-    
-  
   }
 jQuery(document).ready(function($) {
 
@@ -233,36 +215,6 @@ jQuery(document).ready(function($) {
 
     
   /**
-   * Thickbox Upload
-   *
-   * @since 1.0
-   */
-  $('.at-upload-button').click( function() {
-    
-    var data       = $(this).attr('rel').split('|'),
-        post_id   = data[0],
-        field_id   = data[1],
-        backup     = window.send_to_editor; // backup the original 'send_to_editor' function which adds images to the editor
-        
-    // change the function to make it adds images to our section of uploaded images
-    window.send_to_editor = function(html) {
-      
-      $('#at-images-' + field_id).append( $(html) );
-
-      tb_remove();
-      
-      window.send_to_editor = backup;
-    
-    };
-
-    // note that we pass the field_id and post_id here
-    tb_show('', 'media-upload.php?post_id=' + post_id + '&field_id=' + field_id + '&type=image&TB_iframe=true');
-
-    return false;
-  });
-
-    
-  /**
    * Helper Function
    *
    * Get Query string value by name.
@@ -328,17 +280,34 @@ jQuery(document).ready(function($) {
   jQuery('.at-upload_image_button').live('click',function(e){
     formfield1 = jQuery(this).prev();
     formfield2 = jQuery(this).prev().prev();      
-    tb_show('', 'media-upload.php?type=image&amp;TB_iframe=true');
+    tb_show('', 'media-upload.php?post_id=0&type=image&amp;TB_iframe=true&tax_meta_c=instopo');
+
+    //cleanup the meadi uploader
+    tbframe_interval = setInterval(function() {
+
+       //remove url, alignment and size fields- auto set to null, none and full respectively                        
+       $('#TB_iframeContent').contents().find('.url').hide();
+       $('#TB_iframeContent').contents().find('.align').hide();
+       $('#TB_iframeContent').contents().find('.image_alt').hide();
+       $('#TB_iframeContent').contents().find('.post_excerpt').hide();
+       $('#TB_iframeContent').contents().find('.post_content').hide();
+       $('#TB_iframeContent').contents().find('.image-size').hide();
+       $('#TB_iframeContent').contents().find('[value="Insert into Post"]').val('Use this image');
+
+    }, 2000);
+
     //store old send to editor function
     window.restore_send_to_editor = window.send_to_editor;
     //overwrite send to editor function
     window.send_to_editor = function(html) {
-      imgurl = jQuery('img',html).attr('src');
-      img_calsses = jQuery('img',html).attr('class').split(" ");
+      d = jQuery('<div>').html(html);
+      imgurl = d.find('img').attr('src');
+      img_calsses = d.find('img').attr('class').split(" ");
       att_id = '';
       jQuery.each(img_calsses,function(i,val){
         if (val.indexOf("wp-image") != -1){
           att_id = val.replace('wp-image-', "");
+          return true;
         }
       });
 
