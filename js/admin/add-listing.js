@@ -58,13 +58,14 @@ jQuery(document).ready(function($) {
 
 		//show the right boxes
 		// console.log('#' + $('select#compound_type').val() + '_details_admin_ui_basic');
-		mixpanel.track('Add Property - Type Selected', {'type' : $('select#compound_type').val() });
+		pls_track_event('Add Property - Type Selected', {'type' : $('select#compound_type').val() });
 		$('#' + $('select#compound_type').val() + '_details_admin_ui_basic' ).show().find('input, select').prop('disabled', false);
 		$('#' + $('select#compound_type').val() + '_details_admin_ui_advanced' ).find('input, select').prop('disabled', false);
 	}
 
 	// Initialize the jQuery File Upload widget:
     $('#add_listing_form').fileupload({
+        dataType: 'json',
         formData: {action: 'add_temp_image'},
         sequentialUploads: true,
         submit: function (e, data) {
@@ -79,7 +80,7 @@ jQuery(document).ready(function($) {
             	//The server returns a properly formed array with no url. 
             	//forcing us to do error handling on the js side.
             	if (!file.url) {
-            		mixpanel.track('Add Property - Image - Upload Error');
+            		pls_track_event('Add Property - Image - Upload Error');
             		if (file.message) {
             			message += file.message;
             		} else {
@@ -91,7 +92,7 @@ jQuery(document).ready(function($) {
             		}
             		return false;
             	} else {
-	            	mixpanel.track('Add Property - Image - Upload Complete');
+	            	pls_track_event('Add Property - Image - Upload Complete');
 	            	var count = $('.image_container div input').length;
 	            	var id = '#' + file.orig_name.replace(/( )|(\.)|(\))|(\()/g,'');
 	            	$(id).parentsUntil('#image_container_remove').remove();
@@ -103,8 +104,8 @@ jQuery(document).ready(function($) {
         		return false;
         	}
         },
-        failed: function (e, data) {
-        	mixpanel.track('Add Property - Image - Upload Error');
+        fail: function (e, data) {
+        	pls_track_event('Add Property - Image - Upload Error');
         	alert('error');
         }
     });
