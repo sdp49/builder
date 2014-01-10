@@ -867,14 +867,14 @@ class Tax_Meta_Class {
 
 		// show form upload
 		echo "<div class='at-file-upload-label'> \n
-						<strong>" . __( 'Upload new files','tax-meta' ) . "</strong>\n
-						</div>\n";
+				<strong>" . __( 'Upload new files','tax-meta' ) . "</strong>\n
+			</div>\n";
 		echo "<div class='new-files'>\n
-		<div class='file-input'>\n
-		<input type='file' name='{$field['id']}[]' />\n
-		</div><!-- End .file-input -->\n
-		<a class='at-add-file button' href='#'>" . __( 'Add more files','tax-meta' ) . "</a>\n
-				</div><!-- End .new-files -->\n";
+				<div class='file-input'>\n
+					<input type='file' name='{$field['id']}[]' />\n
+				</div><!-- End .file-input -->\n
+				<a class='at-add-file button' href='#'>" . __( 'Add more files','tax-meta' ) . "</a>\n
+			</div><!-- End .new-files -->\n";
 		echo "</td>";
 		$this->show_field_end( $field, $meta );
 	}
