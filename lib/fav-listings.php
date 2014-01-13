@@ -21,7 +21,7 @@ class PL_Favorite_Listings {
 		$fav_ids = array();
 
 		if (isset($lead['fav_listings']) && is_array($lead['fav_listings'])) {
-			$fav_ids = ($lead['fav_listings'];
+			$fav_ids = ($lead['fav_listings']);
 		}
 
 		return $as_array ? array_values($fav_ids) : $fav_ids;
