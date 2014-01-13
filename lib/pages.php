@@ -219,7 +219,8 @@ class PL_Pages {
 						$name = self::format_taxonomy_name($response[$loc][$key]);
 						$qo = new stdClass();
 						$qo->term_id = -1;
-						$qo->name = $name;
+						$qo->disp_name = $name;
+						$qo->name = $response[$loc][$key];
 						$qo->slug = $slug;
 						$qo->term_group = 0;
 						$qo->term_taxonomy_id = -1;
@@ -247,7 +248,7 @@ class PL_Pages {
 	public static function format_taxonomy_name($name) {
 		if ( strpos($name, ':') !== false) {
 			$name_segments = array_map('trim', explode(':', $name) );
-			$name = implode(': ', $name_segments);
+			$name = implode(', ', $name_segments);
 		}
 		return $name;
 	}
