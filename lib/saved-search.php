@@ -121,11 +121,11 @@ class PL_Saved_Search {
     	die();
     }
 
-	public static function ajax_toggle_search_notification () {
-		$search_hash = $_POST['search_hash'];
-		$toggle_flag = $_POST['toggle_flag'];
+	public static function ajax_update_search_notification () {
+		$search_id = $_POST['search_id'];
+		$schedule_id = $_POST['schedule_id'];
 
-		$response = PL_Lead_Helper::toggle_search_notification($search_hash, $toggle_flag);
+		$response = PL_Lead_Helper::update_search_notification($search_id, $schedule_id);
 
 		echo json_encode($response);
 		die();
