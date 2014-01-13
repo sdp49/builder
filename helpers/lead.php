@@ -4,6 +4,8 @@ PL_Lead_Helper::init();
 
 class PL_Lead_Helper {
 
+	const PL_LEAD_ID_KEY = 'pl_lead_id';
+
 	private static $default_response = array(
 		'id' => '',
 		'email' => '(Not Provided)',
@@ -75,21 +77,29 @@ class PL_Lead_Helper {
 		return PL_People::update(array_merge(array('id' => $pl_lead['id']), $lead_details));
 	}
 
-	// Fetch a site user's details based on his/her unique Placester ID (managed by Rails, stored in WP's usermeta table)
-	public static function lead_details () {
-		$details = array();
-		$wp_user = wp_get_current_user();
+	public static function lead_id ($wp_user_id = null) {
+		// Default this to null (indicates failure to callers...)
+		$lead_id = null;
 
-		if (!empty($wp_user->ID)) {
-			$pl_lead_id = get_user_meta($wp_user->ID, 'pl_lead_id');
-		
-			if (is_array($pl_lead_id)) { 
-				$pl_lead_id = implode($pl_lead_id, '');
-			}
-			
-			if (!empty($pl_lead_id)) {
-				$details = PL_People::details(array('id' => $pl_lead_id));
-			}
+		// Get currentauthenticated user's Wordpress ID if no invalid one is passed in...
+		$user_id = empty($wp_user_id) ? get_current_user_id() : $wp_user_id;
+
+		if (!empty($user_id)) {
+			$lead_id = get_user_meta($user_id, self::PL_LEAD_ID_KEY);
+		}
+
+		return $lead_id;
+	}
+
+	// Fetch a site user's details based on his/her unique Placester ID (managed by Rails, stored in WP's usermeta table)
+	public static function lead_details ($args = array(), $wp_user_id = null) {
+		$details = array();
+
+		$lead_id = self::lead_id($wp_user_id);
+
+		if (!empty($lead_id)) {	
+			// Fetch details from the API...
+			$details = PL_Lead::details($lead_id, $args);
 		}
 
 		return $details;
@@ -172,7 +182,8 @@ class PL_Lead_Helper {
 		echo json_encode($response);
 		die();
 	}
-		public static function get_lead_searches ($lead_id) {
+	
+	public static function get_lead_searches ($lead_id) {
 		// Get leads from model
 
 		// $api_response = PL_Lead::get($lead_id);
@@ -331,4 +342,132 @@ class PL_Lead_Helper {
 		die();
 	}
 
+	/*
+	 * Saved Search Functionality...
+	 */
+
+	public static function get_saved_searches ($wp_user_id = null) {
+		// Default return value is an empty array (i.e., no saved searches)
+		$saved_searches = array();
+
+		// Setup details call args to only pull saved searches...
+		$args = array('meta_keys' => array('saved_search'));
+		
+		// Fetch saved searches
+		$result = self::lead_details($wp_user_id, $args);
+
+		// Prep searches...
+		if (!empty($result) && is_array($result)) {
+			foreach ($result as $hash => &$search) {
+				// Construct full search URL based on current site's URL...
+				if (!empty($search['url'])) {
+					$search['url'] = site_url($search['url']);
+				}
+			}
+			unset($search); // break the reference with the last element...
+
+			$saved_searches = $result;
+		}
+
+		return $saved_searches;
+	}
+
+	private static function strip_empty_filters ($search_filters) {
+		$filters = array();
+		
+		if (!empty($search_filters) && is_array($search_filters)) {
+			foreach ($search_filters as $key => $filter) {
+				if (trim($filter) != '') {
+					$filters[$key] = trim($filter);
+				}
+			}
+		}
+		
+		return $filters;
+	}
+
+	public static function is_search_saved ($search_filters) {
+		$is_saved = false;
+
+		// Remove empty filters...
+		$filters = self::strip_empty_filters($search_filters);
+		// error_log(var_export($filters, true));
+		
+		if (!empty($filters) && is_array($filters)) {
+			// Setup details call args to check whether or not search is saved...
+			$args = array('meta_keys' => array('saved_search'), 'val_match' => array($filters));
+
+			// Call API to check for existence of saved search...
+			$is_saved = self::lead_details($args);
+		}
+
+		return $is_saved;
+	}
+
+	public static function add_saved_search ($search_filters, $search_name, $search_url_path) {
+		// Default result...
+		$success = false;
+		$message = "";
+
+		// Remove empty filters...
+		$filters = self::strip_empty_filters($search_filters);
+
+		if (!empty($filters) && is_array($filters) && !empty($user_id)) {			
+			// Args for saving search...
+			$saved_search = array(
+				'filters' => $filters, 
+				'name' => $search_name,
+				'url' => $search_url_path,
+				'notification' => false
+			);
+			
+			// Setup details call args to check whether or not search is saved...
+			$args = array('add_meta', 'meta_key' => 'saved_search', 'meta_value' => $saved_search);
+
+			$response = self::update_lead($args);
+			
+			$success = empty($response) ? false : true;
+			$message = ($success === false) ? "Could not save search -- please try again" : "";
+
+			// error_log("Unique search hash: $search_hash");
+			// error_log(var_export($saved_searches, true));
+		}
+
+		return array("success" => $success, "message" => $message);
+	}
+
+    public static function delete_saved_search ($search_id) {
+		// Default result...
+		$success = false;
+		$message = "";
+
+		if (!empty($search_id)) {
+			// Setup details call args to check whether or not search is saved...
+			$args = array('delete_meta', 'meta_key' => 'saved_search', 'meta_id' => $search_id);
+
+			// TODO: Actually delete...
+			$response = self::update_lead($args);
+			
+			$success = empty($response) ? false : true;
+			$message = ($success === false) ? "Could not delete search -- please try again" : "";
+		}
+		else {
+			$message = "No search ID was passed -- cannot delete...";
+		}
+			
+		return array("success" => $success, "message" => $message);
+	}
+
+	public static function update_search_notification ($search_id, $schedule_id) {
+		// Setup details call args to check whether or not search is saved...
+		$args = array('update_notification', 'type' => 'listing', 'meta_id' => $search_id, 'schedule' => $schedule_id);
+
+		// TODO: Update the corresponding saved search...
+		$response = self::update_lead($search_id, $enable);
+		
+		$success = empty($response) ? false : true;
+		$message = ($success === false) ? "Could not enable notification -- please try again" : "";
+
+		return array("success" => $success, "message" => $message);
+	}
 }

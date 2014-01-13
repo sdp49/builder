@@ -185,6 +185,7 @@ include_once('third-party/tax-meta-class/tax-meta-class.php');
 include_once('third-party/convex-hull/convex-hull.php');
 include_once('third-party/mixpanel/mixpanel.php');
 
+define('PL_LEADS_ENABLED', true);
 // If constant is set, use new leads functionality...
 if (defined('PL_LEADS_ENABLED')) {
     include_once('config/api/leads.php');

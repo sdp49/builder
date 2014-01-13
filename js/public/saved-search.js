@@ -62,11 +62,11 @@ jQuery(document).ready(function($) {
         }, 'json');
     });
 
-    function toggleNotification(flag, elem) {
+    function updateNotification(flag, elem) {
         var data = {
-            action: 'toggle_search_notification',
+            action: 'update_search_notification',
             search_hash: $(elem).attr('href'),
-            toggle_flag: flag
+            update_flag: flag
         };
         
         $.post(info.ajaxurl, data, function (response, textStatus, xhr) {
@@ -88,14 +88,14 @@ jQuery(document).ready(function($) {
         event.preventDefault();
 
         // Enable an e-mail notification for the given saved search...
-        toggleNotification(true, this);
+        updateNotification(true, this);
     });
 
     $('.pl_ss-disable-notification').live('click', function (event) {
         event.preventDefault();
 
         // Disable an e-mail notification for the given saved search...
-        toggleNotification(false, this);
+        updateNotification(false, this);
     });
 
     /*
