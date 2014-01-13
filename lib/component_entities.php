@@ -678,7 +678,7 @@ To add some text to your listings:<br />
 				$val = ob_get_clean();
 				break;
 			case 'favorite_link_toggle':
-				$val = PL_People_Helper::placester_favorite_link_toggle(array('property_id' => $listing_list['id']));
+				$val = PL_Favorite_Listings::placester_favorite_link_toggle(array('property_id' => $listing_list['id']));
 				break;
 			case 'custom':
 				// TODO: format based on data type

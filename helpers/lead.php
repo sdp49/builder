@@ -6,7 +6,7 @@ class PL_Lead_Helper {
 
 	const PL_LEAD_ID_KEY = 'pl_lead_id';
 
-	private static $default_response = array(
+	private static $lead_details_default = array(
 		'id' => '',
 		'email' => '(Not Provided)',
 		'first_name' => '(Not Provided)',
@@ -20,25 +20,25 @@ class PL_Lead_Helper {
 	public static function init () {
 		// Basic AJAX endpoints
 		add_action('wp_ajax_datatable_my_leads', array(__CLASS__, 'ajax_get_leads'));
-		add_action('wp_ajax_datatable_leads_searches_ajax', array(__CLASS__, 'ajax_get_lead_searches'));		
-		add_action('wp_ajax_datatable_favorites_ajax', array(__CLASS__, 'ajax_get_favorites_by_id'));		
-		add_action('wp_ajax_pls_update_lead', array(__CLASS__, 'ajax_update_lead'));		
-		add_action('wp_ajax_delete_lead', array(__CLASS__, 'ajax_delete_lead'));		
+		add_action('wp_ajax_datatable_favorites_ajax', array(__CLASS__, 'ajax_get_favorites_by_id'));
+		add_action('wp_ajax_update_lead', array(__CLASS__, 'ajax_update_lead'));
+		add_action('wp_ajax_delete_lead', array(__CLASS__, 'ajax_delete_lead'));
+
 		add_action('wp_ajax_delete_lead_search', array(__CLASS__, 'ajax_delete_lead_search'));		
 	}
 
 	public static function ajax_delete_lead () {
-		echo json_encode(array('result' => 1, 'data_recieved' => json_encode($_POST)));
+		echo json_encode(array('result' => 1, 'data_received' => json_encode($_POST)));
 		die();
 	}
 
 	public static function ajax_delete_lead_search () {
-		echo json_encode(array('result' => 1, 'data_recieved' => json_encode($_POST)));
+		echo json_encode(array('result' => 1, 'data_received' => json_encode($_POST)));
 		die();
 	}
 
 	public static function ajax_update_lead () {
-		echo json_encode(array('result' => 1, 'data_recieved' => json_encode($_POST)));
+		echo json_encode(array('result' => 1, 'data_received' => json_encode($_POST)));
 		die();
 	}
 
@@ -72,12 +72,7 @@ class PL_Lead_Helper {
 		}
 	}
 
-	public static function update_lead_details ($lead_details) {
-		$pl_lead = self::lead_details();
-		return PL_People::update(array_merge(array('id' => $pl_lead['id']), $lead_details));
-	}
-
-	public static function lead_id ($wp_user_id = null) {
+	public static function get_lead_id ($wp_user_id = null) {
 		// Default this to null (indicates failure to callers...)
 		$lead_id = null;
 
@@ -91,18 +86,46 @@ class PL_Lead_Helper {
 		return $lead_id;
 	}
 
-	// Fetch a site user's details based on his/her unique Placester ID (managed by Rails, stored in WP's usermeta table)
+	// Fetch a site user's details by his/her unique lead ID (managed externally, stored in WP's usermeta table)
 	public static function lead_details ($args = array(), $wp_user_id = null) {
-		$details = array();
+		// $details = array();
 
-		$lead_id = self::lead_id($wp_user_id);
+		$details = array(
+			'id' => '2',
+			'email' => 'john@smith.com',
+			'first_name' => 'Jane',
+			'last_name' => 'Johnson',
+			'phone' => '123 123 1234',
+			'created' => 'Today',
+			'updated' => 'Yesterday',
+			'saved_searches' => 5,
+			'favorited_listings' => 3
+		);
+
+		$lead_id = null;
+
+		// See if the lead id was passed -- if not, try to fetch it based on a WP user id...
+		$lead_id = empty($args['id']) ? self::get_lead_id($wp_user_id) : $args['id'];
 
 		if (!empty($lead_id)) {	
 			// Fetch details from the API...
 			$details = PL_Lead::details($lead_id, $args);
+
+			// Format response...
+			$details['full_name'] = $details['first_name'] . ' ' . $details['last_name'];
+			$details = wp_parse_args($details, self::$lead_details_default);
 		}
 
 		return $details;
+	}
+
+	public static function get_lead_details_by_id ($lead_id) {
+		
+	}
+
+	public static function update_lead_details ($lead_details) {
+		$pl_lead = self::lead_details();
+		return PL_People::update(array_merge(array('id' => $pl_lead['id']), $lead_details));
 	}
 
 	public static function get_leads ($filters = array()) {
@@ -182,99 +205,6 @@ class PL_Lead_Helper {
 		echo json_encode($response);
 		die();
 	}
-	
-	public static function get_lead_searches ($lead_id) {
-		// Get leads from model
-
-		// $api_response = PL_Lead::get($lead_id);
-		$api_response = array(
-			'total' => 40,
-			'searches' => array(
-				array(
-					'id' => '1',
-					'name' => 'Boston Properties',
-					'saved_fields' => '1 Beds, City Boston, $500k+',
-					'link_to_search' => '/listings/something',
-					'created' => 'Today',
-					'updated' => 'Yesterday',
-					'notification_schedule' => 'Once per week'
-				),
-				array(
-					'id' => '2',
-					'name' => 'Cambridge Properties',
-					'saved_fields' => '1 Beds, City Boston, $500k+',
-					'link_to_search' => '/listings/something',
-					'created' => 'Today',
-					'updated' => 'Yesterday',
-					'notification_schedule' => 'Once per week'
-				),
-			)
-		);
-
-		return $api_response;
-	}
-
-	public static function ajax_get_lead_searches () {
-		$lead_id = $_POST['lead_id'];
-
-		$saved_searches = self::get_lead_searches($lead_id);
-		
-		// build response for datatables.js
-		$searches = array();
-		foreach ($saved_searches['searches'] as $key => $search) {
-			// $images = $listing['images'];
-			$searches[$key][] = $search['created'];
-			// $searches[$key][] = ((is_array($images) && isset($images[0])) ? '<img width=50 height=50 src="' . $images[0]['url'] . '" />' : 'empty');
-			$searches[$key][] = '<a class="address" href="' . ADMIN_MENU_URL . $search['link_to_search'] . '">' . 
-									$search['name'] . 
-								'</a>
-								<div class="row_actions">
-									<a href="' . ADMIN_MENU_URL . '?page=placester_my_searches&id=' . $search['id'] . '">
-										View
-									</a>
-									<span>|</span>
-									<a class="red" id="pls_delete_search" href="#" ref="'.$search['id'].'">
-										Delete
-									</a>
-								</div>';
-		
-			// <a href="' . ADMIN_MENU_URL . '?page=placester_my_searches&id=' . $search['id'] . '" >
-			// 							Edit
-			// 						</a>
-			
-			$searches[$key][] = $search['saved_fields'];
-			$searches[$key][] = $search['updated'];
-			$searches[$key][] = $search['notification_schedule'];
-		}
-
-		// Required for datatables.js to function properly.
-		$response = array();
-		$response['sEcho'] = $_POST['sEcho'];
-		$response['aaData'] = $searches;
-		$response['iTotalRecords'] = $saved_searches['total'];
-		$response['iTotalDisplayRecords'] = $saved_searches['total'];
-		
-		echo json_encode($response);
-		die();
-	}
-
-	public static function get_lead_details_by_id ($lead_id) {
-		// $api_response = PL_Lead::get_by_id($lead_id);
-		$api_response = array(
-					'id' => '2',
-					'email' => 'john@smith.com',
-					'first_name' => 'Jane',
-					'last_name' => 'Johnson',
-					'phone' => '123 123 1234',
-					'created' => 'Today',
-					'updated' => 'Yesterday',
-					'saved_searches' => 5,
-					'favorited_listings' => 3
-				);
-		$api_response['full_name'] = $api_response['first_name'] . ' ' . $api_response['last_name'];
-		$api_response = wp_parse_args($api_response, self::$default_response);
-		return $api_response;
-	}
 
 	public static function ajax_get_favorites_by_id () {
 		$lead_id = $_POST['lead_id'];
@@ -346,15 +276,39 @@ class PL_Lead_Helper {
 	 * Saved Search Functionality...
 	 */
 
-	public static function get_saved_searches ($wp_user_id = null) {
+	public static function get_saved_searches ($wp_user_id = null, $lead_id = null) {
 		// Default return value is an empty array (i.e., no saved searches)
 		$saved_searches = array();
 
+		$saved_searches = array(
+			'total' => 40,
+			'searches' => array(
+				array(
+					'id' => '1',
+					'name' => 'Boston Properties',
+					'saved_fields' => '1 Beds, City Boston, $500k+',
+					'link_to_search' => '/listings/something',
+					'created' => 'Today',
+					'updated' => 'Yesterday',
+					'notification_schedule' => 'Once per week'
+				),
+				array(
+					'id' => '2',
+					'name' => 'Cambridge Properties',
+					'saved_fields' => '1 Beds, City Boston, $500k+',
+					'link_to_search' => '/listings/something',
+					'created' => 'Today',
+					'updated' => 'Yesterday',
+					'notification_schedule' => 'Once per week'
+				),
+			)
+		);
+
 		// Setup details call args to only pull saved searches...
-		$args = array('meta_keys' => array('saved_search'));
+		// $args = array('lead_id' => $lead_id, meta_keys' => array('saved_search'));
 		
 		// Fetch saved searches
-		$result = self::lead_details($wp_user_id, $args);
+		// $result = self::lead_details($wp_user_id, $args);
 
 		// Prep searches...
 		if (!empty($result) && is_array($result)) {
@@ -470,4 +424,5 @@ class PL_Lead_Helper {
 
 		return array("success" => $success, "message" => $message);
 	}
+
 }

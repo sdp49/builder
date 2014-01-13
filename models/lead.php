@@ -2,8 +2,8 @@
 
 class PL_Lead {
 
-	// Retrieve a list of all leads associated with this site that pass the provided filters...
-	public static function get ($filters = array()) {
+	// Retrieve a list of all leads associated with this site that pass the provided args...
+	public static function get ($args = array()) {
 		
 	}
 

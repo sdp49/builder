@@ -15,6 +15,7 @@ class PL_Saved_Search {
 
 		// AJAX endpoints for attaching saved searches to users (currently, ONLY exposed for authenticated users...)
 		add_action('wp_ajax_is_search_saved', array(__CLASS__, 'ajax_is_search_saved'));
+		add_action('wp_ajax_get_saved_searches', array(__CLASS__, 'ajax_get_saved_searches'));
 		add_action('wp_ajax_add_saved_search', array(__CLASS__,'ajax_add_saved_search'));
 		add_action('wp_ajax_delete_saved_search', array(__CLASS__, 'ajax_delete_saved_search'));
 		add_action('wp_ajax_update_search_notification', array(__CLASS__, 'ajax_update_search_notification'));
@@ -91,6 +92,50 @@ class PL_Saved_Search {
 
 		echo json_encode($response);
     	die();
+	}
+
+	public static function ajax_get_saved_searches () {
+		$lead_id = $_POST['lead_id'];
+
+		$saved_searches = self::get_saved_searches($lead_id);
+		
+		// build response for datatables.js
+		$searches = array();
+		foreach ($saved_searches['searches'] as $key => $search) {
+			// $images = $listing['images'];
+			$searches[$key][] = $search['created'];
+			// $searches[$key][] = ((is_array($images) && isset($images[0])) ? '<img width=50 height=50 src="' . $images[0]['url'] . '" />' : 'empty');
+			$searches[$key][] = '<a class="address" href="' . ADMIN_MENU_URL . $search['link_to_search'] . '">' . 
+									$search['name'] . 
+								'</a>
+								<div class="row_actions">
+									<a href="' . ADMIN_MENU_URL . '?page=placester_my_searches&id=' . $search['id'] . '">
+										View
+									</a>
+									<span>|</span>
+									<a class="red" id="pls_delete_search" href="#" ref="'.$search['id'].'">
+										Delete
+									</a>
+								</div>';
+		
+			// <a href="' . ADMIN_MENU_URL . '?page=placester_my_searches&id=' . $search['id'] . '" >
+			// 							Edit
+			// 						</a>
+			
+			$searches[$key][] = $search['saved_fields'];
+			$searches[$key][] = $search['updated'];
+			$searches[$key][] = $search['notification_schedule'];
+		}
+
+		// Required for datatables.js to function properly.
+		$response = array();
+		$response['sEcho'] = $_POST['sEcho'];
+		$response['aaData'] = $searches;
+		$response['iTotalRecords'] = $saved_searches['total'];
+		$response['iTotalDisplayRecords'] = $saved_searches['total'];
+		
+		echo json_encode($response);
+		die();
 	}
 
 	public static function ajax_add_saved_search () {

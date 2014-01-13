@@ -17,7 +17,7 @@ jQuery(document).ready(function($) {
                 { sWidth: '200px' }     
             ],
             "fnServerParams": function ( aoData ) {
-                aoData.push( { "name": "action", "value" : "datatable_leads_searches_ajax"} );
+                aoData.push( { "name": "action", "value" : "get_saved_searches"} );
                 aoData.push( { "name": "lead_id", "value" : $('input#lead_id').val()} );
             }
         });
@@ -109,7 +109,7 @@ jQuery(document).ready(function($) {
     $('#pls_search_form button#pls_search_form_submit_button').click(function (event) {
         event.preventDefault();
         var form_values = {};
-        form_values['action'] = 'pls_update_lead';
+        form_values['action'] = 'update_lead';
         $.each($('#pls_search_form :input').serializeArray(), function(i, field) {
             form_values[field.name] = field.value;
         });
