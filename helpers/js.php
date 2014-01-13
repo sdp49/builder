@@ -43,27 +43,24 @@ class PL_Js_Helper {
 		if (strpos($hook, 'placester_page_placester_') === false) { return; }
 
 		// Load JS available to all of the plugin's pages...
-		self::register_enqueue_if_not('global', trailingslashit(PL_JS_ADMIN_URL) . 'global.js', array('jquery-ui-core', 'jquery-ui-dialog'));
+		self::register_enqueue_if_not('global', trailingslashit(PL_JS_ADMIN_URL) . 'global.js', array('jquery'));
 		// Try to make old IE look decent
 		self::register_enqueue_if_not('modernizr', trailingslashit( PLS_JS_URL ) . 'libs/modernizr/modernizr.min.js' , array(), '2.6.1');
 		
 		
-		// If no API key is set, load the following JS files for use by the wizard on ANY plugin settings page...
-		if (!PL_Option_Helper::api_key()) {
-			global $i_am_a_placester_theme;
-			self::register_enqueue_if_not('sign-up', trailingslashit(PL_JS_ADMIN_URL) . 'sign-up.js', array('jquery-ui-core', 'jquery-ui-dialog'));
-			wp_localize_script('sign-up', 'pl_signup_data', array('placester_theme' => $i_am_a_placester_theme, 'mls_int' => false));
-		}
-
 		if ($hook == 'placester_page_placester_properties') {
 			self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) . 'datatables/jquery.dataTables.js', array('jquery'));
-			self::register_enqueue_if_not('my-listings', trailingslashit(PL_JS_ADMIN_URL) . 'my-listings.js', array('jquery', 'jquery-ui-datepicker'));
+			self::register_enqueue_if_not('my-listings', trailingslashit(PL_JS_ADMIN_URL) . 'my-listings.js', array('jquery-ui-dialog', 'jquery-ui-datepicker'));
 		}
 
 		if ($hook == 'placester_page_placester_property_add') {
+			// need ui-widget that is compatable w/ fileupload
+			wp_deregister_script('jquery-ui-widget');
+			wp_deregister_script('jquery-ui-mouse');
+			wp_enqueue_script('jquery-ui-widget', trailingslashit(PL_JS_LIB_URL) . 'blueimp/js/vendor/jquery.ui.widget.js', array('jquery'), '1.10.3');
 			self::register_enqueue_if_not('blueimp-iframe', trailingslashit(PL_JS_LIB_URL) . 'blueimp/js/jquery.iframe-transport.js', array('jquery'));
-			self::register_enqueue_if_not('blueimp-file-upload', trailingslashit(PL_JS_LIB_URL) . 'blueimp/js/jquery.fileupload.js', array('jquery'));
-			self::register_enqueue_if_not('add-listing', trailingslashit(PL_JS_ADMIN_URL) . 'add-listing.js', array('jquery', 'jquery-ui-datepicker'));
+			self::register_enqueue_if_not('blueimp-file-upload', trailingslashit(PL_JS_LIB_URL) . 'blueimp/js/jquery.fileupload.js', array('jquery-ui-widget'));
+			self::register_enqueue_if_not('add-listing', trailingslashit(PL_JS_ADMIN_URL) . 'add-listing.js', array('jquery-ui-datepicker'));
 		}
 
 		if ($hook == 'placester_page_placester_my_leads') {
@@ -157,6 +154,13 @@ class PL_Js_Helper {
 		if ($hook == 'placester_page_placester_settings_crm') {
 			self::register_enqueue_if_not('crm', trailingslashit(PL_JS_ADMIN_URL) . 'crm.js', array('jquery'));
 			self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) . 'datatables/jquery.dataTables.js', array('jquery'));	
+		}
+		
+		// If no API key is set, load the following JS files for use by the wizard on ANY plugin settings page...
+		if (!PL_Option_Helper::api_key()) {
+			global $i_am_a_placester_theme;
+			self::register_enqueue_if_not('sign-up', trailingslashit(PL_JS_ADMIN_URL) . 'sign-up.js', array('jquery-ui-core', 'jquery-ui-dialog'));
+			wp_localize_script('sign-up', 'pl_signup_data', array('placester_theme' => $i_am_a_placester_theme, 'mls_int' => false));
 		}
 	}
 

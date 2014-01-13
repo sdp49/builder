@@ -48,20 +48,13 @@ do_action($taxonomy . '_pre_edit_form', $tag, $taxonomy); ?>
 	<?php endif; // is_taxonomy_hierarchical() ?>
 			<tr class="form-field">
 				<th scope="row" valign="top"><label for="description"><?php _ex('Description', 'Taxonomy Description'); ?></label></th>
+				<?php /*
+				<td><?php wp_editor($tag->description, 'description') ?><br />
+				*/ ?>
 				<td><textarea name="description" id="description" rows="5" cols="50" class="large-text"><?php echo $tag->description; // textarea_escaped ?></textarea><br />
 				<span class="description"><?php _e('The description is not prominent by default, however some themes may show it.'); ?></span></td>
 			</tr>
-			<?php
-			// Back compat hooks
-			if ('category' == $taxonomy )
-				do_action('edit_category_form_fields', $tag);
-			elseif ('link_category' == $taxonomy )
-				do_action('edit_link_category_form_fields', $tag);
-			else
-				do_action('edit_tag_form_fields', $tag);
-
-			do_action($taxonomy . '_edit_form_fields', $tag, $taxonomy);
-			?>
+			<?php do_action($taxonomy . '_edit_form_fields', $tag, $taxonomy); ?>
 		</table>
 	<?php
 	do_action($taxonomy . '_edit_form', $tag, $taxonomy);

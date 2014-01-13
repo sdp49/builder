@@ -294,7 +294,7 @@ function on_first_activation () {
         ?>
             <script type="text/javascript">    
                 window.location.href = "<?php echo trailingslashit(admin_url()) . 'admin.php?page=placester_properties' ?>";
-                mixpanel.track("Activation");
+                pls_track_event("Activation");
             </script>         
         <?php
         // Make sure this doesn't happen again...
