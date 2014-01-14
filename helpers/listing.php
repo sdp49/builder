@@ -342,7 +342,7 @@ class PL_Listing_Helper {
 			}
 		}		
 		header('Vary: Accept');
-		header('Content-type: application/json');
+		header('Content-type: text/html');
 		echo json_encode($response);
 		die();
 	}

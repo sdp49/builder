@@ -25,7 +25,7 @@ if (!current_user_can($tax->cap->manage_terms)) {
 	wp_die(__('Cheatin&#8217; uh?'));
 }
 
-if(!class_exists('PL_Property_Terms_Table')){
+if(!class_exists('PL_Property_Terms_Table')) {
 	require_once(PL_LIB_DIR . 'property-terms-table.php');
 }
 // Include Yoast SEO for taxonomy if available
@@ -55,12 +55,13 @@ case 'add-tag':
 	}
 	else {
 		$ret = wp_insert_term($_POST['tag-name'], $taxonomy, $_POST);
+		$location = "$pagenow?page=$page&taxonomy=$taxonomy";
 		if ($ret && !is_wp_error($ret)) {
-			$message = 1;
+			$location = add_query_arg('message', 1, $location);
+		} else {
+			$location = add_query_arg('message', 4, $location);
 		}
-		else {
-			$message = 4;
-		}
+		wp_redirect( $location );
 	}
 	break;
 
@@ -73,6 +74,7 @@ case 'delete':
 		}
 		wp_delete_term($tag_ID, $taxonomy);
 		wp_redirect("$pagenow?page=$page&taxonomy=$taxnow&message=2");
+		exit;
 	}
 	break;
 
@@ -86,6 +88,7 @@ case 'bulk-delete':
 		wp_delete_term($tag_ID, $taxonomy);
 	}
 	wp_redirect("$pagenow?page=$page&taxonomy=$taxnow&message=6");
+	exit;
 	break;
 
 case 'edit':
@@ -108,6 +111,8 @@ case 'editedtag':
 	if (! $tag) {
 		wp_die(__('You attempted to edit an item that doesn&#8217;t exist. Perhaps it was deleted?'));
 	}
+	// allow tags in description field
+	remove_all_filters('pre_term_description');
 	$ret = wp_update_term($tag_ID, $taxonomy, $_POST);
 	$location = "$pagenow?page=$page&taxonomy=$taxonomy";
 	if ($ret && !is_wp_error($ret))
@@ -201,45 +206,47 @@ $messages[7] = __('No item selected.');
 					<?php if (empty($locations)):?>
 						<p>Your MLS does not have any <?php echo $tax->labels->name; ?>. 
 						<?php if (current_theme_supports('pls-custom-polygons')): ?>
-						You can still create custom <?php echo $tax->labels->singular_name; ?>
-						pages by using <a href="admin.php?page=placester_settings_polygons">Custom Drawn Areas</a> for <?php echo $tax->labels->name; ?>.
+							You can still create custom <?php echo $tax->labels->singular_name; ?>
+							pages by using <a href="admin.php?page=placester_settings_polygons">Custom Drawn Areas</a> for <?php echo $tax->labels->name; ?>.
 						<?php endif; ?>
 						</p>
 					<?php else:?>
 						<p>Select from the list of <?php echo $tax->labels->name; ?> provided by your MLS below. 
 						<?php if (current_theme_supports('pls-custom-polygons')): ?>
-						If you want to create your own custom <?php echo $tax->labels->singular_name; ?>
-						use the <a href="admin.php?page=placester_settings_polygons">Custom Drawn Areas</a> tool.
+							If you want to create your own custom <?php echo $tax->labels->singular_name; ?>
+							use the <a href="admin.php?page=placester_settings_polygons">Custom Drawn Areas</a> tool.
 						<?php endif; ?>
 						</p>
 						<form id="addtag" method="post" action="<?php echo $baseurl; ?>">
-						<input type="hidden" name="action" value="add-tag" />
-						<input type="hidden" name="screen" value="<?php echo esc_attr($current_screen->id); ?>" />
-						<input type="hidden" name="taxonomy" value="<?php echo esc_attr($taxonomy); ?>" />
-						<?php wp_nonce_field('add-tag', '_wpnonce_add-tag'); ?>
+							<input type="hidden" name="action" value="add-tag" />
+							<input type="hidden" name="screen" value="<?php echo esc_attr($current_screen->id); ?>" />
+							<input type="hidden" name="taxonomy" value="<?php echo esc_attr($taxonomy); ?>" />
+							<?php wp_nonce_field('add-tag', '_wpnonce_add-tag'); ?>
+		
+							<div class="form-field form-required">
+								<label for="tag-name"><?php _ex('Name', 'Taxonomy Name'); ?></label>
+								<select name="tag-name" id="tag-name">
+									<option value="">Select</option>
+									<?php foreach($locations as $location):?>
+										<?php if (trim($location)!=''):?>
+											<option><?php echo $location ?></option>
+										<?php endif ?>
+									<?php endforeach;?>
+								</select>
+							</div>
+							<div class="form-field">
+								<label for="tag-description"><?php _ex('Description', 'Taxonomy Description'); ?></label>
+								<textarea name="description" id="tag-description" rows="5" cols="40"></textarea>
+								<p><?php _e('The description is not prominent by default; however, some themes may show it.'); ?></p>
+							</div>
+		
+							<?php
+							do_action($taxonomy . '_add_form_fields', $taxonomy);
 	
-						<div class="form-field form-required">
-							<label for="tag-name"><?php _ex('Name', 'Taxonomy Name'); ?></label>
-							<select name="tag-name" id="tag-name">
-								<option value="">Select</option>
-								<?php foreach($locations as $location):?>
-									<?php if (trim($location)!=''):?>
-									<option><?php echo $location ?></option>
-									<?php endif ?>
-								<?php endforeach;?>
-							</select>
-						</div>
-						<div class="form-field">
-							<label for="tag-description"><?php _ex('Description', 'Taxonomy Description'); ?></label>
-							<textarea name="description" id="tag-description" rows="5" cols="40"></textarea>
-							<p><?php _e('The description is not prominent by default; however, some themes may show it.'); ?></p>
-						</div>
+							submit_button('Add '.$tax->labels->singular_name, 'submit');
 	
-						<?php
-						do_action($taxonomy . '_add_form_fields', $taxonomy);
-	
-						submit_button('Add '.$tax->labels->singular_name, 'submit');
-						?>
+							do_action($taxonomy . '_add_form', $taxonomy);
+							?>
 						</form>
 					<?php endif; ?>
 				</div>
