@@ -63,15 +63,15 @@ class PL_Router {
 		//page that doesn't appear in the main navigation.
 		if (isset($_GET['id']) && isset($_GET['edit']) && $_GET['edit'] === '1') {
 			$_POST = PL_Lead_Helper::get_lead_details_by_id($_GET['id']);
-			self::router('lead-edit.php', array());	
+			self::router('/leads/lead-edit.php', array());	
 		} elseif ( isset($_GET['id']) && isset($_GET['new_search']) && $_GET['new_search'] === '1' ) {
 			self::router('/leads/new-search.php', array());	
 		} elseif ( isset($_GET['id']) && isset($_GET['search_id']) && isset($_GET['edit_search']) && $_GET['edit_search'] === '1' ) {
 			self::router('/leads/search-edit.php', array());	
 		} elseif (isset($_GET['id'])) {
-			self::router('lead-details.php', array());	
+			self::router('/leads/lead-details.php', array());	
 		} else {
-			self::router('my-leads.php', array());	
+			self::router('/leads/my-leads.php', array());	
 		}
 		
 	}

@@ -6,6 +6,10 @@ PL_Saved_Search::init();
 
 class PL_Saved_Search {
 
+	/*
+	 * Search Permalink functionality...
+	 */
+
 	public static $save_extension = 'pl_ss_';
 
 	public static function init () {
@@ -78,6 +82,159 @@ class PL_Saved_Search {
 	    foreach ($saved_searches as $option) {
 	        PL_Options::delete($option->option_name);
 	    }
+	}
+
+	/*
+	 * Saved Search for site users functionality...
+	 */
+
+	public static function get_saved_searches ($wp_user_id = null, $lead_id = null) {
+		// Default return value is an empty array (i.e., no saved searches)
+		$saved_searches = array();
+
+		$saved_searches = array(
+			'total' => 40,
+			'searches' => array(
+				array(
+					'id' => '1',
+					'name' => 'Boston Properties',
+					'saved_fields' => '1 Beds, City Boston, $500k+',
+					'link_to_search' => '/listings/something',
+					'created' => 'Today',
+					'updated' => 'Yesterday',
+					'notification_schedule' => 'Once per week'
+				),
+				array(
+					'id' => '2',
+					'name' => 'Cambridge Properties',
+					'saved_fields' => '1 Beds, City Boston, $500k+',
+					'link_to_search' => '/listings/something',
+					'created' => 'Today',
+					'updated' => 'Yesterday',
+					'notification_schedule' => 'Once per week'
+				),
+			)
+		);
+
+		// Setup details call args to only pull saved searches...
+		// $args = array('lead_id' => $lead_id, meta_keys' => array('saved_search'));
+		
+		// Fetch saved searches
+		// $result = PL_Lead_Helper::lead_details($wp_user_id, $args);
+
+		// Prep searches...
+		if (!empty($result) && is_array($result)) {
+			foreach ($result as $hash => &$search) {
+				// Construct full search URL based on current site's URL...
+				if (!empty($search['url'])) {
+					$search['url'] = site_url($search['url']);
+				}
+			}
+			unset($search); // break the reference with the last element...
+
+			$saved_searches = $result;
+		}
+
+		return $saved_searches;
+	}
+
+	private static function strip_empty_filters ($search_filters) {
+		$filters = array();
+		
+		if (!empty($search_filters) && is_array($search_filters)) {
+			foreach ($search_filters as $key => $filter) {
+				if (trim($filter) != '') {
+					$filters[$key] = trim($filter);
+				}
+			}
+		}
+		
+		return $filters;
+	}
+
+	public static function is_search_saved ($search_filters) {
+		$is_saved = false;
+
+		// Remove empty filters...
+		$filters = self::strip_empty_filters($search_filters);
+		// error_log(var_export($filters, true));
+		
+		if (!empty($filters) && is_array($filters)) {
+			// Setup details call args to check whether or not search is saved...
+			$args = array('meta_keys' => array('saved_search'), 'val_match' => array($filters));
+
+			// Call API to check for existence of saved search...
+			$is_saved = PL_Lead_Helper::lead_details($args);
+		}
+
+		return $is_saved;
+	}
+
+	public static function add_saved_search ($search_filters, $search_name, $search_url_path) {
+		// Default result...
+		$success = false;
+		$message = "";
+
+		// Remove empty filters...
+		$filters = self::strip_empty_filters($search_filters);
+
+		if (!empty($filters) && is_array($filters) && !empty($user_id)) {			
+			// Args for saving search...
+			$saved_search = array(
+				'filters' => $filters, 
+				'name' => $search_name,
+				'url' => $search_url_path,
+				'notification' => false
+			);
+			
+			// Setup details call args to check whether or not search is saved...
+			$args = array('add_meta', 'meta_key' => 'saved_search', 'meta_value' => $saved_search);
+
+			$response = PL_Lead_Helper::update_lead($args);
+			
+			$success = empty($response) ? false : true;
+			$message = ($success === false) ? "Could not save search -- please try again" : "";
+
+			// error_log("Unique search hash: $search_hash");
+			// error_log(var_export($saved_searches, true));
+		}
+
+		return array("success" => $success, "message" => $message);
+	}
+
+    public static function delete_saved_search ($search_id) {
+		// Default result...
+		$success = false;
+		$message = "";
+
+		if (!empty($search_id)) {
+			// Setup details call args to check whether or not search is saved...
+			$args = array('delete_meta', 'meta_key' => 'saved_search', 'meta_id' => $search_id);
+
+			// TODO: Actually delete...
+			$response = PL_Lead_Helper::update_lead($args);
+			
+			$success = empty($response) ? false : true;
+			$message = ($success === false) ? "Could not delete search -- please try again" : "";
+		}
+		else {
+			$message = "No search ID was passed -- cannot delete...";
+		}
+			
+		return array("success" => $success, "message" => $message);
+	}
+
+	public static function update_search_notification ($search_id, $schedule_id) {
+		// Setup details call args to check whether or not search is saved...
+		$args = array('update_notification', 'type' => 'listing', 'meta_id' => $search_id, 'schedule' => $schedule_id);
+
+		// TODO: Update the corresponding saved search...
+		$response = PL_Lead_Helper::update_lead($search_id, $enable);
+		
+		$success = empty($response) ? false : true;
+		$message = ($success === false) ? "Could not enable notification -- please try again" : "";
+
+		return array("success" => $success, "message" => $message);
 	}
 
 	/*
@@ -174,11 +331,6 @@ class PL_Saved_Search {
 
 		echo json_encode($response);
 		die();
-	}
-
-	// This wrapper exists to prevent having to alter Blueprint significantly up-front...
-	public static function get_user_saved_searches () {
-		return PL_Lead_Helper::get_saved_searches();
 	}
 
 	/*
