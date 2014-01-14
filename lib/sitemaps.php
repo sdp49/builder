@@ -178,7 +178,7 @@ class PL_Sitemaps {
 				$rem = min(array($rem, count($response[$loc_type])-$offset));
 				for (;$rem-- > 0; $offset++) {
 					if (!empty($response[$loc_type][$offset])) {
-						$url = str_replace("%$tax%", sanitize_title_with_dashes($response[$loc_type][$offset]), $url_tmpl);
+						$url = str_replace("%$tax%", preg_replace('/[^a-z0-9\-]+/', '-', strtolower($response[$loc_type][$offset])), $url_tmpl);
 						$sitemap .= "\t<url>\n";
 						$sitemap .= "\t\t<loc>".$url."</loc>\n";
 						$sitemap .= "\t\t<lastmod>" . $date . "</lastmod>\n";

@@ -42,9 +42,10 @@ class PL_Taxonomy_Helper {
 		$slug = $slug ? $slug : PL_Pages::format_url_slug($name);
 		$qo = new stdClass();
 		$qo->term_id = -1;
-		$qo->disp_name = PL_Pages::format_taxonomy_name($name);
 		$qo->name = $name;
 		$qo->slug = $slug;
+		$qo->name = $name;
+		$qo->disp_name = PL_Pages::format_taxonomy_name($name);
 		$qo->term_group = 0;
 		$qo->term_taxonomy_id = -1;
 		$qo->taxonomy = $tax;
@@ -418,9 +419,6 @@ class PL_Taxonomy_Helper {
 			}
 			else {
 				$term->polygon = array();
-			}
-			if (!isset($term->disp_name)) {
-				$term->disp_name = PL_Pages::format_taxonomy_name($term->name);
 			}
 		}
 

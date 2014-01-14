@@ -13,7 +13,11 @@ if (empty($tag_ID) ) { ?>
 	return;
 }
 
-do_action($taxonomy . '_pre_edit_form', $tag, $taxonomy); ?>
+do_action($taxonomy . '_pre_edit_form', $tag, $taxonomy); 
+$disp_name = get_tax_meta($tag->term_id, 'disp_name', PL_Pages::format_taxonomy_name($tag->name));
+$disp_name = $disp_name ? $disp_name : $tag->name;
+
+?>
 
 <div class="wrap">
 	<?php echo PL_Helper_Header::pl_settings_subpages(); ?>
@@ -27,17 +31,22 @@ do_action($taxonomy . '_pre_edit_form', $tag, $taxonomy); ?>
 	<?php wp_original_referer_field(true, 'previous'); wp_nonce_field('update-tag_' . $tag_ID); ?>
 		<table class="form-table">
 			<tr class="form-field form-required">
-				<th scope="row" valign="top"><label for="name"><?php _ex('Name', 'Taxonomy Name'); ?></label></th>
-				<td><input name="name" id="name" type="text" disabled="disabled" value="<?php if (isset($tag->name ) ) echo esc_attr($tag->name); ?>" />
-				<p class="description"><?php _e('The name is how it appears on your site.'); ?></p></td>
+				<th scope="row" valign="top"><label for="name"><?php _ex('MLS ID', 'Taxonomy API Name'); ?></label></th>
+				<td><input name="name" id="name" type="text" disabled="disabled" value="<?php echo esc_attr($tag->name) ?>" />
+				<p class="description"><?php _e('The name for this neighborhood associated with the MLS.'); ?></p></td>
 			</tr>
 	<?php if (!global_terms_enabled() ) { ?>
 			<tr class="form-field">
 				<th scope="row" valign="top"><label for="slug"><?php _ex('Slug', 'Taxonomy Slug'); ?></label></th>
-				<td><input name="slug" id="slug" type="text" disabled="disabled" value="<?php if (isset($tag->slug ) ) echo esc_attr(apply_filters('editable_slug', $tag->slug)); ?>" size="40" />
+				<td><input name="slug" id="slug" type="text" disabled="disabled" value="<?php echo esc_attr(apply_filters('editable_slug', $tag->slug)) ?>" size="40" />
 				<p class="description"><?php _e('The &#8220;slug&#8221; is the URL-friendly version of the name. It is usually all lowercase and contains only letters, numbers, and hyphens.'); ?></p></td>
 			</tr>
 	<?php } ?>
+			<tr class="form-field form-required">
+				<th scope="row" valign="top"><label for="name"><?php _ex('Display Name', 'Taxonomy Name'); ?></label></th>
+				<td><input name="disp_name" id="disp_name" type="text" value="<?php echo esc_attr($disp_name) ?>" />
+				<p class="description"><?php _e('The name is how it appears on your site.'); ?></p></td>
+			</tr>
 	<?php if (is_taxonomy_hierarchical($taxonomy) ) : ?>
 			<tr class="form-field">
 				<th scope="row" valign="top"><label for="parent"><?php _ex('Parent', 'Taxonomy Parent'); ?></label></th>

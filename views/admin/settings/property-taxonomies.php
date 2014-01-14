@@ -54,10 +54,13 @@ case 'add-tag':
 		$message = 7;
 	}
 	else {
+		$_POST['slug'] = preg_replace('/[^a-z0-9\-]+/', '-', strtolower($_POST['tag-name']));
+		$_POST['disp_name'] = PL_Pages::format_taxonomy_name($_POST['tag-name']);
 		$ret = wp_insert_term($_POST['tag-name'], $taxonomy, $_POST);
 		$location = "$pagenow?page=$page&taxonomy=$taxonomy";
 		if ($ret && !is_wp_error($ret)) {
 			$location = add_query_arg('message', 1, $location);
+			update_tax_meta($ret['term_id'], 'disp_name', PL_Pages::format_taxonomy_name($_POST['tag-name']));
 		} else {
 			$location = add_query_arg('message', 4, $location);
 		}
@@ -115,9 +118,12 @@ case 'editedtag':
 	remove_all_filters('pre_term_description');
 	$ret = wp_update_term($tag_ID, $taxonomy, $_POST);
 	$location = "$pagenow?page=$page&taxonomy=$taxonomy";
-	if ($ret && !is_wp_error($ret))
+	if ($ret && !is_wp_error($ret)) {
 		$location = add_query_arg('message', 3, $location);
-	else
+		$_POST['disp_name'] = trim($_POST['disp_name']);
+		$_POST['disp_name'] = $_POST['disp_name'] ? $_POST['disp_name'] : PL_Pages::format_taxonomy_name($tag->name);
+		update_tax_meta($ret['term_id'], 'disp_name', $_POST['disp_name']);
+	} else
 		$location = add_query_arg('message', 5, $location);
 	wp_redirect($location);
 	exit;
@@ -229,7 +235,7 @@ $messages[7] = __('No item selected.');
 									<option value="">Select</option>
 									<?php foreach($locations as $location):?>
 										<?php if (trim($location)!=''):?>
-											<option><?php echo $location ?></option>
+											<option value="<?php echo $location ?>"><?php echo str_replace(':', ', ', $location) ?></option>
 										<?php endif ?>
 									<?php endforeach;?>
 								</select>
@@ -239,12 +245,12 @@ $messages[7] = __('No item selected.');
 								<textarea name="description" id="tag-description" rows="5" cols="40"></textarea>
 								<p><?php _e('The description is not prominent by default; however, some themes may show it.'); ?></p>
 							</div>
-		
+
 							<?php
 							do_action($taxonomy . '_add_form_fields', $taxonomy);
 	
 							submit_button('Add '.$tax->labels->singular_name, 'submit');
-	
+
 							do_action($taxonomy . '_add_form', $taxonomy);
 							?>
 						</form>

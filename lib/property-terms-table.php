@@ -245,7 +245,8 @@ class PL_Property_Terms_Table extends WP_List_Table {
 		$default_term = get_option('default_' . $taxonomy);
 
 		$pad = str_repeat('&#8212; ', max(0, $this->level));
-		$name = apply_filters('term_name', $pad . ' ' . $tag->name, $tag);
+		$name = get_tax_meta($tag->term_id, 'disp_name');
+		$name = $name ? $name : $tag->name;
 		$qe_data = get_term($tag->term_id, $taxonomy, OBJECT, 'edit');
 		$edit_link = $this->base_page . "&action=edit&taxonomy=$taxonomy&tag_ID={$tag->term_id}";
 
