@@ -21,6 +21,7 @@ class PL_Lead_Helper {
 		// Basic AJAX endpoints
 		add_action('wp_ajax_datatable_my_leads', array(__CLASS__, 'ajax_get_leads'));
 		add_action('wp_ajax_datatable_favorites_ajax', array(__CLASS__, 'ajax_get_favorites_by_id'));
+		
 		add_action('wp_ajax_update_lead', array(__CLASS__, 'ajax_update_lead'));
 		add_action('wp_ajax_delete_lead', array(__CLASS__, 'ajax_delete_lead'));
 
@@ -42,15 +43,15 @@ class PL_Lead_Helper {
 		die();
 	}
 
-	public static function add_lead ($args = array()) {
+	public static function create_lead ($args = array()) {
 		// Try to push lead to CRM (if one is linked/active)...
 		self::add_lead_to_CRM($args);	
 
 		return PL_Lead::create($args);
 	}	
 
-	public static function add_lead_ajax () {
-		$api_response = self::add_lead($_POST);
+	public static function create_lead_ajax () {
+		$api_response = self::create_lead($_POST);
 		echo json_encode($api_response);
 		die();
 	}
@@ -124,7 +125,7 @@ class PL_Lead_Helper {
 		return self::lead_details($args);
 	}
 
-	public static function update_lead_details ($lead_details) {
+	public static function update_lead ($args = array()) {
 		$pl_lead = self::lead_details();
 		return PL_People::update(array_merge(array('id' => $pl_lead['id']), $lead_details));
 	}

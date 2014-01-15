@@ -244,7 +244,7 @@ class PL_Saved_Search {
 	public static function ajax_is_search_saved () {
 		$search_filters = $_POST['search_filters'];
 		
-		$is_saved = PL_Lead_Helper::is_search_saved($search_filters);
+		$is_saved = self::is_search_saved($search_filters);
 		$response = array("saved" => $is_saved);
 
 		echo json_encode($response);
@@ -276,8 +276,8 @@ class PL_Saved_Search {
 								</div>';
 		
 			// <a href="' . ADMIN_MENU_URL . '?page=placester_my_searches&id=' . $search['id'] . '" >
-			// 							Edit
-			// 						</a>
+			//   Edit
+			// </a>
 			
 			$searches[$key][] = $search['saved_fields'];
 			$searches[$key][] = $search['updated'];
@@ -305,7 +305,7 @@ class PL_Saved_Search {
 
     	// Add meta to user for saved searches...
     	if (!empty($search_filters) && is_array($search_filters)) {
-    		$response = PL_Lead_Helper::add_saved_search($search_filters, $search_name, $search_url_path);
+    		$response = self::add_saved_search($search_filters, $search_name, $search_url_path);
     	}
     	else {
     		$response = array("success" => false, "message" => "No search filters to save -- select some and try again");
@@ -319,7 +319,7 @@ class PL_Saved_Search {
     	// Get search id...
     	$search_id = empty($_POST['search_id']) ? null : $_POST['search_id'];
 
-    	echo json_encode(PL_Lead_Helper::delete_saved_search($search_id));
+    	echo json_encode(self::delete_saved_search($search_id));
     	die();
     }
 
@@ -327,7 +327,7 @@ class PL_Saved_Search {
 		$search_id = $_POST['search_id'];
 		$schedule_id = $_POST['schedule_id'];
 
-		$response = PL_Lead_Helper::update_search_notification($search_id, $schedule_id);
+		$response = self::update_search_notification($search_id, $schedule_id);
 
 		echo json_encode($response);
 		die();

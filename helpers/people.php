@@ -6,6 +6,7 @@ class PL_People_Helper {
 
 	public static function init () {
 		add_action('wp_ajax_add_person', array(__CLASS__, 'add_person_ajax'));
+		add_action('wp_ajax_update_person', array(__CLASS__, 'update_person_ajax'));
 	}
 
 	public static function add_person ($args = array()) {
@@ -47,6 +48,14 @@ class PL_People_Helper {
 		$placester_person = self::person_details();
 		return PL_People::update(array_merge(array('id' => $placester_person['id']), $person_details));
 	}
+
+	public static function update_person_ajax () {
+        $person_details = $_POST;
+        $result = PLS_Plugin_API::update_person_details($person_details);
+
+        echo json_encode($result);
+        die();
+    }
 
 	// Fetch a site user's details based on his/her unique Placester ID (managed by Rails, stored in WP's usermeta table)
 	public static function person_details () {
