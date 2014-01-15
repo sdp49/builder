@@ -4,17 +4,14 @@ PL_People_Helper::init();
 
 class PL_People_Helper {
 
+	const USER_META_KEY = 'placester_api_id';
+
 	public static function init () {
 		add_action('wp_ajax_add_person', array(__CLASS__, 'add_person_ajax'));
 		add_action('wp_ajax_update_person', array(__CLASS__, 'update_person_ajax'));
 	}
 
 	public static function add_person ($args = array()) {
-		// If 'Leads' functionality is enabled, add in parallel...
-		if (defined('PL_LEADS_ENABLED')) {
-			PL_Lead_Helper::add_lead($args);
-		}
-
 		// Try to push lead to CRM (if one is linked/active)...
 		self::add_person_to_CRM($_POST);
 
@@ -44,14 +41,14 @@ class PL_People_Helper {
 		}
 	}
 
-	public static function update_person_details ($person_details) {
+	public static function update_person ($person_details) {
 		$placester_person = self::person_details();
 		return PL_People::update(array_merge(array('id' => $placester_person['id']), $person_details));
 	}
 
 	public static function update_person_ajax () {
         $person_details = $_POST;
-        $result = PLS_Plugin_API::update_person_details($person_details);
+        $result = self::update_person($person_details);
 
         echo json_encode($result);
         die();
@@ -63,7 +60,7 @@ class PL_People_Helper {
 		$wp_user = wp_get_current_user();
 
 		if (!empty($wp_user->ID)) {
-			$placester_id = get_user_meta($wp_user->ID, 'placester_api_id');
+			$placester_id = get_user_meta($wp_user->ID, self::USER_META_KEY);
 		
 			if (is_array($placester_id)) { 
 				$placester_id = implode($placester_id, ''); 
@@ -72,6 +69,11 @@ class PL_People_Helper {
 			if (!empty($placester_id)) {
 				$details = PL_People::details(array('id' => $placester_id));
 			}
+		}
+
+		// Just in case...
+		if (!is_array($details)) {
+			$details = array();
 		}
 
 		return $details;

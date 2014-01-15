@@ -88,7 +88,12 @@ class PL_Membership {
 			update_user_meta($wordpress_user_id, 'primary_blog', $first_blog->userblog_id);
 
             // Push the new WP user as a lead to the API...
-			$response = PL_People_Helper::add_person($lead_object);
+            if (defined('PL_LEADS_ENABLED')) {
+            	$response = PL_Lead_Helper::add_lead($lead_object);
+            }
+            else {
+				$response = PL_People_Helper::add_person($lead_object);
+			}
             
 			if (isset($response['code'])) {
 				$errors[] = $response['message'];
@@ -100,7 +105,19 @@ class PL_Membership {
 
 			// If the API call was successful, inform the user that his/her password and set the password change
 			if (empty($errors)) {
-				update_user_meta($wordpress_user_id, 'placester_api_id', $response['id']);
+				if (defined('PL_LEADS_ENABLED')) {
+					$meta_key = PL_Lead_Helper::USER_META_KEY;
+					$id = $response['uuid'];
+				}
+				else {
+					$meta_key = PL_People_Helper::USER_META_KEY;
+					$id = $response['id'];
+				}
+
+				// Add API key to new user's meta...
+				update_user_meta($wordpress_user_id, $meta_key, $id);
+
+				// Notify blog admin(s) of new user...
 				wp_new_user_notification($wordpress_user_id);
 			}
 			

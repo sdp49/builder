@@ -144,7 +144,6 @@ include_once('lib/bootup.php');
 include_once('lib/global-filters.php');
 include_once('lib/listing-customizer.php');
 include_once('lib/dragonfly-resize.php');
-include_once('lib/saved-search.php');
 include_once('lib/fav-listings.php');
 
 //models
@@ -187,11 +186,14 @@ include_once('third-party/convex-hull/convex-hull.php');
 include_once('third-party/mixpanel/mixpanel.php');
 
 define('PL_LEADS_ENABLED', true);
-// If constant is set, use new leads functionality...
+// If constant is set, use the new lead functionality (replaces 'people')...
 if (defined('PL_LEADS_ENABLED')) {
     include_once('config/api/leads.php');
     include_once('models/lead.php');
     include_once('helpers/lead.php');
+
+    // Saved search ONLY works with the new lead ...
+    include_once('lib/saved-search.php');
 }
 
 // Register hook to load blueprint from plugin if the active theme has yet to do so...

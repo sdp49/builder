@@ -4,7 +4,7 @@ PL_Lead_Helper::init();
 
 class PL_Lead_Helper {
 
-	const PL_LEAD_ID_KEY = 'pl_lead_id';
+	const USER_META_KEY = 'pl_lead_id';
 
 	private static $lead_details_default = array(
 		'id' => '',
@@ -72,7 +72,7 @@ class PL_Lead_Helper {
 		$user_id = empty($wp_user_id) ? get_current_user_id() : $wp_user_id;
 
 		if (!empty($user_id)) {
-			$lead_id = get_user_meta($user_id, self::PL_LEAD_ID_KEY);
+			$lead_id = get_user_meta($user_id, self::USER_META_KEY);
 		}
 
 		return $lead_id;

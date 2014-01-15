@@ -20,49 +20,85 @@ class PL_Favorite_Listings {
 	 */
 
 	public static function get_favorite_ids ($as_array = true) {
-		$lead = PL_People_Helper::person_details();
-		$fav_ids = array();
+		$result = null;
 
-		if (isset($lead['fav_listings']) && is_array($lead['fav_listings'])) {
-			$fav_ids = ($lead['fav_listings']);
+		if (defined('PL_LEADS_ENABLED')) {
+			// Format details call...
+			$args = array('meta_key' => 'favorite_listing');
+
+			$result = PL_Lead_Helper::lead_details($args);
+		}
+		else {
+			$lead = PL_People_Helper::person_details();
+			$fav_ids = array();
+
+			if (isset($lead['fav_listings']) && is_array($lead['fav_listings'])) {
+				$fav_ids = ($lead['fav_listings']);
+			}
+
+			$result = $as_array ? array_values($fav_ids) : $fav_ids;
 		}
 
-		return $as_array ? array_values($fav_ids) : $fav_ids;
+		return $result;
 	}
 
 	public static function associate_property ($property_id) {
-		$placester_person = PL_People_Helper::person_details();
-		$new_favorites = array($property_id);
-		if (isset($placester_person['fav_listings']) && is_array($placester_person['fav_listings'])) {
-			foreach ($placester_person['fav_listings'] as $fav_listings) {
-				$new_favorites[] = $fav_listings['id'];
-			}
+		$result = null;
+
+		if (defined('PL_LEADS_ENABLED')) {
+			// Format update call...
+			$args = array('meta_key' => 'favorite_listing', 'meta_value' => $property_id, 'op' => 'create');
+
+			$result = PL_Lead_Helper::update_lead($args);
 		}
-
-		return PL_People::update(array('id' => $placester_person['id'], 'fav_listing_ids' => $new_favorites ) );
-	}
-
-	public static function unassociate_property ($property_id) {
-		$placester_person = PL_People_Helper::person_details();
-		$new_favorites = array();
-		if (is_array($placester_person['fav_listings'])) {
-			foreach ($placester_person['fav_listings'] as $fav_listings) {
-				if ($fav_listings['id'] != $property_id) {
+		else {
+			$placester_person = PL_People_Helper::person_details();
+			$new_favorites = array($property_id);
+			if (isset($placester_person['fav_listings']) && is_array($placester_person['fav_listings'])) {
+				foreach ($placester_person['fav_listings'] as $fav_listings) {
 					$new_favorites[] = $fav_listings['id'];
 				}
 			}
+
+			$result = PL_People::update(array('id' => $placester_person['id'], 'fav_listing_ids' => $new_favorites));
 		}
 
-		return PL_People::update(array('id' => $placester_person['id'], 'fav_listing_ids' => $new_favorites ) );
+		return $result;
+	}
+
+	public static function unassociate_property ($property_id) {
+		$result = null;
+
+		if (defined('PL_LEADS_ENABLED')) {
+			// Format update call...
+			$args = array('meta_key' => 'favorite_listing', 'meta_value' => $property_id, 'op' => 'delete');
+
+			$result = PL_Lead_Helper::update_lead($args);
+		}
+		else {
+			$placester_person = PL_People_Helper::person_details();
+			$new_favorites = array();
+			if (is_array($placester_person['fav_listings'])) {
+				foreach ($placester_person['fav_listings'] as $fav_listings) {
+					if ($fav_listings['id'] != $property_id) {
+						$new_favorites[] = $fav_listings['id'];
+					}
+				}
+			}
+
+			$result = PL_People::update(array('id' => $placester_person['id'], 'fav_listing_ids' => $new_favorites));
+		}
+
+		return $result;
 	}
 
 	public static function is_favorite_property ($property_id) {
-        $lead = PL_People_Helper::person_details();
+        $fav_listing_ids = self::get_favorite_ids();
         $is_fav = false;
 
-        if ( isset($lead['fav_listings']) && is_array($lead['fav_listings']) ) {
-            foreach ($lead['fav_listings'] as $fav_listing) {
-                if ($fav_listing['id'] == $property_id) {
+        if (is_array($fav_listing_ids)) {
+            foreach ($fav_listing_ids as $listing_id) {
+                if ($listing_id == $property_id) {
                     $is_fav = true;
                 }
             }
