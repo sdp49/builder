@@ -20,26 +20,23 @@ class PL_Favorite_Listings {
 	 */
 
 	public static function get_favorite_ids ($as_array = true) {
-		$result = null;
+		$fav_ids = array();
 
 		if (defined('PL_LEADS_ENABLED')) {
 			// Format details call...
 			$args = array('meta_key' => 'favorite_listing');
 
-			$result = PL_Lead_Helper::lead_details($args);
+			$fav_ids = PL_Lead_Helper::lead_details($args);
 		}
 		else {
 			$lead = PL_People_Helper::person_details();
-			$fav_ids = array();
 
 			if (isset($lead['fav_listings']) && is_array($lead['fav_listings'])) {
-				$fav_ids = ($lead['fav_listings']);
+				$fav_ids = $lead['fav_listings'];
 			}
-
-			$result = $as_array ? array_values($fav_ids) : $fav_ids;
 		}
 
-		return $result;
+		return $as_array ? array_values($fav_ids) : $fav_ids;
 	}
 
 	public static function associate_property ($property_id) {
