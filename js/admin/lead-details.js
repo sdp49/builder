@@ -63,10 +63,6 @@ jQuery(document).ready(function($) {
         }
     });
 
-
-
-
-
     var my_favorites_datatable = $('#placester_favorite_listings_list').dataTable( {
             "bFilter": false,
             "bProcessing": true,
@@ -85,7 +81,7 @@ jQuery(document).ready(function($) {
                 { sWidth: '100px' }     
             ],
             "fnServerParams": function ( aoData ) {
-                aoData.push( { "name": "action", "value" : "datatable_favorites_ajax"} );
+                aoData.push( { "name": "action", "value" : "get_favorites_datatable"} );
                 aoData.push( { "name": "lead_id", "value" : $('input#lead_id').val()} );
             }
         });
@@ -123,9 +119,6 @@ jQuery(document).ready(function($) {
     });
 
 });
-
-
-
 
 
 // New Search

@@ -20,20 +20,11 @@ class PL_Lead_Helper {
 	public static function init () {
 		// Basic AJAX endpoints
 		add_action('wp_ajax_datatable_my_leads', array(__CLASS__, 'ajax_get_leads'));
-		add_action('wp_ajax_datatable_favorites_ajax', array(__CLASS__, 'ajax_get_favorites_by_id'));
-		
 		add_action('wp_ajax_update_lead', array(__CLASS__, 'ajax_update_lead'));
 		add_action('wp_ajax_delete_lead', array(__CLASS__, 'ajax_delete_lead'));
-
-		add_action('wp_ajax_delete_lead_search', array(__CLASS__, 'ajax_delete_lead_search'));		
 	}
 
 	public static function ajax_delete_lead () {
-		echo json_encode(array('result' => 1, 'data_received' => json_encode($_POST)));
-		die();
-	}
-
-	public static function ajax_delete_lead_search () {
 		echo json_encode(array('result' => 1, 'data_received' => json_encode($_POST)));
 		die();
 	}
@@ -204,72 +195,6 @@ class PL_Lead_Helper {
 		$response['iTotalRecords'] = $api_response['total'];
 		$response['iTotalDisplayRecords'] = $api_response['total'];
 		
-		echo json_encode($response);
-		die();
-	}
-
-	public static function ajax_get_favorites_by_id () {
-		$lead_id = $_POST['lead_id'];
-
-		// Get leads from model
-		// $api_response = PL_Lead::get($lead_id);
-		$api_response = array(
-			'total' => 40,
-			'searches' => array(
-				array(
-					'id' => '1',
-					'image' => '',
-					'full_address' => '38 W Cedar Street',
-					'beds' => '1',
-					'baths' => '2',
-					'price' => '500k',
-					'sqft' => '3454',
-					'mls_id' => '123123'
-				),
-				array(
-					'id' => '2',
-					'image' => '',
-					'full_address' => '38 W Cedar Street',
-					'beds' => '1',
-					'baths' => '2',
-					'price' => '500k',
-					'sqft' => '3454',
-					'mls_id' => '123123'
-				),
-			)
-		);
-		
-		// build response for datatables.js
-		$searches = array();
-		foreach ($api_response['searches'] as $key => $search) {
-			
-			$searches[$key][] = '<img src="' . $search['image'] . '" />';
-			$searches[$key][] = '<a class="address" href="' . ADMIN_MENU_URL . $search['id'] . '">' . 
-									$search['full_address'] . 
-								'</a>
-								<div class="row_actions">
-									<a href="' . ADMIN_MENU_URL . '?page=placester_my_searches&id=' . $search['id'] . '">
-										View
-									</a>
-									<span>|</span>
-									<a class="red" id="pls_delete_listing" href="#" ref="'.$search['id'].'">
-										Delete
-									</a>
-								</div>';
-			
-			$searches[$key][] = $search['beds'];
-			$searches[$key][] = $search['baths'];
-			$searches[$key][] = $search['price'];
-			$searches[$key][] = $search['sqft'];
-			$searches[$key][] = $search['mls_id'];
-		}
-
-		// Required for datatables.js to function properly.
-		$response = array();
-		$response['sEcho'] = $_POST['sEcho'];
-		$response['aaData'] = $searches;
-		$response['iTotalRecords'] = $api_response['total'];
-		$response['iTotalDisplayRecords'] = $api_response['total'];
 		echo json_encode($response);
 		die();
 	}
