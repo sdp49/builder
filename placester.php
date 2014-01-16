@@ -114,7 +114,6 @@ include_once('config/api/custom_attributes.php');
 include_once('config/api/listings.php');
 include_once('config/api/users.php');
 include_once('config/api/people.php');
-include_once('config/api/leads.php');
 include_once('config/api/integration.php');
 include_once('config/third-party/google-places.php');
 include_once('config/api/wordpress.php');
