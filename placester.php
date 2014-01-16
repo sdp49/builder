@@ -144,6 +144,7 @@ include_once('lib/global-filters.php');
 include_once('lib/listing-customizer.php');
 include_once('lib/dragonfly-resize.php');
 include_once('lib/fav-listings.php');
+include_once('lib/permalink-search.php');
 
 //models
 include_once('models/listing.php');
