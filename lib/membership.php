@@ -182,7 +182,7 @@ class PL_Membership {
 				$lead_id = PL_Lead_Helper::get_lead_id($user->ID);
 
 				if (empty($lead_id)) {
-					$response = PL_Lead_Helper::create_lead($lead_object);
+					$response = PL_Lead_Helper::create_lead($creds);
 
 					// Store Lead ID in user meta...
 					update_user_meta($user->ID, PL_Lead_Helper::USER_META_KEY, $response['uuid']);
