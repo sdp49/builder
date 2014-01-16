@@ -139,7 +139,7 @@ class PL_Membership {
 	//  AJAX endpoint for authenticating a site user from the frontend
 	public static function ajax_login_site_user () {
         extract($_POST);
-
+        
 		$sanitized_username = sanitize_user($username);
         $errors = array();
 
@@ -176,6 +176,18 @@ class PL_Membership {
 			wp_set_current_user($user->ID);
 
             $result = array("success" => true);
+            
+            if (defined('PL_LEADS_ENABLED')) {
+				// Make sure this existing user has a Lead entity...
+				$lead_id = PL_Lead_Helper::get_lead_id($user->ID);
+
+				if (empty($lead_id)) {
+					$response = PL_Lead_Helper::add_lead($lead_object);
+
+					// Store Lead ID in user meta...
+					update_user_meta($user->ID, PL_Lead_Helper::USER_META_KEY, $response['uuid']);
+				}
+			}
 		}
 
         echo json_encode($result);

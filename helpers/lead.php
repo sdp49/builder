@@ -37,7 +37,7 @@ class PL_Lead_Helper {
 	public static function create_lead ($args = array()) {
 		// Try to push lead to CRM (if one is linked/active)...
 		self::add_lead_to_CRM($args);	
-
+		
 		return PL_Lead::create($args);
 	}	
 
@@ -118,7 +118,7 @@ class PL_Lead_Helper {
 
 	public static function update_lead ($args = array()) {
 		$pl_lead = self::lead_details();
-		return PL_People::update(array_merge(array('id' => $pl_lead['id']), $lead_details));
+		return PL_Lead::update(array_merge(array('id' => $pl_lead['id']), $lead_details));
 	}
 
 	public static function get_leads ($filters = array()) {
