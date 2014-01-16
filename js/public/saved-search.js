@@ -8,8 +8,14 @@ jQuery(document).ready(function($) {
 	    $('.pls_save_search').fancybox({
 	        hideOnContentClick: false,
 	        scrolling: true,
-	        onStart: function () { append_search_filters(); },
-	        onClosed: function () { $('.login-form-validator-error').remove(); }
+	        onStart: function () { 
+	        	append_search_filters(); 
+	        },
+	        onCleanup: function () { 
+	        	$('#fancybox-content').find('form').each(function() {
+	        		this.reset();
+	        	});
+	        }
 	    });
 	}
 
