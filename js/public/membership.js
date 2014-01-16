@@ -52,8 +52,8 @@ jQuery(document).ready(function($) {
 		$('.pl_register_lead_link').fancybox({
 			"hideOnContentClick": false,
 			"scrolling": true,
-			onClosed: function () {
-				$('.register-form-validator-error').remove();
+			onCleanup: function () {
+				reset_form();
 			}
 		});
 
@@ -61,8 +61,8 @@ jQuery(document).ready(function($) {
 		$('.pl_login_link').fancybox({
 			"hideOnContentClick": false,
 			"scrolling": true,
-			onClosed: function () {
-				$('.login-form-validator-error').remove();
+			onCleanup: function () {
+				reset_form();
 			}
 		});
 
@@ -78,8 +78,8 @@ jQuery(document).ready(function($) {
 			$('.pl_register_lead_favorites_link').fancybox({
 				"hideOnContentClick": false,
 				"scrolling": true,
-				onClosed: function () {
-					$('.register-form-validator-error').remove();
+				onCleanup: function () {
+					reset_form();
 				}
 			}); 
 		}
@@ -217,6 +217,12 @@ jQuery(document).ready(function($) {
 		} else {
 			return true;
 		}
+	}
+	
+	function reset_form () {
+		$('#fancybox-content').find('form').each(function() {
+			this.reset()
+		});
 	}
 
 	/*
