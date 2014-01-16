@@ -101,7 +101,7 @@ class PL_Js_Helper {
 
 		// Shortcodes and Shortcode Templates
 		if ($hook == 'placester_page_placester_shortcodes_shortcode_edit') {
-			self::register_enqueue_if_not('shortcodes-admin', trailingslashit(PL_JS_ADMIN_URL) . 'shortcodes/all.js', array('jquery-ui-datepicker'));
+			self::register_enqueue_if_not('shortcodes-admin', trailingslashit(PL_JS_ADMIN_URL) . 'shortcodes/all.js', array('jquery-ui-dialog','jquery-ui-datepicker'));
 			self::register_enqueue_if_not('datatable', trailingslashit(PLS_JS_URL) . 'libs/datatables/jquery.dataTables.js' , array('jquery'), NULL, true);
 			self::register_enqueue_if_not('featured-listing', trailingslashit(PLS_OPTRM_URL) . 'js/featured-listing.js', array('jquery'));
 			
@@ -110,7 +110,7 @@ class PL_Js_Helper {
 			));
 		}
 		if ($hook == 'placester_page_placester_shortcodes_template_edit') {
-			self::register_enqueue_if_not('shortcodes-admin', trailingslashit(PL_JS_ADMIN_URL) . 'shortcodes/all.js', array('jquery'));
+			self::register_enqueue_if_not('shortcodes-admin', trailingslashit(PL_JS_ADMIN_URL) . 'shortcodes/all.js', array('jquery-ui-dialog'));
 			self::register_enqueue_if_not('codemirror', trailingslashit(PL_JS_LIB_URL) . 'codemirror/codemirror.js');
 			self::register_enqueue_if_not('codemirror-foldcode', trailingslashit(PL_JS_LIB_URL) . 'codemirror/addon/fold/foldcode.js', array('codemirror'));
 			self::register_enqueue_if_not('codemirror-foldgutter', trailingslashit(PL_JS_LIB_URL) . 'codemirror/addon/fold/foldgutter.js', array('codemirror'));
@@ -145,8 +145,9 @@ class PL_Js_Helper {
 			self::register_enqueue_if_not('datatables', trailingslashit(PL_JS_LIB_URL) . 'datatables/jquery.dataTables.js', array('jquery'));	
 		}
 		
-		// If no API key is set, load the following JS files for use by the wizard on ANY plugin settings page...
-		if (!PL_Option_Helper::api_key()) {
+		// If no API key is set or somehow we have an invalid one, load the following JS files for use by the wizard on ANY plugin settings page...
+		$pls_whoami = PL_Helper_User::whoami();
+		if (!PL_Option_Helper::api_key() || empty($pls_whoami)) {
 			global $i_am_a_placester_theme;
 			self::register_enqueue_if_not('sign-up', trailingslashit(PL_JS_ADMIN_URL) . 'sign-up.js', array('jquery-ui-core', 'jquery-ui-dialog'));
 			wp_localize_script('sign-up', 'pl_signup_data', array('placester_theme' => $i_am_a_placester_theme, 'mls_int' => false));
