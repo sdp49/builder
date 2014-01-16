@@ -176,13 +176,13 @@ class PL_Membership {
 			wp_set_current_user($user->ID);
 
             $result = array("success" => true);
-            
+
             if (defined('PL_LEADS_ENABLED')) {
 				// Make sure this existing user has a Lead entity...
 				$lead_id = PL_Lead_Helper::get_lead_id($user->ID);
 
 				if (empty($lead_id)) {
-					$response = PL_Lead_Helper::add_lead($lead_object);
+					$response = PL_Lead_Helper::create_lead($lead_object);
 
 					// Store Lead ID in user meta...
 					update_user_meta($user->ID, PL_Lead_Helper::USER_META_KEY, $response['uuid']);
