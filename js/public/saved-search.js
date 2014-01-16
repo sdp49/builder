@@ -4,12 +4,20 @@ jQuery(document).ready(function($) {
      * Bindings for UI that allow for saving and deletion of searches
      */
 
-    $('.pls_save_search').fancybox({
-        hideOnContentClick: false,
-        scrolling: true,
-        onStart: function () { append_search_filters(); },
-        onClosed: function () { $('.login-form-validator-error').remove(); }
-    });
+	if (typeof $.fancybox == "function") {
+	    $('.pls_save_search').fancybox({
+	        hideOnContentClick: false,
+	        scrolling: true,
+	        onStart: function () { 
+	        	append_search_filters(); 
+	        },
+	        onCleanup: function () { 
+	        	$('#fancybox-content').find('form').each(function() {
+	        		this.reset();
+	        	});
+	        }
+	    });
+	}
 
     $('.pl_ss-remove-search').live('click', function (event) {
         event.preventDefault();
