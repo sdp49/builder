@@ -239,8 +239,8 @@ jQuery(document).ready(function($) {
 		property_id = $(this).attr('href');
 
 		data = {
-				action: 'add_favorite_property',
-				property_id: property_id.substr(1)
+			action: 'add_favorite_property',
+			property_id: property_id.substr(1)
 		};
 
 		var that = this;
@@ -248,7 +248,7 @@ jQuery(document).ready(function($) {
 			spinner.hide();
 
 			// This property will only be set if WP determines user is of admin status...
-			if ( response.is_admin) {
+			if (response.is_admin) {
 				alert('Sorry, admins currently aren\'t able to maintain a list of "favorite" listings');
 			}
 
