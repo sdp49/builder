@@ -160,7 +160,10 @@ class PL_Favorite_Listings {
 		$lead_id = $_POST['lead_id'];
 
 		// Get leads from model
-		// $api_response = PL_Lead::get($lead_id);
+		//
+		// $args = array('lead_id' => $lead_id);
+		// $api_response = PL_Lead_Helper::lead_details($args);
+		
 		$api_response = array(
 			'total' => 40,
 			'searches' => array(
