@@ -113,17 +113,16 @@ class PL_Saved_Search {
 				'url' => $search_url_path,
 				'notification' => false
 			);
+
+			// Construct listing API URL...
 			
 			// Setup details call args to check whether or not search is saved...
-			$args = array('add_meta', 'meta_key' => 'saved_search', 'meta_value' => $saved_search);
+			$args = array('meta_op' => 'add_meta', 'meta_key' => 'saved_search', 'meta_value' => $saved_search);
 
 			$response = PL_Lead_Helper::update_lead($args);
 			
 			$success = empty($response) ? false : true;
 			$message = ($success === false) ? "Could not save search -- please try again" : "";
-
-			// error_log("Unique search hash: $search_hash");
-			// error_log(var_export($saved_searches, true));
 		}
 
 		return array("success" => $success, "message" => $message);

@@ -263,17 +263,18 @@ jQuery(document).ready(function($) {
 
 	$('#pl_remove_favorite').live('click',function (event) {
 		event.preventDefault();
-		var that = this;
 		
 		var spinner = $(this).parent().find(".pl_spinner");
 		spinner.show();
 
 		property_id = $(this).attr('href');
+		
 		data = {
 				action: 'remove_favorite_property',
 				property_id: property_id.substr(1)
 		};
 
+		var that = this;
 		$.post(info.ajaxurl, data, function (response) {
 			spinner.hide();
 			// If request successfull
