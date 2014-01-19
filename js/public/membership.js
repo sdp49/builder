@@ -248,13 +248,15 @@ jQuery(document).ready(function($) {
 			spinner.hide();
 
 			// This property will only be set if WP determines user is of admin status...
-			if (response.is_admin) {
+			if (response && response.is_admin) {
 				alert('Sorry, admins currently aren\'t able to maintain a list of "favorite" listings');
 			}
-
-			if ( response.id ) {
+			else if (response && response.id) {
 				$(that).parent().find('#pl_add_favorite').hide();
 				$(that).parent().find('#pl_remove_favorite').show();
+			}
+			else {
+				console.log("Error adding favorite...");
 			}
 		}, 'json');
 	});
@@ -262,8 +264,9 @@ jQuery(document).ready(function($) {
 	$('#pl_remove_favorite').live('click',function (event) {
 		event.preventDefault();
 		var that = this;
-		$spinner = $(this).parent().find(".pl_spinner");
-		$spinner.show();
+		
+		var spinner = $(this).parent().find(".pl_spinner");
+		spinner.show();
 
 		property_id = $(this).attr('href');
 		data = {
@@ -272,9 +275,9 @@ jQuery(document).ready(function($) {
 		};
 
 		$.post(info.ajaxurl, data, function (response) {
-			$spinner.hide();
+			spinner.hide();
 			// If request successfull
-			if ( response != 'errors' ) {
+			if (response != 'errors') {
 				$(that).parent().find('#pl_remove_favorite').hide();
 				$(that).parent().find('#pl_add_favorite').show();
 			}
