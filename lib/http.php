@@ -75,12 +75,12 @@ Class PL_HTTP extends WP_Http {
 	 * @param string $method
 	 * @return array
 	 */
-	public static function send_request ($url, $request, $method = 'GET', $allow_cache = true, $allow_empty_values = false, $force_return = false, $use_ecoding = true) {
+	public static function send_request ($url, $request, $method = 'GET', $allow_cache = true, $allow_empty_values = false, $force_return = false, $use_encoding = true) {
 
 		$request_string = self::build_request($request, $allow_empty_values);
 	    // error_log($url);
 	    // error_log($request_string);
-	    if (!$use_ecoding) {
+	    if (!$use_encoding) {
 	    	$request_string = urldecode($request_string);
 	    }
 

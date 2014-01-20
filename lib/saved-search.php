@@ -97,6 +97,32 @@ class PL_Saved_Search {
 		return $is_saved;
 	}
 
+	public static function construct_listing_call($filters = array(), $global_filters = true) {
+		// If flag is true, merge existing filters with any set global filters...
+		if ($global_filters) { 
+			$filters = PL_Global_Filters::merge_global_filters($filters); 
+		}
+
+		// Respect block address setting if it's already set, otherwise, defer to the plugin setting...
+		if (empty($filters['address_mode'])) {
+			$filters['address_mode'] = ( PL_Option_Helper::get_block_address() ? 'polygon' : 'exact' );
+		}
+
+		// Validate the list of filters and add the API Key as one...
+		$filters = array_merge(array("api_key" => self::api_key()), PL_Validate::request($args, PL_Config::PL_API_LISTINGS('get', 'args')));
+
+		// Translate the listing filters into a query string to be used in an API call...
+		$query_string = PL_HTTP::build_request($filters);
+
+		// Fetch the URL of the listing API endpoint from  the config...
+		$api_url = PL_Config::PL_API_LISTINGS('get', 'request', 'url');
+
+		// Construct the full URL with both the API endpoint and the accompanying query string...
+		$url = "{$api_url}?{$query_string}";
+
+		return $url;
+	}
+
 	public static function add_saved_search ($search_filters, $search_name, $search_url_path) {
 		// Default result...
 		$success = false;
@@ -106,15 +132,17 @@ class PL_Saved_Search {
 		$filters = self::strip_empty_filters($search_filters);
 
 		if (!empty($filters) && is_array($filters) && !empty($user_id)) {			
+			// Construct listing API call URL...
+			$listing_api_url = self::construct_listing_call($filters);
+
 			// Args for saving search...
 			$saved_search = array(
 				'filters' => $filters, 
 				'name' => $search_name,
 				'url' => $search_url_path,
-				'notification' => false
+				'notification' => false,
+				'listing_api_url' => $listing_api_url
 			);
-
-			// Construct listing API URL...
 			
 			// Setup details call args to check whether or not search is saved...
 			$args = array('meta_op' => 'add_meta', 'meta_key' => 'saved_search', 'meta_value' => $saved_search);
