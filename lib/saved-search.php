@@ -6,6 +6,34 @@ PL_Saved_Search::init();
 
 class PL_Saved_Search {
 
+	public static $translations = array(
+		// Listing API V3 fields
+		'min_sqft' => 'Min Sqft',
+		'min_beds' => 'Min Beds',
+		'min_baths' => 'Min Baths',
+		'max_price' => 'Max Price',
+		'min_price' => 'Min Price',
+		'prop_type' => 'Property Type',
+		// Listing API V2.1 fields
+		'location[locality]' => 'City',
+        'location[postal]' => 'Zip Code',
+        'location[neighborhood]' => 'Neighborhood',
+        'metadata[min_sqft]' => 'Min Sqft',
+        'purchase_types[]' => 'Purchase Type',
+        'price_off' => 'Min Price',
+        'metadata[min_beds]' => 'Min Beds',
+        'metadata[min_baths]' => 'Min Baths',
+        'metadata[min_price]' => 'Min Price'
+	);
+
+	public static $schedule_types = array(
+		'daily' => 'Daily',
+		'biweekly' => 'Twice Weekly',
+		'weekly' 'Once Weekly',
+		'bimonthly' => 'Every Two Weeks', 
+		'monthly' => 'Every Month'
+	);
+
 	public static function init () {
 		// AJAX endpoints for attaching saved searches to users (currently, ONLY exposed for authenticated users...)
 		add_action('wp_ajax_is_search_saved', array(__CLASS__, 'ajax_is_search_saved'));
@@ -13,6 +41,9 @@ class PL_Saved_Search {
 		add_action('wp_ajax_add_saved_search', array(__CLASS__,'ajax_add_saved_search'));
 		add_action('wp_ajax_delete_saved_search', array(__CLASS__, 'ajax_delete_saved_search'));
 		add_action('wp_ajax_update_search_notification', array(__CLASS__, 'ajax_update_search_notification'));
+
+		// Expose certain UI elements as shortcodes...
+		add_shortcode('saved_search_button', array(__CLASS__, 'get_saved_search_button'));
 	}
 
 	public static function get_saved_searches ($wp_user_id = null, $lead_id = null) {
@@ -294,7 +325,7 @@ class PL_Saved_Search {
 	// Renders the saved search form overlay...
 	public static function get_saved_search_registration_form () {
         ob_start();
-        
+
         if (is_user_logged_in()) {
             include(trailingslashit(PL_FRONTEND_DIR) . 'saved-search-authenticated.php');
         }
@@ -312,27 +343,7 @@ class PL_Saved_Search {
     }
 
     public static function translate_key ($key) {
-		static $translations = array(
-			// Listing API V3 fields
-			'min_sqft' => 'Min Sqft',
-			'min_beds' => 'Min Beds',
-			'min_baths' => 'Min Baths',
-			'max_price' => 'Max Price',
-			'min_price' => 'Min Price',
-			'prop_type' => 'Property Type',
-			// Listing API V2.1 fields
-			'location[locality]' => 'City',
-            'location[postal]' => 'Zip Code',
-            'location[neighborhood]' => 'Neighborhood',
-            'metadata[min_sqft]' => 'Min Sqft',
-            'purchase_types[]' => 'Purchase Type',
-            'price_off' => 'Min Price',
-            'metadata[min_beds]' => 'Min Beds',
-            'metadata[min_baths]' => 'Min Baths',
-            'metadata[min_price]' => 'Min Price'
-		);
-
-		$val = ( isset($translations[$key]) ? $translations[$key] : $key );
+		$val = ( isset(self::$translations[$key]) ? self::$translations[$key] : $key );
 		return $val;
 	}
 }
