@@ -97,7 +97,7 @@ class PL_Saved_Search {
 		return $is_saved;
 	}
 
-	public static function construct_listing_call($filters = array(), $global_filters = true) {
+	public static function construct_listing_url ($filters = array(), $global_filters = true) {
 		// If flag is true, merge existing filters with any set global filters...
 		if ($global_filters) { 
 			$filters = PL_Global_Filters::merge_global_filters($filters); 
@@ -133,7 +133,7 @@ class PL_Saved_Search {
 
 		if (!empty($filters) && is_array($filters) && !empty($user_id)) {			
 			// Construct listing API call URL...
-			$listing_api_url = self::construct_listing_call($filters);
+			$listing_api_url = self::construct_listing_url($filters);
 
 			// Args for saving search...
 			$saved_search = array(
@@ -294,12 +294,13 @@ class PL_Saved_Search {
 	// Renders the saved search form overlay...
 	public static function get_saved_search_registration_form () {
         ob_start();
+        
         if (is_user_logged_in()) {
             include(trailingslashit(PL_FRONTEND_DIR) . 'saved-search-authenticated.php');
         }
-        else {
-			// include(trailingslashit(PL_FRONTEND_DIR) . 'saved-search-unauthenticated.php');
-        }
+		// else {
+		// 	include(trailingslashit(PL_FRONTEND_DIR) . 'saved-search-unauthenticated.php');
+		// }
 
         return ob_get_clean();
     }
