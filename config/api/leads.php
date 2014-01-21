@@ -55,11 +55,19 @@ $PL_API_LEAD = array(
 		),
 		'args' => array(
 			'id' => '',
-			'meta_key' => array(),
-			'meta_value' => array()
+			'meta' => array(
+				'meta_id' => '',
+				'meta_key' => '',
+				'meta_value' => ''
+			),
+			'notifications' => array(
+				'type' => '',
+				'meta_id' => '',
+				'schedule' => ''
+			)
 		),
 		'returns' => array(
-			'id' => '1',
+			'id' => '',
 			'email' => '',
 			'first_name' => '',
 			'last_name' => '',
@@ -76,8 +84,23 @@ $PL_API_LEAD = array(
 			'type' => 'POST'
 		),
 		'args' => array(
+			'id' => '',
+			'meta' => array(
+				'meta_id' => '',
+				'meta_key' => '',
+				'meta_value' => '',
+				'meta_op' => ''
+			),
+			'notifications' => array(
+				'type' => '',
+				'meta_id' => '',
+				'schedule' => '',
+				'notification_op'
+			)
 		),
 		'returns' => array(
+			'success' => '',
+			'message' => ''
 		)
 	),
 	'delete' => array(
@@ -86,8 +109,11 @@ $PL_API_LEAD = array(
 			'type' => 'POST'
 		),
 		'args' => array(
+			'id' => ''
 		),
 		'returns' => array(
+			'success' => '',
+			'message' => ''
 		)
 	)
 );

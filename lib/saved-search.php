@@ -75,7 +75,7 @@ class PL_Saved_Search {
 		);
 
 		// Setup details call args to only pull saved searches...
-		// $args = array('id' => $lead_id, 'meta_key' => array('saved_search'));
+		// $args = array('id' => $lead_id, 'meta' => array('meta_key' => 'saved_search'));
 		
 		// Fetch saved searches
 		// $result = PL_Lead_Helper::lead_details($wp_user_id, $args);
@@ -119,7 +119,7 @@ class PL_Saved_Search {
 		
 		if (!empty($filters) && is_array($filters)) {
 			// Setup details call args to check whether or not search is saved...
-			$args = array('meta_key' => array('saved_search'), 'meta_value' => array($filters));
+			$args = array('meta' => array('meta_key' => 'saved_search', 'meta_value' => $filters));
 
 			// Call API to check for existence of saved search...
 			$is_saved = PL_Lead_Helper::lead_details($args);
@@ -176,7 +176,7 @@ class PL_Saved_Search {
 			);
 			
 			// Setup details call args to check whether or not search is saved...
-			$args = array('meta_op' => 'add_meta', 'meta_key' => 'saved_search', 'meta_value' => $saved_search);
+			$args = array('meta' => array('meta_op' => 'create', 'meta_key' => 'saved_search', 'meta_value' => $saved_search));
 
 			$response = PL_Lead_Helper::update_lead($args);
 			
@@ -194,7 +194,7 @@ class PL_Saved_Search {
 
 		if (!empty($search_id)) {
 			// Setup details call args to check whether or not search is saved...
-			$args = array('delete_meta', 'meta_key' => 'saved_search', 'meta_id' => $search_id);
+			$args = array('meta' => array('meta_op' => 'delete', 'meta_key' => 'saved_search', 'meta_id' => $search_id));
 
 			// TODO: Actually delete...
 			$response = PL_Lead_Helper::update_lead($args);
@@ -209,9 +209,9 @@ class PL_Saved_Search {
 		return array("success" => $success, "message" => $message);
 	}
 
-	public static function update_search_notification ($search_id, $schedule_id) {
+	public static function update_search_notification ($search_id, $schedule) {
 		// Setup details call args to check whether or not search is saved...
-		$args = array('update_notification', 'type' => 'listing', 'meta_id' => $search_id, 'schedule' => $schedule_id);
+		$args = array('notifications' => array('type' => 'listing', 'meta_id' => $search_id, 'schedule' => $schedule, 'notification_op' => 'update'));
 
 		// TODO: Update the corresponding saved search...
 		$response = PL_Lead_Helper::update_lead($search_id, $enable);

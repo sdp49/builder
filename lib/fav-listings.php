@@ -50,7 +50,7 @@ class PL_Favorite_Listings {
 
 		if (defined('PL_LEADS_ENABLED')) {
 			// Format update call...
-			$args = array('meta_key' => 'favorite_listing', 'meta_value' => $property_id, 'op' => 'create');
+			$args = array('meta' => array('meta_key' => 'favorite_listing', 'meta_value' => $property_id, 'meta_op' => 'create'));
 
 			$result = PL_Lead_Helper::update_lead($args);
 		}
@@ -75,7 +75,7 @@ class PL_Favorite_Listings {
 
 		if (defined('PL_LEADS_ENABLED')) {
 			// Format update call...
-			$args = array('meta_key' => 'favorite_listing', 'meta_value' => $property_id, 'op' => 'delete');
+			$args = array('meta' => array('meta_key' => 'favorite_listing', 'meta_value' => $property_id, 'meta_op' => 'delete'));
 
 			$result = PL_Lead_Helper::update_lead($args);
 		}
