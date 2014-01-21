@@ -261,7 +261,6 @@ To add some text to your listings:<br />
 				}
 			}
 		}
-		$atts = wp_parse_args($atts, array('sort_by' => 'cur_data.price'));
 		$atts['context'] = 'search_listings_'.(empty($atts['context']) ? 'shortcode' : $atts['context']);
 		
 		// set limit per page if any
