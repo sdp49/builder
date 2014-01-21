@@ -117,8 +117,12 @@ class PL_Lead_Helper {
 	}
 
 	public static function update_lead ($args = array()) {
-		$pl_lead = self::lead_details();
-		return PL_Lead::update(array_merge(array('id' => $pl_lead['id']), $lead_details));
+		// See if the lead id was passed -- if not, try to fetch it based on a WP user id...
+		if (empty($args['id'])) {
+			$args['id'] = self::get_lead_id();
+		}
+
+		return PL_Lead::update($args);
 	}
 
 	public static function get_leads ($filters = array()) {

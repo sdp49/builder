@@ -41,7 +41,7 @@ class PL_Lead {
 		// Validate response...
 		if (isset($response) && isset($response['leads']) && is_array($response['leads'])) {
 			foreach ($response['leads'] as $key => $listing) {
-				$response['leads'][$key] = PL_Validate::attributes($listing, PL_Config::PL_API_LEAD('get','returns'));
+				$response['leads'][$key] = PL_Validate::attributes($listing, PL_Config::PL_API_LEAD('get','returns', 'lead'));
 			}
 		} 
 		else {
@@ -61,7 +61,7 @@ class PL_Lead {
 	}
 
 	// Given a lead ID, fetch that lead's details... (includes meta, notifications, etc.)
-	public static function details ($id) {
+	public static function details ($args = array()) {
 		// Construct request args...
 		$request = self::constructRequestArgs($args, 'details');
 		
@@ -70,7 +70,7 @@ class PL_Lead {
 	}
 
 	// Update the lead entity using its ID...
-	public static function update ($id, $args = array()) {
+	public static function update ($args = array()) {
 		// Construct request args...
 		$request = self::constructRequestArgs($args, 'update');
 		
@@ -79,7 +79,7 @@ class PL_Lead {
 	}
 
 	// Delete the lead entity using its ID...
-	public static function delete ($id) {
+	public static function delete ($args = array()) {
 		// Construct request args...
 		$request = self::constructRequestArgs($args, 'delete');
 

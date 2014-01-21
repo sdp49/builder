@@ -29,7 +29,7 @@ class PL_Saved_Search {
 	public static $schedule_types = array(
 		'daily' => 'Daily',
 		'biweekly' => 'Twice Weekly',
-		'weekly' 'Once Weekly',
+		'weekly' => 'Once Weekly',
 		'bimonthly' => 'Every Two Weeks', 
 		'monthly' => 'Every Month'
 	);
@@ -75,7 +75,7 @@ class PL_Saved_Search {
 		);
 
 		// Setup details call args to only pull saved searches...
-		// $args = array('lead_id' => $lead_id, meta_keys' => array('saved_search'));
+		// $args = array('id' => $lead_id, 'meta_key' => array('saved_search'));
 		
 		// Fetch saved searches
 		// $result = PL_Lead_Helper::lead_details($wp_user_id, $args);
@@ -119,7 +119,7 @@ class PL_Saved_Search {
 		
 		if (!empty($filters) && is_array($filters)) {
 			// Setup details call args to check whether or not search is saved...
-			$args = array('meta_keys' => array('saved_search'), 'val_match' => array($filters));
+			$args = array('meta_key' => array('saved_search'), 'meta_value' => array($filters));
 
 			// Call API to check for existence of saved search...
 			$is_saved = PL_Lead_Helper::lead_details($args);

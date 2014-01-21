@@ -30,7 +30,7 @@ class PL_Favorite_Listings {
 
 		if (defined('PL_LEADS_ENABLED')) {
 			// Format details call...
-			$args = array('meta_key' => 'favorite_listing');
+			$args = array('meta_key' => array('favorite_listing'));
 
 			$fav_ids = PL_Lead_Helper::lead_details($args);
 		}
@@ -161,7 +161,7 @@ class PL_Favorite_Listings {
 
 		// Get leads from model
 		//
-		// $args = array('lead_id' => $lead_id);
+		// $args = array('id' => $lead_id);
 		// $api_response = PL_Lead_Helper::lead_details($args);
 		
 		$api_response = array(
