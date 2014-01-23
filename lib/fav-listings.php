@@ -10,10 +10,6 @@ class PL_Favorite_Listings {
 		add_action('wp_ajax_add_favorite_property', array(__CLASS__,'ajax_add_favorite_property'));
 		add_action('wp_ajax_nopriv_add_favorite_property', array(__CLASS__,'ajax_add_favorite_property'));
 		add_action('wp_ajax_remove_favorite_property', array(__CLASS__,'ajax_remove_favorite_property'));
-		
-		// TODO: Ported from BP -- need to merge into existing AJAX 'get_favorites' endpoint...
-		add_action( 'wp_ajax_listings_fav_ajax', array(__CLASS__,'ajax_get_favorite_listings'));
-		add_action( 'wp_ajax_nopriv_listings_fav_ajax', array(__CLASS__,'ajax_get_favorite_listings'));
 
 		// TODO: Address this...
 		add_action('wp_ajax_get_favorites_datatable', array(__CLASS__, 'ajax_get_favorites_datatable'));
@@ -119,16 +115,6 @@ class PL_Favorite_Listings {
 		echo json_encode(self::get_favorite_ids(false));	
 		die();
 	}
-
-	// TODO:  Merge with 'ajax_get_favorites'...
-	public static function ajax_get_favorite_listings () {
-        $favorite_ids = self::get_favorite_ids();
-
-        // Will echo listings as a JSON-encoded output...
-        self::get(array('property_ids' => $favorite_ids, 'allow_id_empty' => true));
-
-        die();
-    }
 
 	public static function ajax_add_favorite_property () {
 		// Check to see if user is an admin (at this point, we know the user is logged in...)
