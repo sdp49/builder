@@ -70,7 +70,7 @@ class PL_People_Helper {
 				$details = PL_People::details(array('id' => $placester_id));
 			}
 		}
-
+		
 		// Just in case...
 		if (!is_array($details)) {
 			$details = array();

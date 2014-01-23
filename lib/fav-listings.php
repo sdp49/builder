@@ -21,24 +21,39 @@ class PL_Favorite_Listings {
 	 * Core functionality...
 	 */
 
-	public static function get_favorite_ids ($as_array = true) {
-		$fav_ids = array();
+	public static function get_favorites () {
+		$favorites = array();
 
 		if (defined('PL_LEADS_ENABLED')) {
 			// Format details call...
 			$args = array('meta_key' => array('favorite_listing'));
 
-			$fav_ids = PL_Lead_Helper::lead_details($args);
+			$favorites = PL_Lead_Helper::lead_details($args);
 		}
 		else {
 			$lead = PL_People_Helper::person_details();
-
+			
 			if (isset($lead['fav_listings']) && is_array($lead['fav_listings'])) {
-				$fav_ids = $lead['fav_listings'];
+				$favorites = $lead['fav_listings'];
+			}
+		}
+		
+		return $favorites;
+	}
+
+	public static function get_favorite_ids () {
+		$fav_ids = array();
+
+		// Retrieve favorite listings in their verbose format...
+		$favs = self::get_favorites();
+
+		if (!empty($favs) && is_array($favs)) {
+			foreach ($favs as $index => $fav_array) {
+				$fav_ids[] = $fav_array['id'];
 			}
 		}
 
-		return $as_array ? array_values($fav_ids) : $fav_ids;
+		return $fav_ids;
 	}
 
 	public static function associate_property ($property_id) {
@@ -112,7 +127,7 @@ class PL_Favorite_Listings {
 	 */
 
 	public static function ajax_get_favorites () {
-		echo json_encode(self::get_favorite_ids(false));	
+		echo json_encode(self::get_favorites());	
 		die();
 	}
 
