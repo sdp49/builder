@@ -164,16 +164,17 @@ $PL_API_URLS_TABLE = array(
 	),
 );
 
-if (defined('PLACESTER_ENV') && PLACESTER_ENV === 'staging') {
+// Right now Blueprint stores all theme options in an option named for the theme, which
+// is number than a pounded thumb more often than it's helpful. Since BP isn't loaded yet we can't 
+// use pls_get_option here
+$curr_theme = get_option('template');
+$theme_opts = get_option($curr_theme);
+$site_key = isset($theme_opts['pls_search_site_id']) ? $theme_opts['pls_search_site_id'] : '';
+
+if (!$site_key && defined('PLACESTER_ENV') && PLACESTER_ENV === 'staging') {
 	$site_key = 'staging';
-} else {
-	// Right now Blueprint stores all theme options in an option named for the theme, which
-	// is number than a pounded thumb more often than it's helpful. Since BP isn't loaded yet we can't 
-	// use pls_get_option here
-	$curr_theme = get_option('template');
-	$theme_opts = get_option($curr_theme);
-	$site_key = $theme_opts['pls_search_site_id'];
 }
+
 // error_log('site key: ' . $site_key);
 if ( !is_null($site_key) && array_key_exists($site_key, $PL_API_URLS_TABLE) ) {
 	$PL_API_URLS = $PL_API_URLS_TABLE[$site_key];
