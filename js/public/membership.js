@@ -97,7 +97,7 @@ jQuery(document).ready(function($) {
 				password: $form.find('#reg_user_password').val(),
 				confirm: $form.find('#reg_user_confirm').val()
 		};
-		
+
 		$.post(info.ajaxurl, data, function (response) {
 			if (response && response.success) {
 				// Remove error messages
@@ -112,7 +112,7 @@ jQuery(document).ready(function($) {
 				// Reload window so it shows new login status
 				setTimeout(function () { window.location.reload(true); }, 1000);
 			}
-			else {
+			else if (typeof $.fn.validator == "function") {
 				// Error Handling
 				var errors = (response && response.errors) ? response.errors : {};
 
@@ -161,7 +161,7 @@ jQuery(document).ready(function($) {
 				// Reload window so it shows new login status
 				window.location.reload(true);
 			} 
-			else {
+			else if (typeof $.fn.validator == "function") {
 				// Error Handling
 				var errors = (response && response.errors) ? response.errors : {};
 
@@ -185,8 +185,8 @@ jQuery(document).ready(function($) {
 
 	function validate_register_form (form_el) {
 		var $form = $(form_el).closest('form');
-		
-		if(jQuery().validator) {
+
+		if (typeof $.fn.validator == "function") {
 			// get fields that are required from form and execute validator()
 			var inputs = $form.find("input[required]").validator({
 				messageClass: "register-form-validator-error", 
@@ -204,21 +204,20 @@ jQuery(document).ready(function($) {
 	function validate_login_form (form_el) {
 		var $form = $(form_el).closest('form');
 
-		if(jQuery().validator) {
-		// get fields that are required from form and execute validator()
-		var inputs = $form.find("input[required]").validator({
-			messageClass: "login-form-validator-error", 
-			offset: [10,0],
-			message: "<div><span></span></div>",
-			position: "top center"
-		});
-
+		if (typeof $.fn.validator == "function") {
+			// get fields that are required from form and execute validator()
+			var inputs = $form.find("input[required]").validator({
+				messageClass: "login-form-validator-error", 
+				offset: [10,0],
+				message: "<div><span></span></div>",
+				position: "top center"
+			});
 			return inputs.data("validator").checkValidity();
 		} else {
 			return true;
 		}
 	}
-	
+
 	function reset_form () {
 		$('#fancybox-content').find('form').each(function() {
 			this.reset()
@@ -239,8 +238,8 @@ jQuery(document).ready(function($) {
 		property_id = $(this).attr('href');
 
 		data = {
-			action: 'add_favorite_property',
-			property_id: property_id.substr(1)
+				action: 'add_favorite_property',
+				property_id: property_id.substr(1)
 		};
 
 		var that = this;
@@ -263,12 +262,12 @@ jQuery(document).ready(function($) {
 
 	$('#pl_remove_favorite').live('click',function (event) {
 		event.preventDefault();
-		
+
 		var spinner = $(this).parent().find(".pl_spinner");
 		spinner.show();
 
 		property_id = $(this).attr('href');
-		
+
 		data = {
 				action: 'remove_favorite_property',
 				property_id: property_id.substr(1)
@@ -388,6 +387,6 @@ jQuery(document).ready(function($) {
 
         return success;
     }
-*/
+	 */
 
 });
