@@ -29,7 +29,7 @@
 				</div>
 				<div class="global_filter_col form_item">
 					<form action="" id="global_filter_form">
-						<?php PL_Form::generate_form( PL_Config::PL_API_LISTINGS('get', 'args'), array('method'=>'POST', 'include_submit' => false, 'wrap_form' => false, 'echo_form' => true, 'title' => false, 'id' => 'global_filter_form' ) ); ?>		
+						<?php PL_Form::generate_form( PL_Config::PL_API_LISTINGS('get', 'args'), array('method'=>'POST', 'include_submit' => false, 'wrap_form' => false, 'echo_form' => true, 'title' => false, 'id' => 'global_filter_form', 'textarea_as_text' => true ) ); ?>		
 					</form>
 				</div>
 				<div class="global_filter_col filter_button">
