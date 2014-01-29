@@ -23,7 +23,7 @@ class PL_Pages {
 
 	public static function init () {
 		add_action('init', array(__CLASS__, 'setup_rewrite'));
-		add_filter('pre_get_posts', array(__CLASS__, 'detect_virtual_pages'));
+		add_filter('pre_get_posts', array(__CLASS__, 'detect_virtual_page'));
 		add_filter('query_vars', array(__CLASS__, 'setup_url_vars'));
 		add_filter('the_posts', array(__CLASS__, 'the_posts'));
 		add_filter('post_type_link', array(__CLASS__, 'get_property_permalink'), 10, 3);
@@ -119,14 +119,14 @@ class PL_Pages {
 	/**
 	 * Fetch listing details if this is a details page
 	 */
-	public static function detect_virtual_pages($query) {
+	public static function detect_virtual_page($query) {
 		if (!empty($query->query_vars['property'])) {
 			$args = array('listing_ids' => array($query->query_vars['property']));
 
 			// Respect address_mode type -- exact, or block adresses (i.e., 'polygon')
 			$args['address_mode'] = ( PL_Option_Helper::get_block_address() ? 'polygon' : 'exact' );
 
-			$response = PL_Listing::get($args);
+			$response = PL_Listing_Helper::results($args, false);
 			if (!empty($response['listings'][0])) {
 				$query->set('post_type', self::$property_post_type);
 				self::$listing_details = $response['listings'][0];

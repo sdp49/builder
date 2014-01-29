@@ -21,10 +21,6 @@ class PL_Listing {
 	}
 
 	public static function get ($args = array()) {
-		// fetch single inactive listing if specifically requested
-		if (!empty($args['listing_ids']) && count($args['listing_ids']) == 1 && !isset($args['include_disabled'])) {
-			$args['include_disabled'] = 1;
-		}
 		// merge incoming args with preset options, basically api key at this point.
 		$request = array_merge(array("api_key" => self::api_key()), PL_Validate::request($args, PL_Config::PL_API_LISTINGS('get', 'args')));
 		if ( defined('HOSTED_PLUGIN_KEY') ) {

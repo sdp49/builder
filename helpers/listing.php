@@ -52,6 +52,11 @@ class PL_Listing_Helper {
 			}
 		}
 		
+		// fetch single inactive listing if specifically requested
+		if (!empty($args['listing_ids']) && count($args['listing_ids']) == 1 && !isset($args['include_disabled'])) {
+			$args['include_disabled'] = 1;
+		}
+
 		// Respect the ability for this function to return results that do NOT respect global filters..
 		if ($global_filters) { 
 			$args = PL_Global_Filters::merge_global_filters($args); 
@@ -73,7 +78,10 @@ class PL_Listing_Helper {
 		if (!empty($listings['listings'])) {
 			foreach ($listings['listings'] as $key => $listing) {
 				$listings['listings'][$key]['cur_data']['url'] = PL_Pages::get_url($listing['id'], $listing);
-				$listings['listings'][$key]['location']['full_address'] = $listing['location']['address'] . ' ' . $listing['location']['locality'] . ' ' . $listing['location']['region'];
+				// add unit number to address: if unit has a space assume it contains a unit descriptor. handle case where it has # already
+				// TODO: consider moving to mls import
+				$listings['listings'][$key]['location']['address'] = $listing['location']['address'] . (empty($listing['location']['unit']) || strpos($listing['location']['address'], $listing['location']['unit'].' ')===0 ? '' : (strpos($listing['location']['unit'],' ')===false && substr($listing['location']['unit'], 0, 1)!='#' ? ' #' : ' ') . $listing['location']['unit']);
+				$listings['listings'][$key]['location']['full_address'] = $listings['listings'][$key]['location']['address'] . ' ' . $listing['location']['locality'] . ' ' . $listing['location']['region'];
 			}
 		}
 
