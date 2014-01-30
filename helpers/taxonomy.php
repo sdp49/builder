@@ -393,20 +393,42 @@ class PL_Taxonomy_Helper {
 		extract(wp_parse_args($args, array('field'=>'slug', 'value'=>'', 'taxonomy'=>'', 'get_polygon'=>false)));
 		$term = get_term_by($field, $value, $taxonomy);
 		
-		if (!$term) {
+		if (!$term && $field == 'slug') {
 			// no match in tax db - see if this is a dynamically created location page
-			if ($field == 'slug') {
-				$cterm = PL_Pages::get_taxonomy_object();
-				// slug for current page?
-				if ($cterm && $cterm->taxonomy == $taxonomy && $cterm->slug == sanitize_title_with_dashes($value)) {
-					$term = $cterm;
-				}
+			$cterm = PL_Pages::get_taxonomy_object();
+			// slug for current page?
+			if ($cterm && $cterm->taxonomy == $taxonomy && $cterm->slug == sanitize_title_with_dashes($value)) {
+				$term = $cterm;
 			}
-			elseif ($field == 'name' && isset(self::$tax_loc_map[$taxonomy])) {
-				$loc_type = self::$tax_loc_map[$taxonomy];
-				$locations = PL_Listing_Helper::locations_for_options();
-				if (in_array($value, $locations[$loc_type])) {
-					$term = self::create_object($taxonomy, $value);
+		}
+
+		if ($taxonomy) {
+			// if we have a taxonomy we can use api location information
+			if (($loc_type = self::$tax_loc_map[$taxonomy]) && ($locations = PL_Listing_Helper::locations_for_options())) {
+
+				if (!$term && $field == 'name') {
+					// is the incoming value an mls location?
+					if (in_array($value, $locations[$loc_type])) {
+						// check to see if the neighborhood already exists but has been renamed by the user
+						if(!$term = get_term_by('slug', sanitize_title_with_dashes($value), $taxonomy)) {
+							// otherwise make an object dynamically
+							$term = self::create_object($taxonomy, $value);
+						}
+						$term->api_field = $loc_type;
+						$term->api_term = $value;
+					}
+				}
+
+				elseif($term) {
+					// already found a user-defined term - now verify or find the original mls location
+					if (in_array($term->name, $locations[$loc_type])) {
+						$term->api_field = $loc_type;
+						$term->api_term = $term->name;
+					}
+					elseif ($key = array_search($term->slug, array_map('sanitize_title_with_dashes', $locations[$loc_type]))) {
+						$term->api_field = $loc_type;
+						$term->api_term = $locations[$loc_type][$key];
+					}
 				}
 			}
 		}
