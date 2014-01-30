@@ -52,6 +52,7 @@ jQuery(document).ready(function($) {
 		$('.pl_register_lead_link').fancybox({
 			"hideOnContentClick": false,
 			"scrolling": true,
+			wrapCSS: 'pl_fancybox_register_lead_link',
 			onCleanup: function () {
 				reset_form();
 			}
@@ -61,6 +62,7 @@ jQuery(document).ready(function($) {
 		$('.pl_login_link').fancybox({
 			"hideOnContentClick": false,
 			"scrolling": true,
+			wrapCSS: 'pl_fancybox_login_form',
 			onCleanup: function () {
 				reset_form();
 			}

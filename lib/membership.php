@@ -435,7 +435,7 @@ class PL_Membership {
 						<?php pls_do_atomic( 'register_form_before_submit' ); ?>
 
 						<p class="reg_form_submit">
-							<a id="switch_to_login" class="" href="#" style="float: left; margin-top: 15px">Already a User?</a>
+							<a id="switch_to_login" class="switch_to_login" class="" href="#" style="float: left; margin-top: 15px">Already a User?</a>
 							<input type="submit" tabindex="28" class="submit button" value="Register" id="pl_register" name="pl_register">
 						</p>
 						<?php echo wp_nonce_field( 'placester_true_registration', 'register_nonce_field' ); ?>
