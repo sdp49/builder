@@ -164,20 +164,21 @@ $PL_API_URLS_TABLE = array(
 	),
 );
 
-// Right now Blueprint stores all theme options in an option named for the theme, which
-// is number than a pounded thumb more often than it's helpful. Since BP isn't loaded yet we can't 
-// use pls_get_option here
+// Fetch the site ID from the options framework...
 $curr_theme = get_option('template');
 $theme_opts = get_option($curr_theme);
-$site_key = isset($theme_opts['pls_search_site_id']) ? $theme_opts['pls_search_site_id'] : '';
+$site_id = isset($theme_opts['pls_search_site_id']) ? $theme_opts['pls_search_site_id'] : '';
 
-if (!$site_key && defined('PLACESTER_ENV') && PLACESTER_ENV === 'staging') {
-	$site_key = 'staging';
+if (!empty($site_id) && array_key_exists($site_id, $PL_API_URLS_TABLE)) {
+	$PL_API_URLS = $PL_API_URLS_TABLE[$site_id];
 }
 
-// error_log('site key: ' . $site_key);
-if ( !is_null($site_key) && array_key_exists($site_key, $PL_API_URLS_TABLE) ) {
-	$PL_API_URLS = $PL_API_URLS_TABLE[$site_key];
+// As an override, if on running in the staging env, always use staging endpoints (but still use the stored site ID)
+// 
+// NOTE: the 'PLACESTER_ENV' constant is defined in the wp-config-db.php file included by the wp-config.php, and deployed
+// to the server running this codebase by Puppet (see DevOps for questions and/or to alter this...)
+if (defined('PLACESTER_ENV') && PLACESTER_ENV === 'staging') {
+	$PL_API_URLS = $PL_API_URLS_TABLE['staging'];
 }
 
 //config
