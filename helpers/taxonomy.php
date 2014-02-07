@@ -67,10 +67,14 @@ class PL_Taxonomy_Helper {
 
 	public static function get_polygon_links () {
 		$polygons = PL_Option_Helper::get_polygons();
-		foreach ($polygons as $key => $value) {
-			$polygons[$key]['url'] = get_term_link($value['slug'], $value['tax']);
+		$response = array();
+		foreach ($polygons as $polygon) {
+			$polygon['url'] = get_term_link($polygon['slug'], $polygon['tax']);
+			if (!is_wp_error($polygon['url'])) {
+				$response[] = $polygon;
+			}
 		}
-		return $polygons;
+		return $response;
 	}
 
 	public static function get_listings_polygon_name ($params) {
@@ -276,31 +280,43 @@ class PL_Taxonomy_Helper {
 
 	public static function get_polygons_by_type ($type = false) {
 		if (!$type) {
-			$type = $_POST['type'];
+			$type = isset($_POST['type']) ? $_POST['type'] : '';
 		}
 		$response = array();
 		$polygons = PL_Option_Helper::get_polygons();
-		foreach ($polygons as $key => $polygon) {
-			$polygon['permalink'] = get_term_link( $polygon['slug'], $polygon['tax'] );
+		foreach ($polygons as $polygon) {
 			if ($polygon['tax'] == $type) {
-				$response[] = $polygon;
+				$polygon['permalink'] = get_term_link( $polygon['slug'], $polygon['tax'] );
+				if (!is_wp_error($polygon['permalink'])) {
+					$response[] = $polygon;
+				}
 			}
 		}
 		return $response;
 	}
 
 	public static function ajax_get_polygons_by_slug () {
-		echo json_encode(self::get_polygons_by_slug($_POST['slug']));
+		echo json_encode(self::get_polygons_by_slug($_POST['slug'], $_POST['type']));
 		die();
 	}
 
-	public static function get_polygons_by_slug ($slug = false) {
+	public static function get_polygons_by_slug ($slug = false, $type = 'neighborhood') {
 		$response = array();
+		$tax = '';
+		// map location type to tax
+		foreach (self::$tax_loc_map as $mtax=>$mloc) {
+			if ($mloc == $type) {
+				$tax = $mtax;
+				break;
+			}
+		}
 		$polygons = PL_Option_Helper::get_polygons();
-		foreach ($polygons as $key => $polygon) {
-			$polygon['permalink'] = get_term_link( $polygon['slug'], $polygon['tax'] );
-			if ($polygon['slug'] == $slug) {
-				$response[] = $polygon;
+		foreach ($polygons as $polygon) {
+			if ($polygon['slug'] == $slug && $polygon['tax'] == $tax) {
+				$polygon['permalink'] = get_term_link( $polygon['slug'], $polygon['tax'] );
+				if (!is_wp_error($polygon['permalink'])) {
+					$response[] = $polygon;
+				}
 			}
 		}
 		return $response;
@@ -310,10 +326,12 @@ class PL_Taxonomy_Helper {
 		extract(wp_parse_args($args, array('tax' => false, 'slug' => false)));
 		$polygons = PL_Option_Helper::get_polygons();
 		if ($slug && $tax) {
-			foreach ($polygons as $key => $polygon) {
+			foreach ($polygons as $polygon) {
 				if ($polygon['slug'] == $slug && $polygon['tax'] == $tax) {
 					$polygon['permalink'] = get_term_link( $polygon['slug'], $polygon['tax'] );
-					return $polygon;
+					if (!is_wp_error($polygon['permalink'])) {
+						return $polygon;
+					}
 				}
 			}
 		}
@@ -378,9 +396,7 @@ class PL_Taxonomy_Helper {
 		$terms = get_terms( $tax, $args );
 		$response = array();
 		foreach ($terms as $key => $term) {
-			foreach ($term as $term_key => $term_value) {
-				$response[$key][$term_key] = $term_value;
-			}
+			$response[$key] = (array)$term;
 			$response[$key]['permalink'] = get_term_link($response[$key]['slug'], $tax);
 		}
 		return $response;
@@ -392,7 +408,6 @@ class PL_Taxonomy_Helper {
 	public static function get_term ($args = array()) {
 		extract(wp_parse_args($args, array('field'=>'slug', 'value'=>'', 'taxonomy'=>'', 'get_polygon'=>false)));
 		$term = get_term_by($field, $value, $taxonomy);
-		
 		if (!$term && $field == 'slug') {
 			// no match in tax db - see if this is a dynamically created location page
 			$cterm = PL_Pages::get_taxonomy_object();
@@ -462,7 +477,7 @@ class PL_Taxonomy_Helper {
 		}
 		return $templates;
 	}
-	
+
 	public static function create ($taxonomies) {
       	foreach ($taxonomies as $taxonomy) {
       		if ( !taxonomy_exists( $taxonomy['taxonomy_name'] ) ) {
