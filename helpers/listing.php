@@ -61,6 +61,10 @@ class PL_Listing_Helper {
 		if ($global_filters) { 
 			$args = PL_Global_Filters::merge_global_filters($args); 
 		}
+		// purchase_types is a special case in the API
+		if (!empty($args['purchase_types']) && !is_array($args['purchase_types'])) {
+			$args['purchase_types'] = array($args['purchase_types']);
+		}
 
 		/* REMOVE */
 		// if ($global_filters) {
