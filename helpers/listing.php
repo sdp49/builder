@@ -386,6 +386,33 @@ class PL_Listing_Helper {
 		return $options;
 	}
 
+	// helper to get purchase type options for a search form
+	public static function pur_types_for_options ($return_only = false, $allow_globals = true) {
+		$options = array();
+
+		// Use merge (with no arguments) to get the existing filters properly formatted for API calls...
+		$global_filters = PL_Global_Filters::merge_global_filters();
+
+		// If global filters related to location are set, incorporate those and use aggregates API...
+		if ( $allow_globals && !empty($global_filters) && !empty($global_filters['purchase_types']) ) {
+			$response['purchase_types'] = (array)$global_filters['purchase_types'];
+		}
+		else {
+			$response = PL_Listing::aggregates(array('keys' => array('purchase_types')));
+		}
+
+		if(!$response) {
+			return array();
+		}
+		// might be able to do this faster with array_fill_keys() -pk
+		foreach ($response['purchase_types'] as $key => $value) {
+			$options[$value] = ucwords($value);
+		}
+		ksort($options);
+		$options = array_merge(array('false' => 'Any'), $options);
+		return $options;
+	}
+
 	private static $memo_locations = array();
 	public static function locations_for_options ($return_only = false, $allow_globals = true) {
 		$options = array();
