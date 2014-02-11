@@ -534,6 +534,7 @@ class PL_Shortcode_CPT {
 	 * @return array
 	 */
 	public static function load_template($id, $shortcode) {
+		global $i_am_a_placester_theme;
 		$default = array();
 
 		if ($id && $shortcode && !empty(self::$shortcodes[$shortcode])) {
@@ -549,10 +550,10 @@ class PL_Shortcode_CPT {
 
 			// get builtin/default templates
 			$tpls = self::get_builtin_templates($shortcode);
-			if (!in_array($id, $tpls)) {
-				// use twenty ten if there's no template or it's not found
+			if (!in_array($id, $tpls) && !$i_am_a_placester_theme) {
+				// use twenty ten if we are not a placester theme and there's no template or it's not found
 				$id = 'twentyten';
-			}	
+			}
 			if (in_array($id, $tpls)) {
 				$template = array();
 				$filename = (trailingslashit(PL_VIEWS_SHORT_DIR) . trailingslashit($shortcode) . $id . '.php');
