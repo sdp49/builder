@@ -368,17 +368,17 @@ class PL_Listing_Helper {
 
 		// If global filters related to location are set, incorporate those and use aggregates API...
 		if ( $allow_globals && !empty($global_filters) && !empty($global_filters['property_type']) ) {
-			$response['cur_data.prop_type'] = (array)$global_filters['property_type'];
+			$response['property_type'] = (array)$global_filters['property_type'];
 		}
 		else {
-			$response = PL_Listing::aggregates(array('keys' => array('cur_data.prop_type')));
+			$response = PL_Listing::aggregates(array('keys' => array('property_type')));
 		}
 
 		if(!$response) {
 			return array();
 		}
 		// might be able to do this faster with array_fill_keys() -pk
-		foreach ($response['cur_data.prop_type'] as $key => $value) {
+		foreach ($response['property_type'] as $key => $value) {
 			$options[$value] = $value;
 		}
 		ksort($options);
