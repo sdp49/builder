@@ -76,13 +76,26 @@ class PL_Listing {
 	}
 
 	public static function locations ($args = array()) {
+		// Let's employ caching on this call since it is expensive, and is called uniformly/in the same way repeatedly...
+		$cache = new PL_Cache('locations');
+
+		// Check for a cached response...
+		if ($transient = $cache->get($args)) {
+			return $transient;
+		}
+
 		$config = PL_Config::PL_API_LISTINGS('get.locations');
 		$request = array_merge(array("api_key" => self::api_key()), PL_Validate::request($args, $config['args']));
 		if (defined('HOSTED_PLUGIN_KEY')) {
 			$request['hosted_key'] = HOSTED_PLUGIN_KEY;
 		}
 		
-		return PL_Validate::attributes(PL_HTTP::send_request($config['request']['url'], $request), $config['returns']);
+		$response = PL_Validate::attributes(PL_HTTP::send_request($config['request']['url'], $request), $config['returns']);
+
+		// Cache response for 48 hours...
+		$cache->save($response, PL_Cache::TTL_HIGH);
+
+		return $response;
 	}
 	public static function aggregates ($args = array()) {
 		$config = PL_Config::PL_API_LISTINGS('get.aggregate');
