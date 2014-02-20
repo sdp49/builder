@@ -53,7 +53,7 @@ class PL_Sitemaps {
 		$base = $GLOBALS['wp_rewrite']->using_index_permalinks() ? 'index.php/' : '';
 		$date = date('c');
 
-		$response = PL_Listing::get(array('limit'=>1));
+		$response = PL_Listing::get(array('limit'=>2));
 		if (!empty($response['total'])) {
 			if (!isset($seo_options['post_types-property-not_in_sitemap']) || !$seo_options['post_types-property-not_in_sitemap']) {
 				// property pages
@@ -125,14 +125,17 @@ class PL_Sitemaps {
 				$sitemap .= "\t\t<lastmod>" . $listing['updated_at'] . "</lastmod>\n";
 				$sitemap .= "\t\t<changefreq>weekly</changefreq>\n";
 				$sitemap .= "\t\t<priority>0.6</priority>\n";
+				$first = true;
 				if (!empty($listing['images'])) {
-					foreach($listing['images'] as $image) {
-						if ($image['order'] == 1) {
-							$sitemap .= "\t\t<image:image>\n";
-							$sitemap .= "\t\t\t<image:loc>" . esc_html($listing['images'][0]['url']) . "</image:loc>\n";
-							$sitemap .= "\t\t</image:image>\n";
-							break;
+					uasort($listing['images'], array(__CLASS__, '_image_sort'));
+					foreach($listing['images'] as $key => $image) {
+						$sitemap .= "\t\t<image:image>\n";
+						$sitemap .= "\t\t\t<image:loc>" . esc_html($image['url']) . "</image:loc>\n";
+						if ($first) {
+							$sitemap .= "\t\t\t<image:geo_location>" . esc_html($listing['location']['address'].', '.$listing['location']['locality'].', '.$listing['location']['region'].', '.$listing['location']['postal']) . "</image:geo_location>\n";
+							$first = false;
 						}
+						$sitemap .= "\t\t</image:image>\n";
 					}
 				}
 				$sitemap .= "\t</url>\n";
@@ -234,5 +237,9 @@ class PL_Sitemaps {
 		$content .= ob_get_clean();
 
 		$wpseo_admin_pages->postbox('pl_xmlsitemaps', '', $content);
+	}
+
+	public function _image_sort($a, $b) {
+		return $a['order'] > $b['order'];
 	}
 }
