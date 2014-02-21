@@ -40,7 +40,6 @@ class PL_Sitemaps {
 		$seo_options = get_wpseo_options();
 
 		// Make an API call to determine the total number of listings in a feed...
-		$date = date('c');
 		$response = PL_Listing::get(array('limit'=>1, 'cachebuster'=>time()));
 		$total = isset($response['total']) ? $response['total'] : 0;
 
@@ -55,6 +54,7 @@ class PL_Sitemaps {
 
 		// Cache miss -- construct sitemap index...
 		$base = $GLOBALS['wp_rewrite']->using_index_permalinks() ? 'index.php/' : '';
+		$date = date('c');
 		
 		if (!empty($total)) {
 			if (!isset($seo_options['post_types-property-not_in_sitemap']) || !$seo_options['post_types-property-not_in_sitemap']) {
