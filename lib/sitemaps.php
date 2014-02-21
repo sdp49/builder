@@ -53,7 +53,7 @@ class PL_Sitemaps {
 		$base = $GLOBALS['wp_rewrite']->using_index_permalinks() ? 'index.php/' : '';
 		$date = date('c');
 
-		$response = PL_Listing::get(array('limit'=>2));
+		$response = PL_Listing::get(array('limit'=>1, 'cachebuster'=>time()));
 		if (!empty($response['total'])) {
 			if (!isset($seo_options['post_types-property-not_in_sitemap']) || !$seo_options['post_types-property-not_in_sitemap']) {
 				// property pages
@@ -142,11 +142,12 @@ class PL_Sitemaps {
 			}
 
 			// if we are getting chunks in less than the requested amount then loop till got what we want
-			$offset += $response['count'];
-			if ($offset >= $response['total']) {
+			$count = count($response['listings']);
+			if ($count == 0) {
 				break;
 			}
-			$rem -= $response['count'];
+			$offset += $count;
+			$rem -= $count;
 		}
 
 		// Cache constructed sitemap for 12 hours...
