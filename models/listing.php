@@ -77,7 +77,7 @@ class PL_Listing {
 
 	public static function locations ($args = array()) {
 		// Let's employ caching on this call since it is expensive, and is called uniformly/in the same way repeatedly...
-		$cache = new PL_Cache('locations');
+		$cache = new PL_Cache('locations', true);
 
 		// Check for a cached response...
 		if ($transient = $cache->get($args)) {
