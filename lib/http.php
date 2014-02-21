@@ -83,7 +83,7 @@ Class PL_HTTP extends WP_Http {
 	    if (!$use_ecoding) {
 	    	$request_string = urldecode($request_string);
 	    }
-
+	    // error_log(var_export(debug_backtrace(), true));
 	    // error_log("Endpoint Logged As: {$method} {$url}?{$request_string}");
 
 	    $wp_http = self::_get_object();

@@ -97,6 +97,7 @@ class PL_Listing {
 
 		return $response;
 	}
+	
 	public static function aggregates ($args = array()) {
 		$config = PL_Config::PL_API_LISTINGS('get.aggregate');
 		$request = array_merge(array("api_key" => self::api_key()), PL_Validate::request($args, $config['args']));

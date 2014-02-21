@@ -49,7 +49,6 @@ class PL_Sitemaps {
 		}
 
 		// Cache miss -- construct sitemap index...
-
 		$base = $GLOBALS['wp_rewrite']->using_index_permalinks() ? 'index.php/' : '';
 		$date = date('c');
 
