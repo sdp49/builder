@@ -39,9 +39,14 @@ class PL_Sitemaps {
 		global $wpseo_sitemaps;
 		$seo_options = get_wpseo_options();
 
+		// Make an API call to determine the total number of listings in a feed...
+		$date = date('c');
+		$response = PL_Listing::get(array('limit'=>1, 'cachebuster'=>time()));
+		$total = isset($response['total']) ? $response['total'] : 0;
+
 		// Try to fetch from cache...
 		$cache = new PL_Cache('sitemap_index');
-		$sitemap_index = $cache->get($seo_options);
+		$sitemap_index = $cache->get($total, $seo_options);
 
 		if (!empty($sitemap_index)) {
 			// Cache hit -- return cached HTML...
@@ -50,13 +55,11 @@ class PL_Sitemaps {
 
 		// Cache miss -- construct sitemap index...
 		$base = $GLOBALS['wp_rewrite']->using_index_permalinks() ? 'index.php/' : '';
-		$date = date('c');
-
-		$response = PL_Listing::get(array('limit'=>1, 'cachebuster'=>time()));
-		if (!empty($response['total'])) {
+		
+		if (!empty($total)) {
 			if (!isset($seo_options['post_types-property-not_in_sitemap']) || !$seo_options['post_types-property-not_in_sitemap']) {
 				// property pages
-				$count = $response['total'];
+				$count = $total;
 				$n = ( $count > self::$max_prop_entries ) ? (int) ceil( $count / self::$max_prop_entries ) : 1;
 				for ( $i = 0; $i < $n; $i++ ) {
 					$count = ( $n > 1 ) ? $i + 1 : '';
