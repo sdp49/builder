@@ -144,11 +144,12 @@ class PL_Sitemaps {
 			}
 
 			// if we are getting chunks in less than the requested amount then loop till got what we want
-			$offset += $response['count'];
-			if ($offset >= $response['total']) {
+			$count = count($response['listings']);
+			if ($count == 0) {
 				break;
 			}
-			$rem -= $response['count'];
+			$offset += $count;
+			$rem -= $count;
 		}
 
 		// Cache constructed sitemap for 12 hours...
