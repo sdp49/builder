@@ -40,7 +40,7 @@ class PL_Sitemaps {
 		$seo_options = get_wpseo_options();
 
 		// Make an API call to determine the total number of listings in a feed...
-		$response = PL_Listing::get(array('limit'=>1, 'cachebuster'=>time()));
+		$response = PL_Listing_Helper::results(array('limit'=>1, 'cachebuster'=>time()));
 		$total = isset($response['total']) ? $response['total'] : 0;
 
 		// Try to fetch from cache...
@@ -116,7 +116,7 @@ class PL_Sitemaps {
 
 		while ($rem > 0) {
 			$args = array('offset'=>$offset, 'limit'=>self::$max_prop_entries);
-			$response = PL_Listing::get($args);
+			$response = PL_Listing_Helper::results($args);
 
 			foreach($response['listings'] as $listing) {
 				self::$current_listing = $listing['location'];
