@@ -77,6 +77,18 @@
     </div>
   <?php endif; ?>
 
+  <?php if ( !($user_email_exists || $org_email_exists) ): ?>
+	<div class="row">
+	  <div class="info">
+	    <h3>Email Address</h3>
+	    <p>This will help us provide prompt support to get your integration setup.</p>
+	  </div>
+	  <div class="elements">
+	    <input id="email" name="email" type="text">
+      </div>
+	</div>
+  <?php endif; ?>
+
   <?php if ( isset($submit) && $submit ): ?>
     <div class="row">
       <input type="submit" class="button-primary" />
