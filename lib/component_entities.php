@@ -1404,6 +1404,10 @@ To add some text to your listings:<br />
 					<?php if ($group['map']['atts']['sync_map_to_list']): ?>
 						init_args.sync_map_to_list = true;
 					<?php endif ?>
+					<?php if ($group['map']['atts']['lat'] && $group['map']['atts']['lng']): ?>
+						init_args.lat = '<?php echo $group['map']['atts']['lat'] ?>';
+						init_args.lng = '<?php echo $group['map']['atts']['lng'] ?>';
+					<?php endif ?>
 					init_args.type = '<?php echo $group['map']['atts']['type'] ?>';
 					init_args.filter_by_bounds = false;
 
