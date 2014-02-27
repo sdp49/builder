@@ -311,13 +311,7 @@ To add some text to your listings:<br />
 		$atts = wp_parse_args($atts, array('context' => 'shortcode', 'type' => 'listings', 'sync_map_to_list' => false));
 		$atts['context'] = empty($atts['context']) ? 'shortcode' : $atts['context'];
 		
-		$encoded_atts = array(
-				'width' => $atts['width'],
-				'height' => $atts['height'],
-				'type' => $atts['type']
-		);
-
-		$encoded_atts = json_encode( $encoded_atts );
+		$encoded_atts = json_encode(array_intersect_key($atts, array_flip(array('width', 'height', 'type', 'lat', 'lng'))));
 
 		if (!has_filter('pls_search_map_' . $atts['context'])) {
 			add_filter('pls_search_map_' . $atts['context'], array(__CLASS__,'pls_search_map_callback'), 10, 3);
@@ -352,7 +346,7 @@ To add some text to your listings:<br />
 			// var status = new Status_Window ({map: map, listings:listings});
 
 			// fill map init args
-			var init_args = new Object();
+			var init_args = json_atts;
 
 			init_args.type = json_atts.type;
 			init_args.listings = listings;
