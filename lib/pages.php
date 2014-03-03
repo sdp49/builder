@@ -22,10 +22,9 @@ class PL_Pages {
 	private static $taxonomy_object = null;
 
 	public static function init () {
+		// NOTE: The three filters/hooks below are hit on each request in the order they are listed -- 
+		// these are the crux of how virtual property CPTs and tax pages are rendered...
 		add_action('init', array(__CLASS__, 'setup_rewrite'));
-
-		// NOTE: The three filters below are hit each on each request in the order they are listed
-		add_filter('query_vars', array(__CLASS__, 'setup_url_vars'));
 		add_filter('pre_get_posts', array(__CLASS__, 'detect_virtual_pages'));
 		add_filter('the_posts', array(__CLASS__, 'the_posts'));
 
@@ -111,18 +110,10 @@ class PL_Pages {
 	}
 
 	/**
-	 * Setup wp_query values to detect parameters
-	 */
-	public static function setup_url_vars($vars)	{
-		array_push($vars, 'property');
-
-		return $vars;
-	}
-
-	/**
 	 * Fetch listing details if this is a details page
 	 */
 	public static function detect_virtual_pages($query) {
+		// If the URL matched either of the rewrite rules listed in "setup_rewrite", then a "property" query variable will be set...
 		if (!empty($query->query_vars['property'])) {
 			$args = array('listing_ids' => array($query->query_vars['property']));
 
