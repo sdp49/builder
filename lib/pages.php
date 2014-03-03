@@ -198,20 +198,8 @@ class PL_Pages {
 			$qo = $wp_query->get_queried_object();
 			if (!is_object($qo)) {
 				$tax = $wp_query->query_vars['taxonomy'];
-				switch($tax) {
-					case 'state':
-						$loc = 'region';
-						break;
-					case 'city':
-						$loc = 'locality';
-						break;
-					case 'zip':
-						$loc = 'postal';
-						break;
-					default:
-						$loc = $tax;
-						break;
-				}
+				$locs = PL_Taxonomy_Helper::get_tax_loc_map();
+				$loc = isset($locs[$tax]) ? $locs[$tax] : $tax; 
 				$slug = self::format_url_slug($wp_query->query_vars[$tax]);
 				// check if this is an mls neighborhood
 				$response = PL_Listing::locations();
@@ -220,35 +208,31 @@ class PL_Pages {
 					$key = array_search( $slug, array_map( array(__CLASS__, 'format_url_slug'), $response[$loc] ) );
 					if ($key !== false) {
 						// see if we have an area page
-						$locs = PL_Taxonomy_Helper::get_tax_loc_map();
-						if (!empty($locs[$tax])) {
-							$area_type = $locs[$tax];
-							$area_pages = get_posts(array('post_type'=>'area','meta_key'=>'area_type','meta_value'=>$area_type));
-							foreach($area_pages as $area_page) {
-								$location = get_post_custom_values('area_name', $area_page->ID);
-								if ($location[0] == $response[$loc][$key]) {
-									// change the query into a search for an area cpt - it will search for matching area
-									// pages and route accordingly
-									pls_trace($area_page);
-									$wp_query->set('post_type', 'area');
-									$wp_query->set('area', $area_page->post_name);
-									$wp_query->set('name', $area_page->post_name);
-									$wp_query->set('taxonomy', '');
-									$wp_query->set('term', '');
-									$wp_query->set($tax, '');
-									$wp_query->is_page = true;
-									$wp_query->is_singular = true;
-									$wp_query->is_home = false;
-									$wp_query->is_archive = false;
-									$wp_query->is_category = false;
-									$wp_query->is_404 = false;
-									$wp_query->is_tax = false;
-									$wp_query->tax_query = null;
-									$wp_query->query = null;
-									$wp_query->request = null;
-									pls_trace($wp_query);
-									return array();
-								}
+						$area_pages = get_posts(array('post_type'=>'area','meta_key'=>'area_type','meta_value'=>$loc));
+						foreach($area_pages as $area_page) {
+							$location = get_post_custom_values('area_name', $area_page->ID);
+							if ($location[0] == $response[$loc][$key]) {
+								// change the query into a search for an area cpt - it will search for matching area
+								// pages and route accordingly
+								pls_trace($area_page);
+								$wp_query->set('post_type', 'area');
+								$wp_query->set('area', $area_page->post_name);
+								$wp_query->set('name', $area_page->post_name);
+								$wp_query->set('taxonomy', '');
+								$wp_query->set('term', '');
+								$wp_query->set($tax, '');
+								$wp_query->is_page = true;
+								$wp_query->is_singular = true;
+								$wp_query->is_home = false;
+								$wp_query->is_archive = false;
+								$wp_query->is_category = false;
+								$wp_query->is_404 = false;
+								$wp_query->is_tax = false;
+								$wp_query->tax_query = null;
+								$wp_query->query = null;
+								$wp_query->request = null;
+								pls_trace($wp_query);
+								return array();
 							}
 						}
 						// create a fake taxonomy page instead
