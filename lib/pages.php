@@ -24,7 +24,7 @@ class PL_Pages {
 	public static function init () {
 		add_action('init', array(__CLASS__, 'setup_rewrite'));
 
-		// The three filters below are hit each on each request in the order they are listed (init above is first, of course)		
+		// NOTE: The three filters below are hit each on each request in the order they are listed
 		add_filter('query_vars', array(__CLASS__, 'setup_url_vars'));
 		add_filter('pre_get_posts', array(__CLASS__, 'detect_virtual_pages'));
 		add_filter('the_posts', array(__CLASS__, 'the_posts'));
