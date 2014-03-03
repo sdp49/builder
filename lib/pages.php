@@ -23,9 +23,12 @@ class PL_Pages {
 
 	public static function init () {
 		add_action('init', array(__CLASS__, 'setup_rewrite'));
-		add_filter('pre_get_posts', array(__CLASS__, 'detect_virtual_pages'));
+
+		// The three filters below are hit each on each request in the order they are listed (init above is first, of course)		
 		add_filter('query_vars', array(__CLASS__, 'setup_url_vars'));
+		add_filter('pre_get_posts', array(__CLASS__, 'detect_virtual_pages'));
 		add_filter('the_posts', array(__CLASS__, 'the_posts'));
+
 		add_filter('post_type_link', array(__CLASS__, 'get_property_permalink'), 10, 3);
 
 		add_action('wp_footer', array(__CLASS__,'force_rewrite_update'));
