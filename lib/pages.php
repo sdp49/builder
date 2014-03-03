@@ -103,9 +103,23 @@ class PL_Pages {
 	 */
 	public static function setup_rewrite(){
 		// do not make public or Yoast will create sitemaps - we are making our own elsewhere
-		register_post_type(self::$property_post_type, array('labels'=>array('name'=>__('Properties'), 'singular_name'=>__('property')), 'public'=>false, 'has_archive'=>true, 'rewrite'=>true, 'query_var'=>true, 'taxonomies'=>array(), 'exclude_from_search'=>true, 'publicly_queryable'=>false));
+		$cpt_args = array(
+			'labels'=> array('name'=>__('Properties'), 'singular_name'=>__('property')),
+			'public'=> false,
+			'has_archive' => true,
+			'rewrite' => true,
+			'query_var' => true,
+			'taxonomies' => array(),
+			'exclude_from_search' => true,
+			'publicly_queryable'=> false
+		);
+
+		register_post_type(self::$property_post_type, $cpt_args);
+
+		// Traditional property page URL structure...
 		add_rewrite_rule('property/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]*)/([^/]+)/?$', 'index.php?property=$matches[6]', 'top');
-		// in case someone has old style link cached
+		
+		// Alternative property page URL format...
 		add_rewrite_rule('property/([^/]+)/?$', 'index.php?property=$matches[1]', 'top');
 	}
 
@@ -205,7 +219,7 @@ class PL_Pages {
 							if ($location[0] == $response[$loc][$key]) {
 								// change the query into a search for an area cpt - it will search for matching area
 								// pages and route accordingly
-								pls_trace($area_page);
+								// pls_trace($area_page);
 								$wp_query->set('post_type', 'area');
 								$wp_query->set('area', $area_page->post_name);
 								$wp_query->set('name', $area_page->post_name);
@@ -222,7 +236,7 @@ class PL_Pages {
 								$wp_query->tax_query = null;
 								$wp_query->query = null;
 								$wp_query->request = null;
-								pls_trace($wp_query);
+								// pls_trace($wp_query);
 								return array();
 							}
 						}
