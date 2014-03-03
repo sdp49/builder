@@ -216,6 +216,35 @@ class PL_Pages {
 				if (!empty($response[$loc])) {
 					$key = array_search( $slug, array_map( array(__CLASS__, 'format_url_slug'), $response[$loc] ) );
 					if ($key !== false) {
+						// see if we have an area page
+						$area_pages = get_posts(array('post_type'=>'area','meta_key'=>'area_type','meta_value'=>$tax));
+						foreach($area_pages as $area_page) {
+							$location = get_post_custom_values('area_name', $area_page->ID);
+							if ($location[0] == $response[$loc][$key]) {
+								// change the query into a search for an area cpt - it will search for matching area
+								// pages and route accordingly
+								pls_trace($area_page);
+								$wp_query->set('post_type', 'area');
+								$wp_query->set('area', $area_page->post_name);
+								$wp_query->set('name', $area_page->post_name);
+								$wp_query->set('taxonomy', '');
+								$wp_query->set('term', '');
+								$wp_query->set($tax, '');
+								$wp_query->is_page = true;
+								$wp_query->is_singular = true;
+								$wp_query->is_home = false;
+								$wp_query->is_archive = false;
+								$wp_query->is_category = false;
+								$wp_query->is_404 = false;
+								$wp_query->is_tax = false;
+								$wp_query->tax_query = null;
+								$wp_query->query = null;
+								$wp_query->request = null;
+								pls_trace($wp_query);
+								return array();
+							}
+						}
+						// create a fake taxonomy page instead
 						$qo = new stdClass();
 						$qo->term_id = -1;
 						$qo->name = $response[$loc][$key];
