@@ -283,7 +283,7 @@ class PL_Pages {
 		global $wp_query;
 
 		// Default the value returned to null, unless we find a matching area page...
-		$area_page = null;
+		$matched_area_page = null;
 
 		// Fetch area pages that match the passed location type...
 		$area_pages = get_posts(
@@ -307,7 +307,7 @@ class PL_Pages {
 				$area_page->post_type = 'area';
 
 				// Set the posts array to this single area CPT so that it fetches that content...
-				$area_page = $area_page;
+				$matched_area_page = $area_page;
 
 				$wp_query->is_singular = true;
 				$wp_query->is_single = true;
@@ -321,8 +321,8 @@ class PL_Pages {
 				$wp_query->request = null;
 			}
 		}
-
-		return $area_page;
+		
+		return $matched_area_page;
 	}
 
 	/**
