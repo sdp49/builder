@@ -199,45 +199,32 @@ class PL_Pages {
 		}
 		elseif (!empty($wp_query->query_vars['taxonomy']) && !empty($wp_query->query_vars[$wp_query->query_vars['taxonomy']])
 			&& (!empty($wp_query->query_vars['neighborhood']) || !empty($wp_query->query_vars['zip']) || !empty($wp_query->query_vars['city']) || !empty($wp_query->query_vars['state']))) {
-			// location page - create a term object if we dont have anything saved for this neighborhood
+			// Fetch needed vars..
+			$tax = $wp_query->query_vars['taxonomy'];
+			$locs = PL_Taxonomy_Helper::get_tax_loc_map();
+			$loc = isset($locs[$tax]) ? $locs[$tax] : $tax; 
+			$slug = self::format_url_slug($wp_query->query_vars[$tax]);
+
+			// Attempt to fetch the inferred 'queried object'...
 			$qo = $wp_query->get_queried_object();
+
+			// Create a term object if we don't have anything saved for this location...
 			if (!is_object($qo)) {
-				$tax = $wp_query->query_vars['taxonomy'];
-				$locs = PL_Taxonomy_Helper::get_tax_loc_map();
-				$loc = isset($locs[$tax]) ? $locs[$tax] : $tax; 
-				$slug = self::format_url_slug($wp_query->query_vars[$tax]);
-				// check if this is an mls neighborhood
 				$response = PL_Listing::locations();
 				
+				// Check if this area is a valid member of the list of known locations...
 				if (!empty($response[$loc])) {
 					$key = array_search( $slug, array_map( array(__CLASS__, 'format_url_slug'), $response[$loc] ) );
 					if ($key !== false) {
-						// see if we have an area page
-						$area_pages = get_posts(array('post_type'=>'area','meta_key'=>'area_type','meta_value'=>$loc));
-						foreach($area_pages as $area_page) {
-							$location = get_post_custom_values('area_name', $area_page->ID);
-							if ($location[0] == $response[$loc][$key]) {
-								// Add post_type field to the post itself, as it doesn't exist in the query_vars...
-								$area_page->post_type = 'area';
+						// Try to fetch a related area page...
+						$area_page = self::check_for_area_page($loc, $slug);
 
-								// Set the posts array to this single area CPT so that it fetches that content...
-								$posts = array($area_page);
-
-								$wp_query->is_singular = true;
-								$wp_query->is_single = true;
-								$wp_query->is_home = false;
-								$wp_query->is_archive = false;
-								$wp_query->is_category = false;
-								$wp_query->is_404 = false;
-								$wp_query->is_tax = false;
-								$wp_query->tax_query = null;
-								$wp_query->query = null;
-								$wp_query->request = null;
-								
-								return $posts;
-							}
+						// If a matching area page exists, return that single area CPT so that its content is what gets rendered...
+						if (!empty($area_page)) {
+							return array($area_page);
 						}
-						// create a fake taxonomy page instead
+						
+						// Create a virtual taxonomy page instead...
 						$qo = new stdClass();
 						$qo->term_id = -1;
 						$qo->name = $response[$loc][$key];
@@ -254,6 +241,16 @@ class PL_Pages {
 						$wp_query->queried_object_id = -1;
 						self::$taxonomy_object = $qo;
 					}
+				}
+			}
+			// Even when we have a valid term object, check to see if it correlates to an area page and handle accordingly...
+			else {
+				// Try to fetch a related area page...
+				$area_page = self::check_for_area_page($loc, $slug);
+
+				// Set the posts array to the single, matching area CPT so that it fetches that content instead...
+				if (!empty($area_page)) {
+					$posts = array($area_page);
 				}
 			}
 		}
@@ -280,6 +277,52 @@ class PL_Pages {
 
 	public static function get_taxonomy_object() {
 		return self::$taxonomy_object;
+	}
+
+	public static function check_for_area_page($loc, $slug) {
+		global $wp_query;
+
+		// Default the value returned to null, unless we find a matching area page...
+		$area_page = null;
+
+		// Fetch area pages that match the passed location type...
+		$area_pages = get_posts(
+			array(
+				'post_type' => 'area', 
+				'meta_key' => 'area_type', 
+				'meta_value' => $loc
+			)
+		);
+		
+		// Iterate through the matched area pages to check and see if any match the location page trying to be accessed...
+		foreach($area_pages as $area_page) {
+			// Fetch the area page's name (it's stored as a postmeta value)...
+			$location = get_post_custom_values('area_name', $area_page->ID);
+			
+			if (self::format_url_slug($location[0]) == $slug) {
+				// Nullify existing query object, in case one exists...
+				$wp_query->queried_object = null;
+
+				// Add post_type field to the post itself, as it doesn't exist in the query_vars...
+				$area_page->post_type = 'area';
+
+				// Set the posts array to this single area CPT so that it fetches that content...
+				$area_page = $area_page;
+
+				$wp_query->is_singular = true;
+				$wp_query->is_single = true;
+				$wp_query->is_home = false;
+				$wp_query->is_archive = false;
+				$wp_query->is_category = false;
+				$wp_query->is_404 = false;
+				$wp_query->is_tax = false;
+				$wp_query->tax_query = null;
+				$wp_query->query = null;
+				$wp_query->request = null;
+			}
+		}
+
+		return $area_page;
 	}
 
 	/**
