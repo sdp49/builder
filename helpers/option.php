@@ -127,8 +127,56 @@ class PL_Option_Helper {
 	}
 
 	public static function get_default_country () {
-		$result = PL_Options::get('pls_default_country');	
+		$result = PL_Options::get('pls_default_country');
 		return $result;
+	}
+
+	public static function set_default_location ($lat, $lng) {
+		return PL_Options::set('pls_default_location', array('lat' => $lat, 'lng' => $lng));
+	}
+
+	public static function get_default_location () {
+		$result = PL_Options::get('pls_default_location');
+		if ($result) { return $result; }
+
+		$response = PL_Helper_User::whoami();
+		if ($response) {
+
+			// user info
+			if (isset($response['user']) && isset($response['user']['location'])) {
+				$loc = $response['user']['location'];
+				$lat = $loc['latitude'];
+				$lng = $loc['longitude'];
+				if ($lat && $lng) {
+					return array('lat' => $lat, 'lng' => $lng);
+				}
+
+				$address = $loc['address'] . " " . $loc['locality'] . ", " . $loc['region'];
+				$geo = PLS_Format::get_lat_lng_of_address($address);
+				if ($geo && $geo['lat'] && $geo['lng']) {
+					return $geo;
+				}
+			}
+
+			// company info
+			if (isset($response['location'])) {
+				$loc = $response['location'];
+				$lat = $loc['latitude'];
+				$lng = $loc['longitude'];
+				if ($lat && $lng) {
+					return array('lat' => $lat, 'lng' => $lng);
+				}
+
+				$address = $loc['address'] . " " . $loc['locality'] . ", " . $loc['region'];
+				$geo = PLS_Format::get_lat_lng_of_address($address);
+				if ($geo && $geo['lat'] && $geo['lng']) {
+					return $geo;
+				}
+			}
+		}
+
+		// default
+		return array('lat' => 42.3596681, 'lng' => -71.0599325);
 	}
 
 	public static function set_translations ($dictionary) {
