@@ -86,6 +86,13 @@ jQuery(document).ready(function($) {
 		favorites_link_signup();
 	}
 
+	hookup_listings();
+
+	$(document).ajaxStop(function() {
+		// favorite link on dynamically loaded listings
+		hookup_listings();
+	});
+
 
 	function favorites_link_signup () {
 		$('.pl_register_lead_favorites_link').fancybox({
@@ -247,69 +254,73 @@ jQuery(document).ready(function($) {
 	 * Property/Listing "favorites" functionality...
 	 */
 
-	// Don't ajaxify the add to favorites link for guests
-	$('#pl_add_favorite:not(.guest)').click(function (event) {
-		event.preventDefault();
-
-		var spinner = $(this).parent().find(".pl_spinner");
-		spinner.show();
-
-		property_id = $(this).attr('href');
-
-		data = {
-				action: 'add_favorite_property',
-				property_id: property_id.substr(1)
-		};
-
-		var that = this;
-		$.post(info.ajaxurl, data, function (response) {
-			spinner.hide();
-
-			// This property will only be set if WP determines user is of admin status...
-			if (response && response.is_admin) {
-				alert('Sorry, admins currently aren\'t able to maintain a list of "favorite" listings');
-			}
-			else if (response && response.id) {
-				$(that).parent().find('#pl_add_favorite').hide();
-				$(that).parent().find('#pl_remove_favorite').show();
-
-				if (typeof window.plsUserFavs !== 'undefined') {
-					plsUserFavs.push(parseInt(data.property_id));
+	// do this as a function so we can hookup listings that are loaded dynamically
+	function hookup_listings() {
+		
+		// Don't ajaxify the add to favorites link for guests
+		$('.pl_add_favorite:not(.guest)').click(function (event) {
+			event.preventDefault();
+	
+			var spinner = $(this).parent().find(".pl_spinner");
+			spinner.show();
+	
+			property_id = $(this).attr('href');
+	
+			data = {
+					action: 'add_favorite_property',
+					property_id: property_id.substr(1)
+			};
+	
+			var that = this;
+			$.post(info.ajaxurl, data, function (response) {
+				spinner.hide();
+	
+				// This property will only be set if WP determines user is of admin status...
+				if (response && response.is_admin) {
+					alert('Sorry, admins currently aren\'t able to maintain a list of "favorite" listings');
 				}
-			}
-			else {
-				console.log("Error adding favorite...");
-			}
-		}, 'json');
-	});
-
-	$('#pl_remove_favorite').click(function (event) {
-		event.preventDefault();
-		var that = this;
-		var spinner = $(this).parent().find(".pl_spinner");
-		spinner.show();
-
-		property_id = $(this).attr('href');
-		data = {
-				action: 'remove_favorite_property',
-				property_id: property_id.substr(1)
-		};
-
-		$.post(info.ajaxurl, data, function (response) {
-			spinner.hide();
-			// If request successfull
-			if (response != 'errors') {
-				$(that).parent().find('#pl_remove_favorite').hide();
-				$(that).parent().find('#pl_add_favorite').show();
-
-				if (typeof window.plsUserFavs !== 'undefined') {
-					for (var i in plsUserFavs) {
-						if (plsUserFavs[i] === parseInt(property_id.substr(1))) {
-							delete plsUserFavs[i];
+				else if (response && response.id) {
+					$(that).parent().find('#pl_add_favorite').hide();
+					$(that).parent().find('#pl_remove_favorite').show();
+	
+					if (typeof window.plsUserFavs !== 'undefined') {
+						plsUserFavs.push(parseInt(data.property_id));
+					}
+				}
+				else {
+					console.log("Error adding favorite...");
+				}
+			}, 'json');
+		});
+	
+		$('.pl_remove_favorite').click(function (event) {
+			event.preventDefault();
+			var that = this;
+			var spinner = $(this).parent().find(".pl_spinner");
+			spinner.show();
+	
+			property_id = $(this).attr('href');
+			data = {
+					action: 'remove_favorite_property',
+					property_id: property_id.substr(1)
+			};
+	
+			$.post(info.ajaxurl, data, function (response) {
+				spinner.hide();
+				// If request successfull
+				if (response != 'errors') {
+					$(that).parent().find('#pl_remove_favorite').hide();
+					$(that).parent().find('#pl_add_favorite').show();
+	
+					if (typeof window.plsUserFavs !== 'undefined') {
+						for (var i in plsUserFavs) {
+							if (plsUserFavs[i] === parseInt(property_id.substr(1))) {
+								delete plsUserFavs[i];
+							}
 						}
 					}
 				}
-			}
-		}, 'json');
-	}); 
+			}, 'json');
+		});
+	}
 });

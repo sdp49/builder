@@ -195,13 +195,13 @@ class PL_People_Helper {
 
             <?php if (is_user_logged_in()): ?>
                 <?php pls_do_atomic( 'before_add_to_fav_registered' ); ?>
-                <a href="<?php echo "#" . $property_id ?>" id="pl_add_favorite" class="pl_prop_fav_link" <?php echo $is_favorite ? 'style="display:none;"' : '' ?>><?php echo $add_text ?></a>
+                <a href="<?php echo "#" . $property_id ?>" id="pl_add_favorite" class="pl_prop_fav_link pl_add_favorite" <?php echo $is_favorite ? 'style="display:none;"' : '' ?>><?php echo $add_text ?></a>
             <?php else: ?>
                 <?php pls_do_atomic( 'before_add_to_fav_unregistered' ); ?>
                 <a class="pl_register_lead_favorites_link" href="#pl_lead_register_form"><?php echo $add_text ?> </a>
             <?php endif ?>
 
-            <a href="<?php echo "#" . $property_id ?>" id="pl_remove_favorite" class="pl_prop_fav_link" <?php echo !$is_favorite ? 'style="display:none;"' : '' ?>><?php echo $remove_text ?></a>
+            <a href="<?php echo "#" . $property_id ?>" id="pl_remove_favorite" class="pl_prop_fav_link pl_remove_favorite" <?php echo !$is_favorite ? 'style="display:none;"' : '' ?>><?php echo $remove_text ?></a>
             <img class="pl_spinner" src="<?php echo $spinner ?>" alt="ajax-spinner" style="display:none; margin-left:5px;">
 
             <?php pls_do_atomic( 'after_add_to_fav' ); ?>
