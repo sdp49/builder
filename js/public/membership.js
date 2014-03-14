@@ -7,13 +7,13 @@ jQuery(document).ready(function($) {
 	$('form#pl_login_form').on('mousedown', 'input[type="submit"]', function() {
 		validate_login_form(this);
 	});
-	$('.pl_lead_register_form').bind('keypress', function(e) {
+	$('.pl_lead_register_form').keypress(function(e) {
 		var code = e.keyCode || e.which;
 		if (code == 13) {
 			validate_register_form(this);
 		}
 	});
-	$('#pl_login_form').bind('keypress', function(e) {
+	$('#pl_login_form').keypress(function(e) {
 		var code = e.keyCode || e.which;
 		if (code == 13) {
 			validate_login_form(this);
@@ -21,14 +21,14 @@ jQuery(document).ready(function($) {
 	});
 
 	// Actual form submission - validate and submit
-	$('.pl_lead_register_form').bind('submit', function (event) {	 
+	$('.pl_lead_register_form').submit(function (event) {
 		// Prevent default form submission logic
 		event.preventDefault();
 		if (validate_register_form(this)) {
 			register_user(this);
 		}
 	});
-	$('form#pl_login_form').bind('submit', function (event) {
+	$('form#pl_login_form').submit(function (event) {
 		event.preventDefault();
 		if (validate_login_form(this)) {
 			login_user(this);
@@ -46,15 +46,20 @@ jQuery(document).ready(function($) {
 	if (typeof $.fancybox == "function") {
 		// If reg form available or logged in then show add to favorites 
 		if ($('.pl_lead_register_form').length || $('.pl_add_remove_lead_favorites #pl_add_favorite').length) {
-			$('div#pl_add_remove_lead_favorites,.pl_add_remove_lead_favorites').show();		
+			$('div#pl_add_remove_lead_favorites,.pl_add_remove_lead_favorites').show();
 		}
 		// Register Form Fancybox
 		$('.pl_register_lead_link').fancybox({
 			"hideOnContentClick": false,
 			"scrolling": true,
 			wrapCSS: 'pl_fancybox_register_lead_link',
-			onCleanup: function () {
-				reset_form();
+			// TODO: remove when we dont have FancyBox < 2.0 
+			onCleanup: function() {
+				reset_fb_form(this);
+			},
+			// FancyBox 2+
+			beforeClose: function() {
+				reset_fb_form(this);
 			}
 		});
 
@@ -63,28 +68,39 @@ jQuery(document).ready(function($) {
 			"hideOnContentClick": false,
 			"scrolling": true,
 			wrapCSS: 'pl_fancybox_login_form',
-			onCleanup: function () {
-				reset_form();
+			// TODO: see above 
+			onCleanup: function() {
+				reset_fb_form(this);
+			},
+			// FancyBox 2+
+			beforeClose: function() {
+				reset_fb_form(this);
 			}
 		});
 
 		$(document).ajaxStop(function() {
+			// favorite link on dynamically loaded listings
 			favorites_link_signup();
 		});
+		
+		favorites_link_signup();
 	}
 
-	favorites_link_signup();
 
 	function favorites_link_signup () {
-		if (typeof $.fancybox == 'function') {
-			$('.pl_register_lead_favorites_link').fancybox({
-				"hideOnContentClick": false,
-				"scrolling": true,
-				onCleanup: function () {
-					reset_form();
-				}
-			}); 
-		}
+		$('.pl_register_lead_favorites_link').fancybox({
+			"hideOnContentClick": false,
+			"scrolling": true,
+			wrapCSS: 'pl_fancybox_register_lead_link',
+			// TODO: see above 
+			onCleanup: function() {
+				reset_fb_form(this);
+			},
+			// FancyBox 2+
+			beforeClose: function() {
+				reset_fb_form(this);
+			}
+		}); 
 	}
 
 	// Called with form data after validation 
@@ -99,7 +115,7 @@ jQuery(document).ready(function($) {
 				password: $form.find('#reg_user_password').val(),
 				confirm: $form.find('#reg_user_confirm').val()
 		};
-		
+
 		$.post(info.ajaxurl, data, function (response) {
 			if (response && response.success) {
 				// Remove error messages
@@ -114,7 +130,7 @@ jQuery(document).ready(function($) {
 				// Reload window so it shows new login status
 				setTimeout(function () { window.location.reload(true); }, 1000);
 			}
-			else {
+			else if (jQuery().validator) {
 				// Error Handling
 				var errors = (response && response.errors) ? response.errors : {};
 
@@ -163,7 +179,7 @@ jQuery(document).ready(function($) {
 				// Reload window so it shows new login status
 				window.location.reload(true);
 			} 
-			else {
+			else if (jQuery().validator) {
 				// Error Handling
 				var errors = (response && response.errors) ? response.errors : {};
 
@@ -207,22 +223,22 @@ jQuery(document).ready(function($) {
 		var $form = $(form_el).closest('form');
 
 		if(jQuery().validator) {
-		// get fields that are required from form and execute validator()
-		var inputs = $form.find("input[required]").validator({
-			messageClass: "login-form-validator-error", 
-			offset: [10,0],
-			message: "<div><span></span></div>",
-			position: "top center"
-		});
-
+			// get fields that are required from form and execute validator()
+			var inputs = $form.find("input[required]").validator({
+				messageClass: "login-form-validator-error", 
+				offset: [10,0],
+				message: "<div><span></span></div>",
+				position: "top center"
+			});
 			return inputs.data("validator").checkValidity();
 		} else {
 			return true;
 		}
 	}
-	
-	function reset_form () {
-		$('#fancybox-content').find('form').each(function() {
+
+	// clear any validation errors
+	function reset_fb_form (fb) {
+		$(fb.content).parent().find('form').each(function() {
 			this.reset()
 		});
 	}
@@ -232,7 +248,7 @@ jQuery(document).ready(function($) {
 	 */
 
 	// Don't ajaxify the add to favorites link for guests
-	$('#pl_add_favorite:not(.guest)').live('click', function (event) {
+	$('#pl_add_favorite:not(.guest)').click(function (event) {
 		event.preventDefault();
 
 		var spinner = $(this).parent().find(".pl_spinner");
@@ -250,11 +266,10 @@ jQuery(document).ready(function($) {
 			spinner.hide();
 
 			// This property will only be set if WP determines user is of admin status...
-			if ( response.is_admin) {
+			if (response && response.is_admin) {
 				alert('Sorry, admins currently aren\'t able to maintain a list of "favorite" listings');
 			}
-
-			if ( response.id ) {
+			else if (response && response.id) {
 				$(that).parent().find('#pl_add_favorite').hide();
 				$(that).parent().find('#pl_remove_favorite').show();
 
@@ -262,14 +277,17 @@ jQuery(document).ready(function($) {
 					plsUserFavs.push(parseInt(data.property_id));
 				}
 			}
+			else {
+				console.log("Error adding favorite...");
+			}
 		}, 'json');
 	});
 
-	$('#pl_remove_favorite').live('click',function (event) {
+	$('#pl_remove_favorite').click(function (event) {
 		event.preventDefault();
 		var that = this;
-		$spinner = $(this).parent().find(".pl_spinner");
-		$spinner.show();
+		var spinner = $(this).parent().find(".pl_spinner");
+		spinner.show();
 
 		property_id = $(this).attr('href');
 		data = {
@@ -278,9 +296,9 @@ jQuery(document).ready(function($) {
 		};
 
 		$.post(info.ajaxurl, data, function (response) {
-			$spinner.hide();
+			spinner.hide();
 			// If request successfull
-			if ( response != 'errors' ) {
+			if (response != 'errors') {
 				$(that).parent().find('#pl_remove_favorite').hide();
 				$(that).parent().find('#pl_add_favorite').show();
 
@@ -294,110 +312,4 @@ jQuery(document).ready(function($) {
 			}
 		}, 'json');
 	}); 
-
-/* TODO: Get FB login working...
-
-	//
-	// Facebook Login
-	//
-
-	// Additional JS functions here
-	window.fbAsyncInit = function() {
-		fb_init();
-
-		// check FB login status
-		FB.getLoginStatus(function(response) {
-
-		// Is user logged into FB?
-		if (response.status === 'connected') {
-			// var accessToken = response.authResponse.accessToken;
-			console.log(response);
-			var user_id = response.authResponse.userID;
-
-
-			// get user info
-			var u_info = '';
-
-			FB.api('/me', function(user) {
-				console.log(user);
-				u_info = user;
-			});
-
-			// console.log(u_info);
-
-			// verified_response = parse_signed_request(signed_request);
-			// if (verified_response) {
-			//   connect_wp_fb(user_id);
-			// } else {
-			//   console.log('sorry, something went wrong');
-			// }
-
-			// log in user if user_id exists in our user list via ajax
-
-			// else prompt them to register
-			} 
-			else if (response.status === 'not_authorized') {
-				// not_authorized
-				console.log("not authorized");
-				// login();
-			} 
-			else {
-				// not_logged_in
-				console.log("not logged in");
-				// add login button
-				// login_to_fb();
-			}
-		});
-	};
-
-	function fb_init () {
-		FB.init({
-			appId: "263914027073402", // App ID
-			channelUrl: "<?php echo get_template_directory_uri(); ?>/fb_channel.html", // Channel File
-			status: true, // check login status
-			cookie: true, // enable cookies to allow the server to access the session
-			xfbml: true  // parse XFBML
-		});
-	}
-
-	function connect_wp_fb (user_id) {
-		data = {
-			action: 'connect_wp_fb',
-			user_id: user_id//,
-			// user_nickname: user_nickname
-		};
-
-		$.ajax({
-			url: info.ajaxurl,
-			data: data, 
-			async: false,
-			type: "POST",
-			success: function (response) { 
-				// console.log(response); 
-			}
-		});
-	}
-
-	function parse_signed_request (signed_request) {
-		data = {
-			action: 'parse_signed_request',
-			signed_request: signed_request
-		};
-
-		success = false;
-
-		$.ajax({
-			url: info.ajaxurl,
-			data: data, 
-			async: false,
-			type: "POST",
-			success: function (response) {
-				success = true;
-			}
-		});
-
-		return success;
-	}
-*/
-
 });
