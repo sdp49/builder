@@ -139,9 +139,6 @@ class PL_Pages {
 				$query->set('post_type', self::$property_post_type);
 				self::$listing_details = $response['listings'][0];
 			}
-			else {
-				$query->set_404();
-			}
 		}
 	}
 
